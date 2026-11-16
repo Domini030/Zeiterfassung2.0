@@ -1,4 +1,5 @@
 import { App as CapacitorApp } from '@capacitor/app';
+import { CapacitorNfc } from '@capgo/capacitor-nfc';
 import { Cloud, FilePlus2, Moon, Play, Square, Sun, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnalyticsView } from './components/AnalyticsView';
@@ -32,7 +33,11 @@ import {
   isNativeCapacitor,
 } from './utils/apiClient';
 import { createId, formatDuration } from './utils/format';
-import { extractTagIdFromPayload } from './utils/nfcHelpers';
+import {
+  decodeNdefRecordBytes,
+  extractTagIdFromPayload,
+  type NdefRecordPayload,
+} from './utils/nfcHelpers';
 import { createEmptyDatabase, createSampleDatabase } from './utils/sampleData';
 
 const SECTION_TITLES: Record<NavSection, string> = {
@@ -77,8 +82,14 @@ export default function App() {
     customerId: string;
     entryIds: string[];
   } | null>(null);
+  const [isWritingNfc, setIsWritingNfc] = useState(false);
+  const [pendingScannedUid, setPendingScannedUid] = useState<{
+    uid: string;
+    at: number;
+  } | null>(null);
 
   const deepLinkHandledRef = useRef(false);
+  const lastNfcTriggerRef = useRef<{ code: string; at: number } | null>(null);
   const dbRef = useRef<AppDatabase>(db);
   useEffect(() => {
     dbRef.current = db;
@@ -284,6 +295,33 @@ export default function App() {
     };
   }, [notify, triggerNfcOnDb]);
 
+  const handleGlobalNfcCode = useCallback(
+    (rawCode: string) => {
+      const clean = rawCode.trim();
+      if (!clean) return;
+      const now = Date.now();
+      const prev = lastNfcTriggerRef.current;
+      if (prev && prev.code.toLowerCase() === clean.toLowerCase() && now - prev.at < 2500) {
+        return;
+      }
+      lastNfcTriggerRef.current = { code: clean, at: now };
+
+      const result = triggerNfcOnDb(dbRef.current, clean);
+      if (result.isError) {
+        setPendingScannedUid({ uid: clean, at: now });
+        setSection('nfc');
+        notify(
+          `Unbekannter NFC-Tag "${clean}" erkannt — du kannst ihn jetzt einer Aufgabe zuweisen.`,
+          true
+        );
+        return;
+      }
+      void persistDb(result.nextDb);
+      notify(result.message);
+    },
+    [notify, persistDb, triggerNfcOnDb]
+  );
+
   // Listen for warm/background NFC app launches via Capacitor deep-link (taktwerk://nfc/<tagId>)
   useEffect(() => {
     if (!isNativeCapacitor()) return;
@@ -293,14 +331,7 @@ export default function App() {
     void CapacitorApp.addListener('appUrlOpen', (event) => {
       const extracted = extractTagIdFromPayload(event.url);
       if (!extracted || extracted === event.url) return;
-      const result = triggerNfcOnDb(dbRef.current, extracted);
-      if (result.isError) {
-        notify(result.message, true);
-        setSection('nfc');
-        return;
-      }
-      void persistDb(result.nextDb);
-      notify(result.message);
+      handleGlobalNfcCode(extracted);
     }).then((handle) => {
       if (cancelled) {
         void handle.remove();
@@ -315,7 +346,68 @@ export default function App() {
         void listenerHandle.remove();
       }
     };
-  }, [notify, persistDb, triggerNfcOnDb]);
+  }, [handleGlobalNfcCode]);
+
+  // Automatic foreground NFC reader in native Android APK (no manual scanner button needed)
+  useEffect(() => {
+    if (!isNativeCapacitor() || isWritingNfc) return;
+    let listenerHandle: { remove: () => Promise<void> } | null = null;
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const { supported } = await CapacitorNfc.isSupported();
+        if (!supported || cancelled) return;
+        const { status } = await CapacitorNfc.getStatus();
+        if (status !== 'NFC_OK' || cancelled) return;
+
+        const handle = await CapacitorNfc.addListener('nfcEvent', (event) => {
+          const tagObj = event as unknown as {
+            tag?: { id?: number[]; ndefMessage?: NdefRecordPayload[] };
+            ndefMessage?: NdefRecordPayload[];
+          };
+          const records = tagObj.tag?.ndefMessage ?? tagObj.ndefMessage ?? [];
+          let detected = '';
+          for (const rec of records) {
+            const decoded = decodeNdefRecordBytes(rec);
+            const candidate = extractTagIdFromPayload(decoded);
+            if (candidate) {
+              detected = candidate;
+              break;
+            }
+          }
+          if (!detected && tagObj.tag?.id && tagObj.tag.id.length > 0) {
+            detected = tagObj.tag.id
+              .map((b) => (b & 0xff).toString(16).padStart(2, '0').toUpperCase())
+              .join(':');
+          }
+          if (detected) {
+            handleGlobalNfcCode(detected);
+          }
+        });
+
+        if (cancelled) {
+          await handle.remove();
+          return;
+        }
+        listenerHandle = handle;
+        await CapacitorNfc.startScanning({
+          invalidateAfterFirstRead: false,
+          androidReaderModeFlags: 15,
+        });
+      } catch {
+        // Ignore if NFC hardware unavailable or paused
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      if (listenerHandle) {
+        void listenerHandle.remove();
+      }
+      void CapacitorNfc.stopScanning().catch(() => {});
+    };
+  }, [handleGlobalNfcCode, isWritingNfc]);
 
   // Live timer tick
   useEffect(() => {
@@ -780,6 +872,9 @@ export default function App() {
                   products={db.products}
                   nfcTasks={db.nfcTasks}
                   activeTimer={db.activeTimer}
+                  incomingUnknownTag={pendingScannedUid}
+                  onConsumeIncomingUnknownTag={() => setPendingScannedUid(null)}
+                  onWritingStateChange={setIsWritingNfc}
                   onSaveTask={handleSaveNfcTask}
                   onDeleteTask={handleDeleteNfcTask}
                   onTriggerTag={handleTriggerNfcTag}
