@@ -8,6 +8,8 @@ import {
   Moon,
   Nfc,
   Package,
+  Receipt,
+  Repeat,
   Sun,
   Users,
   X,
@@ -21,6 +23,7 @@ interface SidebarProps {
   nextcloud: NextcloudConfigInfo;
   openTimeCount: number;
   unpaidInvoiceCount: number;
+  dueRecurringCount?: number;
   activeTimerTitle: string | null;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
@@ -33,6 +36,8 @@ const NAV_ITEMS: { id: NavSection; label: string; icon: typeof Clock }[] = [
   { id: 'nfc', label: 'NFC-Aufgaben', icon: Nfc },
   { id: 'customers', label: 'Kunden', icon: Users },
   { id: 'products', label: 'Produkte', icon: Package },
+  { id: 'expenses', label: 'Belege & Kosten', icon: Receipt },
+  { id: 'recurring', label: 'Wiederkehrend', icon: Repeat },
   { id: 'invoices', label: 'Rechnungen', icon: FileText },
   { id: 'settings', label: 'Nextcloud & Setup', icon: Cloud },
 ];
@@ -43,6 +48,7 @@ export function Sidebar({
   nextcloud,
   openTimeCount,
   unpaidInvoiceCount,
+  dueRecurringCount = 0,
   activeTimerTitle,
   theme,
   onToggleTheme,
@@ -63,6 +69,8 @@ export function Sidebar({
         if (item.id === 'tracker' && openTimeCount > 0) countText = String(openTimeCount);
         if (item.id === 'invoices' && unpaidInvoiceCount > 0)
           countText = String(unpaidInvoiceCount);
+        if (item.id === 'recurring' && dueRecurringCount > 0)
+          countText = String(dueRecurringCount);
 
         return (
           <button

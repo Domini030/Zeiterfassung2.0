@@ -15,6 +15,16 @@ export const DEFAULT_PRODUCT_CATEGORIES = [
   'Pauschalen',
 ];
 
+export const DEFAULT_EXPENSE_CATEGORIES = [
+  'Fahrtkosten & Kraftstoff',
+  'Hardware & Material',
+  'Software & Lizenzen',
+  'Bürobedarf & Porto',
+  'Reisekosten & Verpflegung',
+  'Fremdleistungen',
+  'Sonstiges',
+];
+
 export function createDefaultCompany(): CompanyProfile {
   return {
     companyName: 'Meine Firma GmbH',
@@ -70,6 +80,13 @@ export function createDefaultCompany(): CompanyProfile {
     defaultStartSection: 'tracker',
     swipeNavigationEnabled: true,
     autoCaptureLocation: false,
+    invoiceIncludeLocationDefault: false,
+    autoLocationStartEnabled: false,
+    geoFenceCheckIntervalSec: 60,
+    homeBaseLocation: null,
+    travelRatePerKm: 0.3,
+    travelRoundTripDefault: true,
+    autoCalculateTravelOnStop: true,
     dailyGoalHours: 8,
     timerReminderEnabled: true,
     timerReminderMinutes: 60,
@@ -99,9 +116,12 @@ export function createEmptyDatabase(): AppDatabase {
     customers: [],
     products: [],
     nfcTasks: [],
+    geoFenceRules: [],
     timeEntries: [],
     activeTimer: null,
     invoices: [],
+    expenses: [],
+    recurringInvoices: [],
     calendarEvents: [],
   };
 }
@@ -135,6 +155,14 @@ export function createSampleDatabase(): AppDatabase {
       nextQuoteSequence: 2,
       nextProductSequence: 106,
       invoiceAccentColor: 'violet',
+      homeBaseLocation: {
+        address: 'Alsterufer 44, 20354 Hamburg',
+        lat: 53.5594,
+        lng: 10.0014,
+      },
+      travelRatePerKm: 0.35,
+      travelRoundTripDefault: true,
+      autoCalculateTravelOnStop: true,
     },
     customers: [
       {
@@ -292,6 +320,7 @@ export function createSampleDatabase(): AppDatabase {
         createdAt: hoursAgo(100),
       },
     ],
+    geoFenceRules: [],
     timeEntries: [
       {
         id: 'time-1',
@@ -419,6 +448,73 @@ export function createSampleDatabase(): AppDatabase {
         createdAt: hoursAgo(48),
       },
     ],
+    expenses: [
+      {
+        id: 'exp-1',
+        date: hoursAgo(30).slice(0, 10),
+        vendor: 'Conrad Electronic',
+        description: 'Patchkabel Cat.6a & USV-Steckdosenleiste',
+        category: 'Hardware & Material',
+        netAmount: 64.9,
+        taxRate: 19,
+        grossAmount: 77.23,
+        customerId: 'cust-1',
+        billableToCustomer: true,
+        billedInvoiceId: null,
+        notes: 'Direkt im Serverraum Alpenholz verbaut.',
+        nextcloudUploadedAt: null,
+        createdAt: hoursAgo(29),
+      },
+      {
+        id: 'exp-2',
+        date: hoursAgo(52).slice(0, 10),
+        vendor: 'Shell Station Hamburg',
+        description: 'Dienstfahrt Tankbeleg (Kundentermin)',
+        category: 'Fahrtkosten & Kraftstoff',
+        netAmount: 48.74,
+        taxRate: 19,
+        grossAmount: 58.0,
+        customerId: null,
+        billableToCustomer: false,
+        billedInvoiceId: null,
+        notes: 'Interne Betriebsausgabe',
+        nextcloudUploadedAt: null,
+        createdAt: hoursAgo(51),
+      },
+    ],
+    recurringInvoices: [
+      {
+        id: 'rec-1',
+        title: 'Monatliche Server- & IT-Wartungpauschale',
+        customerId: 'cust-1',
+        interval: 'monthly',
+        active: true,
+        nextRunDate: now.toISOString().slice(0, 10),
+        lastRunDate: null,
+        generatedCount: 0,
+        lineItems: [
+          {
+            id: 'rli-1',
+            productId: 'prod-1',
+            description: 'IT-Wartungsvertrag Basis (Monitoring, Patch-Management & Backup)',
+            detail: 'Monatliche Betreuungspauschale gemäß Wartungsvertrag',
+            quantity: 1,
+            unit: 'Pauschal',
+            unitPriceNet: 490,
+            taxRate: 19,
+          },
+        ],
+        discountType: 'percent',
+        discountValue: 0,
+        discountLabel: '',
+        introText:
+          'Sehr geehrte Damen und Herren,\n\nvereinbarungsgemäß erlauben wir uns, die monatliche Wartungspauschale wie folgt in Rechnung zu stellen:',
+        outroText:
+          'Vielen Dank für das entgegengebrachte Vertrauen. Bitte überweisen Sie den Betrag innerhalb der Zahlungsfrist.',
+        autoMarkSent: false,
+        createdAt: hoursAgo(200),
+      },
+    ],
     calendarEvents: [
       {
         id: 'cal-1',
@@ -432,5 +528,45 @@ export function createSampleDatabase(): AppDatabase {
         productId: 'prod-1',
       },
     ],
+  };
+}
+
+export function normalizeDatabase(raw: AppDatabase): AppDatabase {
+  const defaults = createDefaultCompany();
+  const company: CompanyProfile = {
+    ...defaults,
+    ...(raw.company ?? {}),
+    customerCategories:
+      Array.isArray(raw.company?.customerCategories) && raw.company.customerCategories.length > 0
+        ? raw.company.customerCategories
+        : DEFAULT_CUSTOMER_CATEGORIES,
+    productCategories:
+      Array.isArray(raw.company?.productCategories) && raw.company.productCategories.length > 0
+        ? raw.company.productCategories
+        : DEFAULT_PRODUCT_CATEGORIES,
+    autoBackup: {
+      ...defaults.autoBackup!,
+      ...(raw.company?.autoBackup ?? {}),
+    },
+    calendarConfig: {
+      ...defaults.calendarConfig!,
+      ...(raw.company?.calendarConfig ?? {}),
+    },
+  };
+
+  return {
+    version: raw.version ?? 2,
+    updatedAt: raw.updatedAt || new Date().toISOString(),
+    company,
+    customers: Array.isArray(raw.customers) ? raw.customers : [],
+    products: Array.isArray(raw.products) ? raw.products : [],
+    nfcTasks: Array.isArray(raw.nfcTasks) ? raw.nfcTasks : [],
+    geoFenceRules: Array.isArray(raw.geoFenceRules) ? raw.geoFenceRules : [],
+    timeEntries: Array.isArray(raw.timeEntries) ? raw.timeEntries : [],
+    activeTimer: raw.activeTimer ?? null,
+    invoices: Array.isArray(raw.invoices) ? raw.invoices : [],
+    expenses: Array.isArray(raw.expenses) ? raw.expenses : [],
+    recurringInvoices: Array.isArray(raw.recurringInvoices) ? raw.recurringInvoices : [],
+    calendarEvents: Array.isArray(raw.calendarEvents) ? raw.calendarEvents : [],
   };
 }

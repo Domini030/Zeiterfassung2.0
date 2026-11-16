@@ -8,6 +8,8 @@ import type {
   UnitType,
 } from '../types';
 import { createId, formatCurrency, formatProductSku } from '../utils/format';
+import { DEFAULT_PRODUCT_CATEGORIES } from '../utils/sampleData';
+import { CategoryPicker, ThemedSelect } from './ThemedSelect';
 
 interface ProductsViewProps {
   company: CompanyProfile;
@@ -41,7 +43,11 @@ export function ProductsView({
   const skuLabel = (company.skuFieldLabel || 'Artikel-Nr.').trim();
 
   const availableCategories = useMemo(() => {
-    const set = new Set<string>(company.productCategories ?? []);
+    const seed =
+      company.productCategories && company.productCategories.length > 0
+        ? company.productCategories
+        : DEFAULT_PRODUCT_CATEGORIES;
+    const set = new Set<string>(seed);
     for (const p of products) {
       if (p.category?.trim()) set.add(p.category.trim());
     }
@@ -188,19 +194,19 @@ export function ProductsView({
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Typ
               </label>
-              <select
+              <ThemedSelect
                 value={type}
-                onChange={(e) => {
-                  const nextType = e.target.value as ProductType;
+                onChange={(val) => {
+                  const nextType = val as ProductType;
                   setType(nextType);
                   if (nextType === 'service') setUnit('Std.');
                   else if (unit === 'Std.') setUnit('Stk.');
                 }}
-                className={inputClass}
-              >
-                <option value="service">Dienstleistung (Zeit)</option>
-                <option value="product">Produkt / Pauschale</option>
-              </select>
+                options={[
+                  { value: 'service', label: 'Dienstleistung (Zeit)' },
+                  { value: 'product', label: 'Produkt / Pauschale' },
+                ]}
+              />
             </div>
             <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
@@ -218,16 +224,17 @@ export function ProductsView({
                 Einheit &amp; Netto-Preis (€)
               </label>
               <div className="flex gap-2">
-                <select
+                <ThemedSelect
                   value={unit}
-                  onChange={(e) => setUnit(e.target.value as UnitType)}
-                  className="w-28 rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-                >
-                  <option value="Std.">Std.</option>
-                  <option value="Stk.">Stk.</option>
-                  <option value="Pauschal">Pauschal</option>
-                  <option value="Tag">Tag</option>
-                </select>
+                  onChange={(val) => setUnit(val as UnitType)}
+                  className="w-28 shrink-0"
+                  options={[
+                    { value: 'Std.', label: 'Std.' },
+                    { value: 'Stk.', label: 'Stk.' },
+                    { value: 'Pauschal', label: 'Pauschal' },
+                    { value: 'Tag', label: 'Tag' },
+                  ]}
+                />
                 <input
                   type="text"
                   value={unitPriceNet}
@@ -240,33 +247,26 @@ export function ProductsView({
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 MwSt.-Satz
               </label>
-              <select
-                value={taxRate}
-                onChange={(e) => setTaxRate(Number(e.target.value) as TaxRate)}
-                className={`${inputClass} font-mono`}
-              >
-                <option value={19}>19 %</option>
-                <option value={7}>7 %</option>
-                <option value={0}>0 % (Steuerfrei)</option>
-              </select>
+              <ThemedSelect
+                value={String(taxRate)}
+                onChange={(val) => setTaxRate(Number(val) as TaxRate)}
+                options={[
+                  { value: '19', label: '19 %' },
+                  { value: '7', label: '7 %' },
+                  { value: '0', label: '0 % (Steuerfrei)' },
+                ]}
+              />
             </div>
             <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Kategorie
               </label>
-              <input
-                type="text"
-                list="product-category-list"
+              <CategoryPicker
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={setCategory}
+                categories={availableCategories}
                 placeholder="z. B. Beratung, Entwicklung, Hardware"
-                className={inputClass}
               />
-              <datalist id="product-category-list">
-                {availableCategories.map((cat) => (
-                  <option key={cat} value={cat} />
-                ))}
-              </datalist>
             </div>
             {error && (
               <p className="text-xs font-medium text-red-600 dark:text-red-400 md:col-span-4">
@@ -307,18 +307,16 @@ export function ProductsView({
 
           <div className="flex flex-wrap items-center gap-2">
             {availableCategories.length > 0 && (
-              <select
+              <ThemedSelect
+                size="sm"
+                className="w-48"
                 value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-              >
-                <option value="all">Alle Kategorien</option>
-                {availableCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
+                onChange={setCategoryFilter}
+                options={[
+                  { value: 'all', label: 'Alle Kategorien' },
+                  ...availableCategories.map((cat) => ({ value: cat, label: cat })),
+                ]}
+              />
             )}
             <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936] self-start">
               {(

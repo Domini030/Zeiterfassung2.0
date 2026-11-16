@@ -85,6 +85,12 @@ export interface TaktWerkNativePluginInterface {
     appPassword: string;
   }): Promise<{ found: boolean; json?: string }>;
 
+  webdavDeleteFiles(options: {
+    fileUrls: string[];
+    username: string;
+    appPassword: string;
+  }): Promise<{ deletedCount: number }>;
+
   caldavRequest(options: {
     method: string;
     url: string;

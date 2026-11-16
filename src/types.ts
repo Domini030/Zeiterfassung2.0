@@ -19,6 +19,8 @@ export type NavSection =
   | 'nfc'
   | 'customers'
   | 'products'
+  | 'expenses'
+  | 'recurring'
   | 'invoices'
   | 'settings';
 
@@ -76,6 +78,23 @@ export interface NfcTask {
   createdAt: string;
 }
 
+export interface GeoFenceRule {
+  id: string;
+  name: string;
+  enabled: boolean;
+  lat: number;
+  lng: number;
+  address?: string;
+  radiusMeters: number;
+  customerId: string;
+  productId: string;
+  taskTitle: string;
+  notes: string;
+  autoStopOnExit?: boolean;
+  lastTriggeredAt?: string | null;
+  createdAt: string;
+}
+
 export interface TimeEntry {
   id: string;
   customerId: string;
@@ -90,8 +109,11 @@ export interface TimeEntry {
   taxRate: TaxRate;
   billable: boolean;
   billedInvoiceId: string | null;
-  source: 'manual' | 'timer' | 'nfc';
+  source: 'manual' | 'timer' | 'nfc' | 'geo';
   location?: LocationSnapshot | null;
+  travelDistanceKm?: number;
+  travelCostNet?: number;
+  travelBilledInvoiceId?: string | null;
   createdAt: string;
 }
 
@@ -100,6 +122,7 @@ export interface ActiveTimer {
   customerId: string;
   productId: string;
   nfcTaskId: string | null;
+  geoFenceRuleId?: string | null;
   title: string;
   notes: string;
   startTime: string;
@@ -107,7 +130,7 @@ export interface ActiveTimer {
   accumulatedPausedMs?: number;
   hourlyRateNet: number;
   taxRate: TaxRate;
-  source: 'timer' | 'nfc';
+  source: 'timer' | 'nfc' | 'geo';
   location?: LocationSnapshot | null;
 }
 
@@ -124,6 +147,15 @@ export interface InvoiceLineItem {
   grossTotal: number;
   timeEntryIds: string[];
   productId: string | null;
+}
+
+export interface AcceptanceSignature {
+  signedBy: string;
+  signedRole?: string;
+  signedAt: string;
+  locationAddress?: string;
+  notes?: string;
+  signatureDataUrl: string;
 }
 
 export interface Invoice {
@@ -147,6 +179,7 @@ export interface Invoice {
   dueDate: string;
   quoteValidUntil?: string;
   status: InvoiceStatus;
+  includeLocation?: boolean;
   lineItems: InvoiceLineItem[];
   subtotalNetBeforeDiscount?: number;
   discountType?: DiscountType;
@@ -160,8 +193,66 @@ export interface Invoice {
   outroText: string;
   isSmallBusiness?: boolean;
   smallBusinessNotice?: string;
+  signature?: AcceptanceSignature | null;
   nextcloudUploadedAt: string | null;
   createdAt: string;
+}
+
+export interface Expense {
+  id: string;
+  date: string;
+  vendor: string;
+  description: string;
+  category: string;
+  netAmount: number;
+  taxRate: TaxRate;
+  grossAmount: number;
+  customerId?: string | null;
+  billableToCustomer?: boolean;
+  billedInvoiceId?: string | null;
+  receiptImageDataUrl?: string;
+  notes?: string;
+  nextcloudUploadedAt?: string | null;
+  createdAt: string;
+}
+
+export type RecurringInterval = 'monthly' | 'quarterly' | 'yearly';
+
+export interface RecurringLineItemDraft {
+  id: string;
+  productId?: string | null;
+  description: string;
+  detail?: string;
+  quantity: number;
+  unit: UnitType;
+  unitPriceNet: number;
+  taxRate: TaxRate;
+}
+
+export interface RecurringInvoiceTemplate {
+  id: string;
+  title: string;
+  customerId: string;
+  interval: RecurringInterval;
+  active: boolean;
+  nextRunDate: string;
+  lastRunDate?: string | null;
+  generatedCount: number;
+  lineItems: RecurringLineItemDraft[];
+  discountType?: DiscountType;
+  discountValue?: number;
+  discountLabel?: string;
+  introText?: string;
+  outroText?: string;
+  isSmallBusiness?: boolean;
+  autoMarkSent?: boolean;
+  createdAt: string;
+}
+
+export interface HomeBaseLocation {
+  address: string;
+  lat: number;
+  lng: number;
 }
 
 export type InvoiceAccentPreset =
@@ -273,6 +364,13 @@ export interface CompanyProfile {
   defaultStartSection?: NavSection;
   swipeNavigationEnabled?: boolean;
   autoCaptureLocation?: boolean;
+  invoiceIncludeLocationDefault?: boolean;
+  autoLocationStartEnabled?: boolean;
+  geoFenceCheckIntervalSec?: number;
+  homeBaseLocation?: HomeBaseLocation | null;
+  travelRatePerKm?: number;
+  travelRoundTripDefault?: boolean;
+  autoCalculateTravelOnStop?: boolean;
   dailyGoalHours?: number;
   timerReminderEnabled?: boolean;
   timerReminderMinutes?: number;
@@ -288,9 +386,12 @@ export interface AppDatabase {
   customers: Customer[];
   products: Product[];
   nfcTasks: NfcTask[];
+  geoFenceRules?: GeoFenceRule[];
   timeEntries: TimeEntry[];
   activeTimer: ActiveTimer | null;
   invoices: Invoice[];
+  expenses?: Expense[];
+  recurringInvoices?: RecurringInvoiceTemplate[];
   calendarEvents?: CalendarAppointment[];
 }
 

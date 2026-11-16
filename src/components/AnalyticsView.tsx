@@ -2,6 +2,7 @@ import { BarChart3, Clock, Layers, Nfc, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { Customer, Product, TimeEntry } from '../types';
 import { formatCurrency, formatNumber } from '../utils/format';
+import { ThemedSelect } from './ThemedSelect';
 
 interface AnalyticsViewProps {
   customers: Customer[];
@@ -367,33 +368,35 @@ export function AnalyticsView({
             ))}
           </div>
 
-          <select
+          <ThemedSelect
+            size="sm"
             value={selectedCustomerId}
-            onChange={(e) => setSelectedCustomerId(e.target.value)}
-            aria-label="Nach Kunde filtern"
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:focus:border-violet-500"
-          >
-            <option value="all">Alle Kunden</option>
-            {customers.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.companyName}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedCustomerId}
+            ariaLabel="Nach Kunde filtern"
+            className="min-w-44"
+            options={[
+              { value: 'all', label: 'Alle Kunden' },
+              ...customers.map((c) => ({
+                value: c.id,
+                label: c.companyName,
+              })),
+            ]}
+          />
 
-          <select
+          <ThemedSelect
+            size="sm"
             value={selectedProductId}
-            onChange={(e) => setSelectedProductId(e.target.value)}
-            aria-label="Nach Produkt filtern"
-            className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:focus:border-violet-500"
-          >
-            <option value="all">Alle Leistungen</option>
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+            onChange={setSelectedProductId}
+            ariaLabel="Nach Produkt filtern"
+            className="min-w-44"
+            options={[
+              { value: 'all', label: 'Alle Leistungen' },
+              ...products.map((p) => ({
+                value: p.id,
+                label: p.name,
+              })),
+            ]}
+          />
         </div>
       </div>
 

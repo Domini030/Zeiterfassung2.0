@@ -33,6 +33,7 @@ import {
   formatHoursShort,
   toInputDate,
 } from '../utils/format';
+import { ThemedSelect } from './ThemedSelect';
 
 interface CalendarViewProps {
   company: CompanyProfile;
@@ -383,35 +384,37 @@ export function CalendarView({
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Kunde (für Direkt-Start)
               </label>
-              <select
+              <ThemedSelect
                 value={newCustomerId}
-                onChange={(e) => setNewCustomerId(e.target.value)}
-                className={inputClass}
-              >
-                <option value="">Kein fester Kunde</option>
-                {customers.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.companyName}
-                  </option>
-                ))}
-              </select>
+                onChange={setNewCustomerId}
+                ariaLabel="Kunde auswählen"
+                options={[
+                  { value: '', label: 'Kein fester Kunde' },
+                  ...customers.map((c) => ({
+                    value: c.id,
+                    label: c.companyName,
+                    hint: c.city || undefined,
+                  })),
+                ]}
+              />
             </div>
             <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Leistung
               </label>
-              <select
+              <ThemedSelect
                 value={newProductId}
-                onChange={(e) => setNewProductId(e.target.value)}
-                className={inputClass}
-              >
-                <option value="">Standard-Leistung</option>
-                {products.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                onChange={setNewProductId}
+                ariaLabel="Leistung auswählen"
+                options={[
+                  { value: '', label: 'Standard-Leistung' },
+                  ...products.map((p) => ({
+                    value: p.id,
+                    label: p.name,
+                    hint: `${formatCurrency(p.unitPriceNet)}/${p.unit}`,
+                  })),
+                ]}
+              />
             </div>
             <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">

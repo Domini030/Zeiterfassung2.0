@@ -4,17 +4,21 @@ import {
   BellRing,
   Building2,
   Calendar,
+  Car,
   CheckCircle2,
   Cloud,
+  Compass,
   Database,
   Download,
   DownloadCloud,
   FileSpreadsheet,
   FileText,
   ImagePlus,
+  Loader2,
   MapPin,
   Palette,
   Plus,
+  Radar,
   RefreshCw,
   RotateCcw,
   Server,
@@ -31,6 +35,8 @@ import type {
   AutoBackupFormat,
   AutoBackupFrequency,
   CompanyProfile,
+  GeoFenceRule,
+  HomeBaseLocation,
   InvoiceAccentPreset,
   InvoiceFontFamily,
   InvoiceLayoutStyle,
@@ -58,12 +64,15 @@ import {
   INVOICE_ACCENT_STYLES,
   INVOICE_FONT_OPTIONS,
   INVOICE_LAYOUT_OPTIONS,
+  createId,
+  formatCurrency,
   formatDateTimeDE,
   formatInvoiceNumber,
   formatProductSku,
   formatQuoteNumber,
   toInputDate,
 } from '../utils/format';
+import { captureCurrentLocation, geocodeAddress } from '../utils/geolocation';
 import {
   downloadExcelBackup,
   downloadOrShareTextFile,
@@ -73,6 +82,7 @@ import {
 } from '../utils/exportBackup';
 import { downloadFullBackupPdf } from '../utils/pdfInvoice';
 import { REMINDER_SOUND_OPTIONS, playReminderSound } from '../utils/soundReminder';
+import { ThemedSelect } from './ThemedSelect';
 
 type SettingsTab = 'general' | 'company' | 'cloud' | 'backups' | 'automation';
 
@@ -80,12 +90,16 @@ interface NextcloudSettingsViewProps {
   db: AppDatabase;
   nextcloud: NextcloudConfigInfo;
   company: CompanyProfile;
+  geoFenceRules: GeoFenceRule[];
   pushConflictAt: string | null;
   onDismissConflict: () => void;
   onRefreshConfig: (nextcloud: NextcloudConfigInfo) => void;
   onSyncFromNextcloud: () => Promise<void>;
   onSyncToNextcloud: (force?: boolean) => Promise<void>;
   onSaveCompany: (company: CompanyProfile) => void;
+  onSaveGeoFenceRules: (rules: GeoFenceRule[]) => void;
+  onCheckGeoFenceNow?: () => void;
+  checkingGeoFence?: boolean;
   onImportDatabase: (db: AppDatabase) => void;
   onLoadSampleData: () => void;
   onResetEmpty: () => void;
@@ -108,18 +122,24 @@ const START_SECTION_OPTIONS: { id: NavSection; label: string }[] = [
   { id: 'customers', label: 'Kunden' },
   { id: 'products', label: 'Produkte & Leistungen' },
   { id: 'invoices', label: 'Rechnungen & Angebote' },
+  { id: 'expenses', label: 'Belege & Kosten' },
+  { id: 'recurring', label: 'Wiederkehrend / Verträge' },
 ];
 
 export function NextcloudSettingsView({
   db,
   nextcloud,
   company,
+  geoFenceRules,
   pushConflictAt,
   onDismissConflict,
   onRefreshConfig,
   onSyncFromNextcloud,
   onSyncToNextcloud,
   onSaveCompany,
+  onSaveGeoFenceRules,
+  onCheckGeoFenceNow,
+  checkingGeoFence = false,
   onImportDatabase,
   onLoadSampleData,
   onResetEmpty,
@@ -153,6 +173,31 @@ export function NextcloudSettingsView({
 
   const nativeApp = isNativeCapacitor();
   const [serverUrl, setServerUrl] = useState(() => getBackendServerUrl());
+
+  // Travel Home Base state
+  const [homeAddressQuery, setHomeAddressQuery] = useState(
+    () => company.homeBaseLocation?.address ?? ''
+  );
+  const [homeSearching, setHomeSearching] = useState(false);
+  const [homeLocating, setHomeLocating] = useState(false);
+
+  // Geofence New Rule state
+  const [newRuleName, setNewRuleName] = useState('');
+  const [newRuleAddress, setNewRuleAddress] = useState('');
+  const [newRuleLat, setNewRuleLat] = useState<string>('');
+  const [newRuleLng, setNewRuleLng] = useState<string>('');
+  const [newRuleRadius, setNewRuleRadius] = useState<string>('150');
+  const [newRuleCustomerId, setNewRuleCustomerId] = useState(
+    db.customers[0]?.id ?? ''
+  );
+  const [newRuleProductId, setNewRuleProductId] = useState(
+    db.products[0]?.id ?? ''
+  );
+  const [newRuleTaskTitle, setNewRuleTaskTitle] = useState('');
+  const [newRuleNotes, setNewRuleNotes] = useState('');
+  const [newRuleAutoStop, setNewRuleAutoStop] = useState(true);
+  const [searchingRuleLoc, setSearchingRuleLoc] = useState(false);
+  const [locatingRule, setLocatingRule] = useState(false);
 
   const invoiceNumberPreview = useMemo(
     () => formatInvoiceNumber(companyForm),
@@ -421,6 +466,156 @@ export function NextcloudSettingsView({
     }
   };
 
+  const handleCaptureHomeBaseGps = async () => {
+    setHomeLocating(true);
+    try {
+      const loc = await captureCurrentLocation();
+      const base: HomeBaseLocation = {
+        address: loc.address || `${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)}`,
+        lat: loc.lat,
+        lng: loc.lng,
+      };
+      setHomeAddressQuery(base.address);
+      const nextCompany = { ...companyForm, homeBaseLocation: base };
+      setCompanyForm(nextCompany);
+      onSaveCompany(nextCompany);
+      onNotify(`Startadresse auf "${base.address}" gesetzt.`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'GPS-Standort konnte nicht abgerufen werden.',
+        true
+      );
+    } finally {
+      setHomeLocating(false);
+    }
+  };
+
+  const handleGeocodeHomeBase = async (queryOverride?: string) => {
+    const query = (queryOverride ?? homeAddressQuery).trim();
+    if (!query) {
+      onNotify('Bitte eine Startadresse eingeben.', true);
+      return;
+    }
+    setHomeSearching(true);
+    try {
+      const found = await geocodeAddress(query);
+      if (!found) {
+        onNotify('Adresse konnte nicht gefunden werden.', true);
+        return;
+      }
+      const base: HomeBaseLocation = {
+        address: found.address || query,
+        lat: found.lat,
+        lng: found.lng,
+      };
+      setHomeAddressQuery(base.address);
+      const nextCompany = { ...companyForm, homeBaseLocation: base };
+      setCompanyForm(nextCompany);
+      onSaveCompany(nextCompany);
+      onNotify(`Startadresse ermittelt & gespeichert: ${base.address}`);
+    } catch {
+      onNotify('Adresssuche fehlgeschlagen.', true);
+    } finally {
+      setHomeSearching(false);
+    }
+  };
+
+  const handleCaptureRuleGps = async () => {
+    setLocatingRule(true);
+    try {
+      const loc = await captureCurrentLocation();
+      setNewRuleLat(loc.lat.toFixed(6));
+      setNewRuleLng(loc.lng.toFixed(6));
+      if (loc.address) {
+        setNewRuleAddress(loc.address);
+      }
+      onNotify('Aktuelle GPS-Koordinaten für die Ortsregel übernommen.');
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Standort konnte nicht ermittelt werden.',
+        true
+      );
+    } finally {
+      setLocatingRule(false);
+    }
+  };
+
+  const handleSearchRuleAddress = async () => {
+    if (!newRuleAddress.trim()) {
+      onNotify('Bitte eine Adresse oder einen Ort für die Ortsregel eingeben.', true);
+      return;
+    }
+    setSearchingRuleLoc(true);
+    try {
+      const found = await geocodeAddress(newRuleAddress.trim());
+      if (!found) {
+        onNotify('Adresse nicht gefunden.', true);
+        return;
+      }
+      setNewRuleLat(found.lat.toFixed(6));
+      setNewRuleLng(found.lng.toFixed(6));
+      if (found.address) {
+        setNewRuleAddress(found.address);
+      }
+      onNotify(`Standort gefunden (${found.lat.toFixed(4)}, ${found.lng.toFixed(4)}).`);
+    } catch {
+      onNotify('Adresssuche fehlgeschlagen.', true);
+    } finally {
+      setSearchingRuleLoc(false);
+    }
+  };
+
+  const handleAddGeoRule = () => {
+    const lat = Number(newRuleLat);
+    const lng = Number(newRuleLng);
+    if (!newRuleName.trim()) {
+      onNotify('Bitte einen Namen für die Ortsregel eingeben.', true);
+      return;
+    }
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || (lat === 0 && lng === 0)) {
+      onNotify('Bitte Koordinaten über Adresse oder GPS übernehmen.', true);
+      return;
+    }
+    if (!newRuleCustomerId || !newRuleProductId) {
+      onNotify('Bitte Kunde und Leistung auswählen.', true);
+      return;
+    }
+    const rule: GeoFenceRule = {
+      id: createId('geo'),
+      name: newRuleName.trim(),
+      enabled: true,
+      lat,
+      lng,
+      address: newRuleAddress.trim() || undefined,
+      radiusMeters: Math.max(30, Number(newRuleRadius) || 150),
+      customerId: newRuleCustomerId,
+      productId: newRuleProductId,
+      taskTitle: newRuleTaskTitle.trim() || newRuleName.trim(),
+      notes: newRuleNotes.trim(),
+      autoStopOnExit: newRuleAutoStop,
+      createdAt: new Date().toISOString(),
+    };
+    onSaveGeoFenceRules([rule, ...geoFenceRules]);
+    setNewRuleName('');
+    setNewRuleAddress('');
+    setNewRuleLat('');
+    setNewRuleLng('');
+    setNewRuleTaskTitle('');
+    setNewRuleNotes('');
+    onNotify(`Ortsregel "${rule.name}" gespeichert.`);
+  };
+
+  const handleToggleGeoRule = (id: string) => {
+    onSaveGeoFenceRules(
+      geoFenceRules.map((r) => (r.id === id ? { ...r, enabled: !r.enabled } : r))
+    );
+  };
+
+  const handleDeleteGeoRule = (id: string) => {
+    onSaveGeoFenceRules(geoFenceRules.filter((r) => r.id !== id));
+    onNotify('Ortsregel gelöscht.');
+  };
+
   const handleExportTimeCsv = async () => {
     try {
       const csv = timeEntriesToCsv(db.timeEntries, db.customers, db.products);
@@ -642,60 +837,60 @@ export function NextcloudSettingsView({
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Darstellungsdichte
                 </label>
-                <select
+                <ThemedSelect
                   value={companyForm.uiDensity ?? 'comfortable'}
-                  onChange={(e) =>
+                  onChange={(val) =>
                     setCompanyForm({
                       ...companyForm,
-                      uiDensity: e.target.value as UiDensity,
+                      uiDensity: val as UiDensity,
                     })
                   }
-                  className={inputClass}
-                >
-                  <option value="comfortable">Komfortabel (Standard)</option>
-                  <option value="compact">Kompakt (mehr Inhalt)</option>
-                </select>
+                  ariaLabel="Darstellungsdichte"
+                  options={[
+                    { value: 'comfortable', label: 'Komfortabel (Standard)' },
+                    { value: 'compact', label: 'Kompakt (mehr Inhalt)' },
+                  ]}
+                />
               </div>
 
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Schriftgröße der App
                 </label>
-                <select
+                <ThemedSelect
                   value={companyForm.uiFontScale ?? 'normal'}
-                  onChange={(e) =>
+                  onChange={(val) =>
                     setCompanyForm({
                       ...companyForm,
-                      uiFontScale: e.target.value as UiFontScale,
+                      uiFontScale: val as UiFontScale,
                     })
                   }
-                  className={inputClass}
-                >
-                  <option value="normal">Normal</option>
-                  <option value="large">Groß (bessere Lesbarkeit)</option>
-                </select>
+                  ariaLabel="Schriftgröße der App"
+                  options={[
+                    { value: 'normal', label: 'Normal' },
+                    { value: 'large', label: 'Groß (bessere Lesbarkeit)' },
+                  ]}
+                />
               </div>
 
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Standard-Startbereich
                 </label>
-                <select
+                <ThemedSelect
                   value={companyForm.defaultStartSection ?? 'tracker'}
-                  onChange={(e) =>
+                  onChange={(val) =>
                     setCompanyForm({
                       ...companyForm,
-                      defaultStartSection: e.target.value as NavSection,
+                      defaultStartSection: val as NavSection,
                     })
                   }
-                  className={inputClass}
-                >
-                  {START_SECTION_OPTIONS.map((opt) => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
+                  ariaLabel="Standard-Startbereich"
+                  options={START_SECTION_OPTIONS.map((opt) => ({
+                    value: opt.id,
+                    label: opt.label,
+                  }))}
+                />
               </div>
 
               <div>
@@ -1055,22 +1250,20 @@ export function NextcloudSettingsView({
                 </div>
                 <div className="md:col-span-2">
                   <label className="mb-1 block text-xs text-slate-500">Stellen</label>
-                  <select
-                    value={companyForm.invoiceSequenceDigits ?? 4}
-                    onChange={(e) =>
+                  <ThemedSelect
+                    value={String(companyForm.invoiceSequenceDigits ?? 4)}
+                    onChange={(val) =>
                       setCompanyForm({
                         ...companyForm,
-                        invoiceSequenceDigits: Number(e.target.value),
+                        invoiceSequenceDigits: Number(val),
                       })
                     }
-                    className={inputClass}
-                  >
-                    {[2, 3, 4, 5, 6].map((d) => (
-                      <option key={d} value={d}>
-                        {d} ({String(1).padStart(d, '0')})
-                      </option>
-                    ))}
-                  </select>
+                    ariaLabel="Rechnungsnummer-Stellen"
+                    options={[2, 3, 4, 5, 6].map((d) => ({
+                      value: String(d),
+                      label: `${d} (${String(1).padStart(d, '0')})`,
+                    }))}
+                  />
                 </div>
                 <div className="md:col-span-3">
                   <label className="mb-1 block text-xs text-slate-500">Nächste Nr.</label>
@@ -1190,22 +1383,20 @@ export function NextcloudSettingsView({
                 </div>
                 <div className="md:col-span-2">
                   <label className="mb-1 block text-xs text-slate-500">Stellen</label>
-                  <select
-                    value={companyForm.productSequenceDigits ?? 3}
-                    onChange={(e) =>
+                  <ThemedSelect
+                    value={String(companyForm.productSequenceDigits ?? 3)}
+                    onChange={(val) =>
                       setCompanyForm({
                         ...companyForm,
-                        productSequenceDigits: Number(e.target.value),
+                        productSequenceDigits: Number(val),
                       })
                     }
-                    className={inputClass}
-                  >
-                    {[2, 3, 4, 5].map((d) => (
-                      <option key={d} value={d}>
-                        {d} ({String(1).padStart(d, '0')})
-                      </option>
-                    ))}
-                  </select>
+                    ariaLabel="Artikelnummer-Stellen"
+                    options={[2, 3, 4, 5].map((d) => ({
+                      value: String(d),
+                      label: `${d} (${String(1).padStart(d, '0')})`,
+                    }))}
+                  />
                 </div>
                 <div className="md:col-span-2">
                   <label className="mb-1 block text-xs text-slate-500">Nächste Nr.</label>
@@ -1353,44 +1544,44 @@ export function NextcloudSettingsView({
                 <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Schriftart (Vorschau &amp; PDF)
                 </label>
-                <select
+                <ThemedSelect
                   value={companyForm.invoiceFontFamily ?? 'sans'}
-                  onChange={(e) =>
+                  onChange={(val) =>
                     setCompanyForm({
                       ...companyForm,
-                      invoiceFontFamily: e.target.value as InvoiceFontFamily,
+                      invoiceFontFamily: val as InvoiceFontFamily,
                     })
                   }
-                  className={inputClass}
-                >
-                  {(Object.keys(INVOICE_FONT_OPTIONS) as InvoiceFontFamily[]).map((fk) => (
-                    <option key={fk} value={fk}>
-                      {INVOICE_FONT_OPTIONS[fk].label}
-                    </option>
-                  ))}
-                </select>
+                  ariaLabel="Schriftart für Rechnungen"
+                  options={(Object.keys(INVOICE_FONT_OPTIONS) as InvoiceFontFamily[]).map(
+                    (fk) => ({
+                      value: fk,
+                      label: INVOICE_FONT_OPTIONS[fk].label,
+                    })
+                  )}
+                />
               </div>
 
               <div>
                 <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Layout-Stil
                 </label>
-                <select
+                <ThemedSelect
                   value={companyForm.invoiceLayoutStyle ?? 'classic'}
-                  onChange={(e) =>
+                  onChange={(val) =>
                     setCompanyForm({
                       ...companyForm,
-                      invoiceLayoutStyle: e.target.value as InvoiceLayoutStyle,
+                      invoiceLayoutStyle: val as InvoiceLayoutStyle,
                     })
                   }
-                  className={inputClass}
-                >
-                  {(Object.keys(INVOICE_LAYOUT_OPTIONS) as InvoiceLayoutStyle[]).map((lk) => (
-                    <option key={lk} value={lk}>
-                      {INVOICE_LAYOUT_OPTIONS[lk].label} — {INVOICE_LAYOUT_OPTIONS[lk].description}
-                    </option>
-                  ))}
-                </select>
+                  ariaLabel="Layout-Stil für Rechnungen"
+                  options={(Object.keys(INVOICE_LAYOUT_OPTIONS) as InvoiceLayoutStyle[]).map(
+                    (lk) => ({
+                      value: lk,
+                      label: `${INVOICE_LAYOUT_OPTIONS[lk].label} — ${INVOICE_LAYOUT_OPTIONS[lk].description}`,
+                    })
+                  )}
+                />
               </div>
             </div>
 
@@ -1515,22 +1706,23 @@ export function NextcloudSettingsView({
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Standard-Zeitrundung bei Abrechnung
                 </label>
-                <select
-                  value={companyForm.defaultTimeRoundingMinutes ?? 0}
-                  onChange={(e) =>
+                <ThemedSelect
+                  value={String(companyForm.defaultTimeRoundingMinutes ?? 0)}
+                  onChange={(val) =>
                     setCompanyForm({
                       ...companyForm,
-                      defaultTimeRoundingMinutes: Number(e.target.value) as TimeRoundingMinutes,
+                      defaultTimeRoundingMinutes: Number(val) as TimeRoundingMinutes,
                     })
                   }
-                  className={inputClass}
-                >
-                  <option value={0}>Keine Rundung (exakt auf die Sekunde)</option>
-                  <option value={5}>Auf 5-Minuten-Takt aufrunden</option>
-                  <option value={10}>Auf 10-Minuten-Takt aufrunden</option>
-                  <option value={15}>Auf 15-Minuten-Takt aufrunden</option>
-                  <option value={30}>Auf 30-Minuten-Takt aufrunden</option>
-                </select>
+                  ariaLabel="Standard-Zeitrundung"
+                  options={[
+                    { value: '0', label: 'Keine Rundung (exakt auf die Sekunde)' },
+                    { value: '5', label: 'Auf 5-Minuten-Takt aufrunden' },
+                    { value: '10', label: 'Auf 10-Minuten-Takt aufrunden' },
+                    { value: '15', label: 'Auf 15-Minuten-Takt aufrunden' },
+                    { value: '30', label: 'Auf 30-Minuten-Takt aufrunden' },
+                  ]}
+                />
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
@@ -1547,6 +1739,21 @@ export function NextcloudSettingsView({
                 />
               </div>
             </div>
+
+            <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={Boolean(companyForm.invoiceIncludeLocationDefault)}
+                onChange={(e) =>
+                  setCompanyForm({
+                    ...companyForm,
+                    invoiceIncludeLocationDefault: e.target.checked,
+                  })
+                }
+                className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+              />
+              Aufgezeichneten Einsatzort standardmäßig auf Rechnungen &amp; Angeboten angeben
+            </label>
 
             <div className="flex justify-end">
               <button
@@ -1817,28 +2024,30 @@ export function NextcloudSettingsView({
                   <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                     Gefundener Nextcloud-Kalender
                   </label>
-                  <select
+                  <ThemedSelect
                     value={companyForm.calendarConfig?.selectedCalendarUrl ?? ''}
-                    onChange={(e) => {
-                      const cal = discoveredCalendars.find((c) => c.url === e.target.value);
+                    onChange={(val) => {
+                      const cal = discoveredCalendars.find((c) => c.url === val);
                       setCompanyForm((prev) => ({
                         ...prev,
                         calendarConfig: {
-                          selectedCalendarUrl: e.target.value,
-                          selectedCalendarName: cal?.displayName ?? prev.calendarConfig?.selectedCalendarName ?? '',
+                          selectedCalendarUrl: val,
+                          selectedCalendarName:
+                            cal?.displayName ?? prev.calendarConfig?.selectedCalendarName ?? '',
                           autoSyncTimeEntries: prev.calendarConfig?.autoSyncTimeEntries ?? false,
                         },
                       }));
                     }}
-                    className={inputClass}
-                  >
-                    <option value="">Kalender auswählen...</option>
-                    {discoveredCalendars.map((c) => (
-                      <option key={c.url} value={c.url}>
-                        {c.displayName}
-                      </option>
-                    ))}
-                  </select>
+                    ariaLabel="Nextcloud-Kalender auswählen"
+                    placeholder="Kalender auswählen..."
+                    options={[
+                      { value: '', label: 'Kalender auswählen...' },
+                      ...discoveredCalendars.map((c) => ({
+                        value: c.url,
+                        label: c.displayName,
+                      })),
+                    ]}
+                  />
                 </div>
               )}
 
@@ -1957,17 +2166,18 @@ export function NextcloudSettingsView({
                 <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Intervall
                 </label>
-                <select
+                <ThemedSelect
                   value={autoBackup.frequency}
-                  onChange={(e) =>
-                    updateAutoBackup({ frequency: e.target.value as AutoBackupFrequency })
+                  onChange={(val) =>
+                    updateAutoBackup({ frequency: val as AutoBackupFrequency })
                   }
-                  className={inputClass}
-                >
-                  <option value="daily">Täglich</option>
-                  <option value="weekly">Wöchentlich</option>
-                  <option value="monthly">Monatlich</option>
-                </select>
+                  ariaLabel="Backup-Intervall"
+                  options={[
+                    { value: 'daily', label: 'Täglich' },
+                    { value: 'weekly', label: 'Wöchentlich' },
+                    { value: 'monthly', label: 'Monatlich' },
+                  ]}
+                />
               </div>
 
               <div className="space-y-2">
@@ -2141,34 +2351,445 @@ export function NextcloudSettingsView({
         </div>
       )}
 
-      {/* TAB 5: Ortung, Erinnerung & Widgets */}
+      {/* TAB 5: Ortung, Geofencing, Fahrtkosten & Erinnerung */}
       {activeTab === 'automation' && (
         <form onSubmit={handleCompanySubmit} className="space-y-6">
-          {/* Ortserkennung */}
+          {/* Ortserkennung & Ortsbasierter Start (Geofencing) */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex items-start gap-2.5">
+                <Radar className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
+                <div>
+                  <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                    Ortung &amp; automatischer Aufgaben-Start (Geofencing)
+                  </h2>
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    Erfasst deinen Standort beim Timer-Start oder startet bestimmte Aufgaben automatisch, sobald du dich an einem hinterlegten Ort befindest.
+                  </p>
+                </div>
+              </div>
+              {onCheckGeoFenceNow && (
+                <button
+                  type="button"
+                  onClick={onCheckGeoFenceNow}
+                  disabled={checkingGeoFence}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0"
+                >
+                  {checkingGeoFence ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Compass className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                  )}
+                  Standort jetzt prüfen
+                </button>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={Boolean(companyForm.autoCaptureLocation)}
+                  onChange={(e) =>
+                    setCompanyForm({ ...companyForm, autoCaptureLocation: e.target.checked })
+                  }
+                  className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                />
+                Standort automatisch beim Start eines Timers (manuell &amp; NFC-Tag) abrufen
+              </label>
+
+              <label className="flex items-center gap-2.5 text-sm font-medium text-slate-800 dark:text-slate-100 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={Boolean(companyForm.autoLocationStartEnabled)}
+                  onChange={(e) =>
+                    setCompanyForm({
+                      ...companyForm,
+                      autoLocationStartEnabled: e.target.checked,
+                    })
+                  }
+                  className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                />
+                Ortsbasierte Automatik aktivieren (Aufgabe startet automatisch im Zielradius)
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Prüfintervall für Standortregeln
+                </label>
+                <ThemedSelect
+                  value={String(companyForm.geoFenceCheckIntervalSec ?? 60)}
+                  onChange={(val) =>
+                    setCompanyForm({
+                      ...companyForm,
+                      geoFenceCheckIntervalSec: Number(val),
+                    })
+                  }
+                  ariaLabel="Standort-Prüfintervall"
+                  options={[
+                    { value: '30', label: 'Alle 30 Sekunden (präzise)' },
+                    { value: '60', label: 'Jede Minute (empfohlen)' },
+                    { value: '120', label: 'Alle 2 Minuten (akkuschonend)' },
+                    { value: '300', label: 'Alle 5 Minuten' },
+                  ]}
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  className="rounded-lg border border-slate-300 bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:border-violet-600 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                >
+                  Ortsautomatik-Einstellung speichern
+                </button>
+              </div>
+            </div>
+
+            {/* Existing Geo Rules */}
+            <div className="space-y-2.5 border-t border-slate-200 pt-4 dark:border-[#2e2349]">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-200">
+                Hinterlegte Ortsregeln ({geoFenceRules.length})
+              </h3>
+              {geoFenceRules.length === 0 ? (
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Noch keine Ortsregeln angelegt. Füge unten z. B. dein Büro oder einen Kundenstandort hinzu.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {geoFenceRules.map((rule) => {
+                    const cust = db.customers.find((c) => c.id === rule.customerId);
+                    const prod = db.products.find((p) => p.id === rule.productId);
+                    return (
+                      <div
+                        key={rule.id}
+                        className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-slate-50/80 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50 sm:flex-row sm:items-center sm:justify-between"
+                      >
+                        <div className="space-y-0.5 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                              {rule.name}
+                            </span>
+                            <span className="rounded bg-blue-50 px-1.5 py-0.5 font-mono text-[11px] font-medium text-blue-700 dark:bg-violet-950/70 dark:text-violet-300">
+                              {rule.radiusMeters} m Radius
+                            </span>
+                            {rule.autoStopOnExit && (
+                              <span className="rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
+                                Auto-Stopp bei Verlassen
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-600 dark:text-slate-300">
+                            Startet: <span className="font-medium">{rule.taskTitle}</span> ·{' '}
+                            {cust?.companyName ?? 'Kunde'} ({prod?.name ?? 'Leistung'})
+                          </div>
+                          <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate">
+                            {rule.address ? `${rule.address} · ` : ''}
+                            {rule.lat.toFixed(5)}, {rule.lng.toFixed(5)}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleGeoRule(rule.id)}
+                            className={`rounded-lg border px-2.5 py-1 text-xs font-semibold cursor-pointer ${
+                              rule.enabled
+                                ? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300'
+                                : 'border-slate-200 bg-white text-slate-500 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-400'
+                            }`}
+                          >
+                            {rule.enabled ? 'Aktiv' : 'Pausiert'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteGeoRule(rule.id)}
+                            title="Ortsregel löschen"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/50 dark:hover:text-red-400 cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Create GeoFence Rule */}
+              <div className="mt-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-4 dark:border-[#3b2d5e] dark:bg-[#211936]/30 space-y-3">
+                <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  Neue Ortsregel hinzufügen
+                </div>
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                  <div>
+                    <label className="mb-1 block text-xs text-slate-500">Ortsname</label>
+                    <input
+                      type="text"
+                      value={newRuleName}
+                      onChange={(e) => setNewRuleName(e.target.value)}
+                      placeholder="z. B. Kundenbüro München"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs text-slate-500">Aufgabentitel</label>
+                    <input
+                      type="text"
+                      value={newRuleTaskTitle}
+                      onChange={(e) => setNewRuleTaskTitle(e.target.value)}
+                      placeholder="z. B. Vor-Ort-Service"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs text-slate-500">Radius</label>
+                    <ThemedSelect
+                      value={newRuleRadius}
+                      onChange={setNewRuleRadius}
+                      ariaLabel="Ortsregel-Radius"
+                      options={[
+                        { value: '50', label: '50 m (Gebäude)' },
+                        { value: '100', label: '100 m (Standort)' },
+                        { value: '150', label: '150 m (Standard)' },
+                        { value: '250', label: '250 m (Werksgelände)' },
+                        { value: '500', label: '500 m (Stadtteil)' },
+                        { value: '1000', label: '1.000 m (Region)' },
+                      ]}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-xs text-slate-500">Kunde</label>
+                    <ThemedSelect
+                      value={newRuleCustomerId}
+                      onChange={setNewRuleCustomerId}
+                      ariaLabel="Kunde für Ortsregel"
+                      options={db.customers.map((c) => ({
+                        value: c.id,
+                        label: c.companyName,
+                      }))}
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs text-slate-500">Leistung</label>
+                    <ThemedSelect
+                      value={newRuleProductId}
+                      onChange={setNewRuleProductId}
+                      ariaLabel="Leistung für Ortsregel"
+                      options={db.products.map((p) => ({
+                        value: p.id,
+                        label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`,
+                      }))}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-12">
+                  <div className="md:col-span-6">
+                    <label className="mb-1 block text-xs text-slate-500">
+                      Adresse suchen oder per GPS übernehmen
+                    </label>
+                    <div className="flex gap-1.5">
+                      <input
+                        type="text"
+                        value={newRuleAddress}
+                        onChange={(e) => setNewRuleAddress(e.target.value)}
+                        placeholder="Straße Nr., PLZ Ort"
+                        className={inputClass}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => void handleSearchRuleAddress()}
+                        disabled={searchingRuleLoc}
+                        className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100 cursor-pointer shrink-0"
+                      >
+                        {searchingRuleLoc ? '...' : 'Suchen'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void handleCaptureRuleGps()}
+                        disabled={locatingRule}
+                        title="Aktuellen GPS-Standort übernehmen"
+                        className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 cursor-pointer shrink-0"
+                      >
+                        <MapPin className="h-3.5 w-3.5" />
+                        {locatingRule ? '...' : 'GPS'}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="md:col-span-3">
+                    <label className="mb-1 block text-xs text-slate-500">Breitengrad (Lat)</label>
+                    <input
+                      type="text"
+                      value={newRuleLat}
+                      onChange={(e) => setNewRuleLat(e.target.value)}
+                      placeholder="48.13715"
+                      className={`${inputClass} font-mono`}
+                    />
+                  </div>
+                  <div className="md:col-span-3">
+                    <label className="mb-1 block text-xs text-slate-500">Längengrad (Lng)</label>
+                    <input
+                      type="text"
+                      value={newRuleLng}
+                      onChange={(e) => setNewRuleLng(e.target.value)}
+                      placeholder="11.57612"
+                      className={`${inputClass} font-mono`}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <label className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={newRuleAutoStop}
+                      onChange={(e) => setNewRuleAutoStop(e.target.checked)}
+                      className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                    />
+                    Aufgabe automatisch beenden, sobald ich den Radius wieder verlasse
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleAddGeoRule}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Ortsregel speichern
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Fahrtkosten- & Distanz-Automatik */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-4">
             <div className="flex items-start gap-2.5">
-              <MapPin className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
+              <Car className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
               <div>
                 <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                  Ortserkennung beim Start einer Tätigkeit
+                  Fahrtkosten- &amp; Distanz-Automatik
                 </h2>
                 <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                  Speichert GPS-Koordinaten und ermittelt automatisch die passende Straßenadresse als Nachweis für Außeneinsätze.
+                  Berechnet aus deiner Startadresse und dem Einsatzort automatisch die Straßenentfernung (Faktor 1,25) und den Nettopreis in €/km.
                 </p>
               </div>
             </div>
 
-            <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={Boolean(companyForm.autoCaptureLocation)}
-                onChange={(e) =>
-                  setCompanyForm({ ...companyForm, autoCaptureLocation: e.target.checked })
-                }
-                className="h-4 w-4 rounded border-slate-300 accent-violet-600"
-              />
-              Standort automatisch beim Start eines Timers (manuell &amp; NFC-Tag) abrufen
-            </label>
+            <div className="space-y-2">
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-400">
+                Startpunkt / Firmensitz für Anfahrtberechnung
+              </label>
+              <div className="flex flex-wrap gap-2">
+                <input
+                  type="text"
+                  value={homeAddressQuery}
+                  onChange={(e) => setHomeAddressQuery(e.target.value)}
+                  placeholder="z. B. Musterstraße 1, 80331 München"
+                  className={`${inputClass} flex-1 min-w-56`}
+                />
+                <button
+                  type="button"
+                  onClick={() => void handleGeocodeHomeBase()}
+                  disabled={homeSearching}
+                  className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer"
+                >
+                  {homeSearching ? 'Suche...' : 'Adresse ermitteln'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    void handleGeocodeHomeBase(
+                      `${companyForm.street}, ${companyForm.postalCode} ${companyForm.city}`
+                    )
+                  }
+                  disabled={homeSearching}
+                  className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer"
+                >
+                  Aus Firmendaten
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleCaptureHomeBaseGps()}
+                  disabled={homeLocating}
+                  className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-300 cursor-pointer"
+                >
+                  <MapPin className="h-3.5 w-3.5" />
+                  {homeLocating ? 'Orte...' : 'Aktueller GPS'}
+                </button>
+              </div>
+              {companyForm.homeBaseLocation && (
+                <p className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400">
+                  Gespeichert: {companyForm.homeBaseLocation.address} (
+                  {companyForm.homeBaseLocation.lat.toFixed(4)},{' '}
+                  {companyForm.homeBaseLocation.lng.toFixed(4)})
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Kilometerpauschale (€/km Netto)
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  step="0.05"
+                  value={companyForm.travelRatePerKm ?? 0.3}
+                  onChange={(e) =>
+                    setCompanyForm({
+                      ...companyForm,
+                      travelRatePerKm: Math.max(0, Number(e.target.value) || 0),
+                    })
+                  }
+                  className={`${inputClass} font-mono`}
+                />
+              </div>
+              <div className="flex items-end pb-1.5">
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={companyForm.travelRoundTripDefault !== false}
+                    onChange={(e) =>
+                      setCompanyForm({
+                        ...companyForm,
+                        travelRoundTripDefault: e.target.checked,
+                      })
+                    }
+                    className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                  />
+                  Hin- &amp; Rückfahrt verdoppeln (× 2)
+                </label>
+              </div>
+              <div className="flex items-end pb-1.5">
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(companyForm.autoCalculateTravelOnStop)}
+                    onChange={(e) =>
+                      setCompanyForm({
+                        ...companyForm,
+                        autoCalculateTravelOnStop: e.target.checked,
+                      })
+                    }
+                    className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                  />
+                  Beim Timer-Stopp automatisch berechnen
+                </label>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+              >
+                Fahrtkosten-Einstellungen speichern
+              </button>
+            </div>
           </section>
 
           {/* 1-Stunden Erinnerung */}
@@ -2225,22 +2846,24 @@ export function NextcloudSettingsView({
                   Klingelton / Signalpreset
                 </label>
                 <div className="flex gap-2">
-                  <select
-                    value={companyForm.timerReminderSound ?? 'chime'}
-                    onChange={(e) =>
-                      setCompanyForm({
-                        ...companyForm,
-                        timerReminderSound: e.target.value as ReminderSoundPreset,
-                      })
-                    }
-                    className={inputClass}
-                  >
-                    {(Object.keys(REMINDER_SOUND_OPTIONS) as ReminderSoundPreset[]).map((key) => (
-                      <option key={key} value={key}>
-                        {REMINDER_SOUND_OPTIONS[key].label}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex-1">
+                    <ThemedSelect
+                      value={companyForm.timerReminderSound ?? 'chime'}
+                      onChange={(val) =>
+                        setCompanyForm({
+                          ...companyForm,
+                          timerReminderSound: val as ReminderSoundPreset,
+                        })
+                      }
+                      ariaLabel="Klingelton auswählen"
+                      options={(Object.keys(REMINDER_SOUND_OPTIONS) as ReminderSoundPreset[]).map(
+                        (key) => ({
+                          value: key,
+                          label: REMINDER_SOUND_OPTIONS[key].label,
+                        })
+                      )}
+                    />
+                  </div>
                   <button
                     type="button"
                     onClick={handleTestSound}

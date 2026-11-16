@@ -7,6 +7,8 @@ import type {
   TimeRoundingMinutes,
 } from '../types';
 import { createId, formatCurrency, formatHoursShort } from '../utils/format';
+import { DEFAULT_CUSTOMER_CATEGORIES } from '../utils/sampleData';
+import { CategoryPicker, ThemedSelect } from './ThemedSelect';
 
 interface CustomersViewProps {
   customers: Customer[];
@@ -49,7 +51,8 @@ export function CustomersView({
   const [error, setError] = useState('');
 
   const availableCategories = useMemo(() => {
-    const set = new Set<string>(categories);
+    const seed = categories.length > 0 ? categories : DEFAULT_CUSTOMER_CATEGORIES;
+    const set = new Set<string>(seed);
     for (const c of customers) {
       if (c.category?.trim()) set.add(c.category.trim());
     }
@@ -336,36 +339,29 @@ export function CustomersView({
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Zeitrundung (Takt für Rechnungen)
               </label>
-              <select
+              <ThemedSelect
                 value={timeRoundingInput}
-                onChange={(e) => setTimeRoundingInput(e.target.value)}
-                className={inputClass}
-              >
-                <option value="">Firmen-Standard verwenden</option>
-                <option value="0">Exakt (keine Aufrundung)</option>
-                <option value="5">Aufrunden auf 5 Minuten</option>
-                <option value="10">Aufrunden auf 10 Minuten</option>
-                <option value="15">Aufrunden auf 15 Minuten</option>
-                <option value="30">Aufrunden auf 30 Minuten</option>
-              </select>
+                onChange={setTimeRoundingInput}
+                options={[
+                  { value: '', label: 'Firmen-Standard verwenden' },
+                  { value: '0', label: 'Exakt (keine Aufrundung)' },
+                  { value: '5', label: 'Aufrunden auf 5 Minuten' },
+                  { value: '10', label: 'Aufrunden auf 10 Minuten' },
+                  { value: '15', label: 'Aufrunden auf 15 Minuten' },
+                  { value: '30', label: 'Aufrunden auf 30 Minuten' },
+                ]}
+              />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Kategorie
               </label>
-              <input
-                type="text"
-                list="customer-category-list"
+              <CategoryPicker
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={setCategory}
+                categories={availableCategories}
                 placeholder="z. B. Stammkunde oder Wartungsvertrag"
-                className={inputClass}
               />
-              <datalist id="customer-category-list">
-                {availableCategories.map((cat) => (
-                  <option key={cat} value={cat} />
-                ))}
-              </datalist>
             </div>
             <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
@@ -415,18 +411,16 @@ export function CustomersView({
             />
           </div>
           {availableCategories.length > 0 && (
-            <select
+            <ThemedSelect
+              size="sm"
+              className="w-52"
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-            >
-              <option value="all">Alle Kategorien</option>
-              {availableCategories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
+              onChange={setCategoryFilter}
+              options={[
+                { value: 'all', label: 'Alle Kategorien' },
+                ...availableCategories.map((cat) => ({ value: cat, label: cat })),
+              ]}
+            />
           )}
         </div>
 

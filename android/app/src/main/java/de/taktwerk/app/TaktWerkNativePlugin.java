@@ -779,6 +779,55 @@ public class TaktWerkNativePlugin extends Plugin {
         });
     }
 
+    @PluginMethod
+    public void webdavDeleteFiles(PluginCall call) {
+        JSArray fileUrls = call.getArray("fileUrls");
+        String username = call.getString("username", "");
+        String appPassword = call.getString("appPassword", "");
+
+        if (fileUrls == null || username.isEmpty() || appPassword.isEmpty()) {
+            JSObject result = new JSObject();
+            result.put("deletedCount", 0);
+            call.resolve(result);
+            return;
+        }
+
+        String authHeader = Credentials.basic(username, appPassword, StandardCharsets.UTF_8);
+        EXECUTOR.execute(() -> {
+            int deletedCount = 0;
+            try {
+                for (int i = 0; i < fileUrls.length(); i++) {
+                    String targetUrl = fileUrls.optString(i, "");
+                    if (targetUrl.isEmpty()) continue;
+
+                    Request delReq = new Request.Builder()
+                        .url(targetUrl)
+                        .header("Authorization", authHeader)
+                        .delete()
+                        .build();
+
+                    try (Response res = HTTP_CLIENT.newCall(delReq).execute()) {
+                        int code = res.code();
+                        if (res.isSuccessful() || code == 204) {
+                            deletedCount++;
+                        } else if (code == 401 || code == 403) {
+                            call.reject("Authentifizierung bei Nextcloud fehlgeschlagen.");
+                            return;
+                        } else if (code != 404) {
+                            call.reject("Löschen auf Nextcloud fehlgeschlagen (HTTP " + code + ").");
+                            return;
+                        }
+                    }
+                }
+                JSObject result = new JSObject();
+                result.put("deletedCount", deletedCount);
+                call.resolve(result);
+            } catch (Exception e) {
+                call.reject(e.getMessage() != null ? e.getMessage() : "Löschen auf Nextcloud fehlgeschlagen.");
+            }
+        });
+    }
+
     private Uri writeCacheBytesAndGetUri(String filename, byte[] bytes) throws IOException {
         Context context = getContext();
         String safeName = filename.replaceAll("[^a-zA-Z0-9_.-]", "_");

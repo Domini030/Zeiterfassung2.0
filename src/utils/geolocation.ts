@@ -90,3 +90,85 @@ export function formatLocationLabel(loc?: LocationSnapshot | null): string {
   if (loc.address) return loc.address;
   return `${loc.lat.toFixed(4)}°, ${loc.lng.toFixed(4)}°`;
 }
+
+export function calculateDistanceMeters(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number
+): number {
+  const R = 6371000;
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c);
+}
+
+export async function geocodeAddress(
+  query: string
+): Promise<{ lat: number; lng: number; address: string } | null> {
+  const trimmed = query.trim();
+  if (!trimmed) return null;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(
+      trimmed
+    )}&limit=1&addressdetails=1`;
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        Accept: 'application/json',
+        'Accept-Language': 'de',
+      },
+    });
+    if (!res.ok) return null;
+    const list = (await res.json()) as Array<{
+      lat: string;
+      lon: string;
+      display_name?: string;
+    }>;
+    const hit = list[0];
+    if (!hit) return null;
+    const lat = Number(hit.lat);
+    const lng = Number(hit.lon);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+    const shortAddr = hit.display_name
+      ? hit.display_name.split(',').slice(0, 3).join(',').trim()
+      : trimmed;
+    return { lat, lng, address: shortAddr };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+export function computeTravelFromBase(
+  base: { lat: number; lng: number },
+  target: { lat: number; lng: number },
+  ratePerKm = 0.3,
+  roundTrip = true
+): { oneWayKm: number; distanceKm: number; costNet: number } {
+  const straightMeters = calculateDistanceMeters(base.lat, base.lng, target.lat, target.lng);
+  if (straightMeters < 150) {
+    return { oneWayKm: 0, distanceKm: 0, costNet: 0 };
+  }
+  const roadMeters = straightMeters * 1.25;
+  const oneWayKm = Math.round((roadMeters / 1000) * 10) / 10;
+  const totalKm = Math.round((roundTrip ? oneWayKm * 2 : oneWayKm) * 10) / 10;
+  const costNet = Math.round(totalKm * Math.max(0, ratePerKm) * 100) / 100;
+  return {
+    oneWayKm,
+    distanceKm: totalKm,
+    costNet,
+  };
+}
+

@@ -8,6 +8,7 @@ import type {
   TimeEntry,
 } from '../types';
 import { formatDateDE, formatDateTimeDE, formatNumber, toInputDate } from './format';
+import { normalizeDatabase } from './sampleData';
 
 function csvCell(value: string | number | boolean | null | undefined): string {
   const str = value === null || value === undefined ? '' : String(value);
@@ -199,6 +200,26 @@ export function buildExcelWorkbookBase64(db: AppDatabase): string {
     'Produkte & Leistungen'
   );
 
+  const expenseRows = (db.expenses ?? []).map((exp) => ({
+    Datum: formatDateDE(exp.date),
+    Anbieter: exp.vendor,
+    Beschreibung: exp.description,
+    Kategorie: exp.category,
+    Kunde: exp.customerId ? custMap.get(exp.customerId) ?? '' : '',
+    Weiterberechenbar: exp.billableToCustomer ? 'Ja' : 'Nein',
+    Abgerechnet: exp.billedInvoiceId ? 'Ja' : 'Nein',
+    Netto_EUR: exp.netAmount,
+    MwSt_Prozent: exp.taxRate,
+    Brutto_EUR: exp.grossAmount,
+  }));
+  XLSX.utils.book_append_sheet(
+    wb,
+    XLSX.utils.json_to_sheet(
+      expenseRows.length > 0 ? expenseRows : [{ Hinweis: 'Keine Belege vorhanden' }]
+    ),
+    'Belege & Ausgaben'
+  );
+
   return XLSX.write(wb, { type: 'base64', bookType: 'xlsx' }) as string;
 }
 
@@ -279,18 +300,21 @@ export function validateImportedDatabase(rawText: string): AppDatabase {
   ) {
     throw new Error('Die Datei enthält keine gültige TaktWerk-Datenbanksicherung.');
   }
-  return {
+  return normalizeDatabase({
     version: typeof parsed.version === 'number' ? parsed.version : 2,
     updatedAt: new Date().toISOString(),
     company: parsed.company,
     customers: parsed.customers,
     products: parsed.products,
     nfcTasks: parsed.nfcTasks,
+    geoFenceRules: Array.isArray(parsed.geoFenceRules) ? parsed.geoFenceRules : [],
     timeEntries: parsed.timeEntries,
     activeTimer: parsed.activeTimer ?? null,
     invoices: parsed.invoices,
+    expenses: Array.isArray(parsed.expenses) ? parsed.expenses : [],
+    recurringInvoices: Array.isArray(parsed.recurringInvoices) ? parsed.recurringInvoices : [],
     calendarEvents: Array.isArray(parsed.calendarEvents) ? parsed.calendarEvents : [],
-  };
+  });
 }
 
 export function isBackupDue(db: AppDatabase): boolean {

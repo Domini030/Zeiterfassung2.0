@@ -6,6 +6,7 @@ import {
   calculateDocumentTotals,
   formatCurrency,
   formatDateDE,
+  formatDateTimeDE,
   formatDuration,
   formatNumber,
   getOverdueDays,
@@ -454,6 +455,197 @@ export async function buildInvoicePdf(
     doc.setFontSize(6.5);
     doc.setTextColor(71, 85, 105);
     doc.text('GiroCode (EPC-QR)', qrX + qrSize / 2, qrY + qrSize + 4, { align: 'center' });
+  }
+
+  if (invoice.signature?.signatureDataUrl) {
+    let sigY = Math.max(outroEndY + 6, qrDataUrl ? y + 36 : outroEndY + 6);
+    if (sigY > 235) {
+      doc.addPage();
+      sigY = 24;
+    }
+    doc.setDrawColor(203, 213, 225);
+    doc.setFillColor(248, 250, 252);
+    doc.roundedRect(marginLeft, sigY, 92, 28, 1.5, 1.5, 'FD');
+    try {
+      doc.addImage(invoice.signature.signatureDataUrl, 'PNG', marginLeft + 3, sigY + 2, 54, 17);
+    } catch {
+      // Ignore malformed signature image
+    }
+    doc.setFont(font, 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text(
+      `Abnahme: ${invoice.signature.signedBy}${invoice.signature.signedRole ? ` (${invoice.signature.signedRole})` : ''}`,
+      marginLeft + 3,
+      sigY + 22
+    );
+    doc.setFont(font, 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(100, 116, 139);
+    const metaInfo = [
+      `Unterzeichnet am ${formatDateTimeDE(invoice.signature.signedAt)}`,
+      invoice.signature.locationAddress,
+    ]
+      .filter(Boolean)
+      .join(' · ');
+    doc.text(doc.splitTextToSize(metaInfo, 86)[0] || '', marginLeft + 3, sigY + 26);
+  }
+
+  drawFooter(doc, company, font);
+  return doc;
+}
+
+export function buildAcceptanceProtocolPdf(
+  invoice: Invoice,
+  company: CompanyProfile
+): jsPDF {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  const pageWidth = 210;
+  const marginLeft = 20;
+  const marginRight = 20;
+  const contentWidth = pageWidth - marginLeft - marginRight;
+  const accentRgb = resolveInvoiceAccentRgb(company);
+  const [accentR, accentG, accentB] = accentRgb;
+  const font = getPdfFont(company);
+
+  const { rightBottomY: cy } = drawCompanyHeader(doc, company, accentRgb, font);
+
+  doc.setFont(font, 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(15, 23, 42);
+  let ry = 42;
+  doc.text(invoice.customerSnapshot.companyName, marginLeft, ry);
+  ry += 5;
+  doc.setFont(font, 'normal');
+  if (invoice.customerSnapshot.contactName) {
+    doc.text(invoice.customerSnapshot.contactName, marginLeft, ry);
+    ry += 5;
+  }
+  if (invoice.customerSnapshot.street) {
+    doc.text(invoice.customerSnapshot.street, marginLeft, ry);
+    ry += 5;
+  }
+  const cityLine = `${invoice.customerSnapshot.postalCode} ${invoice.customerSnapshot.city}`.trim();
+  if (cityLine) {
+    doc.text(cityLine, marginLeft, ry);
+    ry += 5;
+  }
+
+  let y = Math.max(ry + 16, cy + 10);
+  doc.setFont(font, 'bold');
+  doc.setFontSize(15);
+  doc.setTextColor(accentR, accentG, accentB);
+  doc.text(`Abnahme- & Leistungsprotokoll (${invoice.invoiceNumber})`, marginLeft, y);
+  y += 6;
+
+  doc.setFont(font, 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(100, 116, 139);
+  doc.text(
+    `Leistungszeitraum: ${formatDateDE(invoice.servicePeriodStart)} – ${formatDateDE(invoice.servicePeriodEnd)}   ·   Belegdatum: ${formatDateDE(invoice.issueDate)}`,
+    marginLeft,
+    y
+  );
+  y += 8;
+
+  doc.setFillColor(accentR, accentG, accentB);
+  doc.rect(marginLeft, y, contentWidth, 8, 'F');
+  doc.setFont(font, 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(255, 255, 255);
+  doc.text('Pos.', marginLeft + 2, y + 5.4);
+  doc.text('Erbrachte Leistung / Lieferung', marginLeft + 12, y + 5.4);
+  doc.text('Menge', pageWidth - marginRight - 2, y + 5.4, { align: 'right' });
+  y += 11;
+
+  invoice.lineItems.forEach((item, index) => {
+    if (y > 235) {
+      doc.addPage();
+      y = 24;
+    }
+    doc.setFont(font, 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(15, 23, 42);
+    doc.text(String(index + 1), marginLeft + 2, y);
+    const descLines = doc.splitTextToSize(item.description, contentWidth - 40);
+    doc.text(descLines, marginLeft + 12, y);
+    doc.text(`${formatNumber(item.quantity, 2)} ${item.unit}`, pageWidth - marginRight - 2, y, {
+      align: 'right',
+    });
+    let rowH = descLines.length * 4.2;
+    if (item.detail) {
+      doc.setFont(font, 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      const detLines = doc.splitTextToSize(item.detail, contentWidth - 40);
+      doc.text(detLines, marginLeft + 12, y + rowH);
+      rowH += detLines.length * 3.8;
+    }
+    y += Math.max(rowH, 5) + 3;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(marginLeft, y - 1.5, pageWidth - marginRight, y - 1.5);
+    y += 2.5;
+  });
+
+  if (y > 205) {
+    doc.addPage();
+    y = 24;
+  }
+
+  y += 6;
+  doc.setFont(font, 'normal');
+  doc.setFontSize(9.5);
+  doc.setTextColor(30, 41, 59);
+  const confirmText =
+    'Der Auftraggeber bestätigt hiermit die ordnungsgemäße, vollständige und mängelfreie Ausführung der oben aufgeführten Leistungen bzw. Lieferungen.';
+  const confirmLines = doc.splitTextToSize(confirmText, contentWidth);
+  doc.text(confirmLines, marginLeft, y);
+  y += confirmLines.length * 4.5 + 6;
+
+  const sig = invoice.signature;
+  doc.setDrawColor(203, 213, 225);
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(marginLeft, y, contentWidth, 46, 2, 2, 'FD');
+
+  if (sig?.signatureDataUrl) {
+    try {
+      doc.addImage(sig.signatureDataUrl, 'PNG', marginLeft + 5, y + 4, 72, 24);
+    } catch {
+      // Ignore malformed signature image
+    }
+    doc.setFont(font, 'bold');
+    doc.setFontSize(9.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text(
+      `Unterzeichnet von: ${sig.signedBy}${sig.signedRole ? ` (${sig.signedRole})` : ''}`,
+      marginLeft + 5,
+      y + 33
+    );
+    doc.setFont(font, 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(71, 85, 105);
+    doc.text(
+      `Zeitstempel: ${formatDateTimeDE(sig.signedAt)}${sig.locationAddress ? ` · Ort: ${sig.locationAddress}` : ''}`,
+      marginLeft + 5,
+      y + 38.5
+    );
+    if (sig.notes) {
+      doc.text(doc.splitTextToSize(`Bemerkung: ${sig.notes}`, contentWidth - 10)[0] || '', marginLeft + 5, y + 43.5);
+    }
+  } else {
+    doc.setDrawColor(148, 163, 184);
+    doc.line(marginLeft + 6, y + 32, marginLeft + 76, y + 32);
+    doc.line(marginLeft + 92, y + 32, pageWidth - marginRight - 6, y + 32);
+    doc.setFont(font, 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Ort, Datum', marginLeft + 6, y + 37);
+    doc.text('Unterschrift Auftraggeber / Kunde', marginLeft + 92, y + 37);
   }
 
   drawFooter(doc, company, font);
@@ -915,6 +1107,30 @@ export async function downloadPaymentReminderPdf(
 ): Promise<void> {
   const doc = await buildPaymentReminderPdf(invoice, company);
   await openOrSavePdfDoc(doc, `Zahlungserinnerung-${invoice.invoiceNumber}.pdf`);
+}
+
+export function getAcceptanceProtocolPdfBase64(
+  invoice: Invoice,
+  company: CompanyProfile
+): string {
+  const doc = buildAcceptanceProtocolPdf(invoice, company);
+  return docToBase64(doc);
+}
+
+export async function downloadAcceptanceProtocolPdf(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<void> {
+  const doc = buildAcceptanceProtocolPdf(invoice, company);
+  await openOrSavePdfDoc(doc, `Abnahme-${invoice.invoiceNumber}.pdf`);
+}
+
+export async function shareAcceptanceProtocolPdf(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<void> {
+  const doc = buildAcceptanceProtocolPdf(invoice, company);
+  await shareOrSavePdfDoc(doc, `Abnahme-${invoice.invoiceNumber}.pdf`);
 }
 
 export async function downloadTimesheetPdf(

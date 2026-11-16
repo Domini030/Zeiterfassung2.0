@@ -1,41 +1,62 @@
 import { App as CapacitorApp } from '@capacitor/app';
-import { Cloud, FilePlus2, Moon, Play, Square, Sun, X } from 'lucide-react';
+import {
+  AlertCircle,
+  CheckCircle2,
+  Cloud,
+  FilePlus2,
+  Info,
+  Moon,
+  Play,
+  Square,
+  Sun,
+  X,
+} from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnalyticsView } from './components/AnalyticsView';
 import { CalendarView } from './components/CalendarView';
 import { CustomersView } from './components/CustomersView';
+import { ExpensesView } from './components/ExpensesView';
 import { InvoicesView } from './components/InvoicesView';
 import { NextcloudSettingsView } from './components/NextcloudSettingsView';
 import { NfcTasksView } from './components/NfcTasksView';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { PWAInstallButton } from './components/PWAInstallButton';
 import { ProductsView } from './components/ProductsView';
+import { RecurringInvoicesView } from './components/RecurringInvoicesView';
 import { Sidebar } from './components/Sidebar';
 import { TimeTrackerView } from './components/TimeTrackerView';
 import type {
+  AcceptanceSignature,
   ActiveTimer,
   AppDatabase,
   CalendarAppointment,
   CompanyProfile,
   Customer,
+  Expense,
+  GeoFenceRule,
   Invoice,
+  InvoiceLineItem,
   InvoiceStatus,
   LocationSnapshot,
   NavSection,
   NextcloudConfigInfo,
   NfcTask,
   Product,
+  RecurringInterval,
+  RecurringInvoiceTemplate,
   TaxRate,
   TimeEntry,
 } from './types';
 import {
   NextcloudConflictError,
   apiCheckNextcloudRemote,
+  apiDeleteNextcloudInvoiceFiles,
   apiLoadDb,
   apiPushNextcloudCalendarEvent,
   apiRunMultiFormatBackup,
   apiSaveDb,
   apiSyncNextcloud,
+  apiUploadNextcloudFile,
   cancelNativeTimerReminder,
   getNativeNotificationStatus,
   isNativeCapacitor,
@@ -48,12 +69,20 @@ import {
 } from './utils/apiClient';
 import { isBackupDue } from './utils/exportBackup';
 import {
+  addDaysISO,
+  calculateDocumentTotals,
   createId,
   formatDateTimeDE,
   formatDuration,
+  formatInvoiceNumber,
   getActiveTimerElapsedMs,
+  toInputDate,
 } from './utils/format';
-import { captureCurrentLocation } from './utils/geolocation';
+import {
+  calculateDistanceMeters,
+  captureCurrentLocation,
+  computeTravelFromBase,
+} from './utils/geolocation';
 import { extractTagIdFromPayload } from './utils/nfcHelpers';
 import { createEmptyDatabase, createSampleDatabase } from './utils/sampleData';
 import { playReminderSound, showWebReminderNotification } from './utils/soundReminder';
@@ -67,6 +96,8 @@ const SECTION_TITLES: Record<NavSection, string> = {
   customers: 'Kundendatenbank',
   products: 'Produkte & Leistungen',
   invoices: 'Rechnungen & Angebote',
+  expenses: 'Belege & Ausgaben',
+  recurring: 'Wiederkehrende Rechnungen',
   settings: 'Nextcloud & Setup',
 };
 
@@ -78,8 +109,22 @@ const NAV_ORDER: NavSection[] = [
   'customers',
   'products',
   'invoices',
+  'expenses',
+  'recurring',
   'settings',
 ];
+
+function advanceRecurringDate(isoDate: string, interval: RecurringInterval): string {
+  const [y, m, d] = isoDate.split('-').map((n) => Number(n));
+  if (!y || !m || !d) return toInputDate();
+  const monthsToAdd = interval === 'monthly' ? 1 : interval === 'quarterly' ? 3 : 12;
+  const targetMonthIndex = m - 1 + monthsToAdd;
+  const targetYear = y + Math.floor(targetMonthIndex / 12);
+  const targetMonth = ((targetMonthIndex % 12) + 12) % 12;
+  const maxDayInMonth = new Date(targetYear, targetMonth + 1, 0).getDate();
+  const clampedDay = Math.min(d, maxDayInMonth);
+  return `${targetYear}-${String(targetMonth + 1).padStart(2, '0')}-${String(clampedDay).padStart(2, '0')}`;
+}
 
 const DEFAULT_NC_INFO: NextcloudConfigInfo = {
   configured: false,
@@ -108,7 +153,10 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [toast, setToast] = useState<{ text: string; isError: boolean } | null>(null);
+  const [toast, setToast] = useState<{ text: string; isError: boolean; id: number } | null>(
+    null
+  );
+  const [checkingGeoFence, setCheckingGeoFence] = useState(false);
   const [invoiceDraft, setInvoiceDraft] = useState<{
     customerId: string;
     entryIds: string[];
@@ -142,6 +190,7 @@ export default function App() {
   const deepLinkHandledRef = useRef(false);
   const autoBackupCheckedRef = useRef(false);
   const reminderFiredKeyRef = useRef<string | null>(null);
+  const geoCooldownRef = useRef<Map<string, number>>(new Map());
   const sectionHistoryRef = useRef<NavSection[]>([]);
   const touchStartRef = useRef<{ x: number; y: number; ignore: boolean } | null>(null);
   const lastNfcTriggerRef = useRef<{ code: string; at: number } | null>(null);
@@ -207,12 +256,12 @@ export default function App() {
   }, []);
 
   const notify = useCallback((text: string, isError = false) => {
-    setToast({ text, isError });
+    setToast({ text, isError, id: Date.now() });
   }, []);
 
   useEffect(() => {
     if (!toast) return;
-    const id = setTimeout(() => setToast(null), 5000);
+    const id = setTimeout(() => setToast(null), 4600);
     return () => clearTimeout(id);
   }, [toast]);
 
@@ -819,39 +868,221 @@ export default function App() {
   );
 
   const handleStopTimer = useCallback(() => {
-    if (!dbRef.current.activeTimer) return;
+    const currentDb = dbRef.current;
+    if (!currentDb.activeTimer) return;
+    const active = currentDb.activeTimer;
+    if (active.source === 'geo' && active.geoFenceRuleId) {
+      geoCooldownRef.current.set(active.geoFenceRuleId, Date.now());
+    }
     const now = new Date();
     const durationSeconds = Math.max(
       1,
-      Math.floor(getActiveTimerElapsedMs(dbRef.current.activeTimer, now.getTime()) / 1000)
+      Math.floor(getActiveTimerElapsedMs(active, now.getTime()) / 1000)
     );
+
+    let travelDistanceKm: number | undefined;
+    let travelCostNet: number | undefined;
+    if (
+      currentDb.company.autoCalculateTravelOnStop &&
+      currentDb.company.homeBaseLocation &&
+      active.location
+    ) {
+      const calc = computeTravelFromBase(
+        currentDb.company.homeBaseLocation,
+        active.location,
+        currentDb.company.travelRatePerKm ?? 0.3,
+        currentDb.company.travelRoundTripDefault !== false
+      );
+      travelDistanceKm = calc.distanceKm;
+      travelCostNet = calc.costNet;
+    }
+
     const entry: TimeEntry = {
       id: createId('time'),
-      customerId: dbRef.current.activeTimer.customerId,
-      productId: dbRef.current.activeTimer.productId,
-      nfcTaskId: dbRef.current.activeTimer.nfcTaskId,
-      title: dbRef.current.activeTimer.title,
-      notes: dbRef.current.activeTimer.notes,
-      startTime: dbRef.current.activeTimer.startTime,
+      customerId: active.customerId,
+      productId: active.productId,
+      nfcTaskId: active.nfcTaskId,
+      title: active.title,
+      notes: active.notes,
+      startTime: active.startTime,
       endTime: now.toISOString(),
       durationSeconds,
-      hourlyRateNet: dbRef.current.activeTimer.hourlyRateNet,
-      taxRate: dbRef.current.activeTimer.taxRate,
+      hourlyRateNet: active.hourlyRateNet,
+      taxRate: active.taxRate,
       billable: true,
       billedInvoiceId: null,
-      source: dbRef.current.activeTimer.source,
-      location: dbRef.current.activeTimer.location ?? null,
+      source: active.source,
+      location: active.location ?? null,
+      travelDistanceKm,
+      travelCostNet,
+      travelBilledInvoiceId: null,
       createdAt: now.toISOString(),
     };
     void cancelNativeTimerReminder();
     void persistDb({
-      ...dbRef.current,
+      ...currentDb,
       activeTimer: null,
-      timeEntries: [entry, ...dbRef.current.timeEntries],
+      timeEntries: [entry, ...currentDb.timeEntries],
     });
     pushFinishedEntryToNextcloudCalendar(entry);
-    notify(`Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`);
+    notify(
+      travelCostNet && travelCostNet > 0
+        ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.`
+        : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`
+    );
   }, [notify, persistDb, pushFinishedEntryToNextcloudCalendar]);
+
+  const evaluateGeoFenceRules = useCallback(
+    async (manual = false) => {
+      const currentDb = dbRef.current;
+      const rules = (currentDb.geoFenceRules ?? []).filter((r) => r.enabled);
+      if (rules.length === 0) {
+        if (manual) {
+          notify('Keine aktiven Ortsregeln vorhanden. Lege zuerst unter Einstellungen → Automation eine Regel an.');
+        }
+        return;
+      }
+
+      if (manual) setCheckingGeoFence(true);
+      try {
+        const loc = await captureCurrentLocation();
+        const latestDb = dbRef.current;
+        const active = latestDb.activeTimer;
+        const nowMs = Date.now();
+
+        // 1. Check auto-stop on exit if a geofence-started timer is currently running
+        if (active && active.source === 'geo' && active.geoFenceRuleId) {
+          const runningRule = (latestDb.geoFenceRules ?? []).find(
+            (r) => r.id === active.geoFenceRuleId
+          );
+          if (runningRule && runningRule.autoStopOnExit) {
+            const dist = calculateDistanceMeters(
+              loc.lat,
+              loc.lng,
+              runningRule.lat,
+              runningRule.lng
+            );
+            if (dist > runningRule.radiusMeters * 1.35) {
+              triggerNfcHaptic('stop');
+              handleStopTimer();
+              notify(
+                `Ortsregel "${runningRule.name}" verlassen (${Math.round(dist)} m) — Aufgabe automatisch gestoppt.`
+              );
+              return;
+            }
+          }
+          if (manual) {
+            notify(`Aktiver Timer "${active.title}" befindet sich weiterhin im Zielbereich.`);
+          }
+          return;
+        }
+
+        // 2. If timer is already running manually/NFC, do not override unless manual feedback requested
+        if (active) {
+          if (manual) {
+            notify('Es läuft bereits ein Timer. Pausiere oder stoppe ihn zuerst.');
+          }
+          return;
+        }
+
+        // 3. Find closest matching enabled rule within radius
+        let bestMatch: { rule: GeoFenceRule; dist: number } | null = null;
+        for (const rule of rules) {
+          const dist = calculateDistanceMeters(loc.lat, loc.lng, rule.lat, rule.lng);
+          if (dist <= rule.radiusMeters) {
+            const cooldownUntil = (geoCooldownRef.current.get(rule.id) ?? 0) + 10 * 60_000;
+            if (!manual && nowMs < cooldownUntil) {
+              continue;
+            }
+            if (!bestMatch || dist < bestMatch.dist) {
+              bestMatch = { rule, dist };
+            }
+          }
+        }
+
+        if (!bestMatch) {
+          if (manual) {
+            notify('Standort geprüft — du befindest dich aktuell innerhalb keiner Ortsregel.');
+          }
+          return;
+        }
+
+        const { rule, dist } = bestMatch;
+        const product = latestDb.products.find((p) => p.id === rule.productId);
+        const nowIso = new Date().toISOString();
+        const geoTimer: ActiveTimer = {
+          id: createId('timer'),
+          customerId: rule.customerId,
+          productId: rule.productId,
+          nfcTaskId: null,
+          geoFenceRuleId: rule.id,
+          title: rule.taskTitle || rule.name,
+          notes: rule.notes || '',
+          startTime: nowIso,
+          pausedAt: null,
+          accumulatedPausedMs: 0,
+          hourlyRateNet: product?.unitPriceNet ?? 0,
+          taxRate: (product?.taxRate ?? 19) as TaxRate,
+          source: 'geo',
+          location: {
+            ...loc,
+            address: loc.address || rule.address || rule.name,
+          },
+        };
+        triggerNfcHaptic('start');
+        void persistDb({ ...latestDb, activeTimer: geoTimer });
+        notify(
+          `Ortsregel "${rule.name}" (${Math.round(dist)} m): Aufgabe "${geoTimer.title}" automatisch gestartet.`
+        );
+      } catch (err) {
+        if (manual) {
+          notify(
+            err instanceof Error ? err.message : 'GPS-Standortprüfung fehlgeschlagen.',
+            true
+          );
+        }
+      } finally {
+        if (manual) setCheckingGeoFence(false);
+      }
+    },
+    [handleStopTimer, notify, persistDb]
+  );
+
+  useEffect(() => {
+    if (loading) return;
+    if (!db.company.autoLocationStartEnabled) return;
+    const hasEnabledRules = (db.geoFenceRules ?? []).some((r) => r.enabled);
+    if (!hasEnabledRules) return;
+
+    const intervalMs = Math.max(20, db.company.geoFenceCheckIntervalSec ?? 60) * 1000;
+    const initialTimeout = setTimeout(() => {
+      void evaluateGeoFenceRules(false);
+    }, 2500);
+    const intervalId = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        void evaluateGeoFenceRules(false);
+      }
+    }, intervalMs);
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        void evaluateGeoFenceRules(false);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      clearTimeout(initialTimeout);
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [
+    loading,
+    db.company.autoLocationStartEnabled,
+    db.company.geoFenceCheckIntervalSec,
+    db.geoFenceRules,
+    evaluateGeoFenceRules,
+  ]);
 
   const handlePauseTimer = useCallback(() => {
     if (!dbRef.current.activeTimer || dbRef.current.activeTimer.pausedAt) return;
@@ -1051,15 +1282,30 @@ export default function App() {
     void persistDb({ ...dbRef.current, calendarEvents: events });
   };
 
-  const handleCreateInvoice = (invoice: Invoice, billedEntryIds: string[]) => {
+  const handleCreateInvoice = (
+    invoice: Invoice,
+    billedEntryIds: string[],
+    billedExpenseIds: string[] = [],
+    billedTravelEntryIds: string[] = []
+  ) => {
     const currentDb = dbRef.current;
     const isQuote = invoice.documentType === 'quote';
     const nextTimeEntries = isQuote
       ? currentDb.timeEntries
-      : currentDb.timeEntries.map((entry) =>
-          billedEntryIds.includes(entry.id)
-            ? { ...entry, billedInvoiceId: invoice.id }
-            : entry
+      : currentDb.timeEntries.map((entry) => {
+          const billTime = billedEntryIds.includes(entry.id);
+          const billTravel = billedTravelEntryIds.includes(entry.id);
+          if (!billTime && !billTravel) return entry;
+          return {
+            ...entry,
+            billedInvoiceId: billTime ? invoice.id : entry.billedInvoiceId,
+            travelBilledInvoiceId: billTravel ? invoice.id : entry.travelBilledInvoiceId,
+          };
+        });
+    const nextExpenses = isQuote
+      ? currentDb.expenses ?? []
+      : (currentDb.expenses ?? []).map((exp) =>
+          billedExpenseIds.includes(exp.id) ? { ...exp, billedInvoiceId: invoice.id } : exp
         );
     const nextDb: AppDatabase = {
       ...currentDb,
@@ -1073,6 +1319,7 @@ export default function App() {
           : currentDb.company.nextQuoteSequence || 1,
       },
       timeEntries: nextTimeEntries,
+      expenses: nextExpenses,
       invoices: [invoice, ...currentDb.invoices],
     };
     void persistDb(nextDb);
@@ -1081,20 +1328,52 @@ export default function App() {
     );
   };
 
-  const handleUpdateInvoice = (updatedInvoice: Invoice, billedEntryIds: string[]) => {
+  const handleUpdateInvoice = (
+    updatedInvoice: Invoice,
+    billedEntryIds: string[],
+    billedExpenseIds: string[] = [],
+    billedTravelEntryIds: string[] = []
+  ) => {
     const currentDb = dbRef.current;
     const nextTimeEntries = currentDb.timeEntries.map((entry) => {
+      let nextBilledId = entry.billedInvoiceId;
       if (billedEntryIds.includes(entry.id)) {
-        return { ...entry, billedInvoiceId: updatedInvoice.id };
+        nextBilledId = updatedInvoice.id;
+      } else if (entry.billedInvoiceId === updatedInvoice.id) {
+        nextBilledId = null;
       }
-      if (entry.billedInvoiceId === updatedInvoice.id) {
-        return { ...entry, billedInvoiceId: null };
+
+      let nextTravelBilledId = entry.travelBilledInvoiceId ?? null;
+      if (billedTravelEntryIds.includes(entry.id)) {
+        nextTravelBilledId = updatedInvoice.id;
+      } else if (entry.travelBilledInvoiceId === updatedInvoice.id) {
+        nextTravelBilledId = null;
       }
-      return entry;
+
+      return nextBilledId === entry.billedInvoiceId &&
+        nextTravelBilledId === (entry.travelBilledInvoiceId ?? null)
+        ? entry
+        : {
+            ...entry,
+            billedInvoiceId: nextBilledId,
+            travelBilledInvoiceId: nextTravelBilledId,
+          };
     });
+
+    const nextExpenses = (currentDb.expenses ?? []).map((exp) => {
+      if (billedExpenseIds.includes(exp.id)) {
+        return { ...exp, billedInvoiceId: updatedInvoice.id };
+      }
+      if (exp.billedInvoiceId === updatedInvoice.id) {
+        return { ...exp, billedInvoiceId: null };
+      }
+      return exp;
+    });
+
     const nextDb: AppDatabase = {
       ...currentDb,
       timeEntries: nextTimeEntries,
+      expenses: nextExpenses,
       invoices: currentDb.invoices.map((inv) =>
         inv.id === updatedInvoice.id ? updatedInvoice : inv
       ),
@@ -1123,18 +1402,304 @@ export default function App() {
     });
   };
 
-  const handleDeleteInvoice = (invoiceId: string) => {
+  const handleSaveSignature = (invoiceId: string, signature: AcceptanceSignature) => {
     const currentDb = dbRef.current;
     void persistDb({
       ...currentDb,
-      timeEntries: currentDb.timeEntries.map((entry) =>
-        entry.billedInvoiceId === invoiceId
-          ? { ...entry, billedInvoiceId: null }
-          : entry
+      invoices: currentDb.invoices.map((inv) =>
+        inv.id === invoiceId ? { ...inv, signature } : inv
+      ),
+    });
+    notify(`Abnahme-Unterschrift für Dokument gespeichert.`);
+  };
+
+  const handleDeleteSignature = (invoiceId: string) => {
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      invoices: currentDb.invoices.map((inv) =>
+        inv.id === invoiceId ? { ...inv, signature: undefined } : inv
+      ),
+    });
+    notify('Unterschrift entfernt.');
+  };
+
+  const handleDeleteInvoice = (invoiceId: string) => {
+    const currentDb = dbRef.current;
+    const target = currentDb.invoices.find((inv) => inv.id === invoiceId);
+
+    void persistDb({
+      ...currentDb,
+      timeEntries: currentDb.timeEntries.map((entry) => ({
+        ...entry,
+        billedInvoiceId:
+          entry.billedInvoiceId === invoiceId ? null : entry.billedInvoiceId,
+        travelBilledInvoiceId:
+          entry.travelBilledInvoiceId === invoiceId
+            ? null
+            : entry.travelBilledInvoiceId,
+      })),
+      expenses: (currentDb.expenses ?? []).map((exp) =>
+        exp.billedInvoiceId === invoiceId ? { ...exp, billedInvoiceId: null } : exp
       ),
       invoices: currentDb.invoices.filter((inv) => inv.id !== invoiceId),
     });
-    notify('Rechnung gelöscht. Alle verknüpften Arbeitszeiten bleiben als offen erhalten.');
+
+    if (target && nextcloud.configured) {
+      void apiDeleteNextcloudInvoiceFiles(target.invoiceNumber)
+        .then((res) => {
+          if (res.deletedCount > 0) {
+            notify(
+              `Dokument ${target.invoiceNumber} lokal & auf Nextcloud gelöscht (${res.deletedCount} Datei(en)).`
+            );
+          }
+        })
+        .catch(() => {
+          // Local deletion already succeeded; Nextcloud cleanup may retry manually if offline
+        });
+    }
+
+    notify('Dokument gelöscht. Verknüpfte Zeiten & Belege bleiben als offen erhalten.');
+  };
+
+  const handleAddExpense = (expense: Expense) => {
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      expenses: [expense, ...(currentDb.expenses ?? [])],
+    });
+    notify(`Beleg "${expense.vendor}" gespeichert.`);
+  };
+
+  const handleUpdateExpense = (expense: Expense) => {
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      expenses: (currentDb.expenses ?? []).map((e) =>
+        e.id === expense.id ? expense : e
+      ),
+    });
+    notify(`Beleg "${expense.vendor}" aktualisiert.`);
+  };
+
+  const handleDeleteExpense = (id: string) => {
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      expenses: (currentDb.expenses ?? []).filter((e) => e.id !== id),
+    });
+    notify('Beleg gelöscht.');
+  };
+
+  const handleUploadExpenseReceipt = async (expense: Expense) => {
+    if (!nextcloud.configured || !expense.receiptImageDataUrl) return;
+    const base64 = expense.receiptImageDataUrl.includes(',')
+      ? expense.receiptImageDataUrl.split(',')[1]
+      : expense.receiptImageDataUrl;
+    const safeVendor = expense.vendor.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 24) || 'Beleg';
+    const filename = `Beleg-${expense.date}-${safeVendor}-${expense.id.slice(-5)}.jpg`;
+    const res = await apiUploadNextcloudFile({
+      subFolder: 'Belege',
+      filename,
+      contentOrBase64: base64,
+      isBinary: true,
+      contentType: 'image/jpeg',
+    });
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      expenses: (currentDb.expenses ?? []).map((e) =>
+        e.id === expense.id ? { ...e, nextcloudUploadedAt: res.uploadedAt } : e
+      ),
+    });
+    notify(`Beleg nach Nextcloud (${res.path}) hochgeladen.`);
+  };
+
+  const handleSaveRecurringTemplate = (tpl: RecurringInvoiceTemplate) => {
+    const currentDb = dbRef.current;
+    const list = currentDb.recurringInvoices ?? [];
+    const exists = list.some((t) => t.id === tpl.id);
+    const nextList = exists
+      ? list.map((t) => (t.id === tpl.id ? tpl : t))
+      : [tpl, ...list];
+    void persistDb({ ...currentDb, recurringInvoices: nextList });
+    notify(`Wartungsvertrag "${tpl.title}" gespeichert.`);
+  };
+
+  const handleDeleteRecurringTemplate = (id: string) => {
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      recurringInvoices: (currentDb.recurringInvoices ?? []).filter((t) => t.id !== id),
+    });
+    notify('Wartungsvertrag gelöscht.');
+  };
+
+  const generateInvoiceForTemplateObject = (
+    sourceDb: AppDatabase,
+    tpl: RecurringInvoiceTemplate,
+    seqOffset = 0
+  ): { invoice: Invoice; updatedTemplate: RecurringInvoiceTemplate } | null => {
+    const cust = sourceDb.customers.find((c) => c.id === tpl.customerId);
+    if (!cust) return null;
+    const isSmallBiz =
+      tpl.isSmallBusiness ?? Boolean(sourceDb.company.smallBusinessMode);
+    const seqNum = (sourceDb.company.nextInvoiceSequence || 1) + seqOffset;
+    const invNum = formatInvoiceNumber(sourceDb.company, seqNum);
+    const today = toInputDate();
+    const due = addDaysISO(
+      today,
+      cust.paymentTermDays || sourceDb.company.defaultPaymentTermDays || 14
+    );
+
+    const lineItems: InvoiceLineItem[] = tpl.lineItems.map((item) => {
+      const qty = Math.max(0, item.quantity);
+      const net = Math.round(qty * item.unitPriceNet * 100) / 100;
+      const rate: TaxRate = isSmallBiz ? 0 : item.taxRate;
+      const tax = Math.round(net * (rate / 100) * 100) / 100;
+      return {
+        id: createId('li'),
+        description: item.description,
+        detail: item.detail ?? '',
+        quantity: qty,
+        unit: item.unit,
+        unitPriceNet: item.unitPriceNet,
+        taxRate: rate,
+        netTotal: net,
+        taxAmount: tax,
+        grossTotal: Math.round((net + tax) * 100) / 100,
+        timeEntryIds: [],
+        productId: item.productId ?? null,
+      };
+    });
+
+    const totals = calculateDocumentTotals(
+      lineItems,
+      isSmallBiz,
+      tpl.discountType,
+      tpl.discountValue
+    );
+
+    const invoice: Invoice = {
+      id: createId('inv'),
+      documentType: 'invoice',
+      invoiceNumber: invNum,
+      customerId: cust.id,
+      customerSnapshot: {
+        companyName: cust.companyName,
+        contactName: cust.contactName,
+        street: cust.street,
+        postalCode: cust.postalCode,
+        city: cust.city,
+        country: cust.country,
+        vatId: cust.vatId,
+        email: cust.email,
+      },
+      issueDate: today,
+      servicePeriodStart: today,
+      servicePeriodEnd: today,
+      dueDate: due,
+      status: tpl.autoMarkSent ? 'Gesendet' : 'Entwurf',
+      lineItems,
+      subtotalNetBeforeDiscount: totals.subtotalNetBeforeDiscount,
+      discountType: tpl.discountValue && tpl.discountValue > 0 ? tpl.discountType : undefined,
+      discountValue: tpl.discountValue && tpl.discountValue > 0 ? tpl.discountValue : undefined,
+      discountLabel: tpl.discountValue && tpl.discountValue > 0 ? tpl.discountLabel || 'Rabatt' : undefined,
+      discountNetAmount: totals.discountNetAmount > 0 ? totals.discountNetAmount : undefined,
+      netTotal: totals.netTotal,
+      taxTotal: totals.taxTotal,
+      grossTotal: totals.grossTotal,
+      introText:
+        tpl.introText ||
+        sourceDb.company.invoiceDefaultIntroText ||
+        'Sehr geehrte Damen und Herren,\n\ngemäß Wartungs- / Servicevertrag berechnen wir folgenden Abrechnungszeitraum:',
+      outroText:
+        tpl.outroText ||
+        sourceDb.company.invoiceDefaultOutroText ||
+        'Vielen Dank für Ihr Vertrauen.',
+      isSmallBusiness: isSmallBiz,
+      smallBusinessNotice: isSmallBiz
+        ? sourceDb.company.smallBusinessNotice ||
+          'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.'
+        : undefined,
+      nextcloudUploadedAt: null,
+      createdAt: new Date().toISOString(),
+    };
+
+    const updatedTemplate: RecurringInvoiceTemplate = {
+      ...tpl,
+      lastRunDate: today,
+      nextRunDate: advanceRecurringDate(tpl.nextRunDate, tpl.interval),
+      generatedCount: (tpl.generatedCount ?? 0) + 1,
+    };
+
+    return { invoice, updatedTemplate };
+  };
+
+  const handleGenerateInvoiceFromTemplate = (tpl: RecurringInvoiceTemplate) => {
+    const currentDb = dbRef.current;
+    const res = generateInvoiceForTemplateObject(currentDb, tpl, 0);
+    if (!res) {
+      notify('Kunde zu diesem Vertrag nicht gefunden.', true);
+      return;
+    }
+    void persistDb({
+      ...currentDb,
+      company: {
+        ...currentDb.company,
+        nextInvoiceSequence: (currentDb.company.nextInvoiceSequence || 1) + 1,
+      },
+      invoices: [res.invoice, ...currentDb.invoices],
+      recurringInvoices: (currentDb.recurringInvoices ?? []).map((t) =>
+        t.id === tpl.id ? res.updatedTemplate : t
+      ),
+    });
+    notify(`Rechnung ${res.invoice.invoiceNumber} aus Vertrag "${tpl.title}" erstellt.`);
+  };
+
+  const handleGenerateAllDueRecurring = () => {
+    const currentDb = dbRef.current;
+    const today = toInputDate();
+    const dueList = (currentDb.recurringInvoices ?? []).filter(
+      (t) => t.active && t.nextRunDate <= today
+    );
+    if (dueList.length === 0) {
+      notify('Aktuell sind keine wiederkehrenden Verträge fällig.');
+      return;
+    }
+
+    const newInvoices: Invoice[] = [];
+    const updatedMap = new Map<string, RecurringInvoiceTemplate>();
+    let offset = 0;
+
+    for (const tpl of dueList) {
+      const res = generateInvoiceForTemplateObject(currentDb, tpl, offset);
+      if (res) {
+        newInvoices.push(res.invoice);
+        updatedMap.set(tpl.id, res.updatedTemplate);
+        offset += 1;
+      }
+    }
+
+    if (newInvoices.length === 0) return;
+
+    void persistDb({
+      ...currentDb,
+      company: {
+        ...currentDb.company,
+        nextInvoiceSequence: (currentDb.company.nextInvoiceSequence || 1) + offset,
+      },
+      invoices: [...newInvoices, ...currentDb.invoices],
+      recurringInvoices: (currentDb.recurringInvoices ?? []).map(
+        (t) => updatedMap.get(t.id) ?? t
+      ),
+    });
+    notify(`${newInvoices.length} fällige Vertragsrechnung(en) erstellt.`);
+  };
+
+  const handleSaveGeoFenceRules = (rules: GeoFenceRule[]) => {
+    const currentDb = dbRef.current;
+    void persistDb({ ...currentDb, geoFenceRules: rules });
   };
 
   const handleSyncToNextcloud = async (force = false) => {
@@ -1183,7 +1748,7 @@ export default function App() {
 
   const handleSaveCompany = (company: CompanyProfile) => {
     void persistDb({ ...db, company });
-    notify('Firmendaten gespeichert.');
+    notify('Einstellungen & Firmendaten gespeichert.');
   };
 
   const handleLoadSampleData = () => {
@@ -1208,6 +1773,13 @@ export default function App() {
       db.invoices.filter((i) => i.status === 'Entwurf' || i.status === 'Gesendet').length,
     [db.invoices]
   );
+
+  const dueRecurringCount = useMemo(() => {
+    const today = toInputDate();
+    return (db.recurringInvoices ?? []).filter(
+      (t) => t.active && t.nextRunDate <= today
+    ).length;
+  }, [db.recurringInvoices]);
 
   const isEmptyWorkspace =
     db.customers.length === 0 &&
@@ -1268,6 +1840,7 @@ export default function App() {
         nextcloud={nextcloud}
         openTimeCount={openTimeCount}
         unpaidInvoiceCount={unpaidInvoiceCount}
+        dueRecurringCount={dueRecurringCount}
         activeTimerTitle={db.activeTimer?.title ?? null}
         theme={theme}
         onToggleTheme={toggleTheme}
@@ -1328,29 +1901,64 @@ export default function App() {
           </div>
         </header>
 
-        {/* Main Viewport */}
-        <main className="mx-auto w-full max-w-6xl flex-1 p-6">
-          {/* Notification Banner */}
-          {toast && (
+        {/* Translucent Floating Popup Notification */}
+        {toast && (
+          <div
+            key={toast.id}
+            role="status"
+            aria-live="polite"
+            className={`no-print fixed top-4 left-1/2 -translate-x-1/2 z-[80] w-[calc(100%-2rem)] max-w-md rounded-2xl border backdrop-blur-md shadow-2xl px-4 py-3 tw-popup-enter flex items-start gap-3 ${
+              toast.isError
+                ? 'border-red-300/80 bg-red-50/90 text-red-950 dark:border-red-700/70 dark:bg-[#2a121b]/90 dark:text-red-100'
+                : 'border-violet-200/90 bg-white/85 text-slate-900 dark:border-violet-500/40 dark:bg-[#19122c]/85 dark:text-slate-100'
+            }`}
+          >
             <div
-              role="status"
-              className={`no-print mb-5 flex items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm font-medium ${
+              className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${
                 toast.isError
-                  ? 'border-red-200 bg-red-50 text-red-900 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-200'
-                  : 'border-blue-200 bg-blue-50 text-blue-900 dark:border-violet-700/60 dark:bg-violet-950/70 dark:text-violet-100'
+                  ? 'bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300'
+                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht/i.test(
+                        toast.text
+                      )
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'
+                    : 'bg-violet-100 text-violet-700 dark:bg-violet-900/60 dark:text-violet-300'
               }`}
             >
-              <span>{toast.text}</span>
-              <button
-                type="button"
-                onClick={() => setToast(null)}
-                aria-label="Hinweis schließen"
-                className="text-current opacity-60 hover:opacity-100 cursor-pointer"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              {toast.isError ? (
+                <AlertCircle className="h-4 w-4" />
+              ) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht/i.test(
+                  toast.text
+                ) ? (
+                <CheckCircle2 className="h-4 w-4" />
+              ) : (
+                <Info className="h-4 w-4" />
+              )}
             </div>
-          )}
+            <div className="min-w-0 flex-1">
+              <div className="text-[11px] font-bold uppercase tracking-wider opacity-70">
+                {toast.isError
+                  ? 'Achtung'
+                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht/i.test(
+                        toast.text
+                      )
+                    ? 'Gespeichert'
+                    : 'Hinweis'}
+              </div>
+              <div className="text-sm font-medium leading-snug">{toast.text}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setToast(null)}
+              aria-label="Meldung schließen"
+              className="mt-0.5 rounded-lg p-1 opacity-60 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/10 cursor-pointer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Main Viewport */}
+        <main className="mx-auto w-full max-w-6xl flex-1 p-6">
 
           {/* Multi-device Nextcloud Conflict Notice */}
           {remoteNewerAt && (
@@ -1447,6 +2055,9 @@ export default function App() {
                   notificationStatus={notificationStatus}
                   onRequestNotificationPermission={handleRequestNotificationPermission}
                   onOpenNotificationSettings={handleOpenNotificationSettings}
+                  onCheckGeoFenceNow={() => void evaluateGeoFenceRules(true)}
+                  checkingGeoFence={checkingGeoFence}
+                  geoFenceRuleCount={(db.geoFenceRules ?? []).filter((r) => r.enabled).length}
                 />
               )}
 
@@ -1528,6 +2139,7 @@ export default function App() {
                   customers={db.customers}
                   products={db.products}
                   timeEntries={db.timeEntries}
+                  expenses={db.expenses ?? []}
                   invoices={db.invoices}
                   nextcloud={nextcloud}
                   preselectedDraft={invoiceDraft}
@@ -1536,8 +2148,36 @@ export default function App() {
                   onUpdateInvoice={handleUpdateInvoice}
                   onUpdateInvoiceStatus={handleUpdateInvoiceStatus}
                   onMarkInvoiceUploaded={handleMarkInvoiceUploaded}
+                  onSaveSignature={handleSaveSignature}
+                  onDeleteSignature={handleDeleteSignature}
                   onDeleteInvoice={handleDeleteInvoice}
                   onNotify={notify}
+                />
+              )}
+
+              {section === 'expenses' && (
+                <ExpensesView
+                  expenses={db.expenses ?? []}
+                  customers={db.customers}
+                  nextcloudConfigured={nextcloud.configured}
+                  onAddExpense={handleAddExpense}
+                  onUpdateExpense={handleUpdateExpense}
+                  onDeleteExpense={handleDeleteExpense}
+                  onUploadExpenseReceipt={handleUploadExpenseReceipt}
+                  onNotify={(msg, tone) => notify(msg, tone === 'warning')}
+                />
+              )}
+
+              {section === 'recurring' && (
+                <RecurringInvoicesView
+                  templates={db.recurringInvoices ?? []}
+                  customers={db.customers}
+                  products={db.products}
+                  company={db.company}
+                  onSaveTemplate={handleSaveRecurringTemplate}
+                  onDeleteTemplate={handleDeleteRecurringTemplate}
+                  onGenerateFromTemplate={handleGenerateInvoiceFromTemplate}
+                  onGenerateAllDue={handleGenerateAllDueRecurring}
                 />
               )}
 
@@ -1546,12 +2186,16 @@ export default function App() {
                   db={db}
                   nextcloud={nextcloud}
                   company={db.company}
+                  geoFenceRules={db.geoFenceRules ?? []}
                   pushConflictAt={pushConflictAt}
                   onDismissConflict={() => setPushConflictAt(null)}
                   onRefreshConfig={setNextcloud}
                   onSyncFromNextcloud={handleSyncFromNextcloud}
                   onSyncToNextcloud={handleSyncToNextcloud}
                   onSaveCompany={handleSaveCompany}
+                  onSaveGeoFenceRules={handleSaveGeoFenceRules}
+                  onCheckGeoFenceNow={() => void evaluateGeoFenceRules(true)}
+                  checkingGeoFence={checkingGeoFence}
                   onImportDatabase={handleImportDatabase}
                   onLoadSampleData={handleLoadSampleData}
                   onResetEmpty={handleResetEmpty}

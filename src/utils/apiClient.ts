@@ -19,7 +19,7 @@ import {
   generateBackupArtifacts,
 } from './exportBackup';
 import { formatDuration, getActiveTimerElapsedMs } from './format';
-import { createEmptyDatabase } from './sampleData';
+import { createEmptyDatabase, normalizeDatabase } from './sampleData';
 import { TaktWerkNative, type NativeNotificationStatus } from './taktwerkNative';
 
 const SERVER_URL_KEY = 'taktwerk-server-url';
@@ -227,11 +227,11 @@ export async function apiLoadDb(): Promise<{
     if (!res.ok || !data.db || !data.nextcloud) {
       throw new Error(data.error || 'Datenbank konnte nicht geladen werden.');
     }
-    return { db: data.db, nextcloud: data.nextcloud };
+    return { db: normalizeDatabase(data.db), nextcloud: data.nextcloud };
   }
 
   return {
-    db: readNativeDb(),
+    db: normalizeDatabase(readNativeDb()),
     nextcloud: toPublicNc(readNativeNc()),
   };
 }
@@ -464,7 +464,7 @@ export async function apiSyncNextcloud(
     if (!res.ok || !data.nextcloud) {
       throw new Error(data.error || 'Nextcloud-Synchronisation fehlgeschlagen.');
     }
-    return { db: data.db, nextcloud: data.nextcloud };
+    return { db: data.db ? normalizeDatabase(data.db) : undefined, nextcloud: data.nextcloud };
   }
 
   const cfg = readNativeNc();
@@ -477,12 +477,13 @@ export async function apiSyncNextcloud(
     if (!remoteDb) {
       throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
     }
-    writeNativeDb(remoteDb);
+    const normalized = normalizeDatabase(remoteDb);
+    writeNativeDb(normalized);
     cfg.lastSyncAt = new Date().toISOString();
-    cfg.lastKnownRemoteUpdatedAt = remoteDb.updatedAt || cfg.lastSyncAt;
+    cfg.lastKnownRemoteUpdatedAt = normalized.updatedAt || cfg.lastSyncAt;
     cfg.lastSyncError = null;
     writeNativeNc(cfg);
-    return { db: remoteDb, nextcloud: toPublicNc(cfg) };
+    return { db: normalized, nextcloud: toPublicNc(cfg) };
   }
 
   const localDb = readNativeDb();
@@ -600,6 +601,84 @@ export async function apiUploadInvoiceTextFile(
   return {
     path: `${cfg.folder}/Rechnungen/${safeFilename}`,
     uploadedAt: new Date().toISOString(),
+  };
+}
+
+export async function apiDeleteNextcloudInvoiceFiles(
+  invoiceNumber: string
+): Promise<{ deletedCount: number }> {
+  const cleaned = invoiceNumber.trim();
+  if (!cleaned) return { deletedCount: 0 };
+
+  if (shouldUseRemoteServer()) {
+    const res = await fetch(apiUrl('/api/nextcloud/delete-invoice-files'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ invoiceNumber: cleaned }),
+    });
+    const data = (await res.json()) as { deletedCount?: number; error?: string };
+    if (!res.ok) {
+      throw new Error(data.error || 'Nextcloud-Dateien konnten nicht gelöscht werden.');
+    }
+    return { deletedCount: data.deletedCount ?? 0 };
+  }
+
+  const cfg = readNativeNc();
+  if (!cfg.url || !cfg.username || !cfg.appPassword) {
+    return { deletedCount: 0 };
+  }
+  const safeBase = cleaned.replace(/[^a-zA-Z0-9_.-]/g, '_');
+  const fileUrls = [
+    buildWebDavFileUrl(cfg, `Rechnungen/${safeBase}.pdf`),
+    buildWebDavFileUrl(cfg, `Rechnungen/XRechnung-${safeBase}.xml`),
+    buildWebDavFileUrl(cfg, `Rechnungen/Abnahme-${safeBase}.pdf`),
+  ];
+  return TaktWerkNative.webdavDeleteFiles({
+    fileUrls,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
+  });
+}
+
+export interface ScannedReceiptResult {
+  vendor: string;
+  date: string;
+  description: string;
+  category: string;
+  netAmount: number;
+  grossAmount: number;
+  taxRate: 19 | 7 | 0;
+  notes: string;
+}
+
+export async function apiScanReceiptWithAi(imageDataUrl: string): Promise<ScannedReceiptResult> {
+  if (!shouldUseRemoteServer()) {
+    throw new Error(
+      'Für den KI-Belegscanner bitte in "Nextcloud & Setup" eine Server-URL verbinden oder Belegdaten manuell eingeben.'
+    );
+  }
+  const match = /^data:([^;]+);base64,(.+)$/.exec(imageDataUrl);
+  const mimeType = match?.[1] || 'image/jpeg';
+  const imageBase64 = match?.[2] || imageDataUrl;
+
+  const res = await fetch(apiUrl('/api/receipts/scan'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ imageBase64, mimeType }),
+  });
+  const data = (await res.json()) as Partial<ScannedReceiptResult> & { error?: string };
+  if (!res.ok) {
+    throw new Error(data.error || 'KI-Belegauswertung fehlgeschlagen.');
+  }
+  return {
+    vendor: data.vendor || '',
+    date: data.date || new Date().toISOString().slice(0, 10),
+    description: data.description || '',
+    category: data.category || 'Sonstiges',
+    netAmount: typeof data.netAmount === 'number' ? data.netAmount : 0,
+    grossAmount: typeof data.grossAmount === 'number' ? data.grossAmount : 0,
+    taxRate: data.taxRate === 7 || data.taxRate === 0 ? data.taxRate : 19,
+    notes: data.notes || '',
   };
 }
 

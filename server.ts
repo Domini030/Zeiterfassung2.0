@@ -3,8 +3,9 @@ import express from 'express';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { GoogleGenAI, Type } from '@google/genai';
 import type { AppDatabase, NextcloudConfigInfo } from './src/types.ts';
-import { createEmptyDatabase } from './src/utils/sampleData.ts';
+import { createEmptyDatabase, normalizeDatabase } from './src/utils/sampleData.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.resolve(__dirname, 'data');
@@ -240,7 +241,7 @@ async function startServer() {
   // Read full DB
   app.get('/api/db', async (_req, res) => {
     try {
-      const db = await readLocalDb();
+      const db = normalizeDatabase(await readLocalDb());
       const ncCfg = await readStoredNcConfig();
       res.json({ db, nextcloud: toPublicNcInfo(ncCfg) });
     } catch (err) {
@@ -810,6 +811,163 @@ async function startServer() {
     } catch (err) {
       res.status(500).json({
         error: err instanceof Error ? err.message : 'Termin konnte nicht in Nextcloud gespeichert werden.',
+      });
+    }
+  });
+
+  // Delete invoice PDF, XRechnung XML, and Abnahmeprotokoll PDF on Nextcloud WebDAV
+  app.post('/api/nextcloud/delete-invoice-files', async (req, res) => {
+    try {
+      const { invoiceNumber } = req.body as { invoiceNumber?: string };
+      if (!invoiceNumber || !invoiceNumber.trim()) {
+        res.status(400).json({ error: 'Rechnungsnummer fehlt.' });
+        return;
+      }
+
+      const ncCfg = await readStoredNcConfig();
+      if (!ncCfg.url || !ncCfg.username || !ncCfg.appPassword) {
+        res.json({ ok: true, deletedCount: 0, skipped: true });
+        return;
+      }
+
+      const safeBase = invoiceNumber.trim().replace(/[^a-zA-Z0-9_.-]/g, '_');
+      const candidates = [
+        `Rechnungen/${safeBase}.pdf`,
+        `Rechnungen/XRechnung-${safeBase}.xml`,
+        `Rechnungen/Abnahme-${safeBase}.pdf`,
+      ];
+
+      let deletedCount = 0;
+      for (const relPath of candidates) {
+        const fileUrl = buildWebDavFileUrl(ncCfg, relPath);
+        const delRes = await fetch(fileUrl, {
+          method: 'DELETE',
+          headers: {
+            Authorization: makeAuthHeader(ncCfg),
+          },
+        });
+        if (delRes.ok || delRes.status === 204) {
+          deletedCount += 1;
+        } else if (delRes.status !== 404) {
+          throw new Error(`Nextcloud-Löschung fehlgeschlagen (HTTP ${delRes.status}).`);
+        }
+      }
+
+      res.json({ ok: true, deletedCount });
+    } catch (err) {
+      res.status(500).json({
+        error: err instanceof Error ? err.message : 'Nextcloud-Dateien konnten nicht gelöscht werden.',
+      });
+    }
+  });
+
+  // Analyze receipt/invoice photo using Gemini Vision on server
+  app.post('/api/receipts/scan', async (req, res) => {
+    try {
+      const apiKey = process.env.GEMINI_API_KEY?.trim();
+      if (!apiKey) {
+        res.status(503).json({
+          error: 'Für den KI-Belegscanner ist serverseitig noch kein GEMINI_API_KEY hinterlegt. Sie können den Beleg manuell eintragen.',
+        });
+        return;
+      }
+
+      const { imageBase64, mimeType } = req.body as {
+        imageBase64?: string;
+        mimeType?: string;
+      };
+
+      if (!imageBase64 || typeof imageBase64 !== 'string') {
+        res.status(400).json({ error: 'Belegbild fehlt.' });
+        return;
+      }
+
+      const ai = new GoogleGenAI({
+        apiKey,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build',
+          },
+        },
+      });
+
+      const imagePart = {
+        inlineData: {
+          mimeType: mimeType || 'image/jpeg',
+          data: imageBase64,
+        },
+      };
+
+      const textPart = {
+        text: `Analysiere diesen Kassenbon / diese Rechnung / diesen Ausgabenbeleg auf Deutsch.
+Extrahiere möglichst exakt:
+- vendor: Name des Händlers, Tankstelle, Lieferanten oder Geschäfts
+- date: Belegdatum im Format YYYY-MM-DD (falls nicht eindeutig erkennbar, heutiges Datum ${new Date().toISOString().slice(0, 10)})
+- description: kurze Beschreibung der gekauften Artikel oder Leistung
+- category: genau eine passende Kategorie aus ["Fahrtkosten & Kraftstoff", "Hardware & Material", "Software & Lizenzen", "Bürobedarf & Porto", "Reisekosten & Verpflegung", "Fremdleistungen", "Sonstiges"]
+- grossAmount: Brutto-Gesamtbetrag als Dezimalzahl (z.B. 58.90)
+- taxRate: Mehrwertsteuersatz in Deutschland (nur 19, 7 oder 0)
+- netAmount: Nettobetrag als Dezimalzahl (falls nicht direkt auf dem Beleg, aus Brutto / (1 + taxRate/100) auf 2 Nachkommastellen berechnen)
+- notes: hilfreiche Zusatzinfos (z.B. Belegnummer, Zahlungsart)`,
+      };
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-4-hydrogen',
+        contents: { parts: [imagePart, textPart] },
+        config: {
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              vendor: { type: Type.STRING },
+              date: { type: Type.STRING },
+              description: { type: Type.STRING },
+              category: { type: Type.STRING },
+              netAmount: { type: Type.NUMBER },
+              grossAmount: { type: Type.NUMBER },
+              taxRate: { type: Type.INTEGER },
+              notes: { type: Type.STRING },
+            },
+          },
+        },
+      });
+
+      const rawJson = (response.text ?? '{}').trim();
+      const parsed = JSON.parse(rawJson) as {
+        vendor?: string;
+        date?: string;
+        description?: string;
+        category?: string;
+        netAmount?: number;
+        grossAmount?: number;
+        taxRate?: number;
+        notes?: string;
+      };
+
+      const allowedTax: 19 | 7 | 0 = parsed.taxRate === 7 ? 7 : parsed.taxRate === 0 ? 0 : 19;
+      const gross = typeof parsed.grossAmount === 'number' && Number.isFinite(parsed.grossAmount)
+        ? Math.max(0, Number(parsed.grossAmount.toFixed(2)))
+        : 0;
+      const net =
+        typeof parsed.netAmount === 'number' && Number.isFinite(parsed.netAmount) && parsed.netAmount > 0
+          ? Number(parsed.netAmount.toFixed(2))
+          : Number((gross / (1 + allowedTax / 100)).toFixed(2));
+
+      res.json({
+        vendor: (parsed.vendor || '').trim(),
+        date: /^\d{4}-\d{2}-\d{2}$/.test(parsed.date || '')
+          ? parsed.date
+          : new Date().toISOString().slice(0, 10),
+        description: (parsed.description || '').trim(),
+        category: (parsed.category || 'Sonstiges').trim(),
+        netAmount: net,
+        grossAmount: gross || Number((net * (1 + allowedTax / 100)).toFixed(2)),
+        taxRate: allowedTax,
+        notes: (parsed.notes || '').trim(),
+      });
+    } catch (err) {
+      res.status(500).json({
+        error: err instanceof Error ? err.message : 'Beleg konnte nicht per KI ausgewertet werden.',
       });
     }
   });

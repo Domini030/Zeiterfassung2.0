@@ -1,28 +1,36 @@
 import {
   AlertTriangle,
   ArrowRightCircle,
+  Car,
+  CheckCircle2,
   ChevronDown,
   Clock,
   CloudUpload,
   Download,
   Eye,
+  FileCheck2,
   FileCode2,
   FilePlus2,
   FileSpreadsheet,
+  MapPin,
+  PenTool,
   Pencil,
   Percent,
   Plus,
   Printer,
+  Receipt,
   Share2,
   Trash2,
   X,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type {
+  AcceptanceSignature,
   CompanyProfile,
   Customer,
   DiscountType,
   DocumentType,
+  Expense,
   Invoice,
   InvoiceLineItem,
   InvoiceStatus,
@@ -41,6 +49,7 @@ import {
   createId,
   formatCurrency,
   formatDateDE,
+  formatDateTimeDE,
   formatDuration,
   formatInvoiceNumber,
   formatNumber,
@@ -54,12 +63,16 @@ import {
   apiUploadInvoicePdf,
   apiUploadInvoiceTextFile,
 } from '../utils/apiClient';
+import { computeTravelFromBase } from '../utils/geolocation';
 import {
+  downloadAcceptanceProtocolPdf,
   downloadInvoicePdf,
   downloadPaymentReminderPdf,
   downloadTimesheetPdf,
+  getAcceptanceProtocolPdfBase64,
   getInvoicePdfBase64,
   printInvoiceView,
+  shareAcceptanceProtocolPdf,
   shareInvoicePdf,
 } from '../utils/pdfInvoice';
 import { buildXRechnungXml } from '../utils/eInvoiceXml';
@@ -68,20 +81,35 @@ import {
   invoicesToCsv,
 } from '../utils/exportBackup';
 import { generateGiroCodeDataUrl } from '../utils/epcQr';
+import { SignaturePadModal } from './SignaturePadModal';
+import { ThemedSelect } from './ThemedSelect';
 
 interface InvoicesViewProps {
   company: CompanyProfile;
   customers: Customer[];
   products: Product[];
   timeEntries: TimeEntry[];
+  expenses?: Expense[];
   invoices: Invoice[];
   nextcloud: NextcloudConfigInfo;
   preselectedDraft: { customerId: string; entryIds: string[] } | null;
   onClearPreselectedDraft: () => void;
-  onCreateInvoice: (invoice: Invoice, billedEntryIds: string[]) => void;
-  onUpdateInvoice: (invoice: Invoice, billedEntryIds: string[]) => void;
+  onCreateInvoice: (
+    invoice: Invoice,
+    billedEntryIds: string[],
+    billedExpenseIds?: string[],
+    billedTravelEntryIds?: string[]
+  ) => void;
+  onUpdateInvoice: (
+    invoice: Invoice,
+    billedEntryIds: string[],
+    billedExpenseIds?: string[],
+    billedTravelEntryIds?: string[]
+  ) => void;
   onUpdateInvoiceStatus: (invoiceId: string, status: InvoiceStatus) => void;
   onMarkInvoiceUploaded: (invoiceId: string, uploadedAt: string) => void;
+  onSaveSignature?: (invoiceId: string, signature: AcceptanceSignature) => void;
+  onDeleteSignature?: (invoiceId: string) => void;
   onDeleteInvoice: (invoiceId: string) => void;
   onNotify: (msg: string, isError?: boolean) => void;
 }
@@ -102,6 +130,7 @@ export function InvoicesView({
   customers,
   products,
   timeEntries,
+  expenses = [],
   invoices,
   nextcloud,
   preselectedDraft,
@@ -110,6 +139,8 @@ export function InvoicesView({
   onUpdateInvoice,
   onUpdateInvoiceStatus,
   onMarkInvoiceUploaded,
+  onSaveSignature,
+  onDeleteSignature,
   onDeleteInvoice,
   onNotify,
 }: InvoicesViewProps) {
@@ -122,15 +153,21 @@ export function InvoicesView({
   const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [signatureModalOpen, setSignatureModalOpen] = useState(false);
 
   const [documentType, setDocumentType] = useState<DocumentType>('invoice');
   const [customerId, setCustomerId] = useState<string>(customers[0]?.id ?? '');
   const [selectedEntryIds, setSelectedEntryIds] = useState<string[]>([]);
   const [groupByProduct, setGroupByProduct] = useState(true);
+  const [includeLocation, setIncludeLocation] = useState<boolean>(
+    Boolean(company.invoiceIncludeLocationDefault)
+  );
   const [roundingMinutes, setRoundingMinutes] = useState<TimeRoundingMinutes>(
     company.defaultTimeRoundingMinutes ?? 0
   );
   const [extraItems, setExtraItems] = useState<ExtraProductDraft[]>([]);
+  const [billedExpenseIds, setBilledExpenseIds] = useState<string[]>([]);
+  const [billedTravelEntryIds, setBilledTravelEntryIds] = useState<string[]>([]);
   const [issueDate, setIssueDate] = useState(toInputDate());
   const [dueDateInput, setDueDateInput] = useState(() =>
     addDaysISO(toInputDate(), company.defaultPaymentTermDays || 14)
@@ -250,6 +287,9 @@ export function InvoicesView({
     }
     setEditingInvoice(null);
     setExtraItems([]);
+    setBilledExpenseIds([]);
+    setBilledTravelEntryIds([]);
+    setIncludeLocation(Boolean(company.invoiceIncludeLocationDefault));
     const today = toInputDate();
     setIssueDate(today);
     const custTerm =
@@ -276,6 +316,7 @@ export function InvoicesView({
     defaultIntro,
     defaultOutro,
     company.smallBusinessMode,
+    company.invoiceIncludeLocationDefault,
     company.defaultPaymentTermDays,
     company.defaultTimeRoundingMinutes,
     customerMap,
@@ -292,6 +333,9 @@ export function InvoicesView({
       .map((t) => t.id);
     setSelectedEntryIds(openIds);
     setExtraItems([]);
+    setBilledExpenseIds([]);
+    setBilledTravelEntryIds([]);
+    setIncludeLocation(Boolean(company.invoiceIncludeLocationDefault));
     const today = toInputDate();
     setIssueDate(today);
     const custTerm =
@@ -345,6 +389,10 @@ export function InvoicesView({
           entryIds.length === timeBasedLineItems.length
       );
     }
+    setIncludeLocation(
+      inv.lineItems.some((li) => li.detail?.includes('Ort:')) ||
+        Boolean(company.invoiceIncludeLocationDefault)
+    );
 
     const manualRows: ExtraProductDraft[] = inv.lineItems
       .filter((li) => (li.timeEntryIds?.length ?? 0) === 0)
@@ -359,6 +407,14 @@ export function InvoicesView({
         taxRate: li.taxRate,
       }));
     setExtraItems(manualRows);
+    setBilledExpenseIds(
+      expenses.filter((ex) => ex.billedInvoiceId === inv.id).map((ex) => ex.id)
+    );
+    setBilledTravelEntryIds(
+      timeEntries
+        .filter((t) => t.travelBilledInvoiceId === inv.id)
+        .map((t) => t.id)
+    );
     setIssueDate(inv.issueDate);
     setDueDateInput(inv.dueDate);
     setQuoteValidUntil(inv.quoteValidUntil || inv.dueDate);
@@ -386,6 +442,8 @@ export function InvoicesView({
       )
       .map((t) => t.id);
     setSelectedEntryIds(openIds);
+    setBilledExpenseIds([]);
+    setBilledTravelEntryIds([]);
     setRoundingMinutes(getEffectiveRounding(newCustId));
     if (!editingInvoice) {
       const custTerm =
@@ -406,6 +464,30 @@ export function InvoicesView({
             (editingInvoice !== null && t.billedInvoiceId === editingInvoice.id))
       ),
     [timeEntries, customerId, editingInvoice]
+  );
+
+  const openBillableExpensesForCustomer = useMemo(
+    () =>
+      expenses.filter(
+        (exp) =>
+          exp.customerId === customerId &&
+          exp.billableToCustomer &&
+          !exp.billedInvoiceId &&
+          !billedExpenseIds.includes(exp.id)
+      ),
+    [expenses, customerId, billedExpenseIds]
+  );
+
+  const openTravelEntriesForCustomer = useMemo(
+    () =>
+      unbilledForCustomer.filter((entry) => {
+        if (billedTravelEntryIds.includes(entry.id) || entry.travelBilledInvoiceId) {
+          return false;
+        }
+        if ((entry.travelCostNet ?? 0) > 0) return true;
+        return Boolean(company.homeBaseLocation && entry.location);
+      }),
+    [unbilledForCustomer, billedTravelEntryIds, company.homeBaseLocation]
   );
 
   const toggleEntry = (id: string) => {
@@ -448,6 +530,96 @@ export function InvoicesView({
     );
   };
 
+  const handleImportBillableExpenses = () => {
+    if (openBillableExpensesForCustomer.length === 0) return;
+    const newRows: ExtraProductDraft[] = openBillableExpensesForCustomer.map((exp) => ({
+      id: createId('ext'),
+      productId: products[0]?.id ?? '',
+      description: `${exp.vendor} — ${exp.description}`,
+      detail: `Beleg vom ${formatDateDE(exp.date)} (${exp.category})`,
+      unit: 'Stk.',
+      quantity: 1,
+      unitPriceNet: exp.netAmount,
+      taxRate: exp.taxRate,
+    }));
+    setExtraItems((prev) => [...prev, ...newRows]);
+    setBilledExpenseIds((prev) => [
+      ...prev,
+      ...openBillableExpensesForCustomer.map((e) => e.id),
+    ]);
+    onNotify(`${newRows.length} Kunden-Beleg(e) als Position(en) übernommen.`);
+  };
+
+  const handleImportTravelCosts = () => {
+    const rate = company.travelRatePerKm ?? 0.3;
+    const roundTrip = company.travelRoundTripDefault !== false;
+    let totalKm = 0;
+    let totalCost = 0;
+    const matchedIds: string[] = [];
+    const addresses = new Set<string>();
+
+    for (const entry of openTravelEntriesForCustomer) {
+      let km = entry.travelDistanceKm ?? 0;
+      let cost = entry.travelCostNet ?? 0;
+      if (cost <= 0 && company.homeBaseLocation && entry.location) {
+        const calc = computeTravelFromBase(
+          company.homeBaseLocation,
+          entry.location,
+          rate,
+          roundTrip
+        );
+        km = calc.distanceKm;
+        cost = calc.costNet;
+      }
+      if (cost > 0 || km > 0) {
+        totalKm += km;
+        totalCost += cost;
+        matchedIds.push(entry.id);
+        if (entry.location?.address) {
+          addresses.add(entry.location.address);
+        }
+      }
+    }
+
+    if (matchedIds.length === 0) {
+      onNotify(
+        'Keine abrechenbaren Fahrtkosten vorhanden (Standort & Startadresse nötig).',
+        true
+      );
+      return;
+    }
+
+    const kmRounded = Math.round(totalKm * 10) / 10;
+    const costRounded = Math.round(totalCost * 100) / 100;
+    setExtraItems((prev) => [
+      ...prev,
+      {
+        id: createId('ext'),
+        productId: products[0]?.id ?? '',
+        description: `Fahrtkosten / Anfahrt (${kmRounded} km)`,
+        detail: `${matchedIds.length} Einsatzfahrten (${rate.toFixed(2)} €/km)${
+          addresses.size > 0 ? ` · Ziele: ${Array.from(addresses).slice(0, 2).join('; ')}` : ''
+        }`,
+        unit: 'Pauschal',
+        quantity: 1,
+        unitPriceNet: costRounded,
+        taxRate: 19,
+      },
+    ]);
+    setBilledTravelEntryIds((prev) => [...prev, ...matchedIds]);
+    onNotify(
+      `Fahrtkosten (${kmRounded} km · ${formatCurrency(costRounded)}) als Position übernommen.`
+    );
+  };
+
+  const formatEntryLocation = (entry: TimeEntry): string => {
+    if (!entry.location) return '';
+    return (
+      entry.location.address ||
+      `${entry.location.lat.toFixed(4)}, ${entry.location.lng.toFixed(4)}`
+    );
+  };
+
   const computedLineItems = useMemo((): InvoiceLineItem[] => {
     const selectedEntries = unbilledForCustomer.filter((e) =>
       selectedEntryIds.includes(e.id)
@@ -473,11 +645,17 @@ export function InvoicesView({
         const effectiveTaxRate: TaxRate = isSmallBusiness ? 0 : first.taxRate;
         const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
         const taskTitles = Array.from(new Set(group.map((g) => g.title))).join(', ');
+        const locations = includeLocation
+          ? Array.from(
+              new Set(group.map((g) => formatEntryLocation(g)).filter(Boolean))
+            )
+          : [];
+        const locSuffix = locations.length > 0 ? ` · Ort: ${locations.join('; ')}` : '';
 
         items.push({
           id: createId('li'),
           description: prod?.name ?? first.title,
-          detail: `${group.length} Zeiteinträge: ${taskTitles}`,
+          detail: `${group.length} Zeiteinträge: ${taskTitles}${locSuffix}`,
           quantity: hours,
           unit: 'Std.',
           unitPriceNet: first.hourlyRateNet,
@@ -497,10 +675,13 @@ export function InvoicesView({
         const net = Math.round(hours * e.hourlyRateNet * 100) / 100;
         const effectiveTaxRate: TaxRate = isSmallBusiness ? 0 : e.taxRate;
         const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
+        const locText = includeLocation ? formatEntryLocation(e) : '';
         items.push({
           id: createId('li'),
           description: `${prod?.name ?? 'Leistung'} — ${e.title}`,
-          detail: `${formatDateDE(e.startTime)}${e.notes ? ` · ${e.notes}` : ''}`,
+          detail: `${formatDateDE(e.startTime)}${e.notes ? ` · ${e.notes}` : ''}${
+            locText ? ` · Ort: ${locText}` : ''
+          }`,
           quantity: hours,
           unit: 'Std.',
           unitPriceNet: e.hourlyRateNet,
@@ -541,6 +722,7 @@ export function InvoicesView({
     unbilledForCustomer,
     selectedEntryIds,
     groupByProduct,
+    includeLocation,
     roundingMinutes,
     extraItems,
     productMap,
@@ -623,15 +805,18 @@ export function InvoicesView({
       outroText: outroText.trim(),
       isSmallBusiness,
       smallBusinessNotice: isSmallBusiness ? defaultSmallBusinessNotice : undefined,
+      signature: editingInvoice?.signature,
       nextcloudUploadedAt: null,
       createdAt: editingInvoice?.createdAt ?? new Date().toISOString(),
     };
 
     const entryIdsToBill = documentType === 'quote' ? [] : selectedEntryIds;
+    const expIdsToBill = documentType === 'quote' ? [] : billedExpenseIds;
+    const travelIdsToBill = documentType === 'quote' ? [] : billedTravelEntryIds;
     if (editingInvoice) {
-      onUpdateInvoice(savedInvoice, entryIdsToBill);
+      onUpdateInvoice(savedInvoice, entryIdsToBill, expIdsToBill, travelIdsToBill);
     } else {
-      onCreateInvoice(savedInvoice, entryIdsToBill);
+      onCreateInvoice(savedInvoice, entryIdsToBill, expIdsToBill, travelIdsToBill);
     }
     setShowBuilder(false);
     setEditingInvoice(null);
@@ -825,6 +1010,49 @@ export function InvoicesView({
     }
   };
 
+  const handleDownloadProtocolPdf = async (inv: Invoice) => {
+    try {
+      await downloadAcceptanceProtocolPdf(inv, company);
+      onNotify(`Abnahmeprotokoll ${inv.invoiceNumber} erstellt.`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Abnahmeprotokoll konnte nicht erstellt werden.',
+        true
+      );
+    }
+  };
+
+  const handleShareProtocolPdf = async (inv: Invoice) => {
+    try {
+      await shareAcceptanceProtocolPdf(inv, company);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Abnahmeprotokoll konnte nicht geteilt werden.',
+        true
+      );
+    }
+  };
+
+  const handleUploadProtocolToNextcloud = async (inv: Invoice) => {
+    if (!nextcloud.configured) {
+      onNotify('Bitte verbinde zuerst Nextcloud unter "Nextcloud & Setup".', true);
+      return;
+    }
+    setUploadingId(inv.id);
+    try {
+      const pdfBase64 = await getAcceptanceProtocolPdfBase64(inv, company);
+      const res = await apiUploadInvoicePdf(`Abnahme-${inv.invoiceNumber}.pdf`, pdfBase64);
+      onNotify(`Abnahmeprotokoll in Nextcloud (${res.path}) gespeichert.`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Upload fehlgeschlagen.',
+        true
+      );
+    } finally {
+      setUploadingId(null);
+    }
+  };
+
   const overdueCount = useMemo(
     () => invoices.filter((inv) => isInvoiceOverdue(inv)).length,
     [invoices]
@@ -952,17 +1180,16 @@ export function InvoicesView({
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Kunde
                 </label>
-                <select
+                <ThemedSelect
                   value={customerId}
-                  onChange={(e) => handleBuilderCustomerChange(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-                >
-                  {customers.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.companyName}
-                    </option>
-                  ))}
-                </select>
+                  onChange={handleBuilderCustomerChange}
+                  ariaLabel="Kunde für Dokument auswählen"
+                  options={customers.map((c) => ({
+                    value: c.id,
+                    label: c.companyName,
+                    hint: c.city || undefined,
+                  }))}
+                />
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
@@ -1014,19 +1241,22 @@ export function InvoicesView({
                     <label className="text-xs font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap">
                       Zeitrundung:
                     </label>
-                    <select
-                      value={roundingMinutes}
-                      onChange={(e) =>
-                        setRoundingMinutes(Number(e.target.value) as TimeRoundingMinutes)
+                    <ThemedSelect
+                      size="sm"
+                      value={String(roundingMinutes)}
+                      onChange={(val) =>
+                        setRoundingMinutes(Number(val) as TimeRoundingMinutes)
                       }
-                      className="rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-                    >
-                      <option value={0}>Exakt (keine Rundung)</option>
-                      <option value={5}>Auf 5 Min. aufrunden</option>
-                      <option value={10}>Auf 10 Min. aufrunden</option>
-                      <option value={15}>Auf 15 Min. aufrunden</option>
-                      <option value={30}>Auf 30 Min. aufrunden</option>
-                    </select>
+                      ariaLabel="Zeitrundung auswählen"
+                      className="min-w-44"
+                      options={[
+                        { value: '0', label: 'Exakt (keine Rundung)' },
+                        { value: '5', label: 'Auf 5 Min. aufrunden' },
+                        { value: '10', label: 'Auf 10 Min. aufrunden' },
+                        { value: '15', label: 'Auf 15 Min. aufrunden' },
+                        { value: '30', label: 'Auf 30 Min. aufrunden' },
+                      ]}
+                    />
                   </div>
                   <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer">
                     <input
@@ -1036,6 +1266,16 @@ export function InvoicesView({
                       className="h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
                     />
                     Gleichartige Leistungen zusammenfassen
+                  </label>
+                  <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={includeLocation}
+                      onChange={(e) => setIncludeLocation(e.target.checked)}
+                      className="h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+                    />
+                    <MapPin className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                    Einsatzort in Rechnung angeben
                   </label>
                 </div>
               </div>
@@ -1069,8 +1309,22 @@ export function InvoicesView({
                             <div className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
                               {entry.title}
                             </div>
-                            <div className="text-xs text-slate-500 dark:text-slate-400">
-                              {formatDateDE(entry.startTime)} · {prod?.name ?? 'Leistung'}
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                              <span>
+                                {formatDateDE(entry.startTime)} · {prod?.name ?? 'Leistung'}
+                              </span>
+                              {entry.location && (
+                                <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
+                                  <MapPin className="h-3 w-3" />
+                                  {entry.location.address || 'GPS'}
+                                </span>
+                              )}
+                              {(entry.travelCostNet ?? 0) > 0 && (
+                                <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-violet-950/60 dark:text-violet-300">
+                                  <Car className="h-3 w-3" />
+                                  {entry.travelDistanceKm} km · {formatCurrency(entry.travelCostNet ?? 0)}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1094,19 +1348,41 @@ export function InvoicesView({
 
             {/* Extra catalog items */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-                  Zusätzliche Produkte / Pauschalen
+                  Zusätzliche Produkte / Pauschalen &amp; Auslagen
                 </h3>
-                <button
-                  type="button"
-                  onClick={addExtraProductRow}
-                  disabled={products.length === 0}
-                  className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  Position hinzufügen
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  {openTravelEntriesForCustomer.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleImportTravelCosts}
+                      className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-800 hover:bg-blue-100 dark:border-violet-700/60 dark:bg-violet-950/50 dark:text-violet-200 dark:hover:bg-violet-900/50 cursor-pointer"
+                    >
+                      <Car className="h-3.5 w-3.5" />
+                      Fahrtkosten ({openTravelEntriesForCustomer.length}) übernehmen
+                    </button>
+                  )}
+                  {openBillableExpensesForCustomer.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleImportBillableExpenses}
+                      className="inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200 dark:hover:bg-emerald-900/50 cursor-pointer"
+                    >
+                      <Receipt className="h-3.5 w-3.5" />
+                      Offene Belege ({openBillableExpensesForCustomer.length}) übernehmen
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={addExtraProductRow}
+                    disabled={products.length === 0}
+                    className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Position hinzufügen
+                  </button>
+                </div>
               </div>
               {extraItems.map((row) => (
                 <div
@@ -1114,19 +1390,18 @@ export function InvoicesView({
                   className="grid grid-cols-1 gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50 sm:grid-cols-12"
                 >
                   <div className="sm:col-span-3">
-                    <select
+                    <ThemedSelect
+                      size="sm"
                       value={row.productId}
-                      onChange={(e) =>
-                        updateExtraRow(row.id, { productId: e.target.value })
+                      onChange={(val) =>
+                        updateExtraRow(row.id, { productId: val })
                       }
-                      className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-                    >
-                      {products.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.name}
-                        </option>
-                      ))}
-                    </select>
+                      ariaLabel="Katalog-Position auswählen"
+                      options={products.map((p) => ({
+                        value: p.id,
+                        label: p.name,
+                      }))}
+                    />
                   </div>
                   <div className="sm:col-span-3">
                     <input
@@ -1235,14 +1510,18 @@ export function InvoicesView({
                       placeholder="Bezeichnung"
                       className="col-span-5 rounded-md border border-slate-300 bg-white px-2 py-1 text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
                     />
-                    <select
-                      value={discountType}
-                      onChange={(e) => setDiscountType(e.target.value as DiscountType)}
-                      className="col-span-3 rounded-md border border-slate-300 bg-white px-1.5 py-1 text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
-                    >
-                      <option value="percent">%</option>
-                      <option value="fixed">€ Netto</option>
-                    </select>
+                    <div className="col-span-3">
+                      <ThemedSelect
+                        size="sm"
+                        value={discountType}
+                        onChange={(val) => setDiscountType(val as DiscountType)}
+                        ariaLabel="Rabatt-Art"
+                        options={[
+                          { value: 'percent', label: '%' },
+                          { value: 'fixed', label: '€ Netto' },
+                        ]}
+                      />
+                    </div>
                     <input
                       type="number"
                       min="0"
@@ -1452,26 +1731,27 @@ export function InvoicesView({
                     </td>
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex flex-col items-start gap-1">
-                        <select
+                        <ThemedSelect
+                          size="sm"
                           value={inv.status}
-                          onChange={(e) =>
-                            onUpdateInvoiceStatus(inv.id, e.target.value as InvoiceStatus)
+                          onChange={(val) =>
+                            onUpdateInvoiceStatus(inv.id, val as InvoiceStatus)
                           }
-                          className={`rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] ${
-                            inv.status === 'Bezahlt'
-                              ? 'text-emerald-700 dark:text-emerald-400'
-                              : inv.status === 'Storniert'
-                                ? 'text-red-700 dark:text-red-400'
-                                : inv.status === 'Gesendet'
-                                  ? 'text-blue-700 dark:text-violet-400'
-                                  : 'text-slate-700 dark:text-slate-200'
-                          }`}
-                        >
-                          <option value="Entwurf">Entwurf</option>
-                          <option value="Gesendet">Gesendet</option>
-                          <option value="Bezahlt">Bezahlt</option>
-                          <option value="Storniert">Storniert</option>
-                        </select>
+                          ariaLabel={`Status für ${inv.invoiceNumber}`}
+                          className="w-32"
+                          options={[
+                            { value: 'Entwurf', label: 'Entwurf' },
+                            { value: 'Gesendet', label: 'Gesendet' },
+                            { value: 'Bezahlt', label: 'Bezahlt' },
+                            { value: 'Storniert', label: 'Storniert' },
+                          ]}
+                        />
+                        {inv.signature && (
+                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+                            <CheckCircle2 className="h-3 w-3 shrink-0" />
+                            Abgenommen
+                          </span>
+                        )}
                         {(() => {
                           const overdueDays = getOverdueDays(inv);
                           if (overdueDays <= 0) return null;
@@ -1672,6 +1952,61 @@ export function InvoicesView({
                         </button>
                       )}
 
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowPreviewMenu(false);
+                          setSignatureModalOpen(true);
+                        }}
+                        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                      >
+                        <PenTool className="h-3.5 w-3.5" />
+                        {previewInvoice.signature
+                          ? 'Abnahme / Unterschrift bearbeiten'
+                          : 'Abnahme unterschreiben'}
+                      </button>
+
+                      {previewInvoice.signature && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowPreviewMenu(false);
+                              void handleDownloadProtocolPdf(previewInvoice);
+                            }}
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                          >
+                            <FileCheck2 className="h-3.5 w-3.5" />
+                            Abnahmeprotokoll (PDF)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowPreviewMenu(false);
+                              void handleShareProtocolPdf(previewInvoice);
+                            }}
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                          >
+                            <Share2 className="h-3.5 w-3.5" />
+                            Abnahmeprotokoll teilen
+                          </button>
+                          {nextcloud.configured && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowPreviewMenu(false);
+                                void handleUploadProtocolToNextcloud(previewInvoice);
+                              }}
+                              disabled={uploadingId === previewInvoice.id}
+                              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                            >
+                              <CloudUpload className="h-3.5 w-3.5" />
+                              Abnahme-PDF → Nextcloud
+                            </button>
+                          )}
+                        </>
+                      )}
+
                       {previewInvoice.documentType !== 'quote' && (
                         <>
                           <button
@@ -1704,6 +2039,17 @@ export function InvoicesView({
                     </div>
                   )}
                 </div>
+
+                {!previewInvoice.signature && onSaveSignature && (
+                  <button
+                    type="button"
+                    onClick={() => setSignatureModalOpen(true)}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200 whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    <PenTool className="h-3.5 w-3.5" />
+                    Abnahme
+                  </button>
+                )}
 
                 {/* Directly visible top-bar buttons: Teilen, PDF -> Nextcloud, Löschen, Schließen */}
                 <button
@@ -2044,9 +2390,72 @@ export function InvoicesView({
                   <div>E-Mail: {company.email}</div>
                 </div>
               </div>
+
+              {previewInvoice.signature && (
+                <div className="mt-6 flex flex-col gap-4 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="space-y-1 text-xs text-slate-700">
+                    <div className="inline-flex items-center gap-1.5 font-semibold text-emerald-800">
+                      <CheckCircle2 className="h-4 w-4" />
+                      Leistungsabnahme digital unterschrieben
+                    </div>
+                    <div>
+                      Unterzeichner: <span className="font-semibold">{previewInvoice.signature.signedBy}</span>
+                      {previewInvoice.signature.signedRole ? ` (${previewInvoice.signature.signedRole})` : ''}
+                    </div>
+                    <div className="text-slate-500">
+                      Datum: {formatDateTimeDE(previewInvoice.signature.signedAt)}
+                      {previewInvoice.signature.locationAddress ? ` · Ort: ${previewInvoice.signature.locationAddress}` : ''}
+                    </div>
+                    {previewInvoice.signature.notes && (
+                      <div className="italic text-slate-600">
+                        Hinweis: {previewInvoice.signature.notes}
+                      </div>
+                    )}
+                    {onDeleteSignature && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onDeleteSignature(previewInvoice.id);
+                          setPreviewInvoice((prev) =>
+                            prev ? { ...prev, signature: undefined } : null
+                          );
+                        }}
+                        className="no-print mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-red-600 hover:underline cursor-pointer"
+                      >
+                        Unterschrift entfernen
+                      </button>
+                    )}
+                  </div>
+                  <div className="shrink-0 rounded-lg border border-slate-200 bg-white p-2">
+                    <img
+                      src={previewInvoice.signature.signatureDataUrl}
+                      alt={`Unterschrift ${previewInvoice.signature.signedBy}`}
+                      className="h-20 w-48 object-contain"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
+      )}
+
+      {previewInvoice && (
+        <SignaturePadModal
+          open={signatureModalOpen}
+          title={`Abnahmeprotokoll · ${previewInvoice.invoiceNumber}`}
+          subtitle={`${previewInvoice.customerSnapshot.companyName} (${formatCurrency(previewInvoice.grossTotal)})`}
+          initialSignature={previewInvoice.signature}
+          defaultSignerName={previewInvoice.customerSnapshot.contactName || previewInvoice.customerSnapshot.companyName}
+          onClose={() => setSignatureModalOpen(false)}
+          onSave={(sig) => {
+            if (onSaveSignature) {
+              onSaveSignature(previewInvoice.id, sig);
+              setPreviewInvoice((prev) => (prev ? { ...prev, signature: sig } : null));
+            }
+            setSignatureModalOpen(false);
+          }}
+        />
       )}
     </div>
   );

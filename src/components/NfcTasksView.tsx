@@ -18,6 +18,7 @@ import {
   extractTagIdFromPayload,
 } from '../utils/nfcHelpers';
 import { TaktWerkNative } from '../utils/taktwerkNative';
+import { ThemedSelect } from './ThemedSelect';
 
 interface NdefRecordLike {
   recordType: string;
@@ -632,33 +633,30 @@ export function NfcTasksView({
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Kunde
               </label>
-              <select
+              <ThemedSelect
                 value={customerId}
-                onChange={(e) => setCustomerId(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              >
-                {customers.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.companyName}
-                  </option>
-                ))}
-              </select>
+                onChange={setCustomerId}
+                ariaLabel="Kunde für NFC-Aufgabe"
+                options={customers.map((c) => ({
+                  value: c.id,
+                  label: c.companyName,
+                  hint: c.city || undefined,
+                }))}
+              />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Leistung / Stundensatz
               </label>
-              <select
+              <ThemedSelect
                 value={productId}
-                onChange={(e) => setProductId(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              >
-                {products.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} ({formatCurrency(p.unitPriceNet)}/{p.unit})
-                  </option>
-                ))}
-              </select>
+                onChange={setProductId}
+                ariaLabel="Leistung für NFC-Aufgabe"
+                options={products.map((p) => ({
+                  value: p.id,
+                  label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`,
+                }))}
+              />
             </div>
             <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
