@@ -1,4 +1,17 @@
-import { registerPlugin } from '@capacitor/core';
+import { registerPlugin, type PluginListenerHandle } from '@capacitor/core';
+
+export type NativeNfcStatus = 'NFC_OK' | 'NFC_DISABLED' | 'NO_NFC';
+
+export interface NativeNfcScannedEvent {
+  uidHex: string;
+  payloads: string[];
+}
+
+export interface NativeNfcWriteResultEvent {
+  success: boolean;
+  uri: string;
+  error?: string;
+}
 
 export interface TaktWerkNativePluginInterface {
   webdavEnsureFolders(options: {
@@ -61,6 +74,28 @@ export interface TaktWerkNativePluginInterface {
   }): Promise<void>;
 
   clearActiveTimerNotification(): Promise<void>;
+
+  getNfcStatus(): Promise<{
+    supported: boolean;
+    enabled: boolean;
+    status: NativeNfcStatus;
+  }>;
+
+  openNfcSettings(): Promise<void>;
+
+  armNfcWrite(options: { uri: string }): Promise<void>;
+
+  cancelNfcWrite(): Promise<void>;
+
+  addListener(
+    eventName: 'nfcTagScanned',
+    listenerFunc: (event: NativeNfcScannedEvent) => void
+  ): Promise<PluginListenerHandle>;
+
+  addListener(
+    eventName: 'nfcWriteResult',
+    listenerFunc: (event: NativeNfcWriteResultEvent) => void
+  ): Promise<PluginListenerHandle>;
 }
 
 export const TaktWerkNative =

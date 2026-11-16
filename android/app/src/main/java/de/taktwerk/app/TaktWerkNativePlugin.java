@@ -1,6 +1,7 @@
 package de.taktwerk.app;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,13 +10,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.nfc.FormatException;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.TagLostException;
+import android.nfc.tech.Ndef;
+import android.nfc.tech.NdefFormatable;
 import android.os.Build;
+import android.os.Parcelable;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
+import android.provider.Settings;
 import android.util.Base64;
 import android.webkit.WebView;
 import androidx.core.app.NotificationCompat;
@@ -33,8 +44,10 @@ import com.getcapacitor.annotation.PermissionCallback;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -57,12 +70,396 @@ public class TaktWerkNativePlugin extends Plugin {
     private static final String TIMER_CHANNEL_ID = "taktwerk_active_timer";
     private static final int TIMER_NOTIFICATION_ID = 4102;
 
+    private static final String[] NFC_URI_PREFIXES = new String[] {
+        "", "http://www.", "https://www.", "http://", "https://", "tel:", "mailto:",
+        "ftp://anonymous:anonymous@", "ftp://ftp.", "ftps://", "sftp://", "smb://",
+        "nfs://", "ftp://", "dav://", "news:", "telnet://", "imap:", "rtsp://",
+        "urn:", "pop:", "sip:", "sips:", "tftp:", "btspp://", "btl2cap://",
+        "btgoep://", "tcpobex://", "irdaobex://", "file://", "urn:epc:id:",
+        "urn:epc:tag:", "urn:epc:pat:", "urn:epc:raw:", "urn:epc:", "urn:nfc:"
+    };
+
+    private volatile String armedWriteUri = null;
+    private boolean foregroundDispatchActive = false;
+
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
         .connectTimeout(20, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .build();
+
+    @Override
+    protected void handleOnResume() {
+        super.handleOnResume();
+        enableNfcForegroundDispatch();
+    }
+
+    @Override
+    protected void handleOnPause() {
+        disableNfcForegroundDispatch();
+        super.handleOnPause();
+    }
+
+    @Override
+    protected void handleOnNewIntent(Intent intent) {
+        super.handleOnNewIntent(intent);
+        if (intent == null || (intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
+            return;
+        }
+        String action = intent.getAction();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)
+            || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
+            || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
+            processNfcIntent(intent);
+        }
+    }
+
+    private void enableNfcForegroundDispatch() {
+        Activity activity = getActivity();
+        if (activity == null) {
+            return;
+        }
+        NfcAdapter adapter = NfcAdapter.getDefaultAdapter(activity);
+        if (adapter == null || !adapter.isEnabled()) {
+            foregroundDispatchActive = false;
+            return;
+        }
+        activity.runOnUiThread(() -> {
+            try {
+                Intent nfcIntent = new Intent(activity, activity.getClass());
+                nfcIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    flags |= PendingIntent.FLAG_MUTABLE;
+                }
+                PendingIntent pendingIntent = PendingIntent.getActivity(activity, 0, nfcIntent, flags);
+                adapter.enableForegroundDispatch(activity, pendingIntent, null, null);
+                foregroundDispatchActive = true;
+            } catch (Exception ignored) {
+                foregroundDispatchActive = false;
+            }
+        });
+    }
+
+    private void disableNfcForegroundDispatch() {
+        Activity activity = getActivity();
+        if (activity == null) {
+            foregroundDispatchActive = false;
+            return;
+        }
+        NfcAdapter adapter = NfcAdapter.getDefaultAdapter(activity);
+        if (adapter == null) {
+            foregroundDispatchActive = false;
+            return;
+        }
+        activity.runOnUiThread(() -> {
+            try {
+                adapter.disableForegroundDispatch(activity);
+            } catch (Exception ignored) {}
+            foregroundDispatchActive = false;
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Tag extractTagFromIntent(Intent intent) {
+        if (intent == null) return null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG, Tag.class);
+        }
+        return intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static NdefMessage[] extractNdefMessagesFromIntent(Intent intent) {
+        if (intent == null) return null;
+        Parcelable[] raw;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            raw = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES, Parcelable.class);
+        } else {
+            raw = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        }
+        if (raw == null || raw.length == 0) return null;
+        List<NdefMessage> list = new ArrayList<>();
+        for (Parcelable p : raw) {
+            if (p instanceof NdefMessage) {
+                list.add((NdefMessage) p);
+            }
+        }
+        return list.isEmpty() ? null : list.toArray(new NdefMessage[0]);
+    }
+
+    private static String bytesToColonHex(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            if (i > 0) sb.append(':');
+            sb.append(String.format("%02X", bytes[i] & 0xFF));
+        }
+        return sb.toString();
+    }
+
+    private static List<String> decodeNdefMessages(NdefMessage[] messages) {
+        List<String> payloads = new ArrayList<>();
+        if (messages == null) return payloads;
+        for (NdefMessage msg : messages) {
+            if (msg == null) continue;
+            for (NdefRecord record : msg.getRecords()) {
+                if (record == null) continue;
+                short tnf = record.getTnf();
+                byte[] type = record.getType();
+                byte[] payload = record.getPayload();
+                if (payload == null || payload.length == 0) continue;
+
+                if (tnf == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(type, NdefRecord.RTD_URI)) {
+                    int prefixIdx = payload[0] & 0xFF;
+                    String prefix = prefixIdx < NFC_URI_PREFIXES.length ? NFC_URI_PREFIXES[prefixIdx] : "";
+                    String rest = new String(payload, 1, payload.length - 1, StandardCharsets.UTF_8).trim();
+                    payloads.add(prefix + rest);
+                } else if (tnf == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(type, NdefRecord.RTD_TEXT)) {
+                    int statusByte = payload[0] & 0xFF;
+                    Charset charset = (statusByte & 0x80) == 0 ? StandardCharsets.UTF_8 : StandardCharsets.UTF_16;
+                    int langLen = statusByte & 0x3F;
+                    if (1 + langLen <= payload.length) {
+                        String txt = new String(payload, 1 + langLen, payload.length - 1 - langLen, charset).trim();
+                        if (!txt.isEmpty()) payloads.add(txt);
+                    }
+                } else if (tnf == NdefRecord.TNF_ABSOLUTE_URI) {
+                    String uri = new String(payload, StandardCharsets.UTF_8).trim();
+                    if (!uri.isEmpty()) payloads.add(uri);
+                } else {
+                    Uri parsed = record.toUri();
+                    if (parsed != null) {
+                        payloads.add(parsed.toString());
+                    }
+                }
+            }
+        }
+        return payloads;
+    }
+
+    private void processNfcIntent(Intent intent) {
+        Tag tag = extractTagFromIntent(intent);
+        String targetWriteUri = armedWriteUri;
+
+        if (targetWriteUri != null) {
+            armedWriteUri = null;
+            if (tag == null) {
+                emitWriteResult(false, targetWriteUri, "Kein NFC-Tag erkannt. Bitte Tag etwas länger ruhig an die Rückseite halten.");
+                return;
+            }
+            EXECUTOR.execute(() -> performNativeNdefWrite(tag, targetWriteUri));
+            return;
+        }
+
+        List<String> payloads = new ArrayList<>();
+        String dataUri = intent.getDataString();
+        if (dataUri != null && !dataUri.trim().isEmpty()) {
+            payloads.add(dataUri.trim());
+        }
+
+        NdefMessage[] messages = extractNdefMessagesFromIntent(intent);
+        if (messages == null && tag != null) {
+            Ndef ndef = Ndef.get(tag);
+            if (ndef != null) {
+                try {
+                    NdefMessage cached = ndef.getCachedNdefMessage();
+                    if (cached != null) {
+                        messages = new NdefMessage[] { cached };
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+
+        for (String decoded : decodeNdefMessages(messages)) {
+            if (!payloads.contains(decoded)) {
+                payloads.add(decoded);
+            }
+        }
+
+        String uidHex = tag != null ? bytesToColonHex(tag.getId()) : "";
+        if (uidHex.isEmpty() && payloads.isEmpty()) {
+            return;
+        }
+
+        JSObject event = new JSObject();
+        event.put("uidHex", uidHex);
+        JSArray payloadArr = new JSArray();
+        for (String p : payloads) {
+            payloadArr.put(p);
+        }
+        event.put("payloads", payloadArr);
+
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> notifyListeners("nfcTagScanned", event, true));
+        }
+    }
+
+    private void performNativeNdefWrite(Tag tag, String uri) {
+        Ndef ndef = Ndef.get(tag);
+        NdefFormatable formatable = null;
+        try {
+            NdefRecord uriRecord = NdefRecord.createUri(uri);
+            NdefRecord aarRecord = NdefRecord.createApplicationRecord(getContext().getPackageName());
+            NdefMessage msgWithAar = new NdefMessage(new NdefRecord[] { uriRecord, aarRecord });
+            NdefMessage msgUriOnly = new NdefMessage(new NdefRecord[] { uriRecord });
+
+            if (ndef != null) {
+                IOException lastIo = null;
+                boolean wrote = false;
+                for (int attempt = 0; attempt < 2 && !wrote; attempt++) {
+                    try {
+                        if (!ndef.isConnected()) {
+                            ndef.connect();
+                        }
+                        if (!ndef.isWritable()) {
+                            emitWriteResult(false, uri, "Dieser NFC-Tag ist schreibgeschützt (Read-Only) und kann nicht überschrieben werden.");
+                            return;
+                        }
+                        int maxSize = ndef.getMaxSize();
+                        NdefMessage chosen = msgWithAar;
+                        if (maxSize > 0 && msgWithAar.toByteArray().length > maxSize) {
+                            if (msgUriOnly.toByteArray().length <= maxSize) {
+                                chosen = msgUriOnly;
+                            } else {
+                                emitWriteResult(false, uri, "Speicherplatz auf dem Tag reicht nicht aus (" + maxSize + " Bytes verfügbar, " + msgUriOnly.toByteArray().length + " Bytes benötigt).");
+                                return;
+                            }
+                        }
+                        ndef.writeNdefMessage(chosen);
+                        wrote = true;
+                    } catch (TagLostException lostEx) {
+                        throw lostEx;
+                    } catch (IOException ioEx) {
+                        lastIo = ioEx;
+                        try { ndef.close(); } catch (Exception ignored) {}
+                        if (attempt == 0) {
+                            try { Thread.sleep(60); } catch (InterruptedException ignored) {}
+                        }
+                    }
+                }
+                if (!wrote) {
+                    throw (lastIo != null ? lastIo : new IOException("Schreibvorgang fehlgeschlagen."));
+                }
+                vibratePattern("start");
+                emitWriteResult(true, uri, null);
+                return;
+            }
+
+            formatable = NdefFormatable.get(tag);
+            if (formatable != null) {
+                formatable.connect();
+                try {
+                    formatable.format(msgWithAar);
+                } catch (IOException | FormatException aarErr) {
+                    formatable.format(msgUriOnly);
+                }
+                vibratePattern("start");
+                emitWriteResult(true, uri, null);
+                return;
+            }
+
+            emitWriteResult(false, uri, "Dieser NFC-Tag unterstützt kein NDEF-Format.");
+        } catch (TagLostException e) {
+            vibratePattern("error");
+            emitWriteResult(false, uri, "Verbindung zum Tag verloren — bitte den NFC-Tag ca. 1 Sekunde ruhig an der Rückseite halten.");
+        } catch (FormatException e) {
+            vibratePattern("error");
+            emitWriteResult(false, uri, "NFC-Tag-Format wird nicht unterstützt oder ist beschädigt.");
+        } catch (Exception e) {
+            vibratePattern("error");
+            String msg = e.getMessage() != null && !e.getMessage().isEmpty()
+                ? e.getMessage()
+                : "NFC-Tag konnte nicht beschrieben werden.";
+            emitWriteResult(false, uri, msg);
+        } finally {
+            if (ndef != null) {
+                try { if (ndef.isConnected()) ndef.close(); } catch (Exception ignored) {}
+            }
+            if (formatable != null) {
+                try { if (formatable.isConnected()) formatable.close(); } catch (Exception ignored) {}
+            }
+        }
+    }
+
+    private void emitWriteResult(boolean success, String uri, String error) {
+        JSObject payload = new JSObject();
+        payload.put("success", success);
+        payload.put("uri", uri);
+        if (error != null) {
+            payload.put("error", error);
+        }
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> notifyListeners("nfcWriteResult", payload, true));
+        }
+    }
+
+    @PluginMethod
+    public void getNfcStatus(PluginCall call) {
+        Activity activity = getActivity();
+        NfcAdapter adapter = activity != null ? NfcAdapter.getDefaultAdapter(activity) : NfcAdapter.getDefaultAdapter(getContext());
+        boolean supported = adapter != null;
+        boolean enabled = adapter != null && adapter.isEnabled();
+        String status = !supported ? "NO_NFC" : (enabled ? "NFC_OK" : "NFC_DISABLED");
+        if (enabled && !foregroundDispatchActive) {
+            enableNfcForegroundDispatch();
+        }
+        JSObject result = new JSObject();
+        result.put("supported", supported);
+        result.put("enabled", enabled);
+        result.put("status", status);
+        call.resolve(result);
+    }
+
+    @PluginMethod
+    public void openNfcSettings(PluginCall call) {
+        Activity activity = getActivity();
+        if (activity == null) {
+            call.reject("Aktivität nicht verfügbar.");
+            return;
+        }
+        try {
+            activity.startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
+            call.resolve();
+        } catch (ActivityNotFoundException ex) {
+            try {
+                activity.startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                call.resolve();
+            } catch (ActivityNotFoundException secondary) {
+                call.reject("NFC-Einstellungen konnten nicht geöffnet werden.");
+            }
+        }
+    }
+
+    @PluginMethod
+    public void armNfcWrite(PluginCall call) {
+        String uri = call.getString("uri", "");
+        if (uri.trim().isEmpty()) {
+            call.reject("Ziel-URI fehlt.");
+            return;
+        }
+        Activity activity = getActivity();
+        NfcAdapter adapter = activity != null ? NfcAdapter.getDefaultAdapter(activity) : NfcAdapter.getDefaultAdapter(getContext());
+        if (adapter == null) {
+            call.reject("Dieses Gerät besitzt keine NFC-Hardware.");
+            return;
+        }
+        if (!adapter.isEnabled()) {
+            call.reject("NFC ist deaktiviert. Bitte aktiviere NFC in den Android-Schnelleinstellungen.");
+            return;
+        }
+        armedWriteUri = uri.trim();
+        enableNfcForegroundDispatch();
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void cancelNfcWrite(PluginCall call) {
+        armedWriteUri = null;
+        call.resolve();
+    }
 
     private void ensureFolders(List<String> folderUrls, String authHeader) throws IOException {
         for (String folderUrl : folderUrls) {
@@ -422,9 +819,7 @@ public class TaktWerkNativePlugin extends Plugin {
         });
     }
 
-    @PluginMethod
-    public void hapticFeedback(PluginCall call) {
-        String pattern = call.getString("pattern", "start");
+    private void vibratePattern(String pattern) {
         try {
             Context context = getContext();
             Vibrator vibrator;
@@ -458,10 +853,14 @@ public class TaktWerkNativePlugin extends Plugin {
                     }
                 }
             }
-            call.resolve();
-        } catch (Exception e) {
-            call.resolve();
-        }
+        } catch (Exception ignored) {}
+    }
+
+    @PluginMethod
+    public void hapticFeedback(PluginCall call) {
+        String pattern = call.getString("pattern", "start");
+        vibratePattern(pattern);
+        call.resolve();
     }
 
     private void ensureTimerChannel(Context context) {

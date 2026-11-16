@@ -1,4 +1,3 @@
-import { CapacitorNfc } from '@capgo/capacitor-nfc';
 import {
   Check,
   Copy,
@@ -16,8 +15,9 @@ import { isNativeCapacitor } from '../utils/apiClient';
 import { createId, formatCurrency, formatDateTimeDE } from '../utils/format';
 import {
   buildAppNfcUri,
-  encodeNdefUriRecord,
+  extractTagIdFromPayload,
 } from '../utils/nfcHelpers';
+import { TaktWerkNative } from '../utils/taktwerkNative';
 
 interface NdefRecordLike {
   recordType: string;
@@ -34,9 +34,12 @@ interface NdefReadingEventLike extends Event {
 
 interface NdefReaderLike {
   scan: (options?: { signal?: AbortSignal }) => Promise<void>;
-  write: (message: {
-    records: { recordType: string; data: string }[];
-  }) => Promise<void>;
+  write: (
+    message: {
+      records: { recordType: string; data: string }[];
+    },
+    options?: { signal?: AbortSignal }
+  ) => Promise<void>;
   onreading: ((event: NdefReadingEventLike) => void) | null;
   onreadingerror: (() => void) | null;
 }
@@ -82,7 +85,7 @@ export function NfcTasksView({
   const nfcSupported = nativeCapacitor || webNfcSupported;
   const [scanning, setScanning] = useState(false);
   const [nativeNfcStatus, setNativeNfcStatus] = useState<
-    'checking' | 'NFC_OK' | 'NFC_DISABLED' | 'NO_NFC' | 'NDEF_PUSH_DISABLED' | 'UNSUPPORTED'
+    'checking' | 'NFC_OK' | 'NFC_DISABLED' | 'NO_NFC' | 'UNSUPPORTED'
   >(nativeCapacitor ? 'checking' : 'UNSUPPORTED');
   const [nfcMessage, setNfcMessage] = useState<string | null>(null);
   const [nfcError, setNfcError] = useState<string | null>(null);
@@ -90,7 +93,7 @@ export function NfcTasksView({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [manualScanCode, setManualScanCode] = useState('');
   const abortRef = useRef<AbortController | null>(null);
-  const writeListenerRef = useRef<{ remove: () => Promise<void> } | null>(null);
+  const writeAbortRef = useRef<AbortController | null>(null);
   const onWritingStateChangeRef = useRef(onWritingStateChange);
   useEffect(() => {
     onWritingStateChangeRef.current = onWritingStateChange;
@@ -99,30 +102,55 @@ export function NfcTasksView({
   const refreshNativeStatus = async () => {
     if (!nativeCapacitor) return;
     try {
-      const { supported } = await CapacitorNfc.isSupported();
-      if (!supported) {
-        setNativeNfcStatus('UNSUPPORTED');
+      const res = await TaktWerkNative.getNfcStatus();
+      if (!res.supported) {
+        setNativeNfcStatus('NO_NFC');
         return;
       }
-      const { status } = await CapacitorNfc.getStatus();
-      setNativeNfcStatus(status);
+      setNativeNfcStatus(res.status);
     } catch {
       setNativeNfcStatus('UNSUPPORTED');
     }
   };
 
   useEffect(() => {
+    let writeResultHandle: { remove: () => Promise<void> } | null = null;
+    let cancelled = false;
+
     if (nativeCapacitor) {
       void refreshNativeStatus();
-    }
-    return () => {
-      abortRef.current?.abort();
-      if (writeListenerRef.current) {
-        void writeListenerRef.current.remove();
-        writeListenerRef.current = null;
-        if (nativeCapacitor) {
-          void CapacitorNfc.stopScanning().catch(() => {});
+      void TaktWerkNative.addListener('nfcWriteResult', (res) => {
+        setWritingTagId(null);
+        onWritingStateChangeRef.current?.(false);
+        if (res.success) {
+          setNfcError(null);
+          setNfcMessage(
+            `App-URI (${res.uri}) erfolgreich auf den NFC-Tag geschrieben! Beim nächsten Scan startet TaktWerk automatisch — auch wenn die App geschlossen ist.`
+          );
+        } else {
+          setNfcMessage(null);
+          setNfcError(res.error || 'NFC-Tag konnte nicht beschrieben werden.');
         }
+      })
+        .then((handle) => {
+          if (cancelled) {
+            void handle.remove();
+          } else {
+            writeResultHandle = handle;
+          }
+        })
+        .catch(() => {});
+    }
+
+    return () => {
+      cancelled = true;
+      abortRef.current?.abort();
+      writeAbortRef.current?.abort();
+      if (writeResultHandle) {
+        void writeResultHandle.remove();
+      }
+      if (nativeCapacitor) {
+        void TaktWerkNative.cancelNfcWrite().catch(() => {});
         onWritingStateChangeRef.current?.(false);
       }
     };
@@ -228,18 +256,9 @@ export function NfcTasksView({
     for (const record of event.message.records) {
       if (record.data) {
         const text = decoder.decode(record.data).trim();
-        if (text.includes('nfc=')) {
-          try {
-            const url = new URL(text);
-            const param = url.searchParams.get('nfc');
-            if (param) return param;
-          } catch {
-            const match = text.match(/nfc=([^&\s]+)/);
-            if (match?.[1]) return decodeURIComponent(match[1]);
-          }
-        }
-        if (record.recordType === 'text' && text) {
-          return text;
+        const extracted = extractTagIdFromPayload(text);
+        if (extracted) {
+          return extracted;
         }
       }
     }
@@ -273,32 +292,25 @@ export function NfcTasksView({
     }
   };
 
-  const stopNativeWriteListeners = async () => {
-    if (writeListenerRef.current) {
-      await writeListenerRef.current.remove().catch(() => {});
-      writeListenerRef.current = null;
-    }
+  const stopNativeWriteMode = async () => {
     if (nativeCapacitor) {
-      await CapacitorNfc.stopScanning().catch(() => {});
+      await TaktWerkNative.cancelNfcWrite().catch(() => {});
+    } else {
+      writeAbortRef.current?.abort();
+      writeAbortRef.current = null;
     }
     setWritingTagId(null);
     onWritingStateChange?.(false);
   };
 
   const ensureNativeNfcReady = async (): Promise<boolean> => {
-    const { supported } = await CapacitorNfc.isSupported();
-    if (!supported) {
-      setNativeNfcStatus('UNSUPPORTED');
-      setNfcError('Dieses Gerät unterstützt kein NFC.');
-      return false;
-    }
-    const { status } = await CapacitorNfc.getStatus();
-    setNativeNfcStatus(status);
-    if (status === 'NO_NFC') {
+    const res = await TaktWerkNative.getNfcStatus();
+    setNativeNfcStatus(res.status);
+    if (!res.supported || res.status === 'NO_NFC') {
       setNfcError('Keine NFC-Hardware auf diesem Gerät gefunden.');
       return false;
     }
-    if (status === 'NFC_DISABLED') {
+    if (!res.enabled || res.status === 'NFC_DISABLED') {
       setNfcError('NFC ist deaktiviert. Bitte schalte NFC in den Android-Schnelleinstellungen ein.');
       return false;
     }
@@ -364,60 +376,26 @@ export function NfcTasksView({
       return;
     }
 
-    if (nativeCapacitor) {
-      if (writingTagId === task.id) {
-        await stopNativeWriteListeners();
-        setNfcMessage('Schreibvorgang abgebrochen. Automatischer NFC-Empfang wieder aktiv.');
-        return;
-      }
+    if (writingTagId === task.id) {
+      await stopNativeWriteMode();
+      setNfcMessage('Schreibvorgang abgebrochen. Automatischer NFC-Empfang wieder aktiv.');
+      return;
+    }
 
+    if (nativeCapacitor) {
       try {
         const ready = await ensureNativeNfcReady();
         if (!ready) return;
 
-        // Pause global foreground reader first and give React cleanup a brief tick to finish stopScanning()
+        const appUri = buildAppNfcUri(task.tagUid);
         onWritingStateChange?.(true);
         setWritingTagId(task.id);
+        await TaktWerkNative.armNfcWrite({ uri: appUri });
         setNfcMessage(
-          `Bitte NFC-Tag für "${task.title}" ans Smartphone halten, um die App-URI zu schreiben...`
+          `Schreibmodus aktiv für "${task.title}" — NFC-Tag jetzt ruhig an die Rückseite des Smartphones halten.`
         );
-        await new Promise((resolve) => setTimeout(resolve, 120));
-        if (writeListenerRef.current) {
-          await writeListenerRef.current.remove().catch(() => {});
-          writeListenerRef.current = null;
-        }
-
-        let handled = false;
-        const writeListener = await CapacitorNfc.addListener('nfcEvent', async () => {
-          if (handled) return;
-          handled = true;
-          try {
-            const appUri = buildAppNfcUri(task.tagUid);
-            await CapacitorNfc.write({
-              records: [encodeNdefUriRecord(appUri)],
-              allowFormat: true,
-            });
-            setNfcMessage(
-              `App-URI (${appUri}) erfolgreich geschrieben! Beim nächsten Scan startet TaktWerk sofort automatisch.`
-            );
-          } catch (writeErr) {
-            setNfcError(
-              writeErr instanceof Error
-                ? `Beschreiben fehlgeschlagen: ${writeErr.message}`
-                : 'Tag-Schreibfehler.'
-            );
-          } finally {
-            await stopNativeWriteListeners();
-          }
-        });
-        writeListenerRef.current = writeListener;
-
-        await CapacitorNfc.startScanning({
-          invalidateAfterFirstRead: false,
-          androidReaderModeFlags: 15,
-        });
       } catch (err) {
-        await stopNativeWriteListeners();
+        await stopNativeWriteMode();
         setNfcError(
           err instanceof Error ? `Beschreiben fehlgeschlagen: ${err.message}` : 'Tag-Schreibfehler.'
         );
@@ -426,19 +404,33 @@ export function NfcTasksView({
     }
 
     try {
+      // Stop active web scan so Chrome does not conflict while waiting to write
+      abortRef.current?.abort();
+      abortRef.current = null;
+      setScanning(false);
+
+      const writeController = new AbortController();
+      writeAbortRef.current = writeController;
       setWritingTagId(task.id);
+      setNfcMessage(
+        `Schreibmodus aktiv — NFC-Tag für "${task.title}" jetzt an die Rückseite des Smartphones halten...`
+      );
       const NdefCtor = (window as unknown as { NDEFReader: new () => NdefReaderLike }).NDEFReader;
       const writer = new NdefCtor();
       const triggerUrl = `${window.location.origin}/?nfc=${encodeURIComponent(task.tagUid)}`;
-      await writer.write({
-        records: [{ recordType: 'url', data: triggerUrl }],
-      });
+      await writer.write(
+        { records: [{ recordType: 'url', data: triggerUrl }] },
+        { signal: writeController.signal }
+      );
       setNfcMessage(`Trigger-URL erfolgreich auf den NFC-Tag für "${task.title}" geschrieben.`);
     } catch (err) {
-      setNfcError(
-        err instanceof Error ? `Beschreiben fehlgeschlagen: ${err.message}` : 'Tag-Schreibfehler.'
-      );
+      if ((err as { name?: string })?.name !== 'AbortError') {
+        setNfcError(
+          err instanceof Error ? `Beschreiben fehlgeschlagen: ${err.message}` : 'Tag-Schreibfehler.'
+        );
+      }
     } finally {
+      writeAbortRef.current = null;
       setWritingTagId(null);
     }
   };
@@ -497,14 +489,14 @@ export function NfcTasksView({
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {nativeCapacitor
                   ? writingTagId
-                    ? 'Schreibmodus aktiv — halte den NFC-Tag zum Beschreiben an die Rückseite deines Smartphones.'
+                    ? 'Schreibmodus aktiv — halte den NFC-Tag zum Beschreiben ruhig an die Rückseite deines Smartphones.'
                     : nativeNfcStatus === 'NFC_DISABLED'
-                    ? 'NFC ist am Smartphone deaktiviert. Bitte aktiviere NFC in den Android-Schnelleinstellungen.'
+                    ? 'NFC ist am Smartphone deaktiviert. Tippe rechts auf „NFC aktivieren“, um die Android-NFC-Einstellungen zu öffnen.'
                     : nativeNfcStatus === 'NO_NFC' || nativeNfcStatus === 'UNSUPPORTED'
                     ? 'Auf diesem Gerät wurde keine aktive NFC-Hardware erkannt.'
-                    : 'Dauerhaft aktiv: Halte einfach jederzeit einen NFC-Tag ans Smartphone (auf jeder App-Seite oder bei beschriebenen App-Tags auch direkt vom Startbildschirm).'
+                    : 'Ohne Scanner-Start aktiv: Solange die App offen ist, erkennt TaktWerk jeden Tag sofort. Einmal mit „App-Tag schreiben“ beschriebene Tags starten die Zeiterfassung sogar, wenn TaktWerk komplett geschlossen ist!'
                   : webNfcSupported
-                  ? 'Web NFC ist in diesem Browser verfügbar. Starte den Scanner oder beschreibe Tags direkt mit der TaktWerk-URL.'
+                  ? 'Browser-Modus (Chrome Web NFC): Aus Sicherheitsgründen verlangen Webbrowser einen Klick auf „NFC-Scanner starten“. Für automatisches Scannen ohne Knopf & bei geschlossener App bitte die TaktWerk Android-APK nutzen.'
                   : 'Desktop / iOS erkannt: Kopiere die Trigger-URL auf deinen NFC-Tag (z. B. mit NFC Tools) — beim Scannen startet TaktWerk die Aufgabe automatisch.'}
               </p>
             </div>
@@ -512,7 +504,7 @@ export function NfcTasksView({
               writingTagId ? (
                 <button
                   type="button"
-                  onClick={() => void stopNativeWriteListeners()}
+                  onClick={() => void stopNativeWriteMode()}
                   className="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-300 dark:hover:bg-red-950 whitespace-nowrap shrink-0 cursor-pointer"
                 >
                   Schreiben abbrechen
@@ -520,7 +512,13 @@ export function NfcTasksView({
               ) : (
                 <button
                   type="button"
-                  onClick={() => void refreshNativeStatus()}
+                  onClick={() => {
+                    if (nativeNfcStatus === 'NFC_DISABLED') {
+                      void TaktWerkNative.openNfcSettings().catch(() => {});
+                    } else {
+                      void refreshNativeStatus();
+                    }
+                  }}
                   className={`inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-xs font-semibold whitespace-nowrap shrink-0 cursor-pointer ${
                     nativeNfcStatus === 'NFC_OK'
                       ? 'border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/50 dark:text-emerald-300'
@@ -531,9 +529,9 @@ export function NfcTasksView({
                 >
                   <Nfc className="h-4 w-4" />
                   {nativeNfcStatus === 'NFC_OK'
-                    ? 'Auto-NFC aktiv'
+                    ? 'Auto-NFC bereit'
                     : nativeNfcStatus === 'NFC_DISABLED'
-                    ? 'NFC aus — prüfen'
+                    ? 'NFC aktivieren'
                     : nativeNfcStatus === 'checking'
                     ? 'Prüfe NFC...'
                     : 'NFC prüfen'}
