@@ -2,7 +2,7 @@ import { Capacitor } from '@capacitor/core';
 import type { ActiveTimer, AppDatabase, NextcloudConfigInfo } from '../types';
 import { formatDuration, getActiveTimerElapsedMs } from './format';
 import { createEmptyDatabase } from './sampleData';
-import { TaktWerkNative } from './taktwerkNative';
+import { TaktWerkNative, type NativeNotificationStatus } from './taktwerkNative';
 
 const SERVER_URL_KEY = 'taktwerk-server-url';
 const NATIVE_DB_KEY = 'taktwerk-native-db';
@@ -601,24 +601,56 @@ export function triggerNfcHaptic(pattern: 'start' | 'stop' | 'error'): void {
   }
 }
 
-export function syncActiveTimerNotification(
+export async function getNativeNotificationStatus(): Promise<NativeNotificationStatus | null> {
+  if (!isNativeCapacitor()) return null;
+  try {
+    return await TaktWerkNative.getNotificationStatus();
+  } catch {
+    return null;
+  }
+}
+
+export async function requestNativeNotificationPermission(): Promise<NativeNotificationStatus | null> {
+  if (!isNativeCapacitor()) return null;
+  try {
+    return await TaktWerkNative.requestNotificationPermission();
+  } catch {
+    return null;
+  }
+}
+
+export async function openNativeNotificationSettings(): Promise<void> {
+  if (!isNativeCapacitor()) return;
+  try {
+    await TaktWerkNative.openNotificationSettings();
+  } catch {
+    // Ignore error
+  }
+}
+
+export async function syncActiveTimerNotification(
   timer: ActiveTimer | null,
   customerName: string
-): void {
-  if (!isNativeCapacitor()) return;
+): Promise<NativeNotificationStatus | null> {
+  if (!isNativeCapacitor()) return null;
   if (!timer) {
     void TaktWerkNative.clearActiveTimerNotification().catch(() => {});
-    return;
+    return null;
   }
   const elapsedMs = getActiveTimerElapsedMs(timer);
   const adjustedStartMs = Date.now() - elapsedMs;
-  void TaktWerkNative.showActiveTimerNotification({
-    title: timer.title,
-    customer: customerName,
-    startTimeMs: adjustedStartMs,
-    isPaused: Boolean(timer.pausedAt),
-    pausedDuration: timer.pausedAt
-      ? formatDuration(Math.floor(elapsedMs / 1000))
-      : undefined,
-  }).catch(() => {});
+  try {
+    return await TaktWerkNative.showActiveTimerNotification({
+      title: timer.title,
+      customer: customerName,
+      notes: timer.notes,
+      startTimeMs: adjustedStartMs,
+      isPaused: Boolean(timer.pausedAt),
+      pausedDuration: timer.pausedAt
+        ? formatDuration(Math.floor(elapsedMs / 1000))
+        : undefined,
+    });
+  } catch {
+    return null;
+  }
 }

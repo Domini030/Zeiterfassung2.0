@@ -1,4 +1,6 @@
 import {
+  Bell,
+  BellRing,
   CheckSquare,
   Download,
   FilePlus2,
@@ -8,6 +10,7 @@ import {
   Pencil,
   Play,
   Plus,
+  Settings,
   Square,
   Trash2,
 } from 'lucide-react';
@@ -21,6 +24,7 @@ import type {
   TaxRate,
   TimeEntry,
 } from '../types';
+import type { NativeNotificationStatus } from '../utils/taktwerkNative';
 import { downloadOrShareTextFile, timeEntriesToCsv } from '../utils/exportBackup';
 import {
   createId,
@@ -60,6 +64,9 @@ interface TimeTrackerViewProps {
   onCreateInvoiceFromEntries: (customerId: string, entryIds: string[]) => void;
   onNavigate: (section: 'customers' | 'products' | 'nfc') => void;
   onNotify: (msg: string, isError?: boolean) => void;
+  notificationStatus?: NativeNotificationStatus | null;
+  onRequestNotificationPermission?: () => void;
+  onOpenNotificationSettings?: () => void;
 }
 
 export function TimeTrackerView({
@@ -82,6 +89,9 @@ export function TimeTrackerView({
   onCreateInvoiceFromEntries,
   onNavigate,
   onNotify,
+  notificationStatus,
+  onRequestNotificationPermission,
+  onOpenNotificationSettings,
 }: TimeTrackerViewProps) {
   const serviceProducts = useMemo(
     () => products.filter((p) => p.type === 'service'),
@@ -428,6 +438,46 @@ export function TimeTrackerView({
         </div>
       )}
 
+      {/* Android Status Bar Notification Banner if permission required / blocked */}
+      {notificationStatus && !notificationStatus.enabled && (
+        <div className="flex flex-col gap-3 rounded-xl border border-violet-200 bg-violet-50/80 p-4 text-sm text-violet-950 dark:border-violet-900/60 dark:bg-[#1f1738] dark:text-violet-100 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <BellRing className="mt-0.5 h-5 w-5 shrink-0 text-violet-600 dark:text-violet-400" />
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-slate-100">
+                Statusleisten-Timer auf deinem Smartphone aktivieren
+              </p>
+              <p className="text-xs text-slate-600 dark:text-slate-300">
+                Damit der Timer ganz oben in der Benachrichtigungsleiste und auf dem Sperrbildschirm mit Pausieren/Stoppen-Tasten sichtbar bleibt, benötigt TaktWerk die Benachrichtigungsberechtigung.
+              </p>
+            </div>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            {notificationStatus.status === 'PERMISSION_REQUIRED' && onRequestNotificationPermission && (
+              <button
+                type="button"
+                onClick={onRequestNotificationPermission}
+                className="rounded-lg bg-violet-700 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-violet-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap cursor-pointer"
+              >
+                Benachrichtigung erlauben
+              </button>
+            )}
+            {(notificationStatus.status === 'PERMISSION_DENIED' ||
+              notificationStatus.status === 'CHANNEL_DISABLED') &&
+              onOpenNotificationSettings && (
+                <button
+                  type="button"
+                  onClick={onOpenNotificationSettings}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-violet-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-violet-900 transition-colors hover:bg-violet-100 dark:border-violet-800 dark:bg-[#281e46] dark:text-violet-200 whitespace-nowrap cursor-pointer"
+                >
+                  <Settings className="h-3.5 w-3.5" />
+                  In Android-Einstellungen aktivieren
+                </button>
+              )}
+          </div>
+        </div>
+      )}
+
       {/* Dominant Chronometer / Active Timer Section */}
       <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
         {activeTimer ? (
@@ -450,9 +500,17 @@ export function TimeTrackerView({
                   {productMap.get(activeTimer.productId)?.name ?? 'Leistung'}
                 </span>
               </div>
-              <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
-                {activeTimer.title}
-              </h2>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
+                  {activeTimer.title}
+                </h2>
+                {notificationStatus?.enabled && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 dark:border-violet-800 dark:bg-[#231b3b] dark:text-violet-300">
+                    <Bell className="h-3 w-3 text-violet-500" />
+                    Statusleiste aktiv (oberste Priorität)
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 Gestartet am {formatDateTimeDE(activeTimer.startTime)} · Stundensatz{' '}
                 <span className="font-mono tabular-nums">

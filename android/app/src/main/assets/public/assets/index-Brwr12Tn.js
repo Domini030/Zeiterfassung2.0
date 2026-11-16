@@ -12145,7 +12145,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-6GXGpf7g.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-DsWflIoz.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -12219,6 +12219,43 @@ var createLucideIcon = (iconName, iconNode) => {
 	Component.displayName = toPascalCase(iconName);
 	return Component;
 };
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var BellRing = createLucideIcon("bell-ring", [
+	["path", {
+		d: "M10.268 21a2 2 0 0 0 3.464 0",
+		key: "vwvbt9"
+	}],
+	["path", {
+		d: "M22 8c0-2.3-.8-4.3-2-6",
+		key: "5bb3ad"
+	}],
+	["path", {
+		d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+		key: "11g9vi"
+	}],
+	["path", {
+		d: "M4 2C2.8 3.7 2 5.7 2 8",
+		key: "tap9e0"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Bell = createLucideIcon("bell", [["path", {
+	d: "M10.268 21a2 2 0 0 0 3.464 0",
+	key: "vwvbt9"
+}], ["path", {
+	d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+	key: "11g9vi"
+}]]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -12880,6 +12917,21 @@ var Server = createLucideIcon("server", [
 		key: "nzw8ys"
 	}]
 ]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Settings = createLucideIcon("settings", [["path", {
+	d: "M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915",
+	key: "1i5ecw"
+}], ["circle", {
+	cx: "12",
+	cy: "12",
+	r: "3",
+	key: "1v7zrd"
+}]]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -15373,21 +15425,48 @@ function triggerNfcHaptic(pattern) {
 		else navigator.vibrate(80);
 	}
 }
-function syncActiveTimerNotification(timer, customerName) {
+async function getNativeNotificationStatus() {
+	if (!isNativeCapacitor()) return null;
+	try {
+		return await TaktWerkNative.getNotificationStatus();
+	} catch {
+		return null;
+	}
+}
+async function requestNativeNotificationPermission() {
+	if (!isNativeCapacitor()) return null;
+	try {
+		return await TaktWerkNative.requestNotificationPermission();
+	} catch {
+		return null;
+	}
+}
+async function openNativeNotificationSettings() {
 	if (!isNativeCapacitor()) return;
+	try {
+		await TaktWerkNative.openNotificationSettings();
+	} catch {}
+}
+async function syncActiveTimerNotification(timer, customerName) {
+	if (!isNativeCapacitor()) return null;
 	if (!timer) {
 		TaktWerkNative.clearActiveTimerNotification().catch(() => {});
-		return;
+		return null;
 	}
 	const elapsedMs = getActiveTimerElapsedMs(timer);
 	const adjustedStartMs = Date.now() - elapsedMs;
-	TaktWerkNative.showActiveTimerNotification({
-		title: timer.title,
-		customer: customerName,
-		startTimeMs: adjustedStartMs,
-		isPaused: Boolean(timer.pausedAt),
-		pausedDuration: timer.pausedAt ? formatDuration(Math.floor(elapsedMs / 1e3)) : void 0
-	}).catch(() => {});
+	try {
+		return await TaktWerkNative.showActiveTimerNotification({
+			title: timer.title,
+			customer: customerName,
+			notes: timer.notes,
+			startTimeMs: adjustedStartMs,
+			isPaused: Boolean(timer.pausedAt),
+			pausedDuration: timer.pausedAt ? formatDuration(Math.floor(elapsedMs / 1e3)) : void 0
+		});
+	} catch {
+		return null;
+	}
 }
 // node_modules/@babel/runtime/helpers/esm/typeof.js
 function _typeof(o) {
@@ -34731,7 +34810,7 @@ function le() {
 	}, t.allowFsRead = void 0, t.loadImageFile = t.loadFile;
 }(E.API), function(e) {
 	function r() {
-		return (i.html2canvas ? Promise.resolve(i.html2canvas) : __vitePreload(() => import("./html2canvas-CN4jWnIP.js").then((m) => /* @__PURE__ */ __toESM(m.default)), [])).catch(function(t) {
+		return (i.html2canvas ? Promise.resolve(i.html2canvas) : __vitePreload(() => import("./html2canvas-DVE2-sh1.js").then((m) => /* @__PURE__ */ __toESM(m.default)), [])).catch(function(t) {
 			return Promise.reject(/* @__PURE__ */ new Error("Could not load html2canvas: " + t));
 		}).then(function(t) {
 			return t.default ? t.default : t;
@@ -35898,7 +35977,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-CJdZWoXl.js"), [])).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-zuEINlQu.js"), [])).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -46198,7 +46277,7 @@ function Sidebar({ activeSection, onSelectSection, nextcloud, openTimeCount, unp
 	] });
 }
 // src/components/TimeTrackerView.tsx
-function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, activeTimer, elapsedSeconds, onStartTimer, onPauseTimer, onResumeTimer, onStopTimer, onDiscardTimer, onAddManualEntry, onUpdateEntry, onDeleteEntry, onToggleBillable, onCreateInvoiceFromEntries, onNavigate, onNotify }) {
+function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, activeTimer, elapsedSeconds, onStartTimer, onPauseTimer, onResumeTimer, onStopTimer, onDiscardTimer, onAddManualEntry, onUpdateEntry, onDeleteEntry, onToggleBillable, onCreateInvoiceFromEntries, onNavigate, onNotify, notificationStatus, onRequestNotificationPermission, onOpenNotificationSettings }) {
 	const serviceProducts = (0, import_react.useMemo)(() => products.filter((p) => p.type === "service"), [products]);
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [productId, setProductId] = (0, import_react.useState)(serviceProducts[0]?.id ?? products[0]?.id ?? "");
@@ -46435,6 +46514,32 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 					})]
 				})]
 			}),
+			notificationStatus && !notificationStatus.enabled && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex flex-col gap-3 rounded-xl border border-violet-200 bg-violet-50/80 p-4 text-sm text-violet-950 dark:border-violet-900/60 dark:bg-[#1f1738] dark:text-violet-100 sm:flex-row sm:items-center sm:justify-between",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-start gap-3",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BellRing, { className: "mt-0.5 h-5 w-5 shrink-0 text-violet-600 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "font-semibold text-slate-900 dark:text-slate-100",
+						children: "Statusleisten-Timer auf deinem Smartphone aktivieren"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-xs text-slate-600 dark:text-slate-300",
+						children: "Damit der Timer ganz oben in der Benachrichtigungsleiste und auf dem Sperrbildschirm mit Pausieren/Stoppen-Tasten sichtbar bleibt, benötigt TaktWerk die Benachrichtigungsberechtigung."
+					})] })]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex shrink-0 items-center gap-2",
+					children: [notificationStatus.status === "PERMISSION_REQUIRED" && onRequestNotificationPermission && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: onRequestNotificationPermission,
+						className: "rounded-lg bg-violet-700 px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-violet-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap cursor-pointer",
+						children: "Benachrichtigung erlauben"
+					}), (notificationStatus.status === "PERMISSION_DENIED" || notificationStatus.status === "CHANNEL_DISABLED") && onOpenNotificationSettings && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: onOpenNotificationSettings,
+						className: "inline-flex items-center gap-1.5 rounded-lg border border-violet-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-violet-900 transition-colors hover:bg-violet-100 dark:border-violet-800 dark:bg-[#281e46] dark:text-violet-200 whitespace-nowrap cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Settings, { className: "h-3.5 w-3.5" }), "In Android-Einstellungen aktivieren"]
+					})]
+				})]
+			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 				className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
 				children: [activeTimer ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -46464,9 +46569,15 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 									})
 								]
 							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-xl font-bold text-slate-900 dark:text-slate-100",
-								children: activeTimer.title
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-2.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: "font-display text-xl font-bold text-slate-900 dark:text-slate-100",
+									children: activeTimer.title
+								}), notificationStatus?.enabled && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 dark:border-violet-800 dark:bg-[#231b3b] dark:text-violet-300",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, { className: "h-3 w-3 text-violet-500" }), "Statusleiste aktiv (oberste Priorität)"]
+								})]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
 								className: "text-xs text-slate-500 dark:text-slate-400",
@@ -47029,6 +47140,15 @@ function App() {
 	const [pendingScannedUid, setPendingScannedUid] = (0, import_react.useState)(null);
 	const [remoteNewerAt, setRemoteNewerAt] = (0, import_react.useState)(null);
 	const [pushConflictAt, setPushConflictAt] = (0, import_react.useState)(null);
+	const [notificationStatus, setNotificationStatus] = (0, import_react.useState)(null);
+	const checkNotificationStatus = (0, import_react.useCallback)(async () => {
+		if (!isNativeCapacitor()) return;
+		const status = await getNativeNotificationStatus();
+		if (status) setNotificationStatus(status);
+	}, []);
+	(0, import_react.useEffect)(() => {
+		checkNotificationStatus();
+	}, [checkNotificationStatus]);
 	const deepLinkHandledRef = (0, import_react.useRef)(false);
 	const lastNfcTriggerRef = (0, import_react.useRef)(null);
 	const dbRef = (0, import_react.useRef)(db);
@@ -47295,7 +47415,9 @@ function App() {
 	(0, import_react.useEffect)(() => {
 		if (loading) return;
 		const customerName = db.activeTimer ? db.customers.find((c) => c.id === db.activeTimer.customerId)?.companyName ?? "" : "";
-		syncActiveTimerNotification(db.activeTimer, customerName);
+		syncActiveTimerNotification(db.activeTimer, customerName).then((status) => {
+			if (status) setNotificationStatus(status);
+		});
 	}, [
 		db.activeTimer,
 		db.customers,
@@ -47324,61 +47446,102 @@ function App() {
 		});
 		notify(`Timer gestartet: ${timer.title}`);
 	};
-	const handlePauseTimer = () => {
-		if (!db.activeTimer || db.activeTimer.pausedAt) return;
-		const updatedTimer = {
-			...db.activeTimer,
-			pausedAt: (/* @__PURE__ */ new Date()).toISOString()
-		};
-		persistDb({
-			...db,
-			activeTimer: updatedTimer
-		});
-		notify(`Timer pausiert: ${updatedTimer.title}`);
-	};
-	const handleResumeTimer = () => {
-		if (!db.activeTimer || !db.activeTimer.pausedAt) return;
-		const pausedMs = new Date(db.activeTimer.pausedAt).getTime();
-		const addedPause = Math.max(0, Date.now() - pausedMs);
-		const updatedTimer = {
-			...db.activeTimer,
-			pausedAt: null,
-			accumulatedPausedMs: (db.activeTimer.accumulatedPausedMs ?? 0) + addedPause
-		};
-		persistDb({
-			...db,
-			activeTimer: updatedTimer
-		});
-		notify(`Timer fortgesetzt: ${updatedTimer.title}`);
-	};
-	const handleStopTimer = () => {
-		if (!db.activeTimer) return;
+	const handleStopTimer = (0, import_react.useCallback)(() => {
+		if (!dbRef.current.activeTimer) return;
 		const now = /* @__PURE__ */ new Date();
-		const durationSeconds = Math.max(1, Math.floor(getActiveTimerElapsedMs(db.activeTimer, now.getTime()) / 1e3));
+		const durationSeconds = Math.max(1, Math.floor(getActiveTimerElapsedMs(dbRef.current.activeTimer, now.getTime()) / 1e3));
 		const entry = {
 			id: createId("time"),
-			customerId: db.activeTimer.customerId,
-			productId: db.activeTimer.productId,
-			nfcTaskId: db.activeTimer.nfcTaskId,
-			title: db.activeTimer.title,
-			notes: db.activeTimer.notes,
-			startTime: db.activeTimer.startTime,
+			customerId: dbRef.current.activeTimer.customerId,
+			productId: dbRef.current.activeTimer.productId,
+			nfcTaskId: dbRef.current.activeTimer.nfcTaskId,
+			title: dbRef.current.activeTimer.title,
+			notes: dbRef.current.activeTimer.notes,
+			startTime: dbRef.current.activeTimer.startTime,
 			endTime: now.toISOString(),
 			durationSeconds,
-			hourlyRateNet: db.activeTimer.hourlyRateNet,
-			taxRate: db.activeTimer.taxRate,
+			hourlyRateNet: dbRef.current.activeTimer.hourlyRateNet,
+			taxRate: dbRef.current.activeTimer.taxRate,
 			billable: true,
 			billedInvoiceId: null,
-			source: db.activeTimer.source,
+			source: dbRef.current.activeTimer.source,
 			createdAt: now.toISOString()
 		};
 		persistDb({
-			...db,
+			...dbRef.current,
 			activeTimer: null,
-			timeEntries: [entry, ...db.timeEntries]
+			timeEntries: [entry, ...dbRef.current.timeEntries]
 		});
 		notify(`Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`);
-	};
+	}, [notify, persistDb]);
+	const handlePauseTimer = (0, import_react.useCallback)(() => {
+		if (!dbRef.current.activeTimer || dbRef.current.activeTimer.pausedAt) return;
+		const updatedTimer = {
+			...dbRef.current.activeTimer,
+			pausedAt: (/* @__PURE__ */ new Date()).toISOString()
+		};
+		persistDb({
+			...dbRef.current,
+			activeTimer: updatedTimer
+		});
+		notify(`Timer pausiert: ${updatedTimer.title}`);
+	}, [notify, persistDb]);
+	const handleResumeTimer = (0, import_react.useCallback)(() => {
+		if (!dbRef.current.activeTimer || !dbRef.current.activeTimer.pausedAt) return;
+		const pausedMs = new Date(dbRef.current.activeTimer.pausedAt).getTime();
+		const addedPause = Math.max(0, Date.now() - pausedMs);
+		const updatedTimer = {
+			...dbRef.current.activeTimer,
+			pausedAt: null,
+			accumulatedPausedMs: (dbRef.current.activeTimer.accumulatedPausedMs ?? 0) + addedPause
+		};
+		persistDb({
+			...dbRef.current,
+			activeTimer: updatedTimer
+		});
+		notify(`Timer fortgesetzt: ${updatedTimer.title}`);
+	}, [notify, persistDb]);
+	(0, import_react.useEffect)(() => {
+		if (!isNativeCapacitor()) return;
+		let listenerHandle = null;
+		let cancelled = false;
+		const handleAction = (action) => {
+			if (action === "pause") handlePauseTimer();
+			else if (action === "resume") handleResumeTimer();
+			else if (action === "stop") handleStopTimer();
+		};
+		TaktWerkNative.addListener("timerNotificationAction", (event) => {
+			if (event?.action) handleAction(event.action);
+		}).then((handle) => {
+			if (cancelled) handle.remove();
+			else listenerHandle = handle;
+		}).catch(() => {});
+		TaktWerkNative.getPendingTimerAction().then((res) => {
+			if (res?.action) handleAction(res.action);
+		});
+		return () => {
+			cancelled = true;
+			if (listenerHandle) listenerHandle.remove();
+		};
+	}, [
+		handlePauseTimer,
+		handleResumeTimer,
+		handleStopTimer
+	]);
+	const handleRequestNotificationPermission = (0, import_react.useCallback)(async () => {
+		const status = await requestNativeNotificationPermission();
+		if (status) {
+			setNotificationStatus(status);
+			if (status.enabled) {
+				notify("Benachrichtigungen aktiviert – Timer wird nun in der Statusleiste angezeigt.");
+				const customerName = dbRef.current.activeTimer ? dbRef.current.customers.find((c) => c.id === dbRef.current.activeTimer.customerId)?.companyName ?? "" : "";
+				syncActiveTimerNotification(dbRef.current.activeTimer, customerName);
+			}
+		}
+	}, [notify]);
+	const handleOpenNotificationSettings = (0, import_react.useCallback)(async () => {
+		await openNativeNotificationSettings();
+	}, []);
 	const handleDiscardTimer = () => {
 		if (!db.activeTimer) return;
 		persistDb({
@@ -47749,7 +47912,10 @@ function App() {
 									setSection("invoices");
 								},
 								onNavigate: (target) => setSection(target),
-								onNotify: notify
+								onNotify: notify,
+								notificationStatus,
+								onRequestNotificationPermission: handleRequestNotificationPermission,
+								onOpenNotificationSettings: handleOpenNotificationSettings
 							}),
 							section === "analytics" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnalyticsView, {
 								customers: db.customers,

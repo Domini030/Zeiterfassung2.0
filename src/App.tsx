@@ -31,7 +31,10 @@ import {
   apiLoadDb,
   apiSaveDb,
   apiSyncNextcloud,
+  getNativeNotificationStatus,
   isNativeCapacitor,
+  openNativeNotificationSettings,
+  requestNativeNotificationPermission,
   syncActiveTimerNotification,
   triggerNfcHaptic,
 } from './utils/apiClient';
@@ -43,7 +46,7 @@ import {
 } from './utils/format';
 import { extractTagIdFromPayload } from './utils/nfcHelpers';
 import { createEmptyDatabase, createSampleDatabase } from './utils/sampleData';
-import { TaktWerkNative } from './utils/taktwerkNative';
+import { TaktWerkNative, type NativeNotificationStatus } from './utils/taktwerkNative';
 
 const SECTION_TITLES: Record<NavSection, string> = {
   tracker: 'Zeiterfassung',
@@ -98,6 +101,20 @@ export default function App() {
   } | null>(null);
   const [remoteNewerAt, setRemoteNewerAt] = useState<string | null>(null);
   const [pushConflictAt, setPushConflictAt] = useState<string | null>(null);
+  const [notificationStatus, setNotificationStatus] =
+    useState<NativeNotificationStatus | null>(null);
+
+  const checkNotificationStatus = useCallback(async () => {
+    if (!isNativeCapacitor()) return;
+    const status = await getNativeNotificationStatus();
+    if (status) {
+      setNotificationStatus(status);
+    }
+  }, []);
+
+  useEffect(() => {
+    void checkNotificationStatus();
+  }, [checkNotificationStatus]);
 
   const deepLinkHandledRef = useRef(false);
   const lastNfcTriggerRef = useRef<{ code: string; at: number } | null>(null);
@@ -451,7 +468,11 @@ export default function App() {
     const customerName = db.activeTimer
       ? db.customers.find((c) => c.id === db.activeTimer!.customerId)?.companyName ?? ''
       : '';
-    syncActiveTimerNotification(db.activeTimer, customerName);
+    void syncActiveTimerNotification(db.activeTimer, customerName).then((status) => {
+      if (status) {
+        setNotificationStatus(status);
+      }
+    });
   }, [db.activeTimer, db.customers, loading]);
 
   const handleStartTimer = (payload: {
@@ -482,60 +503,122 @@ export default function App() {
     notify(`Timer gestartet: ${timer.title}`);
   };
 
-  const handlePauseTimer = () => {
-    if (!db.activeTimer || db.activeTimer.pausedAt) return;
-    const updatedTimer: ActiveTimer = {
-      ...db.activeTimer,
-      pausedAt: new Date().toISOString(),
-    };
-    void persistDb({ ...db, activeTimer: updatedTimer });
-    notify(`Timer pausiert: ${updatedTimer.title}`);
-  };
-
-  const handleResumeTimer = () => {
-    if (!db.activeTimer || !db.activeTimer.pausedAt) return;
-    const pausedMs = new Date(db.activeTimer.pausedAt).getTime();
-    const addedPause = Math.max(0, Date.now() - pausedMs);
-    const updatedTimer: ActiveTimer = {
-      ...db.activeTimer,
-      pausedAt: null,
-      accumulatedPausedMs: (db.activeTimer.accumulatedPausedMs ?? 0) + addedPause,
-    };
-    void persistDb({ ...db, activeTimer: updatedTimer });
-    notify(`Timer fortgesetzt: ${updatedTimer.title}`);
-  };
-
-  const handleStopTimer = () => {
-    if (!db.activeTimer) return;
+  const handleStopTimer = useCallback(() => {
+    if (!dbRef.current.activeTimer) return;
     const now = new Date();
     const durationSeconds = Math.max(
       1,
-      Math.floor(getActiveTimerElapsedMs(db.activeTimer, now.getTime()) / 1000)
+      Math.floor(getActiveTimerElapsedMs(dbRef.current.activeTimer, now.getTime()) / 1000)
     );
     const entry: TimeEntry = {
       id: createId('time'),
-      customerId: db.activeTimer.customerId,
-      productId: db.activeTimer.productId,
-      nfcTaskId: db.activeTimer.nfcTaskId,
-      title: db.activeTimer.title,
-      notes: db.activeTimer.notes,
-      startTime: db.activeTimer.startTime,
+      customerId: dbRef.current.activeTimer.customerId,
+      productId: dbRef.current.activeTimer.productId,
+      nfcTaskId: dbRef.current.activeTimer.nfcTaskId,
+      title: dbRef.current.activeTimer.title,
+      notes: dbRef.current.activeTimer.notes,
+      startTime: dbRef.current.activeTimer.startTime,
       endTime: now.toISOString(),
       durationSeconds,
-      hourlyRateNet: db.activeTimer.hourlyRateNet,
-      taxRate: db.activeTimer.taxRate,
+      hourlyRateNet: dbRef.current.activeTimer.hourlyRateNet,
+      taxRate: dbRef.current.activeTimer.taxRate,
       billable: true,
       billedInvoiceId: null,
-      source: db.activeTimer.source,
+      source: dbRef.current.activeTimer.source,
       createdAt: now.toISOString(),
     };
     void persistDb({
-      ...db,
+      ...dbRef.current,
       activeTimer: null,
-      timeEntries: [entry, ...db.timeEntries],
+      timeEntries: [entry, ...dbRef.current.timeEntries],
     });
     notify(`Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`);
-  };
+  }, [notify, persistDb]);
+
+  const handlePauseTimer = useCallback(() => {
+    if (!dbRef.current.activeTimer || dbRef.current.activeTimer.pausedAt) return;
+    const updatedTimer: ActiveTimer = {
+      ...dbRef.current.activeTimer,
+      pausedAt: new Date().toISOString(),
+    };
+    void persistDb({ ...dbRef.current, activeTimer: updatedTimer });
+    notify(`Timer pausiert: ${updatedTimer.title}`);
+  }, [notify, persistDb]);
+
+  const handleResumeTimer = useCallback(() => {
+    if (!dbRef.current.activeTimer || !dbRef.current.activeTimer.pausedAt) return;
+    const pausedMs = new Date(dbRef.current.activeTimer.pausedAt).getTime();
+    const addedPause = Math.max(0, Date.now() - pausedMs);
+    const updatedTimer: ActiveTimer = {
+      ...dbRef.current.activeTimer,
+      pausedAt: null,
+      accumulatedPausedMs: (dbRef.current.activeTimer.accumulatedPausedMs ?? 0) + addedPause,
+    };
+    void persistDb({ ...dbRef.current, activeTimer: updatedTimer });
+    notify(`Timer fortgesetzt: ${updatedTimer.title}`);
+  }, [notify, persistDb]);
+
+  // Interactive Android notification actions (Pause / Resume / Stop) directly from status bar & lockscreen
+  useEffect(() => {
+    if (!isNativeCapacitor()) return;
+    let listenerHandle: { remove: () => Promise<void> } | null = null;
+    let cancelled = false;
+
+    const handleAction = (action: string) => {
+      if (action === 'pause') {
+        handlePauseTimer();
+      } else if (action === 'resume') {
+        handleResumeTimer();
+      } else if (action === 'stop') {
+        handleStopTimer();
+      }
+    };
+
+    void TaktWerkNative.addListener('timerNotificationAction', (event) => {
+      if (event?.action) {
+        handleAction(event.action);
+      }
+    })
+      .then((handle) => {
+        if (cancelled) {
+          void handle.remove();
+        } else {
+          listenerHandle = handle;
+        }
+      })
+      .catch(() => {});
+
+    void TaktWerkNative.getPendingTimerAction().then((res) => {
+      if (res?.action) {
+        handleAction(res.action);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      if (listenerHandle) {
+        void listenerHandle.remove();
+      }
+    };
+  }, [handlePauseTimer, handleResumeTimer, handleStopTimer]);
+
+  const handleRequestNotificationPermission = useCallback(async () => {
+    const status = await requestNativeNotificationPermission();
+    if (status) {
+      setNotificationStatus(status);
+      if (status.enabled) {
+        notify('Benachrichtigungen aktiviert – Timer wird nun in der Statusleiste angezeigt.');
+        const customerName = dbRef.current.activeTimer
+          ? dbRef.current.customers.find((c) => c.id === dbRef.current.activeTimer!.customerId)?.companyName ?? ''
+          : '';
+        void syncActiveTimerNotification(dbRef.current.activeTimer, customerName);
+      }
+    }
+  }, [notify]);
+
+  const handleOpenNotificationSettings = useCallback(async () => {
+    await openNativeNotificationSettings();
+  }, []);
 
   const handleDiscardTimer = () => {
     if (!db.activeTimer) return;
@@ -967,6 +1050,9 @@ export default function App() {
                   }}
                   onNavigate={(target) => setSection(target)}
                   onNotify={notify}
+                  notificationStatus={notificationStatus}
+                  onRequestNotificationPermission={handleRequestNotificationPermission}
+                  onOpenNotificationSettings={handleOpenNotificationSettings}
                 />
               )}
 

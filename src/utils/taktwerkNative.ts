@@ -13,6 +13,26 @@ export interface NativeNfcWriteResultEvent {
   error?: string;
 }
 
+export type NotificationPermissionStatus =
+  | 'OK'
+  | 'PERMISSION_REQUIRED'
+  | 'PERMISSION_DENIED'
+  | 'CHANNEL_DISABLED';
+
+export interface NativeNotificationStatus {
+  supported: boolean;
+  enabled: boolean;
+  permissionGranted: boolean;
+  systemEnabled: boolean;
+  channelEnabled: boolean;
+  status: NotificationPermissionStatus;
+  shown?: boolean;
+}
+
+export interface NativeTimerNotificationActionEvent {
+  action: 'pause' | 'resume' | 'stop';
+}
+
 export interface TaktWerkNativePluginInterface {
   webdavEnsureFolders(options: {
     folderUrls: string[];
@@ -65,13 +85,22 @@ export interface TaktWerkNativePluginInterface {
 
   hapticFeedback(options: { pattern: 'start' | 'stop' | 'error' }): Promise<void>;
 
+  getNotificationStatus(): Promise<NativeNotificationStatus>;
+
+  requestNotificationPermission(): Promise<NativeNotificationStatus>;
+
+  openNotificationSettings(): Promise<void>;
+
+  getPendingTimerAction(): Promise<{ action?: string | null }>;
+
   showActiveTimerNotification(options: {
     title: string;
     customer: string;
+    notes?: string;
     startTimeMs: number;
     isPaused: boolean;
     pausedDuration?: string;
-  }): Promise<void>;
+  }): Promise<NativeNotificationStatus>;
 
   clearActiveTimerNotification(): Promise<void>;
 
@@ -95,6 +124,11 @@ export interface TaktWerkNativePluginInterface {
   addListener(
     eventName: 'nfcWriteResult',
     listenerFunc: (event: NativeNfcWriteResultEvent) => void
+  ): Promise<PluginListenerHandle>;
+
+  addListener(
+    eventName: 'timerNotificationAction',
+    listenerFunc: (event: NativeTimerNotificationActionEvent) => void
   ): Promise<PluginListenerHandle>;
 }
 

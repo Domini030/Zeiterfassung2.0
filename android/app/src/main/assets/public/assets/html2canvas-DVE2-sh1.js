@@ -1,4 +1,4 @@
-import { r as __commonJSMin } from "./index-DqfOiNoC.js";
+import { r as __commonJSMin } from "./index-Brwr12Tn.js";
 // node_modules/html2canvas/dist/html2canvas.js
 var require_html2canvas = /* @__PURE__ */ __commonJSMin(((exports, module, this$1) => {
 	/*!

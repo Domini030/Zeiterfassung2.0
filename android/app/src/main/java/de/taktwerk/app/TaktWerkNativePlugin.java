@@ -2,6 +2,7 @@ package de.taktwerk.app;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -30,6 +31,7 @@ import android.provider.Settings;
 import android.util.Base64;
 import android.webkit.WebView;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import com.getcapacitor.JSArray;
@@ -67,7 +69,9 @@ import okhttp3.Response;
 )
 public class TaktWerkNativePlugin extends Plugin {
 
-    private static final String TIMER_CHANNEL_ID = "taktwerk_active_timer";
+    private static final String LEGACY_TIMER_CHANNEL_ID = "taktwerk_active_timer";
+    private static final String LEGACY_TIMER_CHANNEL_ID_V2 = "taktwerk_active_timer_v2";
+    private static final String TIMER_CHANNEL_ID = "taktwerk_active_timer_v3";
     private static final int TIMER_NOTIFICATION_ID = 4102;
 
     private static final String[] NFC_URI_PREFIXES = new String[] {
@@ -80,6 +84,7 @@ public class TaktWerkNativePlugin extends Plugin {
     };
 
     private volatile String armedWriteUri = null;
+    private volatile String pendingTimerAction = null;
     private boolean foregroundDispatchActive = false;
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
@@ -108,6 +113,19 @@ public class TaktWerkNativePlugin extends Plugin {
             return;
         }
         String action = intent.getAction();
+        if ("de.taktwerk.app.ACTION_TIMER_CONTROL".equals(action)) {
+            String timerAction = intent.getStringExtra("timerAction");
+            if (timerAction != null && !timerAction.trim().isEmpty()) {
+                pendingTimerAction = timerAction.trim();
+                JSObject obj = new JSObject();
+                obj.put("action", timerAction.trim());
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(() -> notifyListeners("timerNotificationAction", obj, true));
+                }
+            }
+            return;
+        }
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)
             || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
             || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
@@ -866,15 +884,130 @@ public class TaktWerkNativePlugin extends Plugin {
     private void ensureTimerChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (manager != null && manager.getNotificationChannel(TIMER_CHANNEL_ID) == null) {
+            if (manager == null) {
+                return;
+            }
+            try {
+                if (manager.getNotificationChannel(LEGACY_TIMER_CHANNEL_ID) != null) {
+                    manager.deleteNotificationChannel(LEGACY_TIMER_CHANNEL_ID);
+                }
+                if (manager.getNotificationChannel(LEGACY_TIMER_CHANNEL_ID_V2) != null) {
+                    manager.deleteNotificationChannel(LEGACY_TIMER_CHANNEL_ID_V2);
+                }
+            } catch (Exception ignored) {}
+
+            NotificationChannel existing = manager.getNotificationChannel(TIMER_CHANNEL_ID);
+            if (existing == null) {
                 NotificationChannel channel = new NotificationChannel(
                     TIMER_CHANNEL_ID,
                     "Laufende Zeiterfassung",
-                    NotificationManager.IMPORTANCE_LOW
+                    NotificationManager.IMPORTANCE_HIGH
                 );
-                channel.setDescription("Zeigt den aktuell laufenden Timer in der Statusleiste an.");
-                channel.setShowBadge(false);
+                channel.setDescription("Zeigt den aktuell laufenden Timer prominent oben in der Benachrichtigungsleiste und auf dem Sperrbildschirm an.");
+                channel.setShowBadge(true);
+                channel.setSound(null, null);
+                channel.enableVibration(false);
+                channel.enableLights(false);
+                channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
                 manager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+    private boolean isPostNotificationsGranted(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    private JSObject buildNotificationStatusObject(Context context, boolean shown) {
+        ensureTimerChannel(context);
+        boolean permissionGranted = isPostNotificationsGranted(context);
+        boolean systemEnabled = NotificationManagerCompat.from(context).areNotificationsEnabled();
+        boolean channelEnabled = true;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null) {
+                NotificationChannel channel = manager.getNotificationChannel(TIMER_CHANNEL_ID);
+                if (channel != null && channel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
+                    channelEnabled = false;
+                }
+            }
+        }
+
+        boolean enabled = permissionGranted && systemEnabled && channelEnabled;
+        String status;
+        if (enabled) {
+            status = "OK";
+        } else if (!permissionGranted) {
+            status = getPermissionState("notifications") == PermissionState.DENIED
+                ? "PERMISSION_DENIED"
+                : "PERMISSION_REQUIRED";
+        } else {
+            status = "CHANNEL_DISABLED";
+        }
+
+        JSObject result = new JSObject();
+        result.put("supported", true);
+        result.put("enabled", enabled);
+        result.put("permissionGranted", permissionGranted);
+        result.put("systemEnabled", systemEnabled);
+        result.put("channelEnabled", channelEnabled);
+        result.put("status", status);
+        result.put("shown", shown);
+        return result;
+    }
+
+    @PluginMethod
+    public void getNotificationStatus(PluginCall call) {
+        call.resolve(buildNotificationStatusObject(getContext(), false));
+    }
+
+    @PluginMethod
+    public void requestNotificationPermission(PluginCall call) {
+        Context context = getContext();
+        if (isPostNotificationsGranted(context)) {
+            call.resolve(buildNotificationStatusObject(context, false));
+            return;
+        }
+        requestPermissionForAlias("notifications", call, "requestNotifPermsCallback");
+    }
+
+    @PermissionCallback
+    private void requestNotifPermsCallback(PluginCall call) {
+        call.resolve(buildNotificationStatusObject(getContext(), false));
+    }
+
+    @PluginMethod
+    public void openNotificationSettings(PluginCall call) {
+        Activity activity = getActivity();
+        Context context = getContext();
+        if (activity == null) {
+            call.reject("Aktivität nicht verfügbar.");
+            return;
+        }
+        try {
+            Intent intent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+            } else {
+                intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    .setData(Uri.fromParts("package", context.getPackageName(), null));
+            }
+            activity.startActivity(intent);
+            call.resolve();
+        } catch (ActivityNotFoundException ex) {
+            try {
+                Intent fallback = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    .setData(Uri.fromParts("package", context.getPackageName(), null));
+                activity.startActivity(fallback);
+                call.resolve();
+            } catch (ActivityNotFoundException secondary) {
+                call.reject("App-Benachrichtigungseinstellungen konnten nicht geöffnet werden.");
             }
         }
     }
@@ -882,39 +1015,57 @@ public class TaktWerkNativePlugin extends Plugin {
     @PluginMethod
     public void showActiveTimerNotification(PluginCall call) {
         Context context = getContext();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED) {
-                if (getPermissionState("notifications") != PermissionState.DENIED) {
-                    requestPermissionForAlias("notifications", call, "notificationsPermsCallback");
-                    return;
-                }
-                call.resolve();
+        if (!isPostNotificationsGranted(context)) {
+            if (getPermissionState("notifications") != PermissionState.DENIED) {
+                requestPermissionForAlias("notifications", call, "notificationsPermsCallback");
                 return;
             }
+            call.resolve(buildNotificationStatusObject(context, false));
+            return;
         }
         postTimerNotification(call);
     }
 
     @PermissionCallback
     private void notificationsPermsCallback(PluginCall call) {
-        if (getPermissionState("notifications") == PermissionState.GRANTED) {
+        Context context = getContext();
+        if (isPostNotificationsGranted(context)) {
             postTimerNotification(call);
         } else {
-            call.resolve();
+            call.resolve(buildNotificationStatusObject(context, false));
         }
     }
 
+    @PluginMethod
+    public void getPendingTimerAction(PluginCall call) {
+        String action = pendingTimerAction;
+        pendingTimerAction = null;
+        JSObject res = new JSObject();
+        res.put("action", action);
+        call.resolve(res);
+    }
+
     private void postTimerNotification(PluginCall call) {
+        Context context = getContext();
+        boolean shown = false;
         try {
-            Context context = getContext();
             ensureTimerChannel(context);
+            JSObject statusBefore = buildNotificationStatusObject(context, false);
+            if (!statusBefore.getBoolean("enabled", false)) {
+                call.resolve(statusBefore);
+                return;
+            }
 
             String title = call.getString("title", "Arbeitszeit");
             String customer = call.getString("customer", "");
+            String notes = call.getString("notes", "");
             boolean isPaused = call.getBoolean("isPaused", false);
             String pausedDuration = call.getString("pausedDuration", "");
-            long startTimeMs = call.getLong("startTimeMs", System.currentTimeMillis());
+            long startTimeMs = System.currentTimeMillis();
+            Object rawStartObj = call.getData().opt("startTimeMs");
+            if (rawStartObj instanceof Number) {
+                startTimeMs = ((Number) rawStartObj).longValue();
+            }
 
             Intent launchIntent = new Intent(context, MainActivity.class);
             launchIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -925,20 +1076,77 @@ public class TaktWerkNativePlugin extends Plugin {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
 
-            int iconRes = context.getApplicationInfo().icon;
-            String contentTitle = isPaused ? "Timer pausiert: " + title : "Timer läuft: " + title;
+            // Action: Pause / Resume
+            Intent pauseResumeIntent = new Intent(context, MainActivity.class);
+            pauseResumeIntent.setAction("de.taktwerk.app.ACTION_TIMER_CONTROL");
+            pauseResumeIntent.putExtra("timerAction", isPaused ? "resume" : "pause");
+            pauseResumeIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pauseResumePendingIntent = PendingIntent.getActivity(
+                context,
+                101,
+                pauseResumeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            // Action: Stop & Save
+            Intent stopIntent = new Intent(context, MainActivity.class);
+            stopIntent.setAction("de.taktwerk.app.ACTION_TIMER_CONTROL");
+            stopIntent.putExtra("timerAction", "stop");
+            stopIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent stopPendingIntent = PendingIntent.getActivity(
+                context,
+                102,
+                stopIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            String contentTitle = isPaused ? "⏸ Timer pausiert: " + title : "⏱ " + title;
             String contentText = isPaused
                 ? (customer.isEmpty() ? "Pausiert bei " + pausedDuration : customer + " · Pausiert bei " + pausedDuration)
-                : (customer.isEmpty() ? "TaktWerk Zeiterfassung aktiv" : customer);
+                : (customer.isEmpty() ? "TaktWerk Zeiterfassung" : customer);
+
+            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle()
+                .setBigContentTitle(contentTitle)
+                .bigText(contentText + (notes.isEmpty() ? "" : "\n" + notes))
+                .setSummaryText(isPaused ? "Pausiert (" + pausedDuration + ")" : "Zeiterfassung aktiv");
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, TIMER_CHANNEL_ID)
-                .setSmallIcon(iconRes)
+                .setSmallIcon(R.drawable.ic_stat_timer)
+                .setColor(0xFF7C3AED)
+                .setColorized(true)
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
+                .setSubText(isPaused ? "Pausiert" : "Zeiterfassung")
+                .setStyle(bigTextStyle)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
+                .setSilent(true)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setCategory(NotificationCompat.CATEGORY_STOPWATCH)
                 .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_LOW);
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE);
+
+            // Add interactive action buttons directly in the notification
+            if (isPaused) {
+                builder.addAction(
+                    R.drawable.ic_action_play,
+                    "Fortsetzen",
+                    pauseResumePendingIntent
+                );
+            } else {
+                builder.addAction(
+                    R.drawable.ic_action_pause,
+                    "Pausieren",
+                    pauseResumePendingIntent
+                );
+            }
+
+            builder.addAction(
+                R.drawable.ic_action_stop,
+                "Stoppen & Speichern",
+                stopPendingIntent
+            );
 
             if (!isPaused) {
                 builder.setWhen(startTimeMs).setShowWhen(true).setUsesChronometer(true);
@@ -949,9 +1157,10 @@ public class TaktWerkNativePlugin extends Plugin {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             if (manager != null) {
                 manager.notify(TIMER_NOTIFICATION_ID, builder.build());
+                shown = true;
             }
         } catch (Exception ignored) {}
-        call.resolve();
+        call.resolve(buildNotificationStatusObject(context, shown));
     }
 
     @PluginMethod
