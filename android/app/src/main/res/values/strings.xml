@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TaktWerk</string>
+    <string name="title_activity_main">TaktWerk</string>
+    <string name="package_name">de.taktwerk.app</string>
+    <string name="custom_url_scheme">de.taktwerk.app</string>
+</resources>

@@ -1,0 +1,10 @@
+{
+	"appId": "de.taktwerk.app",
+	"appName": "TaktWerk",
+	"webDir": "dist",
+	"plugins": {
+		"CapacitorHttp": {
+			"enabled": true
+		}
+	}
+}
