@@ -474,53 +474,79 @@ export default function App() {
   };
 
   const handleCreateInvoice = (invoice: Invoice, billedEntryIds: string[]) => {
-    const nextTimeEntries = db.timeEntries.map((entry) =>
+    const currentDb = dbRef.current;
+    const nextTimeEntries = currentDb.timeEntries.map((entry) =>
       billedEntryIds.includes(entry.id)
         ? { ...entry, billedInvoiceId: invoice.id }
         : entry
     );
     const nextDb: AppDatabase = {
-      ...db,
+      ...currentDb,
       company: {
-        ...db.company,
-        nextInvoiceSequence: (db.company.nextInvoiceSequence || 1) + 1,
+        ...currentDb.company,
+        nextInvoiceSequence: (currentDb.company.nextInvoiceSequence || 1) + 1,
       },
       timeEntries: nextTimeEntries,
-      invoices: [invoice, ...db.invoices],
+      invoices: [invoice, ...currentDb.invoices],
     };
     void persistDb(nextDb);
     notify(`Rechnung ${invoice.invoiceNumber} erstellt.`);
   };
 
+  const handleUpdateInvoice = (updatedInvoice: Invoice, billedEntryIds: string[]) => {
+    const currentDb = dbRef.current;
+    const nextTimeEntries = currentDb.timeEntries.map((entry) => {
+      if (billedEntryIds.includes(entry.id)) {
+        return { ...entry, billedInvoiceId: updatedInvoice.id };
+      }
+      if (entry.billedInvoiceId === updatedInvoice.id) {
+        return { ...entry, billedInvoiceId: null };
+      }
+      return entry;
+    });
+    const nextDb: AppDatabase = {
+      ...currentDb,
+      timeEntries: nextTimeEntries,
+      invoices: currentDb.invoices.map((inv) =>
+        inv.id === updatedInvoice.id ? updatedInvoice : inv
+      ),
+    };
+    void persistDb(nextDb);
+    notify(`Rechnung ${updatedInvoice.invoiceNumber} aktualisiert.`);
+  };
+
   const handleUpdateInvoiceStatus = (invoiceId: string, status: InvoiceStatus) => {
+    const currentDb = dbRef.current;
     void persistDb({
-      ...db,
-      invoices: db.invoices.map((inv) =>
+      ...currentDb,
+      invoices: currentDb.invoices.map((inv) =>
         inv.id === invoiceId ? { ...inv, status } : inv
       ),
     });
   };
 
   const handleMarkInvoiceUploaded = (invoiceId: string, uploadedAt: string) => {
+    const currentDb = dbRef.current;
     void persistDb({
-      ...db,
-      invoices: db.invoices.map((inv) =>
+      ...currentDb,
+      invoices: currentDb.invoices.map((inv) =>
         inv.id === invoiceId ? { ...inv, nextcloudUploadedAt: uploadedAt } : inv
       ),
     });
   };
 
   const handleDeleteInvoice = (invoiceId: string) => {
+    const currentDb = dbRef.current;
     void persistDb({
-      ...db,
-      timeEntries: db.timeEntries.map((entry) =>
+      ...currentDb,
+      timeEntries: currentDb.timeEntries.map((entry) =>
         entry.billedInvoiceId === invoiceId
           ? { ...entry, billedInvoiceId: null }
           : entry
       ),
-      invoices: db.invoices.filter((inv) => inv.id !== invoiceId),
+      invoices: currentDb.invoices.filter((inv) => inv.id !== invoiceId),
     });
-    notify('Rechnung gelöscht. Verknüpfte Arbeitszeiten sind wieder offen.');
+    notify('Rechnung gelöscht. Alle verknüpften Arbeitszeiten bleiben als offen erhalten.');
   };
 
   const handleSyncToNextcloud = async () => {
@@ -793,6 +819,7 @@ export default function App() {
                   preselectedDraft={invoiceDraft}
                   onClearPreselectedDraft={() => setInvoiceDraft(null)}
                   onCreateInvoice={handleCreateInvoice}
+                  onUpdateInvoice={handleUpdateInvoice}
                   onUpdateInvoiceStatus={handleUpdateInvoiceStatus}
                   onMarkInvoiceUploaded={handleMarkInvoiceUploaded}
                   onDeleteInvoice={handleDeleteInvoice}

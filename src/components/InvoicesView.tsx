@@ -3,8 +3,10 @@ import {
   Download,
   Eye,
   FilePlus2,
+  Pencil,
   Plus,
   Printer,
+  Share2,
   Trash2,
   X,
 } from 'lucide-react';
@@ -19,6 +21,7 @@ import type {
   Product,
   TaxRate,
   TimeEntry,
+  UnitType,
 } from '../types';
 import {
   INVOICE_ACCENT_STYLES,
@@ -32,7 +35,12 @@ import {
   toInputDate,
 } from '../utils/format';
 import { apiUploadInvoicePdf } from '../utils/apiClient';
-import { downloadInvoicePdf, getInvoicePdfBase64 } from '../utils/pdfInvoice';
+import {
+  downloadInvoicePdf,
+  getInvoicePdfBase64,
+  printInvoiceView,
+  shareInvoicePdf,
+} from '../utils/pdfInvoice';
 
 interface InvoicesViewProps {
   company: CompanyProfile;
@@ -44,6 +52,7 @@ interface InvoicesViewProps {
   preselectedDraft: { customerId: string; entryIds: string[] } | null;
   onClearPreselectedDraft: () => void;
   onCreateInvoice: (invoice: Invoice, billedEntryIds: string[]) => void;
+  onUpdateInvoice: (invoice: Invoice, billedEntryIds: string[]) => void;
   onUpdateInvoiceStatus: (invoiceId: string, status: InvoiceStatus) => void;
   onMarkInvoiceUploaded: (invoiceId: string, uploadedAt: string) => void;
   onDeleteInvoice: (invoiceId: string) => void;
@@ -54,6 +63,8 @@ interface ExtraProductDraft {
   id: string;
   productId: string;
   description: string;
+  detail?: string;
+  unit?: UnitType;
   quantity: number;
   unitPriceNet: number;
   taxRate: TaxRate;
@@ -69,6 +80,7 @@ export function InvoicesView({
   preselectedDraft,
   onClearPreselectedDraft,
   onCreateInvoice,
+  onUpdateInvoice,
   onUpdateInvoiceStatus,
   onMarkInvoiceUploaded,
   onDeleteInvoice,
@@ -76,14 +88,19 @@ export function InvoicesView({
 }: InvoicesViewProps) {
   const [statusFilter, setStatusFilter] = useState<'all' | InvoiceStatus>('all');
   const [showBuilder, setShowBuilder] = useState(false);
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const [customerId, setCustomerId] = useState<string>(customers[0]?.id ?? '');
   const [selectedEntryIds, setSelectedEntryIds] = useState<string[]>([]);
   const [groupByProduct, setGroupByProduct] = useState(true);
   const [extraItems, setExtraItems] = useState<ExtraProductDraft[]>([]);
   const [issueDate, setIssueDate] = useState(toInputDate());
+  const [dueDateInput, setDueDateInput] = useState(() =>
+    addDaysISO(toInputDate(), company.defaultPaymentTermDays || 14)
+  );
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const defaultIntro =
     company.invoiceDefaultIntroText ??
@@ -138,8 +155,15 @@ export function InvoicesView({
         .map((t) => t.id);
       setSelectedEntryIds(openIds);
     }
+    setEditingInvoice(null);
     setExtraItems([]);
-    setIssueDate(toInputDate());
+    const today = toInputDate();
+    setIssueDate(today);
+    const custTerm =
+      customerMap.get(preselectedDraft.customerId)?.paymentTermDays ||
+      company.defaultPaymentTermDays ||
+      14;
+    setDueDateInput(addDaysISO(today, custTerm));
     setInvoiceNumber(nextSeqNumber);
     setIntroText(defaultIntro);
     setOutroText(defaultOutro);
@@ -154,18 +178,27 @@ export function InvoicesView({
     defaultIntro,
     defaultOutro,
     company.smallBusinessMode,
+    company.defaultPaymentTermDays,
+    customerMap,
     onClearPreselectedDraft,
   ]);
 
   const openBuilderFresh = () => {
     const firstCust = customers[0]?.id ?? '';
+    setEditingInvoice(null);
     setCustomerId(firstCust);
     const openIds = timeEntries
       .filter((t) => t.customerId === firstCust && t.billable && !t.billedInvoiceId)
       .map((t) => t.id);
     setSelectedEntryIds(openIds);
     setExtraItems([]);
-    setIssueDate(toInputDate());
+    const today = toInputDate();
+    setIssueDate(today);
+    const custTerm =
+      customerMap.get(firstCust)?.paymentTermDays ||
+      company.defaultPaymentTermDays ||
+      14;
+    setDueDateInput(addDaysISO(today, custTerm));
     setInvoiceNumber(nextSeqNumber);
     setIntroText(defaultIntro);
     setOutroText(defaultOutro);
@@ -174,20 +207,84 @@ export function InvoicesView({
     setShowBuilder(true);
   };
 
+  const openEditBuilder = (inv: Invoice) => {
+    setPreviewInvoice(null);
+    setEditingInvoice(inv);
+    setCustomerId(inv.customerId);
+
+    const linkedIds = timeEntries
+      .filter((t) => t.billedInvoiceId === inv.id)
+      .map((t) => t.id);
+    const fallbackIds = inv.lineItems
+      .flatMap((li) => li.timeEntryIds || [])
+      .filter((id) => timeEntries.some((t) => t.id === id));
+    const entryIds = Array.from(new Set([...linkedIds, ...fallbackIds]));
+    setSelectedEntryIds(entryIds);
+
+    const timeBasedLineItems = inv.lineItems.filter(
+      (li) => (li.timeEntryIds?.length ?? 0) > 0
+    );
+    if (timeBasedLineItems.length > 0) {
+      setGroupByProduct(
+        timeBasedLineItems.some((li) => (li.timeEntryIds?.length ?? 0) > 1) ||
+          entryIds.length === timeBasedLineItems.length
+      );
+    }
+
+    const manualRows: ExtraProductDraft[] = inv.lineItems
+      .filter((li) => (li.timeEntryIds?.length ?? 0) === 0)
+      .map((li) => ({
+        id: createId('ext'),
+        productId: li.productId || products[0]?.id || '',
+        description: li.description,
+        detail: li.detail,
+        unit: li.unit,
+        quantity: li.quantity,
+        unitPriceNet: li.unitPriceNet,
+        taxRate: li.taxRate,
+      }));
+    setExtraItems(manualRows);
+    setIssueDate(inv.issueDate);
+    setDueDateInput(inv.dueDate);
+    setInvoiceNumber(inv.invoiceNumber);
+    setIntroText(inv.introText ?? '');
+    setOutroText(inv.outroText ?? '');
+    setIsSmallBusiness(inv.isSmallBusiness ?? Boolean(company.smallBusinessMode));
+    setBuilderError('');
+    setShowBuilder(true);
+  };
+
   const handleBuilderCustomerChange = (newCustId: string) => {
     setCustomerId(newCustId);
     const openIds = timeEntries
-      .filter((t) => t.customerId === newCustId && t.billable && !t.billedInvoiceId)
+      .filter(
+        (t) =>
+          t.customerId === newCustId &&
+          t.billable &&
+          (!t.billedInvoiceId ||
+            (editingInvoice !== null && t.billedInvoiceId === editingInvoice.id))
+      )
       .map((t) => t.id);
     setSelectedEntryIds(openIds);
+    if (!editingInvoice) {
+      const custTerm =
+        customerMap.get(newCustId)?.paymentTermDays ||
+        company.defaultPaymentTermDays ||
+        14;
+      setDueDateInput(addDaysISO(issueDate, custTerm));
+    }
   };
 
   const unbilledForCustomer = useMemo(
     () =>
       timeEntries.filter(
-        (t) => t.customerId === customerId && t.billable && !t.billedInvoiceId
+        (t) =>
+          t.customerId === customerId &&
+          t.billable &&
+          (!t.billedInvoiceId ||
+            (editingInvoice !== null && t.billedInvoiceId === editingInvoice.id))
       ),
-    [timeEntries, customerId]
+    [timeEntries, customerId, editingInvoice]
   );
 
   const toggleEntry = (id: string) => {
@@ -303,9 +400,9 @@ export function InvoicesView({
       items.push({
         id: createId('li'),
         description: extra.description || prod?.name || 'Position',
-        detail: prod?.description ?? '',
+        detail: extra.detail ?? prod?.description ?? '',
         quantity: qty,
-        unit: prod?.unit ?? 'Stk.',
+        unit: extra.unit ?? prod?.unit ?? 'Stk.',
         unitPriceNet: extra.unitPriceNet,
         taxRate: effectiveTaxRate,
         netTotal: net,
@@ -358,13 +455,15 @@ export function InvoicesView({
       .sort();
     const servicePeriodStart = dates[0] ?? issueDate;
     const servicePeriodEnd = dates[dates.length - 1] ?? issueDate;
-    const dueDate = addDaysISO(
-      issueDate,
-      cust.paymentTermDays || company.defaultPaymentTermDays || 14
-    );
+    const dueDate =
+      dueDateInput ||
+      addDaysISO(
+        issueDate,
+        cust.paymentTermDays || company.defaultPaymentTermDays || 14
+      );
 
-    const invoice: Invoice = {
-      id: createId('inv'),
+    const savedInvoice: Invoice = {
+      id: editingInvoice?.id ?? createId('inv'),
       invoiceNumber: invoiceNumber.trim() || nextSeqNumber,
       customerId: cust.id,
       customerSnapshot: {
@@ -381,7 +480,7 @@ export function InvoicesView({
       servicePeriodStart,
       servicePeriodEnd,
       dueDate,
-      status: 'Entwurf',
+      status: editingInvoice?.status ?? 'Entwurf',
       lineItems: computedLineItems,
       netTotal: builderTotals.netTotal,
       taxTotal: builderTotals.taxTotal,
@@ -390,13 +489,22 @@ export function InvoicesView({
       outroText: outroText.trim(),
       isSmallBusiness,
       smallBusinessNotice: isSmallBusiness ? defaultSmallBusinessNotice : undefined,
-      nextcloudUploadedAt: null,
-      createdAt: new Date().toISOString(),
+      nextcloudUploadedAt: editingInvoice ? null : null,
+      createdAt: editingInvoice?.createdAt ?? new Date().toISOString(),
     };
 
-    onCreateInvoice(invoice, selectedEntryIds);
+    if (editingInvoice) {
+      onUpdateInvoice(savedInvoice, selectedEntryIds);
+    } else {
+      onCreateInvoice(savedInvoice, selectedEntryIds);
+    }
     setShowBuilder(false);
-    setPreviewInvoice(invoice);
+    setEditingInvoice(null);
+    setPreviewInvoice(savedInvoice);
+
+    if (nextcloud.configured && nextcloud.autoSync) {
+      void handleUploadToNextcloud(savedInvoice);
+    }
   };
 
   const handleUploadToNextcloud = async (inv: Invoice) => {
@@ -412,12 +520,9 @@ export function InvoicesView({
       const pdfBase64 = getInvoicePdfBase64(inv, company);
       const result = await apiUploadInvoicePdf(`${inv.invoiceNumber}.pdf`, pdfBase64);
       onMarkInvoiceUploaded(inv.id, result.uploadedAt);
-      if (previewInvoice?.id === inv.id) {
-        setPreviewInvoice({
-          ...inv,
-          nextcloudUploadedAt: result.uploadedAt,
-        });
-      }
+      setPreviewInvoice((prev) =>
+        prev?.id === inv.id ? { ...prev, nextcloudUploadedAt: result.uploadedAt } : prev
+      );
       onNotify(`Rechnung als PDF nach Nextcloud (${result.path}) hochgeladen.`);
     } catch (err) {
       onNotify(
@@ -426,6 +531,39 @@ export function InvoicesView({
       );
     } finally {
       setUploadingId(null);
+    }
+  };
+
+  const handleOpenPdf = async (inv: Invoice) => {
+    try {
+      await downloadInvoicePdf(inv, company);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'PDF konnte nicht geöffnet werden.',
+        true
+      );
+    }
+  };
+
+  const handleSharePdf = async (inv: Invoice) => {
+    try {
+      await shareInvoicePdf(inv, company);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'PDF konnte nicht geteilt werden.',
+        true
+      );
+    }
+  };
+
+  const handlePrint = async (inv: Invoice) => {
+    try {
+      await printInvoiceView(inv.invoiceNumber);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Drucken fehlgeschlagen.',
+        true
+      );
     }
   };
 
@@ -462,11 +600,16 @@ export function InvoicesView({
         <section className="no-print rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-display text-lg font-semibold text-slate-900 dark:text-slate-100">
-              Rechnung aus Arbeitszeiten generieren
+              {editingInvoice
+                ? `Rechnung ${editingInvoice.invoiceNumber} bearbeiten`
+                : 'Rechnung aus Arbeitszeiten generieren'}
             </h2>
             <button
               type="button"
-              onClick={() => setShowBuilder(false)}
+              onClick={() => {
+                setShowBuilder(false);
+                setEditingInvoice(null);
+              }}
               className="text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer"
             >
               Schließen
@@ -474,7 +617,7 @@ export function InvoicesView({
           </div>
 
           <form onSubmit={handleSaveInvoice} className="space-y-5">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Kunde
@@ -510,6 +653,17 @@ export function InvoicesView({
                   type="date"
                   value={issueDate}
                   onChange={(e) => setIssueDate(e.target.value)}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Fällig bis
+                </label>
+                <input
+                  type="date"
+                  value={dueDateInput}
+                  onChange={(e) => setDueDateInput(e.target.value)}
                   className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
                 />
               </div>
@@ -598,7 +752,7 @@ export function InvoicesView({
                   key={row.id}
                   className="grid grid-cols-1 gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50 sm:grid-cols-12"
                 >
-                  <div className="sm:col-span-5">
+                  <div className="sm:col-span-3">
                     <select
                       value={row.productId}
                       onChange={(e) =>
@@ -612,6 +766,17 @@ export function InvoicesView({
                         </option>
                       ))}
                     </select>
+                  </div>
+                  <div className="sm:col-span-3">
+                    <input
+                      type="text"
+                      value={row.description}
+                      onChange={(e) =>
+                        updateExtraRow(row.id, { description: e.target.value })
+                      }
+                      placeholder="Positionsbeschreibung"
+                      className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+                    />
                   </div>
                   <div className="sm:col-span-2">
                     <input
@@ -640,7 +805,7 @@ export function InvoicesView({
                       placeholder="Netto €"
                     />
                   </div>
-                  <div className="flex items-center justify-between sm:col-span-3">
+                  <div className="flex items-center justify-between sm:col-span-2">
                     <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums">
                       {formatCurrency(row.quantity * row.unitPriceNet)}
                     </span>
@@ -733,7 +898,10 @@ export function InvoicesView({
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                onClick={() => setShowBuilder(false)}
+                onClick={() => {
+                  setShowBuilder(false);
+                  setEditingInvoice(null);
+                }}
                 className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer"
               >
                 Abbrechen
@@ -742,7 +910,9 @@ export function InvoicesView({
                 type="submit"
                 className="rounded-lg bg-blue-700 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
               >
-                Rechnung erzeugen &amp; Zeiten verbuchen
+                {editingInvoice
+                  ? 'Änderungen speichern'
+                  : 'Rechnung erzeugen & Zeiten verbuchen'}
               </button>
             </div>
           </form>
@@ -798,7 +968,8 @@ export function InvoicesView({
                 {filteredInvoices.map((inv) => (
                   <tr
                     key={inv.id}
-                    className="transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50"
+                    onClick={() => setPreviewInvoice(inv)}
+                    className="cursor-pointer transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50"
                   >
                     <td className="px-4 py-3 font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
                       {inv.invoiceNumber}
@@ -820,7 +991,7 @@ export function InvoicesView({
                         Fällig {formatDateDE(inv.dueDate)}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <select
                         value={inv.status}
                         onChange={(e) =>
@@ -845,8 +1016,16 @@ export function InvoicesView({
                     <td className="px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap">
                       {formatCurrency(inv.grossTotal)}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => openEditBuilder(inv)}
+                          title="Rechnung bearbeiten"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
                         <button
                           type="button"
                           onClick={() => setPreviewInvoice(inv)}
@@ -858,29 +1037,62 @@ export function InvoicesView({
                         </button>
                         <button
                           type="button"
-                          onClick={() => downloadInvoicePdf(inv, company)}
-                          title="PDF herunterladen"
+                          onClick={() => void handleOpenPdf(inv)}
+                          title="PDF öffnen / herunterladen"
                           className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer"
                         >
                           <Download className="h-4 w-4" />
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleUploadToNextcloud(inv)}
+                          onClick={() => void handleSharePdf(inv)}
+                          title="PDF teilen / auf Gerät speichern"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer"
+                        >
+                          <Share2 className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void handleUploadToNextcloud(inv)}
                           disabled={uploadingId === inv.id}
                           title="PDF in Nextcloud (/Rechnungen) speichern"
                           className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:text-violet-400 dark:hover:bg-[#231b38] cursor-pointer"
                         >
                           <CloudUpload className="h-4 w-4" />
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => onDeleteInvoice(inv.id)}
-                          title="Rechnung löschen (Zeiten werden wieder freigegeben)"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        {confirmDeleteId === inv.id ? (
+                          <div className="flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 dark:border-red-900/60 dark:bg-red-950/60">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                onDeleteInvoice(inv.id);
+                                setConfirmDeleteId(null);
+                                if (previewInvoice?.id === inv.id) {
+                                  setPreviewInvoice(null);
+                                }
+                              }}
+                              className="text-[11px] font-semibold text-red-700 hover:underline dark:text-red-300 cursor-pointer whitespace-nowrap"
+                            >
+                              Löschen (Zeiten bleiben)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="text-[11px] text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDeleteId(inv.id)}
+                            title="Rechnung löschen (Arbeitszeiten bleiben erhalten)"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -902,15 +1114,31 @@ export function InvoicesView({
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => downloadInvoicePdf(previewInvoice, company)}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-[#211936] dark:hover:bg-[#2a2045] cursor-pointer"
+                  onClick={() => openEditBuilder(previewInvoice)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer"
                 >
-                  <Download className="h-3.5 w-3.5" />
-                  PDF herunterladen
+                  <Pencil className="h-3.5 w-3.5" />
+                  Bearbeiten
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleUploadToNextcloud(previewInvoice)}
+                  onClick={() => void handleOpenPdf(previewInvoice)}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-[#211936] dark:hover:bg-[#2a2045] cursor-pointer"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  PDF öffnen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleSharePdf(previewInvoice)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer"
+                >
+                  <Share2 className="h-3.5 w-3.5" />
+                  Teilen / Sichern
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleUploadToNextcloud(previewInvoice)}
                   disabled={uploadingId === previewInvoice.id}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
                 >
@@ -921,7 +1149,7 @@ export function InvoicesView({
                 </button>
                 <button
                   type="button"
-                  onClick={() => window.print()}
+                  onClick={() => void handlePrint(previewInvoice)}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer"
                 >
                   <Printer className="h-3.5 w-3.5" />
@@ -929,7 +1157,33 @@ export function InvoicesView({
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPreviewInvoice(null)}
+                  onClick={() => {
+                    if (confirmDeleteId === previewInvoice.id) {
+                      onDeleteInvoice(previewInvoice.id);
+                      setConfirmDeleteId(null);
+                      setPreviewInvoice(null);
+                    } else {
+                      setConfirmDeleteId(previewInvoice.id);
+                    }
+                  }}
+                  title="Rechnung löschen (Arbeitszeiten bleiben erhalten)"
+                  className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium cursor-pointer ${
+                    confirmDeleteId === previewInvoice.id
+                      ? 'border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300'
+                      : 'border-slate-200 text-red-600 hover:bg-red-50 dark:border-[#3b2d5e] dark:text-red-400 dark:hover:bg-red-950/40'
+                  }`}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  {confirmDeleteId === previewInvoice.id
+                    ? 'Wirklich löschen? (Zeiten bleiben)'
+                    : 'Löschen'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setConfirmDeleteId(null);
+                    setPreviewInvoice(null);
+                  }}
                   className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-[#231b38] cursor-pointer"
                 >
                   <X className="h-4 w-4" />

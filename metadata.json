@@ -2,5 +2,7 @@
   "name": "TaktWerk — Zeiterfassung, NFC & Abrechnung",
   "description": "Professionelle Zeiterfassung mit NFC-Aufgabensteuerung, Kunden- und Produktdatenbank, automatischer Rechnungserstellung und Nextcloud-WebDAV-Speicherung.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

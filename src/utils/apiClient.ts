@@ -1,6 +1,7 @@
 import { Capacitor, CapacitorHttp } from '@capacitor/core';
 import type { AppDatabase, NextcloudConfigInfo } from '../types';
 import { createEmptyDatabase } from './sampleData';
+import { TaktWerkNative } from './taktwerkNative';
 
 const SERVER_URL_KEY = 'taktwerk-server-url';
 const NATIVE_DB_KEY = 'taktwerk-native-db';
@@ -128,11 +129,34 @@ function makeAuthHeader(cfg: StoredLocalNc): string {
   return `Basic ${btoa(binary)}`;
 }
 
+function buildDavRoot(cfg: StoredLocalNc): string {
+  const baseUrl = cfg.url.trim().replace(/\/+$/, '').replace(/\/index\.php$/, '');
+  if (
+    baseUrl.includes('/remote.php/dav/files/') ||
+    baseUrl.endsWith('/remote.php/webdav')
+  ) {
+    return baseUrl;
+  }
+  return `${baseUrl}/remote.php/dav/files/${encodeURIComponent(cfg.username)}`;
+}
+
+function buildWebDavFolderUrls(cfg: StoredLocalNc, subFolder?: string): string[] {
+  const davRoot = buildDavRoot(cfg);
+  const fullFolder = subFolder
+    ? `${normalizeFolder(cfg.folder)}/${subFolder.replace(/^\/+/, '')}`
+    : normalizeFolder(cfg.folder);
+  const segments = fullFolder.split('/').filter(Boolean);
+  const urls: string[] = [];
+  let current = davRoot;
+  for (const seg of segments) {
+    current = `${current}/${encodeURIComponent(seg)}`;
+    urls.push(current);
+  }
+  return urls;
+}
+
 function buildWebDavFileUrl(cfg: StoredLocalNc, relativePath: string): string {
-  const baseUrl = cfg.url.trim().replace(/\/+$/, '');
-  const davRoot = baseUrl.includes('/remote.php/dav/files/')
-    ? baseUrl
-    : `${baseUrl}/remote.php/dav/files/${encodeURIComponent(cfg.username)}`;
+  const davRoot = buildDavRoot(cfg);
   const fullPath = `${normalizeFolder(cfg.folder)}/${relativePath.replace(/^\/+/, '')}`;
   const encodedSegments = fullPath
     .split('/')
@@ -144,19 +168,14 @@ function buildWebDavFileUrl(cfg: StoredLocalNc, relativePath: string): string {
 
 async function nativePushNextcloud(cfg: StoredLocalNc, db: AppDatabase): Promise<void> {
   const fileUrl = buildWebDavFileUrl(cfg, 'taktwerk-db.json');
-  const res = await CapacitorHttp.put({
-    url: fileUrl,
-    headers: {
-      Authorization: makeAuthHeader(cfg),
-      'Content-Type': 'application/json; charset=utf-8',
-    },
-    data: JSON.stringify(db, null, 2),
+  const folderUrls = buildWebDavFolderUrls(cfg);
+  await TaktWerkNative.webdavUploadJson({
+    folderUrls,
+    fileUrl,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
+    json: JSON.stringify(db, null, 2),
   });
-  if (res.status < 200 || res.status >= 300) {
-    throw new Error(
-      `Nextcloud-Upload fehlgeschlagen (HTTP ${res.status}). Prüfe ob der Ordner "${cfg.folder}" in Nextcloud existiert.`
-    );
-  }
 }
 
 async function nativePullNextcloud(cfg: StoredLocalNc): Promise<AppDatabase> {
@@ -284,20 +303,15 @@ export async function apiTestNextcloud(payload: {
   if (!cfg.url || !cfg.username || !cfg.appPassword) {
     throw new Error('Bitte Server-URL, Benutzername und App-Passwort angeben.');
   }
-  const probeUrl = buildWebDavFileUrl(cfg, 'taktwerk-db.json');
-  const res = await CapacitorHttp.get({
-    url: probeUrl,
-    headers: { Authorization: makeAuthHeader(cfg) },
+  const folderUrls = buildWebDavFolderUrls(cfg, 'Rechnungen');
+  await TaktWerkNative.webdavEnsureFolders({
+    folderUrls,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
   });
-  if (res.status === 401 || res.status === 403) {
-    throw new Error('Authentifizierung bei Nextcloud fehlgeschlagen.');
-  }
-  if (res.status !== 200 && res.status !== 404) {
-    throw new Error(`Nextcloud-Prüfung fehlgeschlagen (HTTP ${res.status}).`);
-  }
   return {
     ok: true,
-    message: `Nextcloud erreichbar. Stelle sicher, dass der Ordner "${cfg.folder}" in Nextcloud angelegt ist.`,
+    message: `Verbindung zu Nextcloud erfolgreich. Ordner "${cfg.folder}/Rechnungen" ist bereit.`,
   };
 }
 
@@ -435,21 +449,15 @@ export async function apiUploadInvoicePdf(
     throw new Error('Nextcloud ist nicht konfiguriert.');
   }
   const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, '_');
+  const folderUrls = buildWebDavFolderUrls(cfg, 'Rechnungen');
   const fileUrl = buildWebDavFileUrl(cfg, `Rechnungen/${safeFilename}`);
-  const res = await CapacitorHttp.put({
-    url: fileUrl,
-    headers: {
-      Authorization: makeAuthHeader(cfg),
-      'Content-Type': 'application/pdf',
-    },
-    data: pdfBase64,
-    dataType: 'file',
+  await TaktWerkNative.webdavUploadPdf({
+    folderUrls,
+    fileUrl,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
+    base64: pdfBase64,
   });
-  if (res.status < 200 || res.status >= 300) {
-    throw new Error(
-      `PDF-Upload fehlgeschlagen (HTTP ${res.status}). Prüfe ob der Ordner "${cfg.folder}/Rechnungen" existiert.`
-    );
-  }
   return {
     path: `${cfg.folder}/Rechnungen/${safeFilename}`,
     uploadedAt: new Date().toISOString(),

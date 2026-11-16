@@ -346,14 +346,59 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
   return doc;
 }
 
-export function downloadInvoicePdf(invoice: Invoice, company: CompanyProfile): void {
-  const doc = buildInvoicePdf(invoice, company);
-  doc.save(`${invoice.invoiceNumber}.pdf`);
-}
-
 export function getInvoicePdfBase64(invoice: Invoice, company: CompanyProfile): string {
   const doc = buildInvoicePdf(invoice, company);
   const dataUri = doc.output('datauristring');
   const commaIdx = dataUri.indexOf(',');
   return commaIdx >= 0 ? dataUri.slice(commaIdx + 1) : dataUri;
+}
+
+export async function downloadInvoicePdf(invoice: Invoice, company: CompanyProfile): Promise<void> {
+  const filename = `${invoice.invoiceNumber}.pdf`;
+  if (typeof window !== 'undefined') {
+    const { Capacitor } = await import('@capacitor/core');
+    if (Capacitor.isNativePlatform()) {
+      const { TaktWerkNative } = await import('./taktwerkNative');
+      const base64 = getInvoicePdfBase64(invoice, company);
+      await TaktWerkNative.openPdf({ filename, base64 });
+      return;
+    }
+  }
+  const doc = buildInvoicePdf(invoice, company);
+  doc.save(filename);
+}
+
+export async function shareInvoicePdf(invoice: Invoice, company: CompanyProfile): Promise<void> {
+  const filename = `${invoice.invoiceNumber}.pdf`;
+  if (typeof window !== 'undefined') {
+    const { Capacitor } = await import('@capacitor/core');
+    if (Capacitor.isNativePlatform()) {
+      const { TaktWerkNative } = await import('./taktwerkNative');
+      const base64 = getInvoicePdfBase64(invoice, company);
+      await TaktWerkNative.sharePdf({ filename, base64 });
+      return;
+    }
+  }
+  const doc = buildInvoicePdf(invoice, company);
+  const blob = doc.output('blob');
+  if (typeof navigator !== 'undefined' && navigator.share) {
+    const file = new File([blob], filename, { type: 'application/pdf' });
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ title: filename, files: [file] });
+      return;
+    }
+  }
+  doc.save(filename);
+}
+
+export async function printInvoiceView(invoiceNumber: string): Promise<void> {
+  if (typeof window !== 'undefined') {
+    const { Capacitor } = await import('@capacitor/core');
+    if (Capacitor.isNativePlatform()) {
+      const { TaktWerkNative } = await import('./taktwerkNative');
+      await TaktWerkNative.printWebView({ jobName: `Rechnung-${invoiceNumber}` });
+      return;
+    }
+  }
+  window.print();
 }
