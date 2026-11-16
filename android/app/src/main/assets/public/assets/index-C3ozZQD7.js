@@ -12082,7 +12082,7 @@ var CapacitorHttpPluginWeb = class extends WebPlugin {
 		return this.request(Object.assign(Object.assign({}, options), { method: "DELETE" }));
 	}
 };
-var CapacitorHttp = registerPlugin("CapacitorHttp", { web: () => new CapacitorHttpPluginWeb() });
+registerPlugin("CapacitorHttp", { web: () => new CapacitorHttpPluginWeb() });
 /******** END HTTP PLUGIN ********/
 /******** SYSTEM BARS PLUGIN ********/
 /**
@@ -12145,9 +12145,9 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-BPZOn2DB.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-BlZCrglK.js").then((m) => new m.AppWeb()), []) });
 // node_modules/@capgo/capacitor-nfc/dist/esm/index.js
-var CapacitorNfc = registerPlugin("CapacitorNfc", { web: () => __vitePreload(() => import("./web-CYdlog-r.js").then((m) => new m.CapacitorNfcWeb()), []) });
+var CapacitorNfc = registerPlugin("CapacitorNfc", { web: () => __vitePreload(() => import("./web-CtgjEWPZ.js").then((m) => new m.CapacitorNfcWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -12417,6 +12417,30 @@ var Eye = createLucideIcon("eye", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var FileCode2 = createLucideIcon("file-code-2", [
+	["path", {
+		d: "M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4",
+		key: "1pf5j1"
+	}],
+	["path", {
+		d: "M14 2v4a2 2 0 0 0 2 2h4",
+		key: "tnqrlb"
+	}],
+	["path", {
+		d: "m5 12-3 3 3 3",
+		key: "oke12k"
+	}],
+	["path", {
+		d: "m9 18 3-3-3-3",
+		key: "112psh"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var FilePlus2 = createLucideIcon("file-plus-2", [
 	["path", {
 		d: "M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4",
@@ -12465,6 +12489,38 @@ var FileSliders = createLucideIcon("file-sliders", [
 	["path", {
 		d: "M14 16v2",
 		key: "12fp5e"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var FileSpreadsheet = createLucideIcon("file-spreadsheet", [
+	["path", {
+		d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",
+		key: "1rqfz7"
+	}],
+	["path", {
+		d: "M14 2v4a2 2 0 0 0 2 2h4",
+		key: "tnqrlb"
+	}],
+	["path", {
+		d: "M8 13h2",
+		key: "yr2amv"
+	}],
+	["path", {
+		d: "M14 13h2",
+		key: "un5t4a"
+	}],
+	["path", {
+		d: "M8 17h2",
+		key: "2yhykz"
+	}],
+	["path", {
+		d: "M14 17h2",
+		key: "10kma7"
 	}]
 ]);
 /**
@@ -12623,6 +12679,27 @@ var Package = createLucideIcon("package", [
 		key: "1c824w"
 	}]
 ]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Pause = createLucideIcon("pause", [["rect", {
+	x: "14",
+	y: "3",
+	width: "5",
+	height: "18",
+	rx: "1",
+	key: "kaeet6"
+}], ["rect", {
+	x: "5",
+	y: "3",
+	width: "5",
+	height: "18",
+	rx: "1",
+	key: "1wsw3u"
+}]]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -12990,6 +13067,46 @@ var Trash2 = createLucideIcon("trash-2", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var TriangleAlert = createLucideIcon("triangle-alert", [
+	["path", {
+		d: "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",
+		key: "wmoenq"
+	}],
+	["path", {
+		d: "M12 9v4",
+		key: "juzpu7"
+	}],
+	["path", {
+		d: "M12 17h.01",
+		key: "p32p05"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Upload = createLucideIcon("upload", [
+	["path", {
+		d: "M12 3v12",
+		key: "1x0j5s"
+	}],
+	["path", {
+		d: "m17 8-5-5-5 5",
+		key: "7q97r8"
+	}],
+	["path", {
+		d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",
+		key: "ih7n3h"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Users = createLucideIcon("users", [
 	["path", {
 		d: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",
@@ -13113,6 +13230,11 @@ function formatDateTimeDE(isoString) {
 function toInputDate(date = /* @__PURE__ */ new Date()) {
 	return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
+function toInputTime(isoString) {
+	const date = new Date(isoString);
+	if (Number.isNaN(date.getTime())) return "09:00";
+	return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
 function addDaysISO(dateStr, days) {
 	const date = new Date(dateStr);
 	if (Number.isNaN(date.getTime())) return toInputDate();
@@ -13122,6 +13244,29 @@ function addDaysISO(dateStr, days) {
 function createId(prefix) {
 	const rand = Math.random().toString(36).slice(2, 8);
 	return `${prefix}-${Date.now().toString(36)}-${rand}`;
+}
+function roundDurationSeconds(totalSeconds, roundingMinutes) {
+	const safe = Math.max(0, Math.floor(totalSeconds));
+	if (!roundingMinutes || roundingMinutes <= 0) return safe;
+	const blockSeconds = roundingMinutes * 60;
+	return Math.ceil(safe / blockSeconds) * blockSeconds;
+}
+function getActiveTimerElapsedMs(timer, nowMs = Date.now()) {
+	const startMs = new Date(timer.startTime).getTime();
+	const accPaused = timer.accumulatedPausedMs ?? 0;
+	const effectiveEndMs = timer.pausedAt ? new Date(timer.pausedAt).getTime() : nowMs;
+	return Math.max(0, effectiveEndMs - startMs - accPaused);
+}
+function getOverdueDays(invoice, todayIso = toInputDate()) {
+	if (invoice.status !== "Gesendet" || !invoice.dueDate) return 0;
+	const due = /* @__PURE__ */ new Date(`${invoice.dueDate}T00:00:00`);
+	const today = /* @__PURE__ */ new Date(`${todayIso}T00:00:00`);
+	if (Number.isNaN(due.getTime()) || Number.isNaN(today.getTime())) return 0;
+	const diffDays = Math.floor((today.getTime() - due.getTime()) / 864e5);
+	return Math.max(0, diffDays);
+}
+function isInvoiceOverdue(invoice, todayIso = toInputDate()) {
+	return getOverdueDays(invoice, todayIso) > 0;
 }
 function formatInvoiceNumber(company, sequenceOverride, date = /* @__PURE__ */ new Date()) {
 	const seqNum = Math.max(1, sequenceOverride ?? company.nextInvoiceSequence ?? 1);
@@ -14003,6 +14148,7 @@ function CustomersView({ customers, timeEntries, invoices, onSaveCustomer, onDel
 	const [country, setCountry] = (0, import_react.useState)("Deutschland");
 	const [vatId, setVatId] = (0, import_react.useState)("");
 	const [paymentTermDays, setPaymentTermDays] = (0, import_react.useState)(14);
+	const [timeRoundingInput, setTimeRoundingInput] = (0, import_react.useState)("");
 	const [notes, setNotes] = (0, import_react.useState)("");
 	const [error, setError] = (0, import_react.useState)("");
 	const openNew = () => {
@@ -14019,6 +14165,7 @@ function CustomersView({ customers, timeEntries, invoices, onSaveCustomer, onDel
 		setCountry("Deutschland");
 		setVatId("");
 		setPaymentTermDays(14);
+		setTimeRoundingInput("");
 		setNotes("");
 		setError("");
 		setShowForm(true);
@@ -14036,6 +14183,7 @@ function CustomersView({ customers, timeEntries, invoices, onSaveCustomer, onDel
 		setCountry(c.country);
 		setVatId(c.vatId);
 		setPaymentTermDays(c.paymentTermDays);
+		setTimeRoundingInput(c.timeRoundingMinutes !== void 0 && c.timeRoundingMinutes !== null ? String(c.timeRoundingMinutes) : "");
 		setNotes(c.notes);
 		setError("");
 		setShowForm(true);
@@ -14060,6 +14208,7 @@ function CustomersView({ customers, timeEntries, invoices, onSaveCustomer, onDel
 			country: country.trim() || "Deutschland",
 			vatId: vatId.trim(),
 			paymentTermDays: Math.max(0, Number(paymentTermDays) || 14),
+			timeRoundingMinutes: timeRoundingInput === "" ? null : Number(timeRoundingInput),
 			notes: notes.trim(),
 			createdAt: editing?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
 		});
@@ -14236,13 +14385,50 @@ function CustomersView({ customers, timeEntries, invoices, onSaveCustomer, onDel
 						})] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Notizen"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: notes,
-							onChange: (e) => setNotes(e.target.value),
-							className: inputClass
+							children: "Zeitrundung (Takt für Rechnungen)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+							value: timeRoundingInput,
+							onChange: (e) => setTimeRoundingInput(e.target.value),
+							className: inputClass,
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: "",
+									children: "Firmen-Standard verwenden"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: "0",
+									children: "Exakt (keine Aufrundung)"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: "5",
+									children: "Aufrunden auf 5 Minuten"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: "10",
+									children: "Aufrunden auf 10 Minuten"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: "15",
+									children: "Aufrunden auf 15 Minuten"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+									value: "30",
+									children: "Aufrunden auf 30 Minuten"
+								})
+							]
 						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "md:col-span-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Notizen"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "text",
+								value: notes,
+								onChange: (e) => setNotes(e.target.value),
+								className: inputClass
+							})]
+						}),
 						error && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "text-xs font-medium text-red-600 dark:text-red-400 md:col-span-3",
 							children: error
@@ -14739,6 +14925,13 @@ var TaktWerkNative = registerPlugin("TaktWerkNative");
 var SERVER_URL_KEY = "taktwerk-server-url";
 var NATIVE_DB_KEY = "taktwerk-native-db";
 var NATIVE_NC_KEY = "taktwerk-native-nc";
+var NextcloudConflictError = class extends Error {
+	constructor(message, remoteUpdatedAt) {
+		super(message);
+		this.name = "NextcloudConflictError";
+		this.remoteUpdatedAt = remoteUpdatedAt;
+	}
+};
 function isNativeCapacitor() {
 	return Capacitor.isNativePlatform();
 }
@@ -14788,7 +14981,8 @@ function readNativeNc() {
 				folder: normalizeFolder(parsed.folder ?? "/TaktWerk"),
 				autoSync: parsed.autoSync ?? true,
 				lastSyncAt: parsed.lastSyncAt ?? null,
-				lastSyncError: parsed.lastSyncError ?? null
+				lastSyncError: parsed.lastSyncError ?? null,
+				lastKnownRemoteUpdatedAt: parsed.lastKnownRemoteUpdatedAt ?? null
 			};
 		}
 	} catch {}
@@ -14799,7 +14993,8 @@ function readNativeNc() {
 		folder: "/TaktWerk",
 		autoSync: true,
 		lastSyncAt: null,
-		lastSyncError: null
+		lastSyncError: null,
+		lastKnownRemoteUpdatedAt: null
 	};
 }
 function writeNativeNc(cfg) {
@@ -14821,12 +15016,6 @@ function toPublicNc(cfg) {
 function normalizeFolder(folder) {
 	const trimmed = (folder || "/TaktWerk").trim().replace(/\\/g, "/");
 	return (trimmed.startsWith("/") ? trimmed : `/${trimmed}`).replace(/\/+$/, "") || "/TaktWerk";
-}
-function makeAuthHeader(cfg) {
-	const bytes = new TextEncoder().encode(`${cfg.username}:${cfg.appPassword}`);
-	let binary = "";
-	for (const b of bytes) binary += String.fromCharCode(b);
-	return `Basic ${btoa(binary)}`;
 }
 function buildDavRoot(cfg) {
 	const baseUrl = cfg.url.trim().replace(/\/+$/, "").replace(/\/index\.php$/, "");
@@ -14858,16 +15047,15 @@ async function nativePushNextcloud(cfg, db) {
 		json: JSON.stringify(db, null, 2)
 	});
 }
-async function nativePullNextcloud(cfg) {
+async function nativePullNextcloudOptional(cfg) {
 	const fileUrl = buildWebDavFileUrl(cfg, "taktwerk-db.json");
-	const res = await CapacitorHttp.get({
-		url: fileUrl,
-		headers: { Authorization: makeAuthHeader(cfg) }
+	const res = await TaktWerkNative.webdavDownloadJson({
+		fileUrl,
+		username: cfg.username,
+		appPassword: cfg.appPassword
 	});
-	if (res.status === 404) throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
-	if (res.status === 401 || res.status === 403) throw new Error("Authentifizierung bei Nextcloud fehlgeschlagen.");
-	if (res.status < 200 || res.status >= 300) throw new Error(`Laden aus Nextcloud fehlgeschlagen (HTTP ${res.status}).`);
-	return typeof res.data === "string" ? JSON.parse(res.data) : res.data;
+	if (!res.found || !res.json) return null;
+	return JSON.parse(res.json);
 }
 async function apiLoadDb() {
 	if (shouldUseRemoteServer()) {
@@ -14909,6 +15097,7 @@ async function apiSaveDb(nextDb) {
 	if (ncCfg.url && ncCfg.username && ncCfg.appPassword && ncCfg.autoSync) try {
 		await nativePushNextcloud(ncCfg, updated);
 		ncCfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
+		ncCfg.lastKnownRemoteUpdatedAt = updated.updatedAt;
 		ncCfg.lastSyncError = null;
 		writeNativeNc(ncCfg);
 	} catch (err) {
@@ -14921,6 +15110,41 @@ async function apiSaveDb(nextDb) {
 		nextcloud: toPublicNc(ncCfg),
 		syncWarning
 	};
+}
+async function apiCheckNextcloudRemote() {
+	try {
+		if (shouldUseRemoteServer()) {
+			const res = await fetch(apiUrl("/api/nextcloud/check"));
+			if (!res.ok) return {
+				hasNewerRemote: false,
+				remoteUpdatedAt: null
+			};
+			return await res.json();
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) return {
+			hasNewerRemote: false,
+			remoteUpdatedAt: null
+		};
+		const localDb = readNativeDb();
+		const remoteDb = await nativePullNextcloudOptional(cfg);
+		if (!remoteDb?.updatedAt) return {
+			hasNewerRemote: false,
+			remoteUpdatedAt: null
+		};
+		const remoteMs = new Date(remoteDb.updatedAt).getTime();
+		const localMs = new Date(localDb.updatedAt).getTime();
+		const knownMs = cfg.lastKnownRemoteUpdatedAt ? new Date(cfg.lastKnownRemoteUpdatedAt).getTime() : 0;
+		return {
+			hasNewerRemote: Number.isFinite(remoteMs) && remoteMs > knownMs + 1e3 && remoteMs > localMs + 1e3,
+			remoteUpdatedAt: remoteDb.updatedAt
+		};
+	} catch {
+		return {
+			hasNewerRemote: false,
+			remoteUpdatedAt: null
+		};
+	}
 }
 async function apiTestNextcloud(payload) {
 	if (shouldUseRemoteServer()) {
@@ -14944,7 +15168,8 @@ async function apiTestNextcloud(payload) {
 		folder: normalizeFolder(payload.folder || existing.folder),
 		autoSync: existing.autoSync,
 		lastSyncAt: existing.lastSyncAt,
-		lastSyncError: null
+		lastSyncError: null,
+		lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt
 	};
 	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Bitte Server-URL, Benutzername und App-Passwort angeben.");
 	const folderUrls = buildWebDavFolderUrls(cfg, "Rechnungen");
@@ -14977,7 +15202,8 @@ async function apiSaveNextcloudConfig(payload) {
 		folder: normalizeFolder(payload.folder || existing.folder),
 		autoSync: payload.autoSync,
 		lastSyncAt: existing.lastSyncAt,
-		lastSyncError: null
+		lastSyncError: null,
+		lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt
 	};
 	writeNativeNc(updated);
 	return toPublicNc(updated);
@@ -14999,19 +15225,24 @@ async function apiClearNextcloudConfig() {
 		folder: "/TaktWerk",
 		autoSync: true,
 		lastSyncAt: null,
-		lastSyncError: null
+		lastSyncError: null,
+		lastKnownRemoteUpdatedAt: null
 	};
 	writeNativeNc(empty);
 	return toPublicNc(empty);
 }
-async function apiSyncNextcloud(direction) {
+async function apiSyncNextcloud(direction, force = false) {
 	if (shouldUseRemoteServer()) {
 		const res = await fetch(apiUrl("/api/nextcloud/sync"), {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ direction })
+			body: JSON.stringify({
+				direction,
+				force
+			})
 		});
 		const data = await res.json();
+		if (res.status === 409 && data.conflict && data.remoteUpdatedAt) throw new NextcloudConflictError(data.error || "Konflikt mit neueren Nextcloud-Daten.", data.remoteUpdatedAt);
 		if (!res.ok || !data.nextcloud) throw new Error(data.error || "Nextcloud-Synchronisation fehlgeschlagen.");
 		return {
 			db: data.db,
@@ -15021,9 +15252,11 @@ async function apiSyncNextcloud(direction) {
 	const cfg = readNativeNc();
 	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
 	if (direction === "pull") {
-		const remoteDb = await nativePullNextcloud(cfg);
+		const remoteDb = await nativePullNextcloudOptional(cfg);
+		if (!remoteDb) throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
 		writeNativeDb(remoteDb);
 		cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
+		cfg.lastKnownRemoteUpdatedAt = remoteDb.updatedAt || cfg.lastSyncAt;
 		cfg.lastSyncError = null;
 		writeNativeNc(cfg);
 		return {
@@ -15032,8 +15265,18 @@ async function apiSyncNextcloud(direction) {
 		};
 	}
 	const localDb = readNativeDb();
+	if (!force) {
+		const remoteDb = await nativePullNextcloudOptional(cfg).catch(() => null);
+		if (remoteDb?.updatedAt) {
+			const remoteMs = new Date(remoteDb.updatedAt).getTime();
+			const knownMs = cfg.lastKnownRemoteUpdatedAt ? new Date(cfg.lastKnownRemoteUpdatedAt).getTime() : 0;
+			const localMs = new Date(localDb.updatedAt).getTime();
+			if (Number.isFinite(remoteMs) && remoteMs > knownMs + 1e3 && remoteMs > localMs + 1e3) throw new NextcloudConflictError("Auf Nextcloud liegt bereits ein neuerer Stand von einem anderen Gerät. Bitte zuerst \"Von Nextcloud laden\" oder das Überschreiben bestätigen.", remoteDb.updatedAt);
+		}
+	}
 	await nativePushNextcloud(cfg, localDb);
 	cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
+	cfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
 	cfg.lastSyncError = null;
 	writeNativeNc(cfg);
 	return {
@@ -15074,6 +15317,79 @@ async function apiUploadInvoicePdf(filename, pdfBase64) {
 		path: `${cfg.folder}/Rechnungen/${safeFilename}`,
 		uploadedAt: (/* @__PURE__ */ new Date()).toISOString()
 	};
+}
+async function apiUploadInvoiceTextFile(filename, content, contentType = "application/xml; charset=utf-8") {
+	if (shouldUseRemoteServer()) {
+		const res = await fetch(apiUrl("/api/nextcloud/upload-file"), {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				filename,
+				content,
+				contentType
+			})
+		});
+		const data = await res.json();
+		if (!res.ok) throw new Error(data.error || "Datei-Upload fehlgeschlagen.");
+		return {
+			path: data.path || filename,
+			uploadedAt: data.uploadedAt || (/* @__PURE__ */ new Date()).toISOString()
+		};
+	}
+	const cfg = readNativeNc();
+	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist nicht konfiguriert.");
+	const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, "_");
+	const folderUrls = buildWebDavFolderUrls(cfg, "Rechnungen");
+	const fileUrl = buildWebDavFileUrl(cfg, `Rechnungen/${safeFilename}`);
+	await TaktWerkNative.webdavUploadFile({
+		folderUrls,
+		fileUrl,
+		username: cfg.username,
+		appPassword: cfg.appPassword,
+		contentType,
+		content
+	});
+	return {
+		path: `${cfg.folder}/Rechnungen/${safeFilename}`,
+		uploadedAt: (/* @__PURE__ */ new Date()).toISOString()
+	};
+}
+function triggerNfcHaptic(pattern) {
+	if (isNativeCapacitor()) {
+		TaktWerkNative.hapticFeedback({ pattern }).catch(() => {});
+		return;
+	}
+	if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+		if (pattern === "stop") navigator.vibrate([
+			60,
+			70,
+			60
+		]);
+		else if (pattern === "error") navigator.vibrate([
+			40,
+			50,
+			40,
+			50,
+			40
+		]);
+		else navigator.vibrate(80);
+	}
+}
+function syncActiveTimerNotification(timer, customerName) {
+	if (!isNativeCapacitor()) return;
+	if (!timer) {
+		TaktWerkNative.clearActiveTimerNotification().catch(() => {});
+		return;
+	}
+	const elapsedMs = getActiveTimerElapsedMs(timer);
+	const adjustedStartMs = Date.now() - elapsedMs;
+	TaktWerkNative.showActiveTimerNotification({
+		title: timer.title,
+		customer: customerName,
+		startTimeMs: adjustedStartMs,
+		isPaused: Boolean(timer.pausedAt),
+		pausedDuration: timer.pausedAt ? formatDuration(Math.floor(elapsedMs / 1e3)) : void 0
+	}).catch(() => {});
 }
 // node_modules/@babel/runtime/helpers/esm/typeof.js
 function _typeof(o) {
@@ -34417,7 +34733,7 @@ function le() {
 	}, t.allowFsRead = void 0, t.loadImageFile = t.loadFile;
 }(E.API), function(e) {
 	function r() {
-		return (i.html2canvas ? Promise.resolve(i.html2canvas) : __vitePreload(() => import("./html2canvas-C9LHt5Ga.js").then((m) => /* @__PURE__ */ __toESM(m.default)), [])).catch(function(t) {
+		return (i.html2canvas ? Promise.resolve(i.html2canvas) : __vitePreload(() => import("./html2canvas-DIrRrkke.js").then((m) => /* @__PURE__ */ __toESM(m.default)), [])).catch(function(t) {
 			return Promise.reject(/* @__PURE__ */ new Error("Could not load html2canvas: " + t));
 		}).then(function(t) {
 			return t.default ? t.default : t;
@@ -35584,7 +35900,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-CjnR-K7f.js"), [])).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-eD_MOCk2.js"), [])).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -38778,21 +39094,2424 @@ E.API.PDFObject = function() {
 		return "" + r;
 	}, e;
 }();
-// src/utils/pdfInvoice.ts
-function buildInvoicePdf(invoice, company) {
-	const doc = new E({
-		orientation: "portrait",
-		unit: "mm",
-		format: "a4"
-	});
-	const marginLeft = 20;
-	const contentWidth = 170;
-	const [accentR, accentG, accentB] = INVOICE_ACCENT_STYLES[company.invoiceAccentColor ?? "slate"]?.rgb ?? [
-		15,
-		23,
-		42
+// node_modules/qrcode/lib/can-promise.js
+var require_can_promise = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	module.exports = function() {
+		return typeof Promise === "function" && Promise.prototype && Promise.prototype.then;
+	};
+}));
+// node_modules/qrcode/lib/core/utils.js
+var require_utils$1 = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var toSJISFunction;
+	var CODEWORDS_COUNT = [
+		0,
+		26,
+		44,
+		70,
+		100,
+		134,
+		172,
+		196,
+		242,
+		292,
+		346,
+		404,
+		466,
+		532,
+		581,
+		655,
+		733,
+		815,
+		901,
+		991,
+		1085,
+		1156,
+		1258,
+		1364,
+		1474,
+		1588,
+		1706,
+		1828,
+		1921,
+		2051,
+		2185,
+		2323,
+		2465,
+		2611,
+		2761,
+		2876,
+		3034,
+		3196,
+		3362,
+		3532,
+		3706
 	];
-	const headerTitle = (company.invoiceHeaderTitle || "Rechnung").trim();
+	/**
+	* Returns the QR Code size for the specified version
+	*
+	* @param  {Number} version QR Code version
+	* @return {Number}         size of QR code
+	*/
+	exports.getSymbolSize = function getSymbolSize(version) {
+		if (!version) throw new Error("\"version\" cannot be null or undefined");
+		if (version < 1 || version > 40) throw new Error("\"version\" should be in range from 1 to 40");
+		return version * 4 + 17;
+	};
+	/**
+	* Returns the total number of codewords used to store data and EC information.
+	*
+	* @param  {Number} version QR Code version
+	* @return {Number}         Data length in bits
+	*/
+	exports.getSymbolTotalCodewords = function getSymbolTotalCodewords(version) {
+		return CODEWORDS_COUNT[version];
+	};
+	/**
+	* Encode data with Bose-Chaudhuri-Hocquenghem
+	*
+	* @param  {Number} data Value to encode
+	* @return {Number}      Encoded value
+	*/
+	exports.getBCHDigit = function(data) {
+		let digit = 0;
+		while (data !== 0) {
+			digit++;
+			data >>>= 1;
+		}
+		return digit;
+	};
+	exports.setToSJISFunction = function setToSJISFunction(f) {
+		if (typeof f !== "function") throw new Error("\"toSJISFunc\" is not a valid function.");
+		toSJISFunction = f;
+	};
+	exports.isKanjiModeEnabled = function() {
+		return typeof toSJISFunction !== "undefined";
+	};
+	exports.toSJIS = function toSJIS(kanji) {
+		return toSJISFunction(kanji);
+	};
+}));
+// node_modules/qrcode/lib/core/error-correction-level.js
+var require_error_correction_level = /* @__PURE__ */ __commonJSMin(((exports) => {
+	exports.L = { bit: 1 };
+	exports.M = { bit: 0 };
+	exports.Q = { bit: 3 };
+	exports.H = { bit: 2 };
+	function fromString(string) {
+		if (typeof string !== "string") throw new Error("Param is not a string");
+		switch (string.toLowerCase()) {
+			case "l":
+			case "low": return exports.L;
+			case "m":
+			case "medium": return exports.M;
+			case "q":
+			case "quartile": return exports.Q;
+			case "h":
+			case "high": return exports.H;
+			default: throw new Error("Unknown EC Level: " + string);
+		}
+	}
+	exports.isValid = function isValid(level) {
+		return level && typeof level.bit !== "undefined" && level.bit >= 0 && level.bit < 4;
+	};
+	exports.from = function from(value, defaultValue) {
+		if (exports.isValid(value)) return value;
+		try {
+			return fromString(value);
+		} catch (e) {
+			return defaultValue;
+		}
+	};
+}));
+// node_modules/qrcode/lib/core/bit-buffer.js
+var require_bit_buffer = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	function BitBuffer() {
+		this.buffer = [];
+		this.length = 0;
+	}
+	BitBuffer.prototype = {
+		get: function(index) {
+			const bufIndex = Math.floor(index / 8);
+			return (this.buffer[bufIndex] >>> 7 - index % 8 & 1) === 1;
+		},
+		put: function(num, length) {
+			for (let i = 0; i < length; i++) this.putBit((num >>> length - i - 1 & 1) === 1);
+		},
+		getLengthInBits: function() {
+			return this.length;
+		},
+		putBit: function(bit) {
+			const bufIndex = Math.floor(this.length / 8);
+			if (this.buffer.length <= bufIndex) this.buffer.push(0);
+			if (bit) this.buffer[bufIndex] |= 128 >>> this.length % 8;
+			this.length++;
+		}
+	};
+	module.exports = BitBuffer;
+}));
+// node_modules/qrcode/lib/core/bit-matrix.js
+var require_bit_matrix = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	/**
+	* Helper class to handle QR Code symbol modules
+	*
+	* @param {Number} size Symbol size
+	*/
+	function BitMatrix(size) {
+		if (!size || size < 1) throw new Error("BitMatrix size must be defined and greater than 0");
+		this.size = size;
+		this.data = new Uint8Array(size * size);
+		this.reservedBit = new Uint8Array(size * size);
+	}
+	/**
+	* Set bit value at specified location
+	* If reserved flag is set, this bit will be ignored during masking process
+	*
+	* @param {Number}  row
+	* @param {Number}  col
+	* @param {Boolean} value
+	* @param {Boolean} reserved
+	*/
+	BitMatrix.prototype.set = function(row, col, value, reserved) {
+		const index = row * this.size + col;
+		this.data[index] = value;
+		if (reserved) this.reservedBit[index] = true;
+	};
+	/**
+	* Returns bit value at specified location
+	*
+	* @param  {Number}  row
+	* @param  {Number}  col
+	* @return {Boolean}
+	*/
+	BitMatrix.prototype.get = function(row, col) {
+		return this.data[row * this.size + col];
+	};
+	/**
+	* Applies xor operator at specified location
+	* (used during masking process)
+	*
+	* @param {Number}  row
+	* @param {Number}  col
+	* @param {Boolean} value
+	*/
+	BitMatrix.prototype.xor = function(row, col, value) {
+		this.data[row * this.size + col] ^= value;
+	};
+	/**
+	* Check if bit at specified location is reserved
+	*
+	* @param {Number}   row
+	* @param {Number}   col
+	* @return {Boolean}
+	*/
+	BitMatrix.prototype.isReserved = function(row, col) {
+		return this.reservedBit[row * this.size + col];
+	};
+	module.exports = BitMatrix;
+}));
+// node_modules/qrcode/lib/core/alignment-pattern.js
+var require_alignment_pattern = /* @__PURE__ */ __commonJSMin(((exports) => {
+	/**
+	* Alignment pattern are fixed reference pattern in defined positions
+	* in a matrix symbology, which enables the decode software to re-synchronise
+	* the coordinate mapping of the image modules in the event of moderate amounts
+	* of distortion of the image.
+	*
+	* Alignment patterns are present only in QR Code symbols of version 2 or larger
+	* and their number depends on the symbol version.
+	*/
+	var getSymbolSize = require_utils$1().getSymbolSize;
+	/**
+	* Calculate the row/column coordinates of the center module of each alignment pattern
+	* for the specified QR Code version.
+	*
+	* The alignment patterns are positioned symmetrically on either side of the diagonal
+	* running from the top left corner of the symbol to the bottom right corner.
+	*
+	* Since positions are simmetrical only half of the coordinates are returned.
+	* Each item of the array will represent in turn the x and y coordinate.
+	* @see {@link getPositions}
+	*
+	* @param  {Number} version QR Code version
+	* @return {Array}          Array of coordinate
+	*/
+	exports.getRowColCoords = function getRowColCoords(version) {
+		if (version === 1) return [];
+		const posCount = Math.floor(version / 7) + 2;
+		const size = getSymbolSize(version);
+		const intervals = size === 145 ? 26 : Math.ceil((size - 13) / (2 * posCount - 2)) * 2;
+		const positions = [size - 7];
+		for (let i = 1; i < posCount - 1; i++) positions[i] = positions[i - 1] - intervals;
+		positions.push(6);
+		return positions.reverse();
+	};
+	/**
+	* Returns an array containing the positions of each alignment pattern.
+	* Each array's element represent the center point of the pattern as (x, y) coordinates
+	*
+	* Coordinates are calculated expanding the row/column coordinates returned by {@link getRowColCoords}
+	* and filtering out the items that overlaps with finder pattern
+	*
+	* @example
+	* For a Version 7 symbol {@link getRowColCoords} returns values 6, 22 and 38.
+	* The alignment patterns, therefore, are to be centered on (row, column)
+	* positions (6,22), (22,6), (22,22), (22,38), (38,22), (38,38).
+	* Note that the coordinates (6,6), (6,38), (38,6) are occupied by finder patterns
+	* and are not therefore used for alignment patterns.
+	*
+	* let pos = getPositions(7)
+	* // [[6,22], [22,6], [22,22], [22,38], [38,22], [38,38]]
+	*
+	* @param  {Number} version QR Code version
+	* @return {Array}          Array of coordinates
+	*/
+	exports.getPositions = function getPositions(version) {
+		const coords = [];
+		const pos = exports.getRowColCoords(version);
+		const posLength = pos.length;
+		for (let i = 0; i < posLength; i++) for (let j = 0; j < posLength; j++) {
+			if (i === 0 && j === 0 || i === 0 && j === posLength - 1 || i === posLength - 1 && j === 0) continue;
+			coords.push([pos[i], pos[j]]);
+		}
+		return coords;
+	};
+}));
+// node_modules/qrcode/lib/core/finder-pattern.js
+var require_finder_pattern = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var getSymbolSize = require_utils$1().getSymbolSize;
+	var FINDER_PATTERN_SIZE = 7;
+	/**
+	* Returns an array containing the positions of each finder pattern.
+	* Each array's element represent the top-left point of the pattern as (x, y) coordinates
+	*
+	* @param  {Number} version QR Code version
+	* @return {Array}          Array of coordinates
+	*/
+	exports.getPositions = function getPositions(version) {
+		const size = getSymbolSize(version);
+		return [
+			[0, 0],
+			[size - FINDER_PATTERN_SIZE, 0],
+			[0, size - FINDER_PATTERN_SIZE]
+		];
+	};
+}));
+// node_modules/qrcode/lib/core/mask-pattern.js
+var require_mask_pattern = /* @__PURE__ */ __commonJSMin(((exports) => {
+	/**
+	* Data mask pattern reference
+	* @type {Object}
+	*/
+	exports.Patterns = {
+		PATTERN000: 0,
+		PATTERN001: 1,
+		PATTERN010: 2,
+		PATTERN011: 3,
+		PATTERN100: 4,
+		PATTERN101: 5,
+		PATTERN110: 6,
+		PATTERN111: 7
+	};
+	/**
+	* Weighted penalty scores for the undesirable features
+	* @type {Object}
+	*/
+	var PenaltyScores = {
+		N1: 3,
+		N2: 3,
+		N3: 40,
+		N4: 10
+	};
+	/**
+	* Check if mask pattern value is valid
+	*
+	* @param  {Number}  mask    Mask pattern
+	* @return {Boolean}         true if valid, false otherwise
+	*/
+	exports.isValid = function isValid(mask) {
+		return mask != null && mask !== "" && !isNaN(mask) && mask >= 0 && mask <= 7;
+	};
+	/**
+	* Returns mask pattern from a value.
+	* If value is not valid, returns undefined
+	*
+	* @param  {Number|String} value        Mask pattern value
+	* @return {Number}                     Valid mask pattern or undefined
+	*/
+	exports.from = function from(value) {
+		return exports.isValid(value) ? parseInt(value, 10) : void 0;
+	};
+	/**
+	* Find adjacent modules in row/column with the same color
+	* and assign a penalty value.
+	*
+	* Points: N1 + i
+	* i is the amount by which the number of adjacent modules of the same color exceeds 5
+	*/
+	exports.getPenaltyN1 = function getPenaltyN1(data) {
+		const size = data.size;
+		let points = 0;
+		let sameCountCol = 0;
+		let sameCountRow = 0;
+		let lastCol = null;
+		let lastRow = null;
+		for (let row = 0; row < size; row++) {
+			sameCountCol = sameCountRow = 0;
+			lastCol = lastRow = null;
+			for (let col = 0; col < size; col++) {
+				let module = data.get(row, col);
+				if (module === lastCol) sameCountCol++;
+				else {
+					if (sameCountCol >= 5) points += PenaltyScores.N1 + (sameCountCol - 5);
+					lastCol = module;
+					sameCountCol = 1;
+				}
+				module = data.get(col, row);
+				if (module === lastRow) sameCountRow++;
+				else {
+					if (sameCountRow >= 5) points += PenaltyScores.N1 + (sameCountRow - 5);
+					lastRow = module;
+					sameCountRow = 1;
+				}
+			}
+			if (sameCountCol >= 5) points += PenaltyScores.N1 + (sameCountCol - 5);
+			if (sameCountRow >= 5) points += PenaltyScores.N1 + (sameCountRow - 5);
+		}
+		return points;
+	};
+	/**
+	* Find 2x2 blocks with the same color and assign a penalty value
+	*
+	* Points: N2 * (m - 1) * (n - 1)
+	*/
+	exports.getPenaltyN2 = function getPenaltyN2(data) {
+		const size = data.size;
+		let points = 0;
+		for (let row = 0; row < size - 1; row++) for (let col = 0; col < size - 1; col++) {
+			const last = data.get(row, col) + data.get(row, col + 1) + data.get(row + 1, col) + data.get(row + 1, col + 1);
+			if (last === 4 || last === 0) points++;
+		}
+		return points * PenaltyScores.N2;
+	};
+	/**
+	* Find 1:1:3:1:1 ratio (dark:light:dark:light:dark) pattern in row/column,
+	* preceded or followed by light area 4 modules wide
+	*
+	* Points: N3 * number of pattern found
+	*/
+	exports.getPenaltyN3 = function getPenaltyN3(data) {
+		const size = data.size;
+		let points = 0;
+		let bitsCol = 0;
+		let bitsRow = 0;
+		for (let row = 0; row < size; row++) {
+			bitsCol = bitsRow = 0;
+			for (let col = 0; col < size; col++) {
+				bitsCol = bitsCol << 1 & 2047 | data.get(row, col);
+				if (col >= 10 && (bitsCol === 1488 || bitsCol === 93)) points++;
+				bitsRow = bitsRow << 1 & 2047 | data.get(col, row);
+				if (col >= 10 && (bitsRow === 1488 || bitsRow === 93)) points++;
+			}
+		}
+		return points * PenaltyScores.N3;
+	};
+	/**
+	* Calculate proportion of dark modules in entire symbol
+	*
+	* Points: N4 * k
+	*
+	* k is the rating of the deviation of the proportion of dark modules
+	* in the symbol from 50% in steps of 5%
+	*/
+	exports.getPenaltyN4 = function getPenaltyN4(data) {
+		let darkCount = 0;
+		const modulesCount = data.data.length;
+		for (let i = 0; i < modulesCount; i++) darkCount += data.data[i];
+		return Math.abs(Math.ceil(darkCount * 100 / modulesCount / 5) - 10) * PenaltyScores.N4;
+	};
+	/**
+	* Return mask value at given position
+	*
+	* @param  {Number} maskPattern Pattern reference value
+	* @param  {Number} i           Row
+	* @param  {Number} j           Column
+	* @return {Boolean}            Mask value
+	*/
+	function getMaskAt(maskPattern, i, j) {
+		switch (maskPattern) {
+			case exports.Patterns.PATTERN000: return (i + j) % 2 === 0;
+			case exports.Patterns.PATTERN001: return i % 2 === 0;
+			case exports.Patterns.PATTERN010: return j % 3 === 0;
+			case exports.Patterns.PATTERN011: return (i + j) % 3 === 0;
+			case exports.Patterns.PATTERN100: return (Math.floor(i / 2) + Math.floor(j / 3)) % 2 === 0;
+			case exports.Patterns.PATTERN101: return i * j % 2 + i * j % 3 === 0;
+			case exports.Patterns.PATTERN110: return (i * j % 2 + i * j % 3) % 2 === 0;
+			case exports.Patterns.PATTERN111: return (i * j % 3 + (i + j) % 2) % 2 === 0;
+			default: throw new Error("bad maskPattern:" + maskPattern);
+		}
+	}
+	/**
+	* Apply a mask pattern to a BitMatrix
+	*
+	* @param  {Number}    pattern Pattern reference number
+	* @param  {BitMatrix} data    BitMatrix data
+	*/
+	exports.applyMask = function applyMask(pattern, data) {
+		const size = data.size;
+		for (let col = 0; col < size; col++) for (let row = 0; row < size; row++) {
+			if (data.isReserved(row, col)) continue;
+			data.xor(row, col, getMaskAt(pattern, row, col));
+		}
+	};
+	/**
+	* Returns the best mask pattern for data
+	*
+	* @param  {BitMatrix} data
+	* @return {Number} Mask pattern reference number
+	*/
+	exports.getBestMask = function getBestMask(data, setupFormatFunc) {
+		const numPatterns = Object.keys(exports.Patterns).length;
+		let bestPattern = 0;
+		let lowerPenalty = Infinity;
+		for (let p = 0; p < numPatterns; p++) {
+			setupFormatFunc(p);
+			exports.applyMask(p, data);
+			const penalty = exports.getPenaltyN1(data) + exports.getPenaltyN2(data) + exports.getPenaltyN3(data) + exports.getPenaltyN4(data);
+			exports.applyMask(p, data);
+			if (penalty < lowerPenalty) {
+				lowerPenalty = penalty;
+				bestPattern = p;
+			}
+		}
+		return bestPattern;
+	};
+}));
+// node_modules/qrcode/lib/core/error-correction-code.js
+var require_error_correction_code = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var ECLevel = require_error_correction_level();
+	var EC_BLOCKS_TABLE = [
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		2,
+		2,
+		1,
+		2,
+		2,
+		4,
+		1,
+		2,
+		4,
+		4,
+		2,
+		4,
+		4,
+		4,
+		2,
+		4,
+		6,
+		5,
+		2,
+		4,
+		6,
+		6,
+		2,
+		5,
+		8,
+		8,
+		4,
+		5,
+		8,
+		8,
+		4,
+		5,
+		8,
+		11,
+		4,
+		8,
+		10,
+		11,
+		4,
+		9,
+		12,
+		16,
+		4,
+		9,
+		16,
+		16,
+		6,
+		10,
+		12,
+		18,
+		6,
+		10,
+		17,
+		16,
+		6,
+		11,
+		16,
+		19,
+		6,
+		13,
+		18,
+		21,
+		7,
+		14,
+		21,
+		25,
+		8,
+		16,
+		20,
+		25,
+		8,
+		17,
+		23,
+		25,
+		9,
+		17,
+		23,
+		34,
+		9,
+		18,
+		25,
+		30,
+		10,
+		20,
+		27,
+		32,
+		12,
+		21,
+		29,
+		35,
+		12,
+		23,
+		34,
+		37,
+		12,
+		25,
+		34,
+		40,
+		13,
+		26,
+		35,
+		42,
+		14,
+		28,
+		38,
+		45,
+		15,
+		29,
+		40,
+		48,
+		16,
+		31,
+		43,
+		51,
+		17,
+		33,
+		45,
+		54,
+		18,
+		35,
+		48,
+		57,
+		19,
+		37,
+		51,
+		60,
+		19,
+		38,
+		53,
+		63,
+		20,
+		40,
+		56,
+		66,
+		21,
+		43,
+		59,
+		70,
+		22,
+		45,
+		62,
+		74,
+		24,
+		47,
+		65,
+		77,
+		25,
+		49,
+		68,
+		81
+	];
+	var EC_CODEWORDS_TABLE = [
+		7,
+		10,
+		13,
+		17,
+		10,
+		16,
+		22,
+		28,
+		15,
+		26,
+		36,
+		44,
+		20,
+		36,
+		52,
+		64,
+		26,
+		48,
+		72,
+		88,
+		36,
+		64,
+		96,
+		112,
+		40,
+		72,
+		108,
+		130,
+		48,
+		88,
+		132,
+		156,
+		60,
+		110,
+		160,
+		192,
+		72,
+		130,
+		192,
+		224,
+		80,
+		150,
+		224,
+		264,
+		96,
+		176,
+		260,
+		308,
+		104,
+		198,
+		288,
+		352,
+		120,
+		216,
+		320,
+		384,
+		132,
+		240,
+		360,
+		432,
+		144,
+		280,
+		408,
+		480,
+		168,
+		308,
+		448,
+		532,
+		180,
+		338,
+		504,
+		588,
+		196,
+		364,
+		546,
+		650,
+		224,
+		416,
+		600,
+		700,
+		224,
+		442,
+		644,
+		750,
+		252,
+		476,
+		690,
+		816,
+		270,
+		504,
+		750,
+		900,
+		300,
+		560,
+		810,
+		960,
+		312,
+		588,
+		870,
+		1050,
+		336,
+		644,
+		952,
+		1110,
+		360,
+		700,
+		1020,
+		1200,
+		390,
+		728,
+		1050,
+		1260,
+		420,
+		784,
+		1140,
+		1350,
+		450,
+		812,
+		1200,
+		1440,
+		480,
+		868,
+		1290,
+		1530,
+		510,
+		924,
+		1350,
+		1620,
+		540,
+		980,
+		1440,
+		1710,
+		570,
+		1036,
+		1530,
+		1800,
+		570,
+		1064,
+		1590,
+		1890,
+		600,
+		1120,
+		1680,
+		1980,
+		630,
+		1204,
+		1770,
+		2100,
+		660,
+		1260,
+		1860,
+		2220,
+		720,
+		1316,
+		1950,
+		2310,
+		750,
+		1372,
+		2040,
+		2430
+	];
+	/**
+	* Returns the number of error correction block that the QR Code should contain
+	* for the specified version and error correction level.
+	*
+	* @param  {Number} version              QR Code version
+	* @param  {Number} errorCorrectionLevel Error correction level
+	* @return {Number}                      Number of error correction blocks
+	*/
+	exports.getBlocksCount = function getBlocksCount(version, errorCorrectionLevel) {
+		switch (errorCorrectionLevel) {
+			case ECLevel.L: return EC_BLOCKS_TABLE[(version - 1) * 4 + 0];
+			case ECLevel.M: return EC_BLOCKS_TABLE[(version - 1) * 4 + 1];
+			case ECLevel.Q: return EC_BLOCKS_TABLE[(version - 1) * 4 + 2];
+			case ECLevel.H: return EC_BLOCKS_TABLE[(version - 1) * 4 + 3];
+			default: return;
+		}
+	};
+	/**
+	* Returns the number of error correction codewords to use for the specified
+	* version and error correction level.
+	*
+	* @param  {Number} version              QR Code version
+	* @param  {Number} errorCorrectionLevel Error correction level
+	* @return {Number}                      Number of error correction codewords
+	*/
+	exports.getTotalCodewordsCount = function getTotalCodewordsCount(version, errorCorrectionLevel) {
+		switch (errorCorrectionLevel) {
+			case ECLevel.L: return EC_CODEWORDS_TABLE[(version - 1) * 4 + 0];
+			case ECLevel.M: return EC_CODEWORDS_TABLE[(version - 1) * 4 + 1];
+			case ECLevel.Q: return EC_CODEWORDS_TABLE[(version - 1) * 4 + 2];
+			case ECLevel.H: return EC_CODEWORDS_TABLE[(version - 1) * 4 + 3];
+			default: return;
+		}
+	};
+}));
+// node_modules/qrcode/lib/core/galois-field.js
+var require_galois_field = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var EXP_TABLE = /* @__PURE__ */ new Uint8Array(512);
+	var LOG_TABLE = /* @__PURE__ */ new Uint8Array(256);
+	(function initTables() {
+		let x = 1;
+		for (let i = 0; i < 255; i++) {
+			EXP_TABLE[i] = x;
+			LOG_TABLE[x] = i;
+			x <<= 1;
+			if (x & 256) x ^= 285;
+		}
+		for (let i = 255; i < 512; i++) EXP_TABLE[i] = EXP_TABLE[i - 255];
+	})();
+	/**
+	* Returns log value of n inside Galois Field
+	*
+	* @param  {Number} n
+	* @return {Number}
+	*/
+	exports.log = function log(n) {
+		if (n < 1) throw new Error("log(" + n + ")");
+		return LOG_TABLE[n];
+	};
+	/**
+	* Returns anti-log value of n inside Galois Field
+	*
+	* @param  {Number} n
+	* @return {Number}
+	*/
+	exports.exp = function exp(n) {
+		return EXP_TABLE[n];
+	};
+	/**
+	* Multiplies two number inside Galois Field
+	*
+	* @param  {Number} x
+	* @param  {Number} y
+	* @return {Number}
+	*/
+	exports.mul = function mul(x, y) {
+		if (x === 0 || y === 0) return 0;
+		return EXP_TABLE[LOG_TABLE[x] + LOG_TABLE[y]];
+	};
+}));
+// node_modules/qrcode/lib/core/polynomial.js
+var require_polynomial = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var GF = require_galois_field();
+	/**
+	* Multiplies two polynomials inside Galois Field
+	*
+	* @param  {Uint8Array} p1 Polynomial
+	* @param  {Uint8Array} p2 Polynomial
+	* @return {Uint8Array}    Product of p1 and p2
+	*/
+	exports.mul = function mul(p1, p2) {
+		const coeff = new Uint8Array(p1.length + p2.length - 1);
+		for (let i = 0; i < p1.length; i++) for (let j = 0; j < p2.length; j++) coeff[i + j] ^= GF.mul(p1[i], p2[j]);
+		return coeff;
+	};
+	/**
+	* Calculate the remainder of polynomials division
+	*
+	* @param  {Uint8Array} divident Polynomial
+	* @param  {Uint8Array} divisor  Polynomial
+	* @return {Uint8Array}          Remainder
+	*/
+	exports.mod = function mod(divident, divisor) {
+		let result = new Uint8Array(divident);
+		while (result.length - divisor.length >= 0) {
+			const coeff = result[0];
+			for (let i = 0; i < divisor.length; i++) result[i] ^= GF.mul(divisor[i], coeff);
+			let offset = 0;
+			while (offset < result.length && result[offset] === 0) offset++;
+			result = result.slice(offset);
+		}
+		return result;
+	};
+	/**
+	* Generate an irreducible generator polynomial of specified degree
+	* (used by Reed-Solomon encoder)
+	*
+	* @param  {Number} degree Degree of the generator polynomial
+	* @return {Uint8Array}    Buffer containing polynomial coefficients
+	*/
+	exports.generateECPolynomial = function generateECPolynomial(degree) {
+		let poly = new Uint8Array([1]);
+		for (let i = 0; i < degree; i++) poly = exports.mul(poly, new Uint8Array([1, GF.exp(i)]));
+		return poly;
+	};
+}));
+// node_modules/qrcode/lib/core/reed-solomon-encoder.js
+var require_reed_solomon_encoder = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	var Polynomial = require_polynomial();
+	function ReedSolomonEncoder(degree) {
+		this.genPoly = void 0;
+		this.degree = degree;
+		if (this.degree) this.initialize(this.degree);
+	}
+	/**
+	* Initialize the encoder.
+	* The input param should correspond to the number of error correction codewords.
+	*
+	* @param  {Number} degree
+	*/
+	ReedSolomonEncoder.prototype.initialize = function initialize(degree) {
+		this.degree = degree;
+		this.genPoly = Polynomial.generateECPolynomial(this.degree);
+	};
+	/**
+	* Encodes a chunk of data
+	*
+	* @param  {Uint8Array} data Buffer containing input data
+	* @return {Uint8Array}      Buffer containing encoded data
+	*/
+	ReedSolomonEncoder.prototype.encode = function encode(data) {
+		if (!this.genPoly) throw new Error("Encoder not initialized");
+		const paddedData = new Uint8Array(data.length + this.degree);
+		paddedData.set(data);
+		const remainder = Polynomial.mod(paddedData, this.genPoly);
+		const start = this.degree - remainder.length;
+		if (start > 0) {
+			const buff = new Uint8Array(this.degree);
+			buff.set(remainder, start);
+			return buff;
+		}
+		return remainder;
+	};
+	module.exports = ReedSolomonEncoder;
+}));
+// node_modules/qrcode/lib/core/version-check.js
+var require_version_check = /* @__PURE__ */ __commonJSMin(((exports) => {
+	/**
+	* Check if QR Code version is valid
+	*
+	* @param  {Number}  version QR Code version
+	* @return {Boolean}         true if valid version, false otherwise
+	*/
+	exports.isValid = function isValid(version) {
+		return !isNaN(version) && version >= 1 && version <= 40;
+	};
+}));
+// node_modules/qrcode/lib/core/regex.js
+var require_regex = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var numeric = "[0-9]+";
+	var alphanumeric = "[A-Z $%*+\\-./:]+";
+	var kanji = "(?:[u3000-u303F]|[u3040-u309F]|[u30A0-u30FF]|[uFF00-uFFEF]|[u4E00-u9FAF]|[u2605-u2606]|[u2190-u2195]|u203B|[u2010u2015u2018u2019u2025u2026u201Cu201Du2225u2260]|[u0391-u0451]|[u00A7u00A8u00B1u00B4u00D7u00F7])+";
+	kanji = kanji.replace(/u/g, "\\u");
+	var byte = "(?:(?![A-Z0-9 $%*+\\-./:]|" + kanji + ")(?:.|[\r\n]))+";
+	exports.KANJI = new RegExp(kanji, "g");
+	exports.BYTE_KANJI = /* @__PURE__ */ new RegExp("[^A-Z0-9 $%*+\\-./:]+", "g");
+	exports.BYTE = new RegExp(byte, "g");
+	exports.NUMERIC = new RegExp(numeric, "g");
+	exports.ALPHANUMERIC = new RegExp(alphanumeric, "g");
+	var TEST_KANJI = new RegExp("^" + kanji + "$");
+	var TEST_NUMERIC = /* @__PURE__ */ new RegExp("^[0-9]+$");
+	var TEST_ALPHANUMERIC = /* @__PURE__ */ new RegExp("^[A-Z0-9 $%*+\\-./:]+$");
+	exports.testKanji = function testKanji(str) {
+		return TEST_KANJI.test(str);
+	};
+	exports.testNumeric = function testNumeric(str) {
+		return TEST_NUMERIC.test(str);
+	};
+	exports.testAlphanumeric = function testAlphanumeric(str) {
+		return TEST_ALPHANUMERIC.test(str);
+	};
+}));
+// node_modules/qrcode/lib/core/mode.js
+var require_mode = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var VersionCheck = require_version_check();
+	var Regex = require_regex();
+	/**
+	* Numeric mode encodes data from the decimal digit set (0 - 9)
+	* (byte values 30HEX to 39HEX).
+	* Normally, 3 data characters are represented by 10 bits.
+	*
+	* @type {Object}
+	*/
+	exports.NUMERIC = {
+		id: "Numeric",
+		bit: 1,
+		ccBits: [
+			10,
+			12,
+			14
+		]
+	};
+	/**
+	* Alphanumeric mode encodes data from a set of 45 characters,
+	* i.e. 10 numeric digits (0 - 9),
+	*      26 alphabetic characters (A - Z),
+	*   and 9 symbols (SP, $, %, *, +, -, ., /, :).
+	* Normally, two input characters are represented by 11 bits.
+	*
+	* @type {Object}
+	*/
+	exports.ALPHANUMERIC = {
+		id: "Alphanumeric",
+		bit: 2,
+		ccBits: [
+			9,
+			11,
+			13
+		]
+	};
+	/**
+	* In byte mode, data is encoded at 8 bits per character.
+	*
+	* @type {Object}
+	*/
+	exports.BYTE = {
+		id: "Byte",
+		bit: 4,
+		ccBits: [
+			8,
+			16,
+			16
+		]
+	};
+	/**
+	* The Kanji mode efficiently encodes Kanji characters in accordance with
+	* the Shift JIS system based on JIS X 0208.
+	* The Shift JIS values are shifted from the JIS X 0208 values.
+	* JIS X 0208 gives details of the shift coded representation.
+	* Each two-byte character value is compacted to a 13-bit binary codeword.
+	*
+	* @type {Object}
+	*/
+	exports.KANJI = {
+		id: "Kanji",
+		bit: 8,
+		ccBits: [
+			8,
+			10,
+			12
+		]
+	};
+	/**
+	* Mixed mode will contain a sequences of data in a combination of any of
+	* the modes described above
+	*
+	* @type {Object}
+	*/
+	exports.MIXED = { bit: -1 };
+	/**
+	* Returns the number of bits needed to store the data length
+	* according to QR Code specifications.
+	*
+	* @param  {Mode}   mode    Data mode
+	* @param  {Number} version QR Code version
+	* @return {Number}         Number of bits
+	*/
+	exports.getCharCountIndicator = function getCharCountIndicator(mode, version) {
+		if (!mode.ccBits) throw new Error("Invalid mode: " + mode);
+		if (!VersionCheck.isValid(version)) throw new Error("Invalid version: " + version);
+		if (version >= 1 && version < 10) return mode.ccBits[0];
+		else if (version < 27) return mode.ccBits[1];
+		return mode.ccBits[2];
+	};
+	/**
+	* Returns the most efficient mode to store the specified data
+	*
+	* @param  {String} dataStr Input data string
+	* @return {Mode}           Best mode
+	*/
+	exports.getBestModeForData = function getBestModeForData(dataStr) {
+		if (Regex.testNumeric(dataStr)) return exports.NUMERIC;
+		else if (Regex.testAlphanumeric(dataStr)) return exports.ALPHANUMERIC;
+		else if (Regex.testKanji(dataStr)) return exports.KANJI;
+		else return exports.BYTE;
+	};
+	/**
+	* Return mode name as string
+	*
+	* @param {Mode} mode Mode object
+	* @returns {String}  Mode name
+	*/
+	exports.toString = function toString(mode) {
+		if (mode && mode.id) return mode.id;
+		throw new Error("Invalid mode");
+	};
+	/**
+	* Check if input param is a valid mode object
+	*
+	* @param   {Mode}    mode Mode object
+	* @returns {Boolean} True if valid mode, false otherwise
+	*/
+	exports.isValid = function isValid(mode) {
+		return mode && mode.bit && mode.ccBits;
+	};
+	/**
+	* Get mode object from its name
+	*
+	* @param   {String} string Mode name
+	* @returns {Mode}          Mode object
+	*/
+	function fromString(string) {
+		if (typeof string !== "string") throw new Error("Param is not a string");
+		switch (string.toLowerCase()) {
+			case "numeric": return exports.NUMERIC;
+			case "alphanumeric": return exports.ALPHANUMERIC;
+			case "kanji": return exports.KANJI;
+			case "byte": return exports.BYTE;
+			default: throw new Error("Unknown mode: " + string);
+		}
+	}
+	/**
+	* Returns mode from a value.
+	* If value is not a valid mode, returns defaultValue
+	*
+	* @param  {Mode|String} value        Encoding mode
+	* @param  {Mode}        defaultValue Fallback value
+	* @return {Mode}                     Encoding mode
+	*/
+	exports.from = function from(value, defaultValue) {
+		if (exports.isValid(value)) return value;
+		try {
+			return fromString(value);
+		} catch (e) {
+			return defaultValue;
+		}
+	};
+}));
+// node_modules/qrcode/lib/core/version.js
+var require_version = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var Utils = require_utils$1();
+	var ECCode = require_error_correction_code();
+	var ECLevel = require_error_correction_level();
+	var Mode = require_mode();
+	var VersionCheck = require_version_check();
+	var G18 = 7973;
+	var G18_BCH = Utils.getBCHDigit(G18);
+	function getBestVersionForDataLength(mode, length, errorCorrectionLevel) {
+		for (let currentVersion = 1; currentVersion <= 40; currentVersion++) if (length <= exports.getCapacity(currentVersion, errorCorrectionLevel, mode)) return currentVersion;
+	}
+	function getReservedBitsCount(mode, version) {
+		return Mode.getCharCountIndicator(mode, version) + 4;
+	}
+	function getTotalBitsFromDataArray(segments, version) {
+		let totalBits = 0;
+		segments.forEach(function(data) {
+			const reservedBits = getReservedBitsCount(data.mode, version);
+			totalBits += reservedBits + data.getBitsLength();
+		});
+		return totalBits;
+	}
+	function getBestVersionForMixedData(segments, errorCorrectionLevel) {
+		for (let currentVersion = 1; currentVersion <= 40; currentVersion++) if (getTotalBitsFromDataArray(segments, currentVersion) <= exports.getCapacity(currentVersion, errorCorrectionLevel, Mode.MIXED)) return currentVersion;
+	}
+	/**
+	* Returns version number from a value.
+	* If value is not a valid version, returns defaultValue
+	*
+	* @param  {Number|String} value        QR Code version
+	* @param  {Number}        defaultValue Fallback value
+	* @return {Number}                     QR Code version number
+	*/
+	exports.from = function from(value, defaultValue) {
+		if (VersionCheck.isValid(value)) return parseInt(value, 10);
+		return defaultValue;
+	};
+	/**
+	* Returns how much data can be stored with the specified QR code version
+	* and error correction level
+	*
+	* @param  {Number} version              QR Code version (1-40)
+	* @param  {Number} errorCorrectionLevel Error correction level
+	* @param  {Mode}   mode                 Data mode
+	* @return {Number}                      Quantity of storable data
+	*/
+	exports.getCapacity = function getCapacity(version, errorCorrectionLevel, mode) {
+		if (!VersionCheck.isValid(version)) throw new Error("Invalid QR Code version");
+		if (typeof mode === "undefined") mode = Mode.BYTE;
+		const dataTotalCodewordsBits = (Utils.getSymbolTotalCodewords(version) - ECCode.getTotalCodewordsCount(version, errorCorrectionLevel)) * 8;
+		if (mode === Mode.MIXED) return dataTotalCodewordsBits;
+		const usableBits = dataTotalCodewordsBits - getReservedBitsCount(mode, version);
+		switch (mode) {
+			case Mode.NUMERIC: return Math.floor(usableBits / 10 * 3);
+			case Mode.ALPHANUMERIC: return Math.floor(usableBits / 11 * 2);
+			case Mode.KANJI: return Math.floor(usableBits / 13);
+			case Mode.BYTE:
+			default: return Math.floor(usableBits / 8);
+		}
+	};
+	/**
+	* Returns the minimum version needed to contain the amount of data
+	*
+	* @param  {Segment} data                    Segment of data
+	* @param  {Number} [errorCorrectionLevel=H] Error correction level
+	* @param  {Mode} mode                       Data mode
+	* @return {Number}                          QR Code version
+	*/
+	exports.getBestVersionForData = function getBestVersionForData(data, errorCorrectionLevel) {
+		let seg;
+		const ecl = ECLevel.from(errorCorrectionLevel, ECLevel.M);
+		if (Array.isArray(data)) {
+			if (data.length > 1) return getBestVersionForMixedData(data, ecl);
+			if (data.length === 0) return 1;
+			seg = data[0];
+		} else seg = data;
+		return getBestVersionForDataLength(seg.mode, seg.getLength(), ecl);
+	};
+	/**
+	* Returns version information with relative error correction bits
+	*
+	* The version information is included in QR Code symbols of version 7 or larger.
+	* It consists of an 18-bit sequence containing 6 data bits,
+	* with 12 error correction bits calculated using the (18, 6) Golay code.
+	*
+	* @param  {Number} version QR Code version
+	* @return {Number}         Encoded version info bits
+	*/
+	exports.getEncodedBits = function getEncodedBits(version) {
+		if (!VersionCheck.isValid(version) || version < 7) throw new Error("Invalid QR Code version");
+		let d = version << 12;
+		while (Utils.getBCHDigit(d) - G18_BCH >= 0) d ^= G18 << Utils.getBCHDigit(d) - G18_BCH;
+		return version << 12 | d;
+	};
+}));
+// node_modules/qrcode/lib/core/format-info.js
+var require_format_info = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var Utils = require_utils$1();
+	var G15 = 1335;
+	var G15_MASK = 21522;
+	var G15_BCH = Utils.getBCHDigit(G15);
+	/**
+	* Returns format information with relative error correction bits
+	*
+	* The format information is a 15-bit sequence containing 5 data bits,
+	* with 10 error correction bits calculated using the (15, 5) BCH code.
+	*
+	* @param  {Number} errorCorrectionLevel Error correction level
+	* @param  {Number} mask                 Mask pattern
+	* @return {Number}                      Encoded format information bits
+	*/
+	exports.getEncodedBits = function getEncodedBits(errorCorrectionLevel, mask) {
+		const data = errorCorrectionLevel.bit << 3 | mask;
+		let d = data << 10;
+		while (Utils.getBCHDigit(d) - G15_BCH >= 0) d ^= G15 << Utils.getBCHDigit(d) - G15_BCH;
+		return (data << 10 | d) ^ G15_MASK;
+	};
+}));
+// node_modules/qrcode/lib/core/numeric-data.js
+var require_numeric_data = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	var Mode = require_mode();
+	function NumericData(data) {
+		this.mode = Mode.NUMERIC;
+		this.data = data.toString();
+	}
+	NumericData.getBitsLength = function getBitsLength(length) {
+		return 10 * Math.floor(length / 3) + (length % 3 ? length % 3 * 3 + 1 : 0);
+	};
+	NumericData.prototype.getLength = function getLength() {
+		return this.data.length;
+	};
+	NumericData.prototype.getBitsLength = function getBitsLength() {
+		return NumericData.getBitsLength(this.data.length);
+	};
+	NumericData.prototype.write = function write(bitBuffer) {
+		let i, group, value;
+		for (i = 0; i + 3 <= this.data.length; i += 3) {
+			group = this.data.substr(i, 3);
+			value = parseInt(group, 10);
+			bitBuffer.put(value, 10);
+		}
+		const remainingNum = this.data.length - i;
+		if (remainingNum > 0) {
+			group = this.data.substr(i);
+			value = parseInt(group, 10);
+			bitBuffer.put(value, remainingNum * 3 + 1);
+		}
+	};
+	module.exports = NumericData;
+}));
+// node_modules/qrcode/lib/core/alphanumeric-data.js
+var require_alphanumeric_data = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	var Mode = require_mode();
+	/**
+	* Array of characters available in alphanumeric mode
+	*
+	* As per QR Code specification, to each character
+	* is assigned a value from 0 to 44 which in this case coincides
+	* with the array index
+	*
+	* @type {Array}
+	*/
+	var ALPHA_NUM_CHARS = [
+		"0",
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"A",
+		"B",
+		"C",
+		"D",
+		"E",
+		"F",
+		"G",
+		"H",
+		"I",
+		"J",
+		"K",
+		"L",
+		"M",
+		"N",
+		"O",
+		"P",
+		"Q",
+		"R",
+		"S",
+		"T",
+		"U",
+		"V",
+		"W",
+		"X",
+		"Y",
+		"Z",
+		" ",
+		"$",
+		"%",
+		"*",
+		"+",
+		"-",
+		".",
+		"/",
+		":"
+	];
+	function AlphanumericData(data) {
+		this.mode = Mode.ALPHANUMERIC;
+		this.data = data;
+	}
+	AlphanumericData.getBitsLength = function getBitsLength(length) {
+		return 11 * Math.floor(length / 2) + 6 * (length % 2);
+	};
+	AlphanumericData.prototype.getLength = function getLength() {
+		return this.data.length;
+	};
+	AlphanumericData.prototype.getBitsLength = function getBitsLength() {
+		return AlphanumericData.getBitsLength(this.data.length);
+	};
+	AlphanumericData.prototype.write = function write(bitBuffer) {
+		let i = 0;
+		for (; i + 2 <= this.data.length; i += 2) {
+			let value = ALPHA_NUM_CHARS.indexOf(this.data[i]) * 45;
+			value += ALPHA_NUM_CHARS.indexOf(this.data[i + 1]);
+			bitBuffer.put(value, 11);
+		}
+		if (this.data.length % 2) bitBuffer.put(ALPHA_NUM_CHARS.indexOf(this.data[i]), 6);
+	};
+	module.exports = AlphanumericData;
+}));
+// node_modules/qrcode/lib/core/byte-data.js
+var require_byte_data = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	var Mode = require_mode();
+	function ByteData(data) {
+		this.mode = Mode.BYTE;
+		if (typeof data === "string") this.data = new TextEncoder().encode(data);
+		else this.data = new Uint8Array(data);
+	}
+	ByteData.getBitsLength = function getBitsLength(length) {
+		return length * 8;
+	};
+	ByteData.prototype.getLength = function getLength() {
+		return this.data.length;
+	};
+	ByteData.prototype.getBitsLength = function getBitsLength() {
+		return ByteData.getBitsLength(this.data.length);
+	};
+	ByteData.prototype.write = function(bitBuffer) {
+		for (let i = 0, l = this.data.length; i < l; i++) bitBuffer.put(this.data[i], 8);
+	};
+	module.exports = ByteData;
+}));
+// node_modules/qrcode/lib/core/kanji-data.js
+var require_kanji_data = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	var Mode = require_mode();
+	var Utils = require_utils$1();
+	function KanjiData(data) {
+		this.mode = Mode.KANJI;
+		this.data = data;
+	}
+	KanjiData.getBitsLength = function getBitsLength(length) {
+		return length * 13;
+	};
+	KanjiData.prototype.getLength = function getLength() {
+		return this.data.length;
+	};
+	KanjiData.prototype.getBitsLength = function getBitsLength() {
+		return KanjiData.getBitsLength(this.data.length);
+	};
+	KanjiData.prototype.write = function(bitBuffer) {
+		let i = 0;
+		for (; i < this.data.length; i++) {
+			let value = Utils.toSJIS(this.data[i]);
+			if (value >= 33088 && value <= 40956) value -= 33088;
+			else if (value >= 57408 && value <= 60351) value -= 49472;
+			else throw new Error("Invalid SJIS character: " + this.data[i] + "\nMake sure your charset is UTF-8");
+			value = (value >>> 8 & 255) * 192 + (value & 255);
+			bitBuffer.put(value, 13);
+		}
+	};
+	module.exports = KanjiData;
+}));
+// node_modules/dijkstrajs/dijkstra.js
+var require_dijkstra = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	/******************************************************************************
+	* Created 2008-08-19.
+	*
+	* Dijkstra path-finding functions. Adapted from the Dijkstar Python project.
+	*
+	* Copyright (C) 2008
+	*   Wyatt Baldwin <self@wyattbaldwin.com>
+	*   All rights reserved
+	*
+	* Licensed under the MIT license.
+	*
+	*   http://www.opensource.org/licenses/mit-license.php
+	*
+	* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	* THE SOFTWARE.
+	*****************************************************************************/
+	var dijkstra = {
+		single_source_shortest_paths: function(graph, s, d) {
+			var predecessors = {};
+			var costs = {};
+			costs[s] = 0;
+			var open = dijkstra.PriorityQueue.make();
+			open.push(s, 0);
+			var closest, u, v, cost_of_s_to_u, adjacent_nodes, cost_of_e, cost_of_s_to_u_plus_cost_of_e, cost_of_s_to_v, first_visit;
+			while (!open.empty()) {
+				closest = open.pop();
+				u = closest.value;
+				cost_of_s_to_u = closest.cost;
+				adjacent_nodes = graph[u] || {};
+				for (v in adjacent_nodes) if (adjacent_nodes.hasOwnProperty(v)) {
+					cost_of_e = adjacent_nodes[v];
+					cost_of_s_to_u_plus_cost_of_e = cost_of_s_to_u + cost_of_e;
+					cost_of_s_to_v = costs[v];
+					first_visit = typeof costs[v] === "undefined";
+					if (first_visit || cost_of_s_to_v > cost_of_s_to_u_plus_cost_of_e) {
+						costs[v] = cost_of_s_to_u_plus_cost_of_e;
+						open.push(v, cost_of_s_to_u_plus_cost_of_e);
+						predecessors[v] = u;
+					}
+				}
+			}
+			if (typeof d !== "undefined" && typeof costs[d] === "undefined") {
+				var msg = [
+					"Could not find a path from ",
+					s,
+					" to ",
+					d,
+					"."
+				].join("");
+				throw new Error(msg);
+			}
+			return predecessors;
+		},
+		extract_shortest_path_from_predecessor_list: function(predecessors, d) {
+			var nodes = [];
+			var u = d;
+			while (u) {
+				nodes.push(u);
+				predecessors[u];
+				u = predecessors[u];
+			}
+			nodes.reverse();
+			return nodes;
+		},
+		find_path: function(graph, s, d) {
+			var predecessors = dijkstra.single_source_shortest_paths(graph, s, d);
+			return dijkstra.extract_shortest_path_from_predecessor_list(predecessors, d);
+		},
+		/**
+		* A very naive priority queue implementation.
+		*/
+		PriorityQueue: {
+			make: function(opts) {
+				var T = dijkstra.PriorityQueue, t = {}, key;
+				opts = opts || {};
+				for (key in T) if (T.hasOwnProperty(key)) t[key] = T[key];
+				t.queue = [];
+				t.sorter = opts.sorter || T.default_sorter;
+				return t;
+			},
+			default_sorter: function(a, b) {
+				return a.cost - b.cost;
+			},
+			/**
+			* Add a new item to the queue and ensure the highest priority element
+			* is at the front of the queue.
+			*/
+			push: function(value, cost) {
+				var item = {
+					value,
+					cost
+				};
+				this.queue.push(item);
+				this.queue.sort(this.sorter);
+			},
+			/**
+			* Return the highest priority element in the queue.
+			*/
+			pop: function() {
+				return this.queue.shift();
+			},
+			empty: function() {
+				return this.queue.length === 0;
+			}
+		}
+	};
+	if (typeof module !== "undefined") module.exports = dijkstra;
+}));
+// node_modules/qrcode/lib/core/segments.js
+var require_segments = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var Mode = require_mode();
+	var NumericData = require_numeric_data();
+	var AlphanumericData = require_alphanumeric_data();
+	var ByteData = require_byte_data();
+	var KanjiData = require_kanji_data();
+	var Regex = require_regex();
+	var Utils = require_utils$1();
+	var dijkstra = require_dijkstra();
+	/**
+	* Returns UTF8 byte length
+	*
+	* @param  {String} str Input string
+	* @return {Number}     Number of byte
+	*/
+	function getStringByteLength(str) {
+		return unescape(encodeURIComponent(str)).length;
+	}
+	/**
+	* Get a list of segments of the specified mode
+	* from a string
+	*
+	* @param  {Mode}   mode Segment mode
+	* @param  {String} str  String to process
+	* @return {Array}       Array of object with segments data
+	*/
+	function getSegments(regex, mode, str) {
+		const segments = [];
+		let result;
+		while ((result = regex.exec(str)) !== null) segments.push({
+			data: result[0],
+			index: result.index,
+			mode,
+			length: result[0].length
+		});
+		return segments;
+	}
+	/**
+	* Extracts a series of segments with the appropriate
+	* modes from a string
+	*
+	* @param  {String} dataStr Input string
+	* @return {Array}          Array of object with segments data
+	*/
+	function getSegmentsFromString(dataStr) {
+		const numSegs = getSegments(Regex.NUMERIC, Mode.NUMERIC, dataStr);
+		const alphaNumSegs = getSegments(Regex.ALPHANUMERIC, Mode.ALPHANUMERIC, dataStr);
+		let byteSegs;
+		let kanjiSegs;
+		if (Utils.isKanjiModeEnabled()) {
+			byteSegs = getSegments(Regex.BYTE, Mode.BYTE, dataStr);
+			kanjiSegs = getSegments(Regex.KANJI, Mode.KANJI, dataStr);
+		} else {
+			byteSegs = getSegments(Regex.BYTE_KANJI, Mode.BYTE, dataStr);
+			kanjiSegs = [];
+		}
+		return numSegs.concat(alphaNumSegs, byteSegs, kanjiSegs).sort(function(s1, s2) {
+			return s1.index - s2.index;
+		}).map(function(obj) {
+			return {
+				data: obj.data,
+				mode: obj.mode,
+				length: obj.length
+			};
+		});
+	}
+	/**
+	* Returns how many bits are needed to encode a string of
+	* specified length with the specified mode
+	*
+	* @param  {Number} length String length
+	* @param  {Mode} mode     Segment mode
+	* @return {Number}        Bit length
+	*/
+	function getSegmentBitsLength(length, mode) {
+		switch (mode) {
+			case Mode.NUMERIC: return NumericData.getBitsLength(length);
+			case Mode.ALPHANUMERIC: return AlphanumericData.getBitsLength(length);
+			case Mode.KANJI: return KanjiData.getBitsLength(length);
+			case Mode.BYTE: return ByteData.getBitsLength(length);
+		}
+	}
+	/**
+	* Merges adjacent segments which have the same mode
+	*
+	* @param  {Array} segs Array of object with segments data
+	* @return {Array}      Array of object with segments data
+	*/
+	function mergeSegments(segs) {
+		return segs.reduce(function(acc, curr) {
+			const prevSeg = acc.length - 1 >= 0 ? acc[acc.length - 1] : null;
+			if (prevSeg && prevSeg.mode === curr.mode) {
+				acc[acc.length - 1].data += curr.data;
+				return acc;
+			}
+			acc.push(curr);
+			return acc;
+		}, []);
+	}
+	/**
+	* Generates a list of all possible nodes combination which
+	* will be used to build a segments graph.
+	*
+	* Nodes are divided by groups. Each group will contain a list of all the modes
+	* in which is possible to encode the given text.
+	*
+	* For example the text '12345' can be encoded as Numeric, Alphanumeric or Byte.
+	* The group for '12345' will contain then 3 objects, one for each
+	* possible encoding mode.
+	*
+	* Each node represents a possible segment.
+	*
+	* @param  {Array} segs Array of object with segments data
+	* @return {Array}      Array of object with segments data
+	*/
+	function buildNodes(segs) {
+		const nodes = [];
+		for (let i = 0; i < segs.length; i++) {
+			const seg = segs[i];
+			switch (seg.mode) {
+				case Mode.NUMERIC:
+					nodes.push([
+						seg,
+						{
+							data: seg.data,
+							mode: Mode.ALPHANUMERIC,
+							length: seg.length
+						},
+						{
+							data: seg.data,
+							mode: Mode.BYTE,
+							length: seg.length
+						}
+					]);
+					break;
+				case Mode.ALPHANUMERIC:
+					nodes.push([seg, {
+						data: seg.data,
+						mode: Mode.BYTE,
+						length: seg.length
+					}]);
+					break;
+				case Mode.KANJI:
+					nodes.push([seg, {
+						data: seg.data,
+						mode: Mode.BYTE,
+						length: getStringByteLength(seg.data)
+					}]);
+					break;
+				case Mode.BYTE: nodes.push([{
+					data: seg.data,
+					mode: Mode.BYTE,
+					length: getStringByteLength(seg.data)
+				}]);
+			}
+		}
+		return nodes;
+	}
+	/**
+	* Builds a graph from a list of nodes.
+	* All segments in each node group will be connected with all the segments of
+	* the next group and so on.
+	*
+	* At each connection will be assigned a weight depending on the
+	* segment's byte length.
+	*
+	* @param  {Array} nodes    Array of object with segments data
+	* @param  {Number} version QR Code version
+	* @return {Object}         Graph of all possible segments
+	*/
+	function buildGraph(nodes, version) {
+		const table = {};
+		const graph = { start: {} };
+		let prevNodeIds = ["start"];
+		for (let i = 0; i < nodes.length; i++) {
+			const nodeGroup = nodes[i];
+			const currentNodeIds = [];
+			for (let j = 0; j < nodeGroup.length; j++) {
+				const node = nodeGroup[j];
+				const key = "" + i + j;
+				currentNodeIds.push(key);
+				table[key] = {
+					node,
+					lastCount: 0
+				};
+				graph[key] = {};
+				for (let n = 0; n < prevNodeIds.length; n++) {
+					const prevNodeId = prevNodeIds[n];
+					if (table[prevNodeId] && table[prevNodeId].node.mode === node.mode) {
+						graph[prevNodeId][key] = getSegmentBitsLength(table[prevNodeId].lastCount + node.length, node.mode) - getSegmentBitsLength(table[prevNodeId].lastCount, node.mode);
+						table[prevNodeId].lastCount += node.length;
+					} else {
+						if (table[prevNodeId]) table[prevNodeId].lastCount = node.length;
+						graph[prevNodeId][key] = getSegmentBitsLength(node.length, node.mode) + 4 + Mode.getCharCountIndicator(node.mode, version);
+					}
+				}
+			}
+			prevNodeIds = currentNodeIds;
+		}
+		for (let n = 0; n < prevNodeIds.length; n++) graph[prevNodeIds[n]].end = 0;
+		return {
+			map: graph,
+			table
+		};
+	}
+	/**
+	* Builds a segment from a specified data and mode.
+	* If a mode is not specified, the more suitable will be used.
+	*
+	* @param  {String} data             Input data
+	* @param  {Mode | String} modesHint Data mode
+	* @return {Segment}                 Segment
+	*/
+	function buildSingleSegment(data, modesHint) {
+		let mode;
+		const bestMode = Mode.getBestModeForData(data);
+		mode = Mode.from(modesHint, bestMode);
+		if (mode !== Mode.BYTE && mode.bit < bestMode.bit) throw new Error("\"" + data + "\" cannot be encoded with mode " + Mode.toString(mode) + ".\n Suggested mode is: " + Mode.toString(bestMode));
+		if (mode === Mode.KANJI && !Utils.isKanjiModeEnabled()) mode = Mode.BYTE;
+		switch (mode) {
+			case Mode.NUMERIC: return new NumericData(data);
+			case Mode.ALPHANUMERIC: return new AlphanumericData(data);
+			case Mode.KANJI: return new KanjiData(data);
+			case Mode.BYTE: return new ByteData(data);
+		}
+	}
+	/**
+	* Builds a list of segments from an array.
+	* Array can contain Strings or Objects with segment's info.
+	*
+	* For each item which is a string, will be generated a segment with the given
+	* string and the more appropriate encoding mode.
+	*
+	* For each item which is an object, will be generated a segment with the given
+	* data and mode.
+	* Objects must contain at least the property "data".
+	* If property "mode" is not present, the more suitable mode will be used.
+	*
+	* @param  {Array} array Array of objects with segments data
+	* @return {Array}       Array of Segments
+	*/
+	exports.fromArray = function fromArray(array) {
+		return array.reduce(function(acc, seg) {
+			if (typeof seg === "string") acc.push(buildSingleSegment(seg, null));
+			else if (seg.data) acc.push(buildSingleSegment(seg.data, seg.mode));
+			return acc;
+		}, []);
+	};
+	/**
+	* Builds an optimized sequence of segments from a string,
+	* which will produce the shortest possible bitstream.
+	*
+	* @param  {String} data    Input string
+	* @param  {Number} version QR Code version
+	* @return {Array}          Array of segments
+	*/
+	exports.fromString = function fromString(data, version) {
+		const graph = buildGraph(buildNodes(getSegmentsFromString(data, Utils.isKanjiModeEnabled())), version);
+		const path = dijkstra.find_path(graph.map, "start", "end");
+		const optimizedSegs = [];
+		for (let i = 1; i < path.length - 1; i++) optimizedSegs.push(graph.table[path[i]].node);
+		return exports.fromArray(mergeSegments(optimizedSegs));
+	};
+	/**
+	* Splits a string in various segments with the modes which
+	* best represent their content.
+	* The produced segments are far from being optimized.
+	* The output of this function is only used to estimate a QR Code version
+	* which may contain the data.
+	*
+	* @param  {string} data Input string
+	* @return {Array}       Array of segments
+	*/
+	exports.rawSplit = function rawSplit(data) {
+		return exports.fromArray(getSegmentsFromString(data, Utils.isKanjiModeEnabled()));
+	};
+}));
+// node_modules/qrcode/lib/core/qrcode.js
+var require_qrcode = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var Utils = require_utils$1();
+	var ECLevel = require_error_correction_level();
+	var BitBuffer = require_bit_buffer();
+	var BitMatrix = require_bit_matrix();
+	var AlignmentPattern = require_alignment_pattern();
+	var FinderPattern = require_finder_pattern();
+	var MaskPattern = require_mask_pattern();
+	var ECCode = require_error_correction_code();
+	var ReedSolomonEncoder = require_reed_solomon_encoder();
+	var Version = require_version();
+	var FormatInfo = require_format_info();
+	var Mode = require_mode();
+	var Segments = require_segments();
+	/**
+	* QRCode for JavaScript
+	*
+	* modified by Ryan Day for nodejs support
+	* Copyright (c) 2011 Ryan Day
+	*
+	* Licensed under the MIT license:
+	*   http://www.opensource.org/licenses/mit-license.php
+	*
+	//---------------------------------------------------------------------
+	// QRCode for JavaScript
+	//
+	// Copyright (c) 2009 Kazuhiko Arase
+	//
+	// URL: http://www.d-project.com/
+	//
+	// Licensed under the MIT license:
+	//   http://www.opensource.org/licenses/mit-license.php
+	//
+	// The word "QR Code" is registered trademark of
+	// DENSO WAVE INCORPORATED
+	//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+	//
+	//---------------------------------------------------------------------
+	*/
+	/**
+	* Add finder patterns bits to matrix
+	*
+	* @param  {BitMatrix} matrix  Modules matrix
+	* @param  {Number}    version QR Code version
+	*/
+	function setupFinderPattern(matrix, version) {
+		const size = matrix.size;
+		const pos = FinderPattern.getPositions(version);
+		for (let i = 0; i < pos.length; i++) {
+			const row = pos[i][0];
+			const col = pos[i][1];
+			for (let r = -1; r <= 7; r++) {
+				if (row + r <= -1 || size <= row + r) continue;
+				for (let c = -1; c <= 7; c++) {
+					if (col + c <= -1 || size <= col + c) continue;
+					if (r >= 0 && r <= 6 && (c === 0 || c === 6) || c >= 0 && c <= 6 && (r === 0 || r === 6) || r >= 2 && r <= 4 && c >= 2 && c <= 4) matrix.set(row + r, col + c, true, true);
+					else matrix.set(row + r, col + c, false, true);
+				}
+			}
+		}
+	}
+	/**
+	* Add timing pattern bits to matrix
+	*
+	* Note: this function must be called before {@link setupAlignmentPattern}
+	*
+	* @param  {BitMatrix} matrix Modules matrix
+	*/
+	function setupTimingPattern(matrix) {
+		const size = matrix.size;
+		for (let r = 8; r < size - 8; r++) {
+			const value = r % 2 === 0;
+			matrix.set(r, 6, value, true);
+			matrix.set(6, r, value, true);
+		}
+	}
+	/**
+	* Add alignment patterns bits to matrix
+	*
+	* Note: this function must be called after {@link setupTimingPattern}
+	*
+	* @param  {BitMatrix} matrix  Modules matrix
+	* @param  {Number}    version QR Code version
+	*/
+	function setupAlignmentPattern(matrix, version) {
+		const pos = AlignmentPattern.getPositions(version);
+		for (let i = 0; i < pos.length; i++) {
+			const row = pos[i][0];
+			const col = pos[i][1];
+			for (let r = -2; r <= 2; r++) for (let c = -2; c <= 2; c++) if (r === -2 || r === 2 || c === -2 || c === 2 || r === 0 && c === 0) matrix.set(row + r, col + c, true, true);
+			else matrix.set(row + r, col + c, false, true);
+		}
+	}
+	/**
+	* Add version info bits to matrix
+	*
+	* @param  {BitMatrix} matrix  Modules matrix
+	* @param  {Number}    version QR Code version
+	*/
+	function setupVersionInfo(matrix, version) {
+		const size = matrix.size;
+		const bits = Version.getEncodedBits(version);
+		let row, col, mod;
+		for (let i = 0; i < 18; i++) {
+			row = Math.floor(i / 3);
+			col = i % 3 + size - 8 - 3;
+			mod = (bits >> i & 1) === 1;
+			matrix.set(row, col, mod, true);
+			matrix.set(col, row, mod, true);
+		}
+	}
+	/**
+	* Add format info bits to matrix
+	*
+	* @param  {BitMatrix} matrix               Modules matrix
+	* @param  {ErrorCorrectionLevel}    errorCorrectionLevel Error correction level
+	* @param  {Number}    maskPattern          Mask pattern reference value
+	*/
+	function setupFormatInfo(matrix, errorCorrectionLevel, maskPattern) {
+		const size = matrix.size;
+		const bits = FormatInfo.getEncodedBits(errorCorrectionLevel, maskPattern);
+		let i, mod;
+		for (i = 0; i < 15; i++) {
+			mod = (bits >> i & 1) === 1;
+			if (i < 6) matrix.set(i, 8, mod, true);
+			else if (i < 8) matrix.set(i + 1, 8, mod, true);
+			else matrix.set(size - 15 + i, 8, mod, true);
+			if (i < 8) matrix.set(8, size - i - 1, mod, true);
+			else if (i < 9) matrix.set(8, 15 - i - 1 + 1, mod, true);
+			else matrix.set(8, 15 - i - 1, mod, true);
+		}
+		matrix.set(size - 8, 8, 1, true);
+	}
+	/**
+	* Add encoded data bits to matrix
+	*
+	* @param  {BitMatrix}  matrix Modules matrix
+	* @param  {Uint8Array} data   Data codewords
+	*/
+	function setupData(matrix, data) {
+		const size = matrix.size;
+		let inc = -1;
+		let row = size - 1;
+		let bitIndex = 7;
+		let byteIndex = 0;
+		for (let col = size - 1; col > 0; col -= 2) {
+			if (col === 6) col--;
+			while (true) {
+				for (let c = 0; c < 2; c++) if (!matrix.isReserved(row, col - c)) {
+					let dark = false;
+					if (byteIndex < data.length) dark = (data[byteIndex] >>> bitIndex & 1) === 1;
+					matrix.set(row, col - c, dark);
+					bitIndex--;
+					if (bitIndex === -1) {
+						byteIndex++;
+						bitIndex = 7;
+					}
+				}
+				row += inc;
+				if (row < 0 || size <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+	}
+	/**
+	* Create encoded codewords from data input
+	*
+	* @param  {Number}   version              QR Code version
+	* @param  {ErrorCorrectionLevel}   errorCorrectionLevel Error correction level
+	* @param  {ByteData} data                 Data input
+	* @return {Uint8Array}                    Buffer containing encoded codewords
+	*/
+	function createData(version, errorCorrectionLevel, segments) {
+		const buffer = new BitBuffer();
+		segments.forEach(function(data) {
+			buffer.put(data.mode.bit, 4);
+			buffer.put(data.getLength(), Mode.getCharCountIndicator(data.mode, version));
+			data.write(buffer);
+		});
+		const dataTotalCodewordsBits = (Utils.getSymbolTotalCodewords(version) - ECCode.getTotalCodewordsCount(version, errorCorrectionLevel)) * 8;
+		if (buffer.getLengthInBits() + 4 <= dataTotalCodewordsBits) buffer.put(0, 4);
+		while (buffer.getLengthInBits() % 8 !== 0) buffer.putBit(0);
+		const remainingByte = (dataTotalCodewordsBits - buffer.getLengthInBits()) / 8;
+		for (let i = 0; i < remainingByte; i++) buffer.put(i % 2 ? 17 : 236, 8);
+		return createCodewords(buffer, version, errorCorrectionLevel);
+	}
+	/**
+	* Encode input data with Reed-Solomon and return codewords with
+	* relative error correction bits
+	*
+	* @param  {BitBuffer} bitBuffer            Data to encode
+	* @param  {Number}    version              QR Code version
+	* @param  {ErrorCorrectionLevel} errorCorrectionLevel Error correction level
+	* @return {Uint8Array}                     Buffer containing encoded codewords
+	*/
+	function createCodewords(bitBuffer, version, errorCorrectionLevel) {
+		const totalCodewords = Utils.getSymbolTotalCodewords(version);
+		const dataTotalCodewords = totalCodewords - ECCode.getTotalCodewordsCount(version, errorCorrectionLevel);
+		const ecTotalBlocks = ECCode.getBlocksCount(version, errorCorrectionLevel);
+		const blocksInGroup1 = ecTotalBlocks - totalCodewords % ecTotalBlocks;
+		const totalCodewordsInGroup1 = Math.floor(totalCodewords / ecTotalBlocks);
+		const dataCodewordsInGroup1 = Math.floor(dataTotalCodewords / ecTotalBlocks);
+		const dataCodewordsInGroup2 = dataCodewordsInGroup1 + 1;
+		const ecCount = totalCodewordsInGroup1 - dataCodewordsInGroup1;
+		const rs = new ReedSolomonEncoder(ecCount);
+		let offset = 0;
+		const dcData = new Array(ecTotalBlocks);
+		const ecData = new Array(ecTotalBlocks);
+		let maxDataSize = 0;
+		const buffer = new Uint8Array(bitBuffer.buffer);
+		for (let b = 0; b < ecTotalBlocks; b++) {
+			const dataSize = b < blocksInGroup1 ? dataCodewordsInGroup1 : dataCodewordsInGroup2;
+			dcData[b] = buffer.slice(offset, offset + dataSize);
+			ecData[b] = rs.encode(dcData[b]);
+			offset += dataSize;
+			maxDataSize = Math.max(maxDataSize, dataSize);
+		}
+		const data = new Uint8Array(totalCodewords);
+		let index = 0;
+		let i, r;
+		for (i = 0; i < maxDataSize; i++) for (r = 0; r < ecTotalBlocks; r++) if (i < dcData[r].length) data[index++] = dcData[r][i];
+		for (i = 0; i < ecCount; i++) for (r = 0; r < ecTotalBlocks; r++) data[index++] = ecData[r][i];
+		return data;
+	}
+	/**
+	* Build QR Code symbol
+	*
+	* @param  {String} data                 Input string
+	* @param  {Number} version              QR Code version
+	* @param  {ErrorCorretionLevel} errorCorrectionLevel Error level
+	* @param  {MaskPattern} maskPattern     Mask pattern
+	* @return {Object}                      Object containing symbol data
+	*/
+	function createSymbol(data, version, errorCorrectionLevel, maskPattern) {
+		let segments;
+		if (Array.isArray(data)) segments = Segments.fromArray(data);
+		else if (typeof data === "string") {
+			let estimatedVersion = version;
+			if (!estimatedVersion) {
+				const rawSegments = Segments.rawSplit(data);
+				estimatedVersion = Version.getBestVersionForData(rawSegments, errorCorrectionLevel);
+			}
+			segments = Segments.fromString(data, estimatedVersion || 40);
+		} else throw new Error("Invalid data");
+		const bestVersion = Version.getBestVersionForData(segments, errorCorrectionLevel);
+		if (!bestVersion) throw new Error("The amount of data is too big to be stored in a QR Code");
+		if (!version) version = bestVersion;
+		else if (version < bestVersion) throw new Error("\nThe chosen QR Code version cannot contain this amount of data.\nMinimum version required to store current data is: " + bestVersion + ".\n");
+		const dataBits = createData(version, errorCorrectionLevel, segments);
+		const modules = new BitMatrix(Utils.getSymbolSize(version));
+		setupFinderPattern(modules, version);
+		setupTimingPattern(modules);
+		setupAlignmentPattern(modules, version);
+		setupFormatInfo(modules, errorCorrectionLevel, 0);
+		if (version >= 7) setupVersionInfo(modules, version);
+		setupData(modules, dataBits);
+		if (isNaN(maskPattern)) maskPattern = MaskPattern.getBestMask(modules, setupFormatInfo.bind(null, modules, errorCorrectionLevel));
+		MaskPattern.applyMask(maskPattern, modules);
+		setupFormatInfo(modules, errorCorrectionLevel, maskPattern);
+		return {
+			modules,
+			version,
+			errorCorrectionLevel,
+			maskPattern,
+			segments
+		};
+	}
+	/**
+	* QR Code
+	*
+	* @param {String | Array} data                 Input data
+	* @param {Object} options                      Optional configurations
+	* @param {Number} options.version              QR Code version
+	* @param {String} options.errorCorrectionLevel Error correction level
+	* @param {Function} options.toSJISFunc         Helper func to convert utf8 to sjis
+	*/
+	exports.create = function create(data, options) {
+		if (typeof data === "undefined" || data === "") throw new Error("No input text");
+		let errorCorrectionLevel = ECLevel.M;
+		let version;
+		let mask;
+		if (typeof options !== "undefined") {
+			errorCorrectionLevel = ECLevel.from(options.errorCorrectionLevel, ECLevel.M);
+			version = Version.from(options.version);
+			mask = MaskPattern.from(options.maskPattern);
+			if (options.toSJISFunc) Utils.setToSJISFunction(options.toSJISFunc);
+		}
+		return createSymbol(data, version, errorCorrectionLevel, mask);
+	};
+}));
+// node_modules/qrcode/lib/renderer/utils.js
+var require_utils = /* @__PURE__ */ __commonJSMin(((exports) => {
+	function hex2rgba(hex) {
+		if (typeof hex === "number") hex = hex.toString();
+		if (typeof hex !== "string") throw new Error("Color should be defined as hex string");
+		let hexCode = hex.slice().replace("#", "").split("");
+		if (hexCode.length < 3 || hexCode.length === 5 || hexCode.length > 8) throw new Error("Invalid hex color: " + hex);
+		if (hexCode.length === 3 || hexCode.length === 4) hexCode = Array.prototype.concat.apply([], hexCode.map(function(c) {
+			return [c, c];
+		}));
+		if (hexCode.length === 6) hexCode.push("F", "F");
+		const hexValue = parseInt(hexCode.join(""), 16);
+		return {
+			r: hexValue >> 24 & 255,
+			g: hexValue >> 16 & 255,
+			b: hexValue >> 8 & 255,
+			a: hexValue & 255,
+			hex: "#" + hexCode.slice(0, 6).join("")
+		};
+	}
+	exports.getOptions = function getOptions(options) {
+		if (!options) options = {};
+		if (!options.color) options.color = {};
+		const margin = typeof options.margin === "undefined" || options.margin === null || options.margin < 0 ? 4 : options.margin;
+		const width = options.width && options.width >= 21 ? options.width : void 0;
+		const scale = options.scale || 4;
+		return {
+			width,
+			scale: width ? 4 : scale,
+			margin,
+			color: {
+				dark: hex2rgba(options.color.dark || "#000000ff"),
+				light: hex2rgba(options.color.light || "#ffffffff")
+			},
+			type: options.type,
+			rendererOpts: options.rendererOpts || {}
+		};
+	};
+	exports.getScale = function getScale(qrSize, opts) {
+		return opts.width && opts.width >= qrSize + opts.margin * 2 ? opts.width / (qrSize + opts.margin * 2) : opts.scale;
+	};
+	exports.getImageWidth = function getImageWidth(qrSize, opts) {
+		const scale = exports.getScale(qrSize, opts);
+		return Math.floor((qrSize + opts.margin * 2) * scale);
+	};
+	exports.qrToImageData = function qrToImageData(imgData, qr, opts) {
+		const size = qr.modules.size;
+		const data = qr.modules.data;
+		const scale = exports.getScale(size, opts);
+		const symbolSize = Math.floor((size + opts.margin * 2) * scale);
+		const scaledMargin = opts.margin * scale;
+		const palette = [opts.color.light, opts.color.dark];
+		for (let i = 0; i < symbolSize; i++) for (let j = 0; j < symbolSize; j++) {
+			let posDst = (i * symbolSize + j) * 4;
+			let pxColor = opts.color.light;
+			if (i >= scaledMargin && j >= scaledMargin && i < symbolSize - scaledMargin && j < symbolSize - scaledMargin) {
+				const iSrc = Math.floor((i - scaledMargin) / scale);
+				const jSrc = Math.floor((j - scaledMargin) / scale);
+				pxColor = palette[data[iSrc * size + jSrc] ? 1 : 0];
+			}
+			imgData[posDst++] = pxColor.r;
+			imgData[posDst++] = pxColor.g;
+			imgData[posDst++] = pxColor.b;
+			imgData[posDst] = pxColor.a;
+		}
+	};
+}));
+// node_modules/qrcode/lib/renderer/canvas.js
+var require_canvas = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var Utils = require_utils();
+	function clearCanvas(ctx, canvas, size) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		if (!canvas.style) canvas.style = {};
+		canvas.height = size;
+		canvas.width = size;
+		canvas.style.height = size + "px";
+		canvas.style.width = size + "px";
+	}
+	function getCanvasElement() {
+		try {
+			return document.createElement("canvas");
+		} catch (e) {
+			throw new Error("You need to specify a canvas element");
+		}
+	}
+	exports.render = function render(qrData, canvas, options) {
+		let opts = options;
+		let canvasEl = canvas;
+		if (typeof opts === "undefined" && (!canvas || !canvas.getContext)) {
+			opts = canvas;
+			canvas = void 0;
+		}
+		if (!canvas) canvasEl = getCanvasElement();
+		opts = Utils.getOptions(opts);
+		const size = Utils.getImageWidth(qrData.modules.size, opts);
+		const ctx = canvasEl.getContext("2d");
+		const image = ctx.createImageData(size, size);
+		Utils.qrToImageData(image.data, qrData, opts);
+		clearCanvas(ctx, canvasEl, size);
+		ctx.putImageData(image, 0, 0);
+		return canvasEl;
+	};
+	exports.renderToDataURL = function renderToDataURL(qrData, canvas, options) {
+		let opts = options;
+		if (typeof opts === "undefined" && (!canvas || !canvas.getContext)) {
+			opts = canvas;
+			canvas = void 0;
+		}
+		if (!opts) opts = {};
+		const canvasEl = exports.render(qrData, canvas, opts);
+		const type = opts.type || "image/png";
+		const rendererOpts = opts.rendererOpts || {};
+		return canvasEl.toDataURL(type, rendererOpts.quality);
+	};
+}));
+// node_modules/qrcode/lib/renderer/svg-tag.js
+var require_svg_tag = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var Utils = require_utils();
+	function getColorAttrib(color, attrib) {
+		const alpha = color.a / 255;
+		const str = attrib + "=\"" + color.hex + "\"";
+		return alpha < 1 ? str + " " + attrib + "-opacity=\"" + alpha.toFixed(2).slice(1) + "\"" : str;
+	}
+	function svgCmd(cmd, x, y) {
+		let str = cmd + x;
+		if (typeof y !== "undefined") str += " " + y;
+		return str;
+	}
+	function qrToPath(data, size, margin) {
+		let path = "";
+		let moveBy = 0;
+		let newRow = false;
+		let lineLength = 0;
+		for (let i = 0; i < data.length; i++) {
+			const col = Math.floor(i % size);
+			const row = Math.floor(i / size);
+			if (!col && !newRow) newRow = true;
+			if (data[i]) {
+				lineLength++;
+				if (!(i > 0 && col > 0 && data[i - 1])) {
+					path += newRow ? svgCmd("M", col + margin, .5 + row + margin) : svgCmd("m", moveBy, 0);
+					moveBy = 0;
+					newRow = false;
+				}
+				if (!(col + 1 < size && data[i + 1])) {
+					path += svgCmd("h", lineLength);
+					lineLength = 0;
+				}
+			} else moveBy++;
+		}
+		return path;
+	}
+	exports.render = function render(qrData, options, cb) {
+		const opts = Utils.getOptions(options);
+		const size = qrData.modules.size;
+		const data = qrData.modules.data;
+		const qrcodesize = size + opts.margin * 2;
+		const bg = !opts.color.light.a ? "" : "<path " + getColorAttrib(opts.color.light, "fill") + " d=\"M0 0h" + qrcodesize + "v" + qrcodesize + "H0z\"/>";
+		const path = "<path " + getColorAttrib(opts.color.dark, "stroke") + " d=\"" + qrToPath(data, size, opts.margin) + "\"/>";
+		const viewBox = "viewBox=\"0 0 " + qrcodesize + " " + qrcodesize + "\"";
+		const svgTag = "<svg xmlns=\"http://www.w3.org/2000/svg\" " + (!opts.width ? "" : "width=\"" + opts.width + "\" height=\"" + opts.width + "\" ") + viewBox + " shape-rendering=\"crispEdges\">" + bg + path + "</svg>\n";
+		if (typeof cb === "function") cb(null, svgTag);
+		return svgTag;
+	};
+}));
+// src/utils/epcQr.ts
+var import_browser = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports) => {
+	var canPromise = require_can_promise();
+	var QRCode = require_qrcode();
+	var CanvasRenderer = require_canvas();
+	var SvgRenderer = require_svg_tag();
+	function renderCanvas(renderFunc, canvas, text, opts, cb) {
+		const args = [].slice.call(arguments, 1);
+		const argsNum = args.length;
+		const isLastArgCb = typeof args[argsNum - 1] === "function";
+		if (!isLastArgCb && !canPromise()) throw new Error("Callback required as last argument");
+		if (isLastArgCb) {
+			if (argsNum < 2) throw new Error("Too few arguments provided");
+			if (argsNum === 2) {
+				cb = text;
+				text = canvas;
+				canvas = opts = void 0;
+			} else if (argsNum === 3) {
+				if (canvas.getContext && typeof cb === "undefined") {
+					cb = opts;
+					opts = void 0;
+				} else {
+					cb = opts;
+					opts = text;
+					text = canvas;
+					canvas = void 0;
+				}
+			}
+		} else {
+			if (argsNum < 1) throw new Error("Too few arguments provided");
+			if (argsNum === 1) {
+				text = canvas;
+				canvas = opts = void 0;
+			} else if (argsNum === 2 && !canvas.getContext) {
+				opts = text;
+				text = canvas;
+				canvas = void 0;
+			}
+			return new Promise(function(resolve, reject) {
+				try {
+					resolve(renderFunc(QRCode.create(text, opts), canvas, opts));
+				} catch (e) {
+					reject(e);
+				}
+			});
+		}
+		try {
+			const data = QRCode.create(text, opts);
+			cb(null, renderFunc(data, canvas, opts));
+		} catch (e) {
+			cb(e);
+		}
+	}
+	exports.create = QRCode.create;
+	exports.toCanvas = renderCanvas.bind(null, CanvasRenderer.render);
+	exports.toDataURL = renderCanvas.bind(null, CanvasRenderer.renderToDataURL);
+	exports.toString = renderCanvas.bind(null, function(data, _, opts) {
+		return SvgRenderer.render(data, opts);
+	});
+})))(), 1);
+function cleanIban(rawIban) {
+	return (rawIban || "").replace(/\s+/g, "").toUpperCase();
+}
+function buildEpcQrPayload(invoice, company) {
+	const iban = cleanIban(company.iban);
+	if (!iban || iban.length < 15) return null;
+	const amount = invoice.isSmallBusiness ?? Boolean(company.smallBusinessMode) ? invoice.netTotal : invoice.grossTotal;
+	if (!Number.isFinite(amount) || amount <= 0) return null;
+	const recipient = (company.companyName || company.ownerName || "Zahlungsempfaenger").trim().slice(0, 70);
+	return [
+		"BCD",
+		"002",
+		"1",
+		"SCT",
+		(company.bic || "").replace(/\s+/g, "").toUpperCase().slice(0, 11),
+		recipient,
+		iban,
+		`EUR${amount.toFixed(2)}`,
+		"",
+		"",
+		`Rechnung ${invoice.invoiceNumber}`.slice(0, 140)
+	].join("\n");
+}
+async function generateGiroCodeDataUrl(invoice, company) {
+	const payload = buildEpcQrPayload(invoice, company);
+	if (!payload) return null;
+	try {
+		return await import_browser.toDataURL(payload, {
+			errorCorrectionLevel: "M",
+			margin: 1,
+			width: 220,
+			color: {
+				dark: "#0f172a",
+				light: "#ffffff"
+			}
+		});
+	} catch {
+		return null;
+	}
+}
+// src/utils/pdfInvoice.ts
+function drawCompanyHeader(doc, company, accentRgb) {
+	const marginLeft = 20;
 	doc.setFont("helvetica", "normal");
 	doc.setFontSize(7.5);
 	doc.setTextColor(100, 116, 139);
@@ -38815,7 +41534,7 @@ function buildInvoicePdf(invoice, company) {
 	} catch {}
 	doc.setFont("helvetica", "bold");
 	doc.setFontSize(14);
-	doc.setTextColor(accentR, accentG, accentB);
+	doc.setTextColor(accentRgb[0], accentRgb[1], accentRgb[2]);
 	doc.text(company.companyName || "TaktWerk", 190, headerTopY, { align: "right" });
 	doc.setFont("helvetica", "normal");
 	doc.setFontSize(8.5);
@@ -38832,6 +41551,52 @@ function buildInvoicePdf(invoice, company) {
 		doc.text(line, 190, cy, { align: "right" });
 		cy += 4.2;
 	}
+	return { rightBottomY: cy };
+}
+function drawFooter(doc, company) {
+	const marginLeft = 20;
+	const footerY = 274;
+	doc.setDrawColor(226, 232, 240);
+	doc.setLineWidth(.2);
+	doc.line(marginLeft, 271, 190, 271);
+	doc.setFont("helvetica", "normal");
+	doc.setFontSize(7.5);
+	doc.setTextColor(100, 116, 139);
+	const col1 = [
+		company.companyName,
+		`${company.street}, ${company.postalCode} ${company.city}`,
+		company.website
+	].filter(Boolean);
+	const col2 = [
+		company.bankName ? `Bank: ${company.bankName}` : "",
+		company.iban ? `IBAN: ${company.iban}` : "",
+		company.bic ? `BIC: ${company.bic}` : ""
+	].filter(Boolean);
+	const col3 = [
+		company.taxNumber ? `Steuernr.: ${company.taxNumber}` : "",
+		company.vatId ? `USt-IdNr.: ${company.vatId}` : "",
+		company.email ? `E-Mail: ${company.email}` : ""
+	].filter(Boolean);
+	col1.forEach((line, i) => doc.text(line, marginLeft, footerY + i * 3.8));
+	col2.forEach((line, i) => doc.text(line, 82, footerY + i * 3.8));
+	col3.forEach((line, i) => doc.text(line, 145, footerY + i * 3.8));
+}
+async function buildInvoicePdf(invoice, company) {
+	const doc = new E({
+		orientation: "portrait",
+		unit: "mm",
+		format: "a4"
+	});
+	const marginLeft = 20;
+	const contentWidth = 170;
+	const accentRgb = INVOICE_ACCENT_STYLES[company.invoiceAccentColor ?? "slate"]?.rgb ?? [
+		15,
+		23,
+		42
+	];
+	const [accentR, accentG, accentB] = accentRgb;
+	const headerTitle = (company.invoiceHeaderTitle || "Rechnung").trim();
+	const { rightBottomY: cy } = drawCompanyHeader(doc, company, accentRgb);
 	doc.setFont("helvetica", "bold");
 	doc.setFontSize(10);
 	doc.setTextColor(15, 23, 42);
@@ -38920,7 +41685,7 @@ function buildInvoicePdf(invoice, company) {
 	};
 	y = drawTableHeader(y);
 	invoice.lineItems.forEach((item, index) => {
-		if (y > 245) {
+		if (y > 240) {
 			doc.addPage();
 			y = drawTableHeader(20);
 		}
@@ -38956,7 +41721,7 @@ function buildInvoicePdf(invoice, company) {
 		doc.line(marginLeft, y - 1.5, 190, y - 1.5);
 		y += 2.5;
 	});
-	if (y > 230) {
+	if (y > 220) {
 		doc.addPage();
 		y = 24;
 	}
@@ -38999,55 +41764,246 @@ function buildInvoicePdf(invoice, company) {
 		y += splitSmallBiz.length * 4.2;
 	}
 	y += isSmallBiz ? 8 : 12;
+	const qrDataUrl = await generateGiroCodeDataUrl(invoice, company);
+	if (qrDataUrl && y > 235) {
+		doc.addPage();
+		y = 24;
+	}
+	const textWidth = qrDataUrl ? 134 : contentWidth;
+	let outroEndY = y;
 	if (invoice.outroText) {
 		doc.setFont("helvetica", "normal");
 		doc.setFontSize(9);
 		doc.setTextColor(51, 65, 85);
-		const splitOutro = doc.splitTextToSize(invoice.outroText, contentWidth);
+		const splitOutro = doc.splitTextToSize(invoice.outroText, textWidth);
 		doc.text(splitOutro, marginLeft, y);
-		y += splitOutro.length * 4.2 + 4;
+		outroEndY = y + splitOutro.length * 4.2 + 4;
 	}
 	if (company.invoiceFooterNote) {
 		doc.setFont("helvetica", "italic");
 		doc.setFontSize(8.5);
 		doc.setTextColor(100, 116, 139);
-		const splitNote = doc.splitTextToSize(company.invoiceFooterNote, contentWidth);
-		doc.text(splitNote, marginLeft, y);
+		const splitNote = doc.splitTextToSize(company.invoiceFooterNote, textWidth);
+		doc.text(splitNote, marginLeft, outroEndY);
+		outroEndY += splitNote.length * 4;
 	}
-	const footerY = 274;
-	doc.setDrawColor(226, 232, 240);
-	doc.setLineWidth(.2);
-	doc.line(marginLeft, 271, 190, 271);
-	doc.setFont("helvetica", "normal");
-	doc.setFontSize(7.5);
-	doc.setTextColor(100, 116, 139);
-	const col1 = [
-		company.companyName,
-		`${company.street}, ${company.postalCode} ${company.city}`,
-		company.website
-	].filter(Boolean);
-	const col2 = [
-		company.bankName ? `Bank: ${company.bankName}` : "",
-		company.iban ? `IBAN: ${company.iban}` : "",
-		company.bic ? `BIC: ${company.bic}` : ""
-	].filter(Boolean);
-	const col3 = [
-		company.taxNumber ? `Steuernr.: ${company.taxNumber}` : "",
-		company.vatId ? `USt-IdNr.: ${company.vatId}` : "",
-		company.email ? `E-Mail: ${company.email}` : ""
-	].filter(Boolean);
-	col1.forEach((line, i) => doc.text(line, marginLeft, footerY + i * 3.8));
-	col2.forEach((line, i) => doc.text(line, 82, footerY + i * 3.8));
-	col3.forEach((line, i) => doc.text(line, 145, footerY + i * 3.8));
+	if (qrDataUrl) {
+		const qrSize = 27;
+		const qrX = 163;
+		const qrY = Math.min(y - 2, 236);
+		doc.setDrawColor(226, 232, 240);
+		doc.setFillColor(248, 250, 252);
+		doc.roundedRect(161, qrY - 2, 31, 36, 1.5, 1.5, "FD");
+		doc.addImage(qrDataUrl, "PNG", qrX, qrY, qrSize, qrSize);
+		doc.setFont("helvetica", "bold");
+		doc.setFontSize(6.5);
+		doc.setTextColor(71, 85, 105);
+		doc.text("GiroCode (EPC-QR)", 176.5, qrY + qrSize + 4, { align: "center" });
+	}
+	drawFooter(doc, company);
 	return doc;
 }
-function getInvoicePdfBase64(invoice, company) {
-	const dataUri = buildInvoicePdf(invoice, company).output("datauristring");
+async function buildPaymentReminderPdf(invoice, company) {
+	const doc = new E({
+		orientation: "portrait",
+		unit: "mm",
+		format: "a4"
+	});
+	const marginLeft = 20;
+	const contentWidth = 170;
+	const accentRgb = INVOICE_ACCENT_STYLES[company.invoiceAccentColor ?? "slate"]?.rgb ?? [
+		15,
+		23,
+		42
+	];
+	const [accentR, accentG, accentB] = accentRgb;
+	const { rightBottomY: cy } = drawCompanyHeader(doc, company, accentRgb);
+	doc.setFont("helvetica", "bold");
+	doc.setFontSize(10);
+	doc.setTextColor(15, 23, 42);
+	let ry = 42;
+	doc.text(invoice.customerSnapshot.companyName, marginLeft, ry);
+	ry += 5;
+	doc.setFont("helvetica", "normal");
+	if (invoice.customerSnapshot.contactName) {
+		doc.text(invoice.customerSnapshot.contactName, marginLeft, ry);
+		ry += 5;
+	}
+	if (invoice.customerSnapshot.street) {
+		doc.text(invoice.customerSnapshot.street, marginLeft, ry);
+		ry += 5;
+	}
+	const cityLine = `${invoice.customerSnapshot.postalCode} ${invoice.customerSnapshot.city}`.trim();
+	if (cityLine) {
+		doc.text(cityLine, marginLeft, ry);
+		ry += 5;
+	}
+	const today = toInputDate();
+	const overdueDays = getOverdueDays(invoice, today);
+	const newDueDate = toInputDate(new Date(Date.now() + 6048e5));
+	const openAmount = invoice.isSmallBusiness ?? Boolean(company.smallBusinessMode) ? invoice.netTotal : invoice.grossTotal;
+	let y = Math.max(ry + 18, cy + 16);
+	doc.setFont("helvetica", "bold");
+	doc.setFontSize(15);
+	doc.setTextColor(accentR, accentG, accentB);
+	doc.text(`Zahlungserinnerung zur Rechnung ${invoice.invoiceNumber}`, marginLeft, y);
+	y += 6;
+	doc.setFont("helvetica", "normal");
+	doc.setFontSize(9);
+	doc.setTextColor(100, 116, 139);
+	doc.text(`Datum: ${formatDateDE(today)}`, marginLeft, y);
+	y += 10;
+	const bodyText = `Sehr geehrte Damen und Herren,\n\nbei der Prüfung unserer Buchhaltung haben wir festgestellt, dass die Rechnung ${invoice.invoiceNumber} vom ${formatDateDE(invoice.issueDate)} über ${formatCurrency(openAmount)} seit dem ${formatDateDE(invoice.dueDate)} (${overdueDays} ${overdueDays === 1 ? "Tag" : "Tage"} überfällig) noch offen ist.\n\nSicherlich handelt es sich hierbei um ein Versehen. Wir bitten Sie freundlich, den offenen Betrag bis spätestens ${formatDateDE(newDueDate)} unter Angabe der Rechnungsnummer auf das unten genannte Konto zu überweisen.\n\nSollte sich Ihre Zahlung mit diesem Schreiben überschnitten haben, betrachten Sie diese Erinnerung bitte als gegenstandslos.\n\nMit freundlichen Grüßen\n${company.ownerName || company.companyName}`;
+	doc.setFontSize(10);
+	doc.setTextColor(30, 41, 59);
+	const lines = doc.splitTextToSize(bodyText, contentWidth);
+	doc.text(lines, marginLeft, y);
+	y += lines.length * 4.8 + 10;
+	doc.setDrawColor(226, 232, 240);
+	doc.setFillColor(248, 250, 252);
+	doc.roundedRect(marginLeft, y, contentWidth, 24, 2, 2, "FD");
+	doc.setFont("helvetica", "bold");
+	doc.setFontSize(9.5);
+	doc.setTextColor(15, 23, 42);
+	doc.text(`Offener Rechnungsbetrag: ${formatCurrency(openAmount)}`, 24, y + 7);
+	doc.setFont("helvetica", "normal");
+	doc.setFontSize(8.5);
+	doc.setTextColor(71, 85, 105);
+	doc.text(`Verwendungszweck: ${invoice.invoiceNumber}`, 24, y + 13);
+	if (company.iban) doc.text(`IBAN: ${company.iban}${company.bic ? ` · BIC: ${company.bic}` : ""}`, 24, y + 19);
+	const qrDataUrl = await generateGiroCodeDataUrl(invoice, company);
+	if (qrDataUrl) {
+		const qrSize = 27;
+		doc.addImage(qrDataUrl, "PNG", 163, y + 32, qrSize, qrSize);
+		doc.setFont("helvetica", "bold");
+		doc.setFontSize(6.5);
+		doc.setTextColor(71, 85, 105);
+		doc.text("GiroCode (EPC-QR)", 176.5, y + 32 + qrSize + 4, { align: "center" });
+	}
+	drawFooter(doc, company);
+	return doc;
+}
+function buildTimesheetPdf(title, customer, entries, company, subtitle) {
+	const doc = new E({
+		orientation: "portrait",
+		unit: "mm",
+		format: "a4"
+	});
+	const marginLeft = 20;
+	const contentWidth = 170;
+	const accentRgb = INVOICE_ACCENT_STYLES[company.invoiceAccentColor ?? "slate"]?.rgb ?? [
+		15,
+		23,
+		42
+	];
+	const [accentR, accentG, accentB] = accentRgb;
+	const { rightBottomY: cy } = drawCompanyHeader(doc, company, accentRgb);
+	doc.setFont("helvetica", "bold");
+	doc.setFontSize(10);
+	doc.setTextColor(15, 23, 42);
+	let ry = 42;
+	doc.text(customer?.companyName || "Kunde", marginLeft, ry);
+	ry += 5;
+	doc.setFont("helvetica", "normal");
+	if (customer?.contactName) {
+		doc.text(customer.contactName, marginLeft, ry);
+		ry += 5;
+	}
+	if (customer?.street) {
+		doc.text(customer.street, marginLeft, ry);
+		ry += 5;
+	}
+	const cityLine = `${customer?.postalCode || ""} ${customer?.city || ""}`.trim();
+	if (cityLine) {
+		doc.text(cityLine, marginLeft, ry);
+		ry += 5;
+	}
+	let y = Math.max(ry + 16, cy + 12);
+	doc.setFont("helvetica", "bold");
+	doc.setFontSize(15);
+	doc.setTextColor(accentR, accentG, accentB);
+	doc.text(title, marginLeft, y);
+	y += 6;
+	if (subtitle) {
+		doc.setFont("helvetica", "normal");
+		doc.setFontSize(9);
+		doc.setTextColor(100, 116, 139);
+		doc.text(subtitle, marginLeft, y);
+		y += 8;
+	} else y += 4;
+	const drawHeader = (startY) => {
+		doc.setFillColor(accentR, accentG, accentB);
+		doc.rect(marginLeft, startY, contentWidth, 8, "F");
+		doc.setFont("helvetica", "bold");
+		doc.setFontSize(8.5);
+		doc.setTextColor(255, 255, 255);
+		doc.text("Datum", 22, startY + 5.4);
+		doc.text("Zeitraum", 46, startY + 5.4);
+		doc.text("Tätigkeit / Notizen", 74, startY + 5.4);
+		doc.text("Dauer", 188, startY + 5.4, { align: "right" });
+		return startY + 11;
+	};
+	y = drawHeader(y);
+	const sorted = [...entries].sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+	let totalSeconds = 0;
+	for (const entry of sorted) {
+		totalSeconds += entry.durationSeconds;
+		if (y > 246) {
+			doc.addPage();
+			y = drawHeader(20);
+		}
+		doc.setFont("helvetica", "normal");
+		doc.setFontSize(8.5);
+		doc.setTextColor(15, 23, 42);
+		doc.text(formatDateDE(entry.startTime), 22, y);
+		doc.text(`${toInputTime(entry.startTime)}–${toInputTime(entry.endTime)}`, 46, y);
+		doc.setFont("helvetica", "bold");
+		const titleLines = doc.splitTextToSize(entry.title, 88);
+		doc.text(titleLines, 74, y);
+		doc.setFont("helvetica", "bold");
+		doc.text(formatDuration(entry.durationSeconds), 188, y, { align: "right" });
+		let rowHeight = titleLines.length * 4.1;
+		if (entry.notes) {
+			doc.setFont("helvetica", "normal");
+			doc.setFontSize(8);
+			doc.setTextColor(100, 116, 139);
+			const noteLines = doc.splitTextToSize(entry.notes, 88);
+			doc.text(noteLines, 74, y + rowHeight);
+			rowHeight += noteLines.length * 3.8;
+		}
+		y += Math.max(rowHeight, 5) + 2.5;
+		doc.setDrawColor(226, 232, 240);
+		doc.line(marginLeft, y - 1, 190, y - 1);
+		y += 2;
+	}
+	if (y > 235) {
+		doc.addPage();
+		y = 24;
+	}
+	y += 4;
+	doc.setFont("helvetica", "bold");
+	doc.setFontSize(10);
+	doc.setTextColor(accentR, accentG, accentB);
+	const totalHours = totalSeconds / 3600;
+	doc.text(`Gesamtarbeitszeit (${sorted.length} Einträge): ${formatDuration(totalSeconds)} (${formatNumber(totalHours, 2)} Std.)`, 188, y, { align: "right" });
+	y += 18;
+	doc.setDrawColor(148, 163, 184);
+	doc.line(marginLeft, y, 85, y);
+	doc.line(125, y, 190, y);
+	doc.setFont("helvetica", "normal");
+	doc.setFontSize(8);
+	doc.setTextColor(100, 116, 139);
+	doc.text("Ort, Datum", marginLeft, y + 4.5);
+	doc.text("Unterschrift / Leistungsbestätigung Kunde", 125, y + 4.5);
+	drawFooter(doc, company);
+	return doc;
+}
+function docToBase64(doc) {
+	const dataUri = doc.output("datauristring");
 	const commaIdx = dataUri.indexOf(",");
 	return commaIdx >= 0 ? dataUri.slice(commaIdx + 1) : dataUri;
 }
-async function downloadInvoicePdf(invoice, company) {
-	const filename = `${invoice.invoiceNumber}.pdf`;
+async function openOrSavePdfDoc(doc, filename) {
 	if (typeof window !== "undefined") {
 		const { Capacitor } = await __vitePreload(async () => {
 			const { Capacitor } = await Promise.resolve().then(() => dist_exports);
@@ -39058,18 +42014,16 @@ async function downloadInvoicePdf(invoice, company) {
 				const { TaktWerkNative } = await Promise.resolve().then(() => taktwerkNative_exports);
 				return { TaktWerkNative };
 			}, void 0);
-			const base64 = getInvoicePdfBase64(invoice, company);
 			await TaktWerkNative.openPdf({
 				filename,
-				base64
+				base64: docToBase64(doc)
 			});
 			return;
 		}
 	}
-	buildInvoicePdf(invoice, company).save(filename);
+	doc.save(filename);
 }
-async function shareInvoicePdf(invoice, company) {
-	const filename = `${invoice.invoiceNumber}.pdf`;
+async function shareOrSavePdfDoc(doc, filename) {
 	if (typeof window !== "undefined") {
 		const { Capacitor } = await __vitePreload(async () => {
 			const { Capacitor } = await Promise.resolve().then(() => dist_exports);
@@ -39080,15 +42034,13 @@ async function shareInvoicePdf(invoice, company) {
 				const { TaktWerkNative } = await Promise.resolve().then(() => taktwerkNative_exports);
 				return { TaktWerkNative };
 			}, void 0);
-			const base64 = getInvoicePdfBase64(invoice, company);
 			await TaktWerkNative.sharePdf({
 				filename,
-				base64
+				base64: docToBase64(doc)
 			});
 			return;
 		}
 	}
-	const doc = buildInvoicePdf(invoice, company);
 	const blob = doc.output("blob");
 	if (typeof navigator !== "undefined" && navigator.share) {
 		const file = new File([blob], filename, { type: "application/pdf" });
@@ -39101,6 +42053,21 @@ async function shareInvoicePdf(invoice, company) {
 		}
 	}
 	doc.save(filename);
+}
+async function getInvoicePdfBase64(invoice, company) {
+	return docToBase64(await buildInvoicePdf(invoice, company));
+}
+async function downloadInvoicePdf(invoice, company) {
+	await openOrSavePdfDoc(await buildInvoicePdf(invoice, company), `${invoice.invoiceNumber}.pdf`);
+}
+async function shareInvoicePdf(invoice, company) {
+	await shareOrSavePdfDoc(await buildInvoicePdf(invoice, company), `${invoice.invoiceNumber}.pdf`);
+}
+async function downloadPaymentReminderPdf(invoice, company) {
+	await openOrSavePdfDoc(await buildPaymentReminderPdf(invoice, company), `Zahlungserinnerung-${invoice.invoiceNumber}.pdf`);
+}
+async function downloadTimesheetPdf(title, filename, customer, entries, company, subtitle) {
+	await openOrSavePdfDoc(buildTimesheetPdf(title, customer, entries, company, subtitle), filename);
 }
 async function printInvoiceView(invoiceNumber) {
 	if (typeof window !== "undefined") {
@@ -39119,17 +42086,311 @@ async function printInvoiceView(invoiceNumber) {
 	}
 	window.print();
 }
+// src/utils/eInvoiceXml.ts
+function escapeXml(value) {
+	return (value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+}
+function mapUnitCode(unit) {
+	switch (unit) {
+		case "Std.": return "HUR";
+		case "Tag": return "DAY";
+		case "Pauschal": return "LS";
+		default: return "C62";
+	}
+}
+function cleanSpaces(value) {
+	return (value || "").replace(/\s+/g, "").toUpperCase();
+}
+function buildXRechnungXml(invoice, company) {
+	const isSmallBiz = invoice.isSmallBusiness ?? Boolean(company.smallBusinessMode);
+	const totalPayable = isSmallBiz ? invoice.netTotal : invoice.grossTotal;
+	const taxTotal = isSmallBiz ? 0 : invoice.taxTotal;
+	const iban = cleanSpaces(company.iban);
+	const bic = cleanSpaces(company.bic);
+	const taxGroups = /* @__PURE__ */ new Map();
+	for (const item of invoice.lineItems) {
+		const rate = isSmallBiz ? 0 : item.taxRate;
+		const prev = taxGroups.get(rate) ?? {
+			taxable: 0,
+			tax: 0
+		};
+		taxGroups.set(rate, {
+			taxable: Math.round((prev.taxable + item.netTotal) * 100) / 100,
+			tax: Math.round((prev.tax + (isSmallBiz ? 0 : item.taxAmount)) * 100) / 100
+		});
+	}
+	const taxSubtotalsXml = Array.from(taxGroups.entries()).map(([rate, grp]) => {
+		const catId = isSmallBiz || rate === 0 ? "E" : "S";
+		const exemptionReason = isSmallBiz ? `<cbc:TaxExemptionReason>${escapeXml(invoice.smallBusinessNotice || company.smallBusinessNotice || "Kein Ausweis von Umsatzsteuer, da Kleinunternehmer gemäß § 19 UStG.")}</cbc:TaxExemptionReason>` : rate === 0 ? "<cbc:TaxExemptionReason>Steuerfreie Leistung (0 %)</cbc:TaxExemptionReason>" : "";
+		return `    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">${grp.taxable.toFixed(2)}</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">${grp.tax.toFixed(2)}</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>${catId}</cbc:ID>
+        <cbc:Percent>${rate.toFixed(2)}</cbc:Percent>
+        ${exemptionReason}
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>`;
+	}).join("\n");
+	const linesXml = invoice.lineItems.map((item, idx) => {
+		const rate = isSmallBiz ? 0 : item.taxRate;
+		const catId = isSmallBiz || rate === 0 ? "E" : "S";
+		return `  <cac:InvoiceLine>
+    <cbc:ID>${idx + 1}</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="${mapUnitCode(item.unit)}">${item.quantity.toFixed(2)}</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">${item.netTotal.toFixed(2)}</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>${escapeXml(item.detail || item.description)}</cbc:Description>
+      <cbc:Name>${escapeXml(item.description)}</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>${catId}</cbc:ID>
+        <cbc:Percent>${rate.toFixed(2)}</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">${item.unitPriceNet.toFixed(2)}</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>`;
+	}).join("\n");
+	const supplierTaxId = company.vatId?.trim() || company.taxNumber?.trim() || "";
+	const supplierScheme = company.vatId?.trim() ? "VAT" : "FC";
+	return `<?xml version="1.0" encoding="UTF-8"?>
+<ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+             xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+             xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>${escapeXml(invoice.invoiceNumber)}</cbc:ID>
+  <cbc:IssueDate>${escapeXml(invoice.issueDate)}</cbc:IssueDate>
+  <cbc:DueDate>${escapeXml(invoice.dueDate)}</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  ${invoice.introText ? `<cbc:Note>${escapeXml(invoice.introText)}</cbc:Note>` : ""}
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:BuyerReference>
+  <cac:InvoicePeriod>
+    <cbc:StartDate>${escapeXml(invoice.servicePeriodStart)}</cbc:StartDate>
+    <cbc:EndDate>${escapeXml(invoice.servicePeriodEnd)}</cbc:EndDate>
+  </cac:InvoicePeriod>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">${escapeXml(company.email || "info@taktwerk.local")}</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>${escapeXml(company.companyName || "TaktWerk")}</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>${escapeXml(company.street)}</cbc:StreetName>
+        <cbc:CityName>${escapeXml(company.city)}</cbc:CityName>
+        <cbc:PostalZone>${escapeXml(company.postalCode)}</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      ${supplierTaxId ? `<cac:PartyTaxScheme>
+        <cbc:CompanyID>${escapeXml(supplierTaxId)}</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>${supplierScheme}</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>` : ""}
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>${escapeXml(company.companyName || company.ownerName)}</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>${escapeXml(company.ownerName || company.companyName)}</cbc:Name>
+        ${company.phone ? `<cbc:Telephone>${escapeXml(company.phone)}</cbc:Telephone>` : ""}
+        ${company.email ? `<cbc:ElectronicMail>${escapeXml(company.email)}</cbc:ElectronicMail>` : ""}
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">${escapeXml(invoice.customerSnapshot.email || "kunde@local")}</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>${escapeXml(invoice.customerSnapshot.street)}</cbc:StreetName>
+        <cbc:CityName>${escapeXml(invoice.customerSnapshot.city)}</cbc:CityName>
+        <cbc:PostalZone>${escapeXml(invoice.customerSnapshot.postalCode)}</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      ${invoice.customerSnapshot.vatId ? `<cac:PartyTaxScheme>
+        <cbc:CompanyID>${escapeXml(invoice.customerSnapshot.vatId)}</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>` : ""}
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  ${iban ? `<cac:PaymentMeans>
+    <cbc:PaymentMeansCode>58</cbc:PaymentMeansCode>
+    <cbc:PaymentID>${escapeXml(invoice.invoiceNumber)}</cbc:PaymentID>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>${escapeXml(iban)}</cbc:ID>
+      <cbc:Name>${escapeXml(company.companyName || company.ownerName)}</cbc:Name>
+      ${bic ? `<cac:FinancialInstitutionBranch>
+        <cbc:ID>${escapeXml(bic)}</cbc:ID>
+      </cac:FinancialInstitutionBranch>` : ""}
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>` : ""}
+  <cac:PaymentTerms>
+    <cbc:Note>${escapeXml(invoice.outroText || `Zahlbar bis ${invoice.dueDate}`)}</cbc:Note>
+  </cac:PaymentTerms>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">${taxTotal.toFixed(2)}</cbc:TaxAmount>
+${taxSubtotalsXml}
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">${invoice.netTotal.toFixed(2)}</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">${invoice.netTotal.toFixed(2)}</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">${totalPayable.toFixed(2)}</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="EUR">${totalPayable.toFixed(2)}</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+${linesXml}
+</ubl:Invoice>
+`;
+}
+// src/utils/exportBackup.ts
+function csvCell(value) {
+	return `"${(value === null || value === void 0 ? "" : String(value)).replace(/"/g, "\"\"")}"`;
+}
+function timeEntriesToCsv(entries, customers, products) {
+	const customerMap = new Map(customers.map((c) => [c.id, c]));
+	const productMap = new Map(products.map((p) => [p.id, p]));
+	const headers = [
+		"Datum / Start",
+		"Ende",
+		"Dauer (Std.)",
+		"Kunde",
+		"Leistung",
+		"Tätigkeit",
+		"Notizen",
+		"Quelle",
+		"Abrechenbar",
+		"Status",
+		"Stundensatz Netto (EUR)",
+		"Nettowert (EUR)"
+	];
+	const rows = [...entries].sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()).map((e) => {
+		const cust = customerMap.get(e.customerId)?.companyName ?? "";
+		const prod = productMap.get(e.productId)?.name ?? "";
+		const hours = e.durationSeconds / 3600;
+		const net = hours * e.hourlyRateNet;
+		return [
+			csvCell(formatDateTimeDE(e.startTime)),
+			csvCell(formatDateTimeDE(e.endTime)),
+			csvCell(formatNumber(hours, 2)),
+			csvCell(cust),
+			csvCell(prod),
+			csvCell(e.title),
+			csvCell(e.notes),
+			csvCell(e.source),
+			csvCell(e.billable ? "Ja" : "Nein"),
+			csvCell(e.billedInvoiceId ? "Abgerechnet" : "Offen"),
+			csvCell(formatNumber(e.hourlyRateNet, 2)),
+			csvCell(formatNumber(e.billable ? net : 0, 2))
+		].join(";");
+	});
+	return `\uFEFF${headers.map(csvCell).join(";")}\r\n${rows.join("\r\n")}`;
+}
+function invoicesToCsv(invoices) {
+	const headers = [
+		"Rechnungsnummer",
+		"Rechnungsdatum",
+		"Leistungszeitraum Start",
+		"Leistungszeitraum Ende",
+		"Zahlungsziel",
+		"Kunde",
+		"Status",
+		"Kleinunternehmer (§ 19 UStG)",
+		"Netto (EUR)",
+		"MwSt. (EUR)",
+		"Brutto (EUR)",
+		"Nextcloud-PDF gesichert"
+	];
+	const rows = [...invoices].sort((a, b) => b.issueDate.localeCompare(a.issueDate)).map((inv) => [
+		csvCell(inv.invoiceNumber),
+		csvCell(formatDateDE(inv.issueDate)),
+		csvCell(formatDateDE(inv.servicePeriodStart)),
+		csvCell(formatDateDE(inv.servicePeriodEnd)),
+		csvCell(formatDateDE(inv.dueDate)),
+		csvCell(inv.customerSnapshot.companyName),
+		csvCell(inv.status),
+		csvCell(inv.isSmallBusiness ? "Ja" : "Nein"),
+		csvCell(formatNumber(inv.netTotal, 2)),
+		csvCell(formatNumber(inv.isSmallBusiness ? 0 : inv.taxTotal, 2)),
+		csvCell(formatNumber(inv.isSmallBusiness ? inv.netTotal : inv.grossTotal, 2)),
+		csvCell(inv.nextcloudUploadedAt ? formatDateTimeDE(inv.nextcloudUploadedAt) : "Nein")
+	].join(";"));
+	return `\uFEFF${headers.map(csvCell).join(";")}\r\n${rows.join("\r\n")}`;
+}
+async function downloadOrShareTextFile(filename, content, mimeType) {
+	if (typeof window !== "undefined") {
+		const { Capacitor } = await __vitePreload(async () => {
+			const { Capacitor } = await Promise.resolve().then(() => dist_exports);
+			return { Capacitor };
+		}, void 0);
+		if (Capacitor.isNativePlatform()) {
+			const { TaktWerkNative } = await __vitePreload(async () => {
+				const { TaktWerkNative } = await Promise.resolve().then(() => taktwerkNative_exports);
+				return { TaktWerkNative };
+			}, void 0);
+			await TaktWerkNative.shareTextFile({
+				filename,
+				mimeType,
+				content
+			});
+			return;
+		}
+	}
+	const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
+	const url = URL.createObjectURL(blob);
+	const link = document.createElement("a");
+	link.href = url;
+	link.download = filename;
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+	setTimeout(() => URL.revokeObjectURL(url), 1e3);
+}
+function validateImportedDatabase(rawText) {
+	const parsed = JSON.parse(rawText);
+	if (!parsed || typeof parsed !== "object" || !parsed.company || !Array.isArray(parsed.customers) || !Array.isArray(parsed.products) || !Array.isArray(parsed.nfcTasks) || !Array.isArray(parsed.timeEntries) || !Array.isArray(parsed.invoices)) throw new Error("Die Datei enthält keine gültige TaktWerk-Datenbanksicherung.");
+	return {
+		version: typeof parsed.version === "number" ? parsed.version : 1,
+		updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+		company: parsed.company,
+		customers: parsed.customers,
+		products: parsed.products,
+		nfcTasks: parsed.nfcTasks,
+		timeEntries: parsed.timeEntries,
+		activeTimer: parsed.activeTimer ?? null,
+		invoices: parsed.invoices
+	};
+}
 // src/components/InvoicesView.tsx
 function InvoicesView({ company, customers, products, timeEntries, invoices, nextcloud, preselectedDraft, onClearPreselectedDraft, onCreateInvoice, onUpdateInvoice, onUpdateInvoiceStatus, onMarkInvoiceUploaded, onDeleteInvoice, onNotify }) {
 	const [statusFilter, setStatusFilter] = (0, import_react.useState)("all");
 	const [showBuilder, setShowBuilder] = (0, import_react.useState)(false);
 	const [editingInvoice, setEditingInvoice] = (0, import_react.useState)(null);
 	const [previewInvoice, setPreviewInvoice] = (0, import_react.useState)(null);
+	const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = (0, import_react.useState)(null);
 	const [uploadingId, setUploadingId] = (0, import_react.useState)(null);
 	const [confirmDeleteId, setConfirmDeleteId] = (0, import_react.useState)(null);
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [selectedEntryIds, setSelectedEntryIds] = (0, import_react.useState)([]);
 	const [groupByProduct, setGroupByProduct] = (0, import_react.useState)(true);
+	const [roundingMinutes, setRoundingMinutes] = (0, import_react.useState)(company.defaultTimeRoundingMinutes ?? 0);
 	const [extraItems, setExtraItems] = (0, import_react.useState)([]);
 	const [issueDate, setIssueDate] = (0, import_react.useState)(toInputDate());
 	const [dueDateInput, setDueDateInput] = (0, import_react.useState)(() => addDaysISO(toInputDate(), company.defaultPaymentTermDays || 14));
@@ -39146,6 +42407,24 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 	const headerTitle = (company.invoiceHeaderTitle || "Rechnung").trim();
 	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
 	const productMap = (0, import_react.useMemo)(() => new Map(products.map((p) => [p.id, p])), [products]);
+	const getEffectiveRounding = (custId) => {
+		const cust = customerMap.get(custId);
+		if (cust?.timeRoundingMinutes != null) return cust.timeRoundingMinutes;
+		return company.defaultTimeRoundingMinutes ?? 0;
+	};
+	(0, import_react.useEffect)(() => {
+		let cancelled = false;
+		if (!previewInvoice) {
+			setPreviewGiroCodeUrl(null);
+			return;
+		}
+		generateGiroCodeDataUrl(previewInvoice, company).then((url) => {
+			if (!cancelled) setPreviewGiroCodeUrl(url);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [previewInvoice, company]);
 	(0, import_react.useEffect)(() => {
 		if (!preselectedDraft) return;
 		setCustomerId(preselectedDraft.customerId);
@@ -39164,6 +42443,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 		setIntroText(defaultIntro);
 		setOutroText(defaultOutro);
 		setIsSmallBusiness(Boolean(company.smallBusinessMode));
+		setRoundingMinutes(getEffectiveRounding(preselectedDraft.customerId));
 		setBuilderError("");
 		setShowBuilder(true);
 		onClearPreselectedDraft();
@@ -39175,6 +42455,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 		defaultOutro,
 		company.smallBusinessMode,
 		company.defaultPaymentTermDays,
+		company.defaultTimeRoundingMinutes,
 		customerMap,
 		onClearPreselectedDraft
 	]);
@@ -39193,6 +42474,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 		setIntroText(defaultIntro);
 		setOutroText(defaultOutro);
 		setIsSmallBusiness(Boolean(company.smallBusinessMode));
+		setRoundingMinutes(getEffectiveRounding(firstCust));
 		setBuilderError("");
 		setShowBuilder(true);
 	};
@@ -39223,6 +42505,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 		setIntroText(inv.introText ?? "");
 		setOutroText(inv.outroText ?? "");
 		setIsSmallBusiness(inv.isSmallBusiness ?? Boolean(company.smallBusinessMode));
+		setRoundingMinutes(getEffectiveRounding(inv.customerId));
 		setBuilderError("");
 		setShowBuilder(true);
 	};
@@ -39230,6 +42513,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 		setCustomerId(newCustId);
 		const openIds = timeEntries.filter((t) => t.customerId === newCustId && t.billable && (!t.billedInvoiceId || editingInvoice !== null && t.billedInvoiceId === editingInvoice.id)).map((t) => t.id);
 		setSelectedEntryIds(openIds);
+		setRoundingMinutes(getEffectiveRounding(newCustId));
 		if (!editingInvoice) {
 			const custTerm = customerMap.get(newCustId)?.paymentTermDays || company.defaultPaymentTermDays || 14;
 			setDueDateInput(addDaysISO(issueDate, custTerm));
@@ -39287,7 +42571,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 			for (const [, group] of grouped.entries()) {
 				const first = group[0];
 				const prod = productMap.get(first.productId);
-				const totalSeconds = group.reduce((acc, g) => acc + g.durationSeconds, 0);
+				const totalSeconds = roundDurationSeconds(group.reduce((acc, g) => acc + g.durationSeconds, 0), roundingMinutes);
 				const hours = Math.round(totalSeconds / 3600 * 100) / 100;
 				const net = Math.round(hours * first.hourlyRateNet * 100) / 100;
 				const effectiveTaxRate = isSmallBusiness ? 0 : first.taxRate;
@@ -39310,7 +42594,8 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 			}
 		} else for (const e of selectedEntries) {
 			const prod = productMap.get(e.productId);
-			const hours = Math.round(e.durationSeconds / 3600 * 100) / 100;
+			const effectiveSeconds = roundDurationSeconds(e.durationSeconds, roundingMinutes);
+			const hours = Math.round(effectiveSeconds / 3600 * 100) / 100;
 			const net = Math.round(hours * e.hourlyRateNet * 100) / 100;
 			const effectiveTaxRate = isSmallBusiness ? 0 : e.taxRate;
 			const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
@@ -39355,6 +42640,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 		unbilledForCustomer,
 		selectedEntryIds,
 		groupByProduct,
+		roundingMinutes,
 		extraItems,
 		productMap,
 		isSmallBusiness
@@ -39429,7 +42715,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 		}
 		setUploadingId(inv.id);
 		try {
-			const pdfBase64 = getInvoicePdfBase64(inv, company);
+			const pdfBase64 = await getInvoicePdfBase64(inv, company);
 			const result = await apiUploadInvoicePdf(`${inv.invoiceNumber}.pdf`, pdfBase64);
 			onMarkInvoiceUploaded(inv.id, result.uploadedAt);
 			setPreviewInvoice((prev) => prev?.id === inv.id ? {
@@ -39457,6 +42743,54 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 			onNotify(err instanceof Error ? err.message : "PDF konnte nicht geteilt werden.", true);
 		}
 	};
+	const handlePaymentReminderPdf = async (inv) => {
+		try {
+			await downloadPaymentReminderPdf(inv, company);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Zahlungserinnerung konnte nicht erstellt werden.", true);
+		}
+	};
+	const getLinkedEntriesForInvoice = (inv) => {
+		const idSet = /* @__PURE__ */ new Set();
+		for (const li of inv.lineItems) for (const tid of li.timeEntryIds ?? []) idSet.add(tid);
+		return timeEntries.filter((t) => t.billedInvoiceId === inv.id || idSet.has(t.id));
+	};
+	const handleDownloadTimesheet = async (inv) => {
+		const linked = getLinkedEntriesForInvoice(inv);
+		if (linked.length === 0) {
+			onNotify("Diese Rechnung enthält keine verknüpften Zeiteinträge.", true);
+			return;
+		}
+		try {
+			await downloadTimesheetPdf(`Tätigkeitsbericht ${inv.invoiceNumber}`, `Taetigkeitsbericht-${inv.invoiceNumber}.pdf`, customerMap.get(inv.customerId), linked, company, `Leistungszeitraum: ${formatDateDE(inv.servicePeriodStart)} – ${formatDateDE(inv.servicePeriodEnd)}`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Tätigkeitsbericht konnte nicht erstellt werden.", true);
+		}
+	};
+	const handleDownloadXRechnungXml = async (inv) => {
+		try {
+			const xml = buildXRechnungXml(inv, company);
+			await downloadOrShareTextFile(`XRechnung-${inv.invoiceNumber}.xml`, xml, "application/xml");
+			onNotify(`XRechnung ${inv.invoiceNumber} (.xml) exportiert.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "XRechnung konnte nicht exportiert werden.", true);
+		}
+	};
+	const handleUploadXRechnungXml = async (inv) => {
+		if (!nextcloud.configured) {
+			onNotify("Bitte konfiguriere zuerst deine Nextcloud-Verbindung unter \"Nextcloud & Setup\".", true);
+			return;
+		}
+		setUploadingId(inv.id);
+		try {
+			const xml = buildXRechnungXml(inv, company);
+			onNotify(`XRechnung nach Nextcloud (${(await apiUploadInvoiceTextFile(`XRechnung-${inv.invoiceNumber}.xml`, xml, "application/xml; charset=utf-8")).path}) hochgeladen.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "XRechnung-Upload fehlgeschlagen.", true);
+		} finally {
+			setUploadingId(null);
+		}
+	};
 	const handlePrint = async (inv) => {
 		try {
 			await printInvoiceView(inv.invoiceNumber);
@@ -39464,9 +42798,23 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 			onNotify(err instanceof Error ? err.message : "Drucken fehlgeschlagen.", true);
 		}
 	};
+	const overdueCount = (0, import_react.useMemo)(() => invoices.filter((inv) => isInvoiceOverdue(inv)).length, [invoices]);
 	const filteredInvoices = (0, import_react.useMemo)(() => {
-		return [...invoices].filter((inv) => statusFilter === "all" || inv.status === statusFilter).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+		return [...invoices].filter((inv) => {
+			if (statusFilter === "all") return true;
+			if (statusFilter === "Überfällig") return isInvoiceOverdue(inv);
+			return inv.status === statusFilter;
+		}).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 	}, [invoices, statusFilter]);
+	const handleExportCsv = async () => {
+		try {
+			const csv = invoicesToCsv(filteredInvoices);
+			await downloadOrShareTextFile(`taktwerk-rechnungen-${toInputDate()}.csv`, csv, "text/csv");
+			onNotify("Rechnungsliste als CSV exportiert.");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "CSV-Export fehlgeschlagen.", true);
+		}
+	};
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
@@ -39477,13 +42825,21 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 					children: "Rechnungen"
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Aus offenen Arbeitszeiten und Zusatzprodukten rechtssichere PDF-Rechnungen erstellen und in Nextcloud archivieren."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					type: "button",
-					onClick: openBuilderFresh,
-					disabled: customers.length === 0,
-					className: "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-4 w-4" }), "Neue Rechnung erstellen"]
+					children: "Aus offenen Arbeitszeiten rechtssichere PDF-Rechnungen, GiroCodes, XRechnungen und Tätigkeitsberichte erstellen."
+				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap items-center gap-2 shrink-0",
+					children: [invoices.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => void handleExportCsv(),
+						className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "h-4 w-4" }), "CSV-Export"]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: openBuilderFresh,
+						disabled: customers.length === 0,
+						className: "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-4 w-4" }), "Neue Rechnung erstellen"]
+					})]
 				})]
 			}),
 			showBuilder && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
@@ -39553,7 +42909,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "space-y-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center justify-between gap-2",
+								className: "flex flex-wrap items-center justify-between gap-3",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
 									className: "text-sm font-semibold text-slate-800 dark:text-slate-200",
 									children: [
@@ -39561,14 +42917,49 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 										unbilledForCustomer.length,
 										")"
 									]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-									className: "flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "checkbox",
-										checked: groupByProduct,
-										onChange: (e) => setGroupByProduct(e.target.checked),
-										className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-									}), "Gleichartige Leistungen auf der Rechnung zusammenfassen"]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center gap-4",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "text-xs font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap",
+											children: "Zeitrundung:"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+											value: roundingMinutes,
+											onChange: (e) => setRoundingMinutes(Number(e.target.value)),
+											className: "rounded-md border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+													value: 0,
+													children: "Exakt (keine Rundung)"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+													value: 5,
+													children: "Auf 5 Min. aufrunden"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+													value: 10,
+													children: "Auf 10 Min. aufrunden"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+													value: 15,
+													children: "Auf 15 Min. aufrunden"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+													value: 30,
+													children: "Auf 30 Min. aufrunden"
+												})
+											]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+										className: "flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "checkbox",
+											checked: groupByProduct,
+											onChange: (e) => setGroupByProduct(e.target.checked),
+											className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+										}), "Gleichartige Leistungen zusammenfassen"]
+									})]
 								})]
 							}), unbilledForCustomer.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 								className: "rounded-lg border border-slate-200 bg-slate-50 p-4 text-xs text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
@@ -39577,7 +42968,8 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 								className: "max-h-56 overflow-y-auto rounded-lg border border-slate-200 divide-y divide-slate-200 dark:border-[#2e2349] dark:divide-[#2e2349]",
 								children: unbilledForCustomer.map((entry) => {
 									const prod = productMap.get(entry.productId);
-									const net = entry.durationSeconds / 3600 * entry.hourlyRateNet;
+									const roundedSecs = roundDurationSeconds(entry.durationSeconds, roundingMinutes);
+									const net = roundedSecs / 3600 * entry.hourlyRateNet;
 									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 										className: "flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-[#211936]/60 cursor-pointer",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -39606,9 +42998,9 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 												className: "font-semibold text-slate-900 dark:text-slate-100",
 												children: formatCurrency(net)
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 												className: "text-slate-500 dark:text-slate-400",
-												children: formatDuration(entry.durationSeconds)
+												children: [formatDuration(entry.durationSeconds), roundingMinutes > 0 && !groupByProduct && roundedSecs !== entry.durationSeconds ? ` → ${formatDuration(roundedSecs)}` : ""]
 											})]
 										})]
 									}, entry.id);
@@ -39784,13 +43176,14 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 							"all",
 							"Entwurf",
 							"Gesendet",
+							"Überfällig",
 							"Bezahlt",
 							"Storniert"
 						].map((st) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 							type: "button",
 							onClick: () => setStatusFilter(st),
-							className: `rounded-md px-3 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${statusFilter === st ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
-							children: st === "all" ? "Alle" : st
+							className: `rounded-md px-3 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${statusFilter === st ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : st === "Überfällig" && overdueCount > 0 ? "text-red-700 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+							children: st === "all" ? "Alle" : st === "Überfällig" && overdueCount > 0 ? `Überfällig (${overdueCount})` : st
 						}, st))
 					})
 				}), filteredInvoices.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -39868,28 +43261,44 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
 										className: "px-4 py-3",
 										onClick: (e) => e.stopPropagation(),
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
-											value: inv.status,
-											onChange: (e) => onUpdateInvoiceStatus(inv.id, e.target.value),
-											className: `rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] ${inv.status === "Bezahlt" ? "text-emerald-700 dark:text-emerald-400" : inv.status === "Storniert" ? "text-red-700 dark:text-red-400" : inv.status === "Gesendet" ? "text-blue-700 dark:text-violet-400" : "text-slate-700 dark:text-slate-200"}`,
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-													value: "Entwurf",
-													children: "Entwurf"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-													value: "Gesendet",
-													children: "Gesendet"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-													value: "Bezahlt",
-													children: "Bezahlt"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-													value: "Storniert",
-													children: "Storniert"
-												})
-											]
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-col items-start gap-1",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+												value: inv.status,
+												onChange: (e) => onUpdateInvoiceStatus(inv.id, e.target.value),
+												className: `rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] ${inv.status === "Bezahlt" ? "text-emerald-700 dark:text-emerald-400" : inv.status === "Storniert" ? "text-red-700 dark:text-red-400" : inv.status === "Gesendet" ? "text-blue-700 dark:text-violet-400" : "text-slate-700 dark:text-slate-200"}`,
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+														value: "Entwurf",
+														children: "Entwurf"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+														value: "Gesendet",
+														children: "Gesendet"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+														value: "Bezahlt",
+														children: "Bezahlt"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+														value: "Storniert",
+														children: "Storniert"
+													})
+												]
+											}), (() => {
+												const overdueDays = getOverdueDays(inv);
+												if (overdueDays <= 0) return null;
+												return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-1 text-[11px] font-semibold text-red-700 dark:text-red-400 whitespace-nowrap",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-3 w-3 shrink-0" }),
+														overdueDays,
+														" ",
+														overdueDays === 1 ? "Tag" : "Tage",
+														" überfällig"
+													]
+												});
+											})()]
 										})
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
@@ -39986,32 +43395,60 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => openEditBuilder(previewInvoice),
-									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" }), "Bearbeiten"]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => void handleOpenPdf(previewInvoice),
-									className: "inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-[#211936] dark:hover:bg-[#2a2045] cursor-pointer",
+									className: "inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-[#211936] dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), "PDF öffnen"]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => void handleSharePdf(previewInvoice),
-									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { className: "h-3.5 w-3.5" }), "Teilen / Sichern"]
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { className: "h-3.5 w-3.5" }), "Teilen"]
+								}),
+								getLinkedEntriesForInvoice(previewInvoice).length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => void handleDownloadTimesheet(previewInvoice),
+									title: "Separaten Tätigkeitsbericht mit Kundenunterschrift als PDF öffnen",
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "h-3.5 w-3.5" }), "Tätigkeitsbericht"]
+								}),
+								isInvoiceOverdue(previewInvoice) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => void handlePaymentReminderPdf(previewInvoice),
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-300 dark:hover:bg-red-900/60 whitespace-nowrap shrink-0 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-3.5 w-3.5" }), "Zahlungserinnerung (PDF)"]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => void handleDownloadXRechnungXml(previewInvoice),
+									title: "E-Rechnung im XRechnung-3.0-Standard (.xml) herunterladen",
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileCode2, { className: "h-3.5 w-3.5" }), "XRechnung (.xml)"]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => void handleUploadToNextcloud(previewInvoice),
 									disabled: uploadingId === previewInvoice.id,
-									className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), uploadingId === previewInvoice.id ? "Lade hoch..." : "In Nextcloud speichern"]
+									className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), uploadingId === previewInvoice.id ? "Lade hoch..." : "PDF → Nextcloud"]
+								}),
+								nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => void handleUploadXRechnungXml(previewInvoice),
+									disabled: uploadingId === previewInvoice.id,
+									title: "XRechnung (.xml) zusätzlich im Nextcloud-Ordner /Rechnungen speichern",
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-800 hover:bg-blue-100 disabled:opacity-50 dark:border-violet-800 dark:bg-violet-950/50 dark:text-violet-200 dark:hover:bg-violet-900/50 whitespace-nowrap shrink-0 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), "XML → Nextcloud"]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => void handlePrint(previewInvoice),
-									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Printer, { className: "h-3.5 w-3.5" }), "Drucken"]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
@@ -40271,13 +43708,28 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 									})
 								] });
 							})(),
-							previewInvoice.outroText && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-8 whitespace-pre-line text-xs text-slate-600",
-								children: previewInvoice.outroText
-							}),
-							company.invoiceFooterNote && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-3 whitespace-pre-line text-xs italic text-slate-500",
-								children: company.invoiceFooterNote
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex-1",
+									children: [previewInvoice.outroText && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "whitespace-pre-line text-xs text-slate-600",
+										children: previewInvoice.outroText
+									}), company.invoiceFooterNote && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-3 whitespace-pre-line text-xs italic text-slate-500",
+										children: company.invoiceFooterNote
+									})]
+								}), previewGiroCodeUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "shrink-0 rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-center",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+										src: previewGiroCodeUrl,
+										alt: "GiroCode (EPC-QR-Code)",
+										className: "mx-auto h-24 w-24"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "mt-1 text-[10px] font-semibold text-slate-600",
+										children: "GiroCode (EPC-QR)"
+									})]
+								})]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "mt-10 grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 text-[11px] text-slate-500 sm:grid-cols-3",
@@ -40312,7 +43764,7 @@ function InvoicesView({ company, customers, products, timeEntries, invoices, nex
 	});
 }
 // src/components/NextcloudSettingsView.tsx
-function NextcloudSettingsView({ nextcloud, company, onRefreshConfig, onSyncFromNextcloud, onSyncToNextcloud, onSaveCompany, onLoadSampleData, onResetEmpty, onNotify }) {
+function NextcloudSettingsView({ db, nextcloud, company, pushConflictAt, onDismissConflict, onRefreshConfig, onSyncFromNextcloud, onSyncToNextcloud, onSaveCompany, onImportDatabase, onLoadSampleData, onResetEmpty, onNotify }) {
 	const [ncUrl, setNcUrl] = (0, import_react.useState)(nextcloud.url);
 	const [ncUsername, setNcUsername] = (0, import_react.useState)(nextcloud.username);
 	const [ncPassword, setNcPassword] = (0, import_react.useState)("");
@@ -40427,10 +43879,10 @@ function NextcloudSettingsView({ nextcloud, company, onRefreshConfig, onSyncFrom
 			onNotify(err instanceof Error ? err.message : "Verbindung konnte nicht getrennt werden.", true);
 		}
 	};
-	const handlePush = async () => {
+	const handlePush = async (force = false) => {
 		setSyncing("push");
 		try {
-			await onSyncToNextcloud();
+			await onSyncToNextcloud(force);
 		} finally {
 			setSyncing(null);
 		}
@@ -40446,6 +43898,50 @@ function NextcloudSettingsView({ nextcloud, company, onRefreshConfig, onSyncFrom
 	const handleCompanySubmit = (e) => {
 		e.preventDefault();
 		onSaveCompany(companyForm);
+	};
+	const handleExportTimeCsv = async () => {
+		try {
+			const csv = timeEntriesToCsv(db.timeEntries, db.customers, db.products);
+			await downloadOrShareTextFile(`taktwerk-arbeitszeiten-${toInputDate()}.csv`, csv, "text/csv");
+			onNotify("Arbeitszeiten als CSV exportiert.");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "CSV-Export fehlgeschlagen.", true);
+		}
+	};
+	const handleExportInvoicesCsv = async () => {
+		try {
+			const csv = invoicesToCsv(db.invoices);
+			await downloadOrShareTextFile(`taktwerk-rechnungen-${toInputDate()}.csv`, csv, "text/csv");
+			onNotify("Rechnungen als CSV exportiert.");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "CSV-Export fehlgeschlagen.", true);
+		}
+	};
+	const handleExportJsonBackup = async () => {
+		try {
+			const json = JSON.stringify(db, null, 2);
+			await downloadOrShareTextFile(`taktwerk-backup-${toInputDate()}.json`, json, "application/json");
+			onNotify("Vollständige JSON-Sicherung erstellt.");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Backup-Export fehlgeschlagen.", true);
+		}
+	};
+	const handleImportJsonBackup = (e) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+		const reader = new FileReader();
+		reader.onload = () => {
+			try {
+				onImportDatabase(validateImportedDatabase(typeof reader.result === "string" ? reader.result : ""));
+			} catch (err) {
+				onNotify(err instanceof Error ? err.message : "Backup konnte nicht eingelesen werden.", true);
+			}
+		};
+		reader.onerror = () => {
+			onNotify("Backup-Datei konnte nicht gelesen werden.", true);
+		};
+		reader.readAsText(file);
+		e.target.value = "";
 	};
 	const inputClass = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500";
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -40595,6 +44091,41 @@ function NextcloudSettingsView({ nextcloud, company, onRefreshConfig, onSyncFrom
 							className: "rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs font-medium text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-200 md:col-span-2",
 							children: ["Letzter Sync-Hinweis: ", nextcloud.lastSyncError]
 						}),
+						pushConflictAt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "rounded-lg border border-red-200 bg-red-50 p-4 text-xs text-red-900 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-200 md:col-span-2 space-y-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-2 font-semibold",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-4 w-4 shrink-0 mt-0.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+									"Mehrgeräte-Konflikt erkannt: In Nextcloud existiert ein neuerer Datenstand vom ",
+									formatDateTimeDE(pushConflictAt),
+									"."
+								] })]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap gap-2",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => void handlePull(),
+										disabled: syncing !== null,
+										className: "rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+										children: "Von Nextcloud laden (empfohlen)"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => void handlePush(true),
+										disabled: syncing !== null,
+										className: "rounded-md border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-800 hover:bg-red-100 dark:border-red-800 dark:bg-[#171126] dark:text-red-300 dark:hover:bg-red-950 cursor-pointer",
+										children: "Trotzdem lokal überschreiben"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: onDismissConflict,
+										className: "rounded-md px-2.5 py-1.5 text-xs font-medium text-red-800 hover:bg-red-100 dark:text-red-300 dark:hover:bg-red-900/40 cursor-pointer",
+										children: "Abbrechen"
+									})
+								]
+							})]
+						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "flex flex-wrap items-center justify-between gap-3 pt-2 md:col-span-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -40624,13 +44155,13 @@ function NextcloudSettingsView({ nextcloud, company, onRefreshConfig, onSyncFrom
 								className: "flex flex-wrap gap-2",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
-									onClick: handlePush,
+									onClick: () => void handlePush(false),
 									disabled: syncing !== null,
 									className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-4 w-4" }), syncing === "push" ? "Sichere..." : "Auf Nextcloud sichern"]
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
-									onClick: handlePull,
+									onClick: () => void handlePull(),
 									disabled: syncing !== null,
 									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudDownload, { className: "h-4 w-4" }), syncing === "pull" ? "Lade..." : "Von Nextcloud laden"]
@@ -41167,22 +44698,59 @@ function NextcloudSettingsView({ nextcloud, company, onRefreshConfig, onSyncFrom
 										className: inputClass
 									})] })]
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "md:col-span-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Zusätzlicher Fußzeilen-Hinweis (optional, z. B. Handelsregister / Gerichtsstand)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.invoiceFooterNote ?? "",
+										children: "Standard-Zeitrundung bei Abrechnung (Takt)"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+										value: companyForm.defaultTimeRoundingMinutes ?? 0,
 										onChange: (e) => setCompanyForm({
 											...companyForm,
-											invoiceFooterNote: e.target.value
+											defaultTimeRoundingMinutes: Number(e.target.value)
 										}),
-										placeholder: "z. B. Amtsgericht Hamburg · HRB 12345",
-										className: inputClass
-									})]
-								})
+										className: inputClass,
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: 0,
+												children: "Keine Rundung (exakt auf die Sekunde)"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: 5,
+												children: "Auf 5-Minuten-Takt aufrunden"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: 10,
+												children: "Auf 10-Minuten-Takt aufrunden"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: 15,
+												children: "Auf 15-Minuten-Takt aufrunden"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: 30,
+												children: "Auf 30-Minuten-Takt aufrunden"
+											})
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-1 text-[11px] text-slate-500 dark:text-slate-400",
+										children: "Kann pro Kunde individuell überschrieben werden."
+									})
+								] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Zusätzlicher Fußzeilen-Hinweis (optional, z. B. Handelsregister / Gerichtsstand)"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.invoiceFooterNote ?? "",
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										invoiceFooterNote: e.target.value
+									}),
+									placeholder: "z. B. Amtsgericht Hamburg · HRB 12345",
+									className: inputClass
+								})] })
 							]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -41196,18 +44764,18 @@ function NextcloudSettingsView({ nextcloud, company, onRefreshConfig, onSyncFrom
 					]
 				})]
 			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
-				className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex items-start gap-3",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Database, { className: "mt-0.5 h-5 w-5 text-slate-600 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 							className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-							children: "Testdaten & Datenbankverwaltung"
+							children: "Exporte, Sicherungen & Datenbankverwaltung"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "text-xs text-slate-500 dark:text-slate-400",
-							children: "Lade zum Ausprobieren fertige Beispielkunden, Leistungen, NFC-Tags und Zeiteinträge oder starte mit einer leeren Datenbank."
+							children: "Exportiere Tabellen für Excel/Steuerberater, erstelle lokale Voll-Backups oder lade Beispieldaten."
 						})] })]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex flex-wrap gap-2",
@@ -41223,7 +44791,55 @@ function NextcloudSettingsView({ nextcloud, company, onRefreshConfig, onSyncFrom
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RotateCcw, { className: "h-3.5 w-3.5" }), "Datenbank leeren"]
 						})]
 					})]
-				})
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "grid grid-cols-1 gap-3 border-t border-slate-200 pt-4 dark:border-[#2e2349] md:grid-cols-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-lg border border-slate-200 bg-slate-50/70 p-4 dark:border-[#2e2349] dark:bg-[#211936]/50 space-y-2.5",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "text-xs font-semibold text-slate-800 dark:text-slate-200",
+							children: "Tabellen-Exporte (Excel-kompatibles CSV)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-wrap gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => void handleExportTimeCsv(),
+								className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "h-3.5 w-3.5" }), "Arbeitszeiten (CSV)"]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => void handleExportInvoicesCsv(),
+								className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "h-3.5 w-3.5" }), "Rechnungen (CSV)"]
+							})]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-lg border border-slate-200 bg-slate-50/70 p-4 dark:border-[#2e2349] dark:bg-[#211936]/50 space-y-2.5",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "text-xs font-semibold text-slate-800 dark:text-slate-200",
+							children: "Vollständige Datenbanksicherung (JSON)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-wrap gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => void handleExportJsonBackup(),
+								className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), "Backup sichern (.json)"]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-3.5 w-3.5" }),
+									"Backup einspielen",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "file",
+										accept: ".json,application/json",
+										onChange: handleImportJsonBackup,
+										className: "hidden"
+									})
+								]
+							})]
+						})]
+					})]
+				})]
 			})
 		]
 	});
@@ -42640,13 +46256,14 @@ function Sidebar({ activeSection, onSelectSection, nextcloud, openTimeCount, unp
 	] });
 }
 // src/components/TimeTrackerView.tsx
-function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTimer, elapsedSeconds, onStartTimer, onStopTimer, onDiscardTimer, onAddManualEntry, onDeleteEntry, onToggleBillable, onCreateInvoiceFromEntries, onNavigate }) {
+function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, activeTimer, elapsedSeconds, onStartTimer, onPauseTimer, onResumeTimer, onStopTimer, onDiscardTimer, onAddManualEntry, onUpdateEntry, onDeleteEntry, onToggleBillable, onCreateInvoiceFromEntries, onNavigate, onNotify }) {
 	const serviceProducts = (0, import_react.useMemo)(() => products.filter((p) => p.type === "service"), [products]);
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [productId, setProductId] = (0, import_react.useState)(serviceProducts[0]?.id ?? products[0]?.id ?? "");
 	const [title, setTitle] = (0, import_react.useState)("");
 	const [notes, setNotes] = (0, import_react.useState)("");
 	const [showManualForm, setShowManualForm] = (0, import_react.useState)(false);
+	const [editingEntry, setEditingEntry] = (0, import_react.useState)(null);
 	const [manualDate, setManualDate] = (0, import_react.useState)(toInputDate());
 	const [manualStart, setManualStart] = (0, import_react.useState)("09:00");
 	const [manualEnd, setManualEnd] = (0, import_react.useState)("11:00");
@@ -42654,6 +46271,7 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 	const [manualNotes, setManualNotes] = (0, import_react.useState)("");
 	const [manualCustomerId, setManualCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [manualProductId, setManualProductId] = (0, import_react.useState)(serviceProducts[0]?.id ?? products[0]?.id ?? "");
+	const [manualBillable, setManualBillable] = (0, import_react.useState)(true);
 	const [manualError, setManualError] = (0, import_react.useState)("");
 	const [filterCustomerId, setFilterCustomerId] = (0, import_react.useState)("all");
 	const [filterStatus, setFilterStatus] = (0, import_react.useState)("all");
@@ -42694,6 +46312,32 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 		setTitle("");
 		setNotes("");
 	};
+	const openCreateManualForm = () => {
+		setEditingEntry(null);
+		setManualDate(toInputDate());
+		setManualStart("09:00");
+		setManualEnd("11:00");
+		setManualTitle("");
+		setManualNotes("");
+		setManualCustomerId(customers[0]?.id ?? "");
+		setManualProductId(serviceProducts[0]?.id ?? products[0]?.id ?? "");
+		setManualBillable(true);
+		setManualError("");
+		setShowManualForm(true);
+	};
+	const openEditEntryForm = (entry) => {
+		setEditingEntry(entry);
+		setManualDate(toInputDate(new Date(entry.startTime)));
+		setManualStart(toInputTime(entry.startTime));
+		setManualEnd(toInputTime(entry.endTime));
+		setManualTitle(entry.title);
+		setManualNotes(entry.notes);
+		setManualCustomerId(entry.customerId);
+		setManualProductId(entry.productId);
+		setManualBillable(entry.billable);
+		setManualError("");
+		setShowManualForm(true);
+	};
 	const handleManualSubmit = (e) => {
 		e.preventDefault();
 		setManualError("");
@@ -42713,7 +46357,22 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 			return;
 		}
 		const prod = productMap.get(effectiveManualProductId);
-		onAddManualEntry({
+		if (editingEntry) {
+			const productChanged = editingEntry.productId !== effectiveManualProductId;
+			onUpdateEntry({
+				...editingEntry,
+				customerId: effectiveManualCustomerId,
+				productId: effectiveManualProductId,
+				title: manualTitle.trim() || prod?.name || "Arbeitszeit",
+				notes: manualNotes.trim(),
+				startTime: startIso.toISOString(),
+				endTime: endIso.toISOString(),
+				durationSeconds: diffSec,
+				hourlyRateNet: productChanged ? prod?.unitPriceNet ?? editingEntry.hourlyRateNet : editingEntry.hourlyRateNet,
+				taxRate: productChanged ? prod?.taxRate ?? editingEntry.taxRate : editingEntry.taxRate,
+				billable: manualBillable
+			});
+		} else onAddManualEntry({
 			id: createId("time"),
 			customerId: effectiveManualCustomerId,
 			productId: effectiveManualProductId,
@@ -42725,11 +46384,12 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 			durationSeconds: diffSec,
 			hourlyRateNet: prod?.unitPriceNet ?? 0,
 			taxRate: prod?.taxRate ?? 19,
-			billable: true,
+			billable: manualBillable,
 			billedInvoiceId: null,
 			source: "manual",
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
 		});
+		setEditingEntry(null);
 		setManualTitle("");
 		setManualNotes("");
 		setShowManualForm(false);
@@ -42741,6 +46401,34 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 		if (selectedEntries.length === 0 || selectedCustomerIds.length !== 1) return;
 		onCreateInvoiceFromEntries(selectedCustomerIds[0], selectedIds);
 		setSelectedIds([]);
+	};
+	const handleExportCsv = async () => {
+		const target = selectedEntries.length > 0 ? selectedEntries : filteredEntries;
+		if (target.length === 0) {
+			onNotify("Keine Zeiteinträge für den Export vorhanden.", true);
+			return;
+		}
+		try {
+			const csv = timeEntriesToCsv(target, customers, products);
+			await downloadOrShareTextFile(`taktwerk-zeiten-${toInputDate()}.csv`, csv, "text/csv");
+			onNotify("Zeiten als CSV-Datei exportiert.");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "CSV-Export fehlgeschlagen.", true);
+		}
+	};
+	const handleExportTimesheetPdf = async () => {
+		const target = selectedEntries.length > 0 ? selectedEntries : filteredEntries;
+		if (target.length === 0) {
+			onNotify("Keine Zeiteinträge für den Stundennachweis vorhanden.", true);
+			return;
+		}
+		const custIds = Array.from(new Set(target.map((e) => e.customerId)));
+		const customer = custIds.length === 1 ? customerMap.get(custIds[0]) : void 0;
+		try {
+			await downloadTimesheetPdf("Stundennachweis / Tätigkeitsbericht", `Stundennachweis-${toInputDate()}.pdf`, customer, target, company, customer ? `Kunde: ${customer.companyName}` : `${target.length} Zeiteinträge`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Stundennachweis konnte nicht erstellt werden.", true);
+		}
 	};
 	const missingMasterData = customers.length === 0 || products.length === 0;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -42774,7 +46462,10 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 						})] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							type: "button",
-							onClick: () => setShowManualForm((prev) => !prev),
+							onClick: () => {
+								if (showManualForm && !editingEntry) setShowManualForm(false);
+								else openCreateManualForm();
+							},
 							disabled: missingMasterData,
 							className: "inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#211936] whitespace-nowrap shrink-0 cursor-pointer",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Zeit nachtragen"]
@@ -42812,7 +46503,7 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex flex-wrap items-center gap-2 text-xs font-medium text-blue-700 dark:text-violet-400",
 								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: activeTimer.source === "nfc" ? "Gestartet per NFC-Tag" : "Timer läuft" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: activeTimer.pausedAt ? "Timer pausiert" : activeTimer.source === "nfc" ? "Gestartet per NFC-Tag" : "Timer läuft" }),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 										"aria-hidden": "true",
 										children: "·"
@@ -42850,11 +46541,22 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 							})
 						]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex flex-wrap items-center gap-4",
+						className: "flex flex-wrap items-center gap-3",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "rounded-lg border border-slate-200 bg-slate-900 px-5 py-3 font-mono text-3xl font-bold tracking-tight text-white tabular-nums dark:border-[#3b2d5e] dark:bg-[#0e0a18]",
+								className: `rounded-lg border px-5 py-3 font-mono text-3xl font-bold tracking-tight tabular-nums ${activeTimer.pausedAt ? "border-amber-300 bg-amber-950/80 text-amber-200 dark:border-amber-700" : "border-slate-200 bg-slate-900 text-white dark:border-[#3b2d5e] dark:bg-[#0e0a18]"}`,
 								children: formatDuration(elapsedSeconds)
+							}),
+							activeTimer.pausedAt ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: onResumeTimer,
+								className: "inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200 dark:hover:bg-emerald-950 whitespace-nowrap shrink-0 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-4 w-4 fill-current" }), "Fortsetzen"]
+							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: onPauseTimer,
+								className: "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pause, { className: "h-4 w-4" }), "Pausieren"]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 								type: "button",
@@ -42971,10 +46673,13 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 					className: "mb-4 flex items-center justify-between",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 						className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-						children: "Arbeitszeit manuell nachtragen"
+						children: editingEntry ? "Zeiteintrag bearbeiten" : "Arbeitszeit manuell nachtragen"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 						type: "button",
-						onClick: () => setShowManualForm(false),
+						onClick: () => {
+							setShowManualForm(false);
+							setEditingEntry(null);
+						},
 						className: "text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer",
 						children: "Schließen"
 					})]
@@ -43077,16 +46782,30 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 							children: manualError
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex justify-end gap-2 md:col-span-6",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => setShowManualForm(false),
-								className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
-								children: "Abbrechen"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "submit",
-								className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-								children: "Eintrag speichern"
+							className: "flex flex-wrap items-center justify-between gap-3 md:col-span-6",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: manualBillable,
+									onChange: (e) => setManualBillable(e.target.checked),
+									className: "h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+								}), "Abrechenbar (für Rechnungen verfügbar)"]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => {
+										setShowManualForm(false);
+										setEditingEntry(null);
+									},
+									className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
+									children: "Abbrechen"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+									children: editingEntry ? "Änderungen speichern" : "Eintrag speichern"
+								})]
 							})]
 						})
 					]
@@ -43131,27 +46850,46 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 								children: tab.label
 							}, tab.id))
 						})]
-					}), selectedIds.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center gap-3",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-							className: "text-xs text-slate-600 dark:text-slate-400",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "font-mono font-semibold tabular-nums",
-									children: selectedIds.length
-								}),
-								" ",
-								"ausgewählt"
-							]
-						}), selectedCustomerIds.length > 1 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "text-xs font-medium text-amber-700 dark:text-amber-400",
-							children: "Für eine Rechnung bitte nur Einträge eines Kunden wählen."
-						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: handleBatchInvoice,
-							className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), "Rechnung aus Auswahl erstellen"]
-						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-wrap items-center gap-2",
+						children: [
+							selectedIds.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "text-xs text-slate-600 dark:text-slate-400",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "font-mono font-semibold tabular-nums",
+											children: selectedIds.length
+										}),
+										" ",
+										"ausgewählt"
+									]
+								}), selectedCustomerIds.length > 1 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "text-xs font-medium text-amber-700 dark:text-amber-400",
+									children: "Für Rechnung nur 1 Kunden wählen."
+								}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: handleBatchInvoice,
+									className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), "Rechnung erstellen"]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => void handleExportTimesheetPdf(),
+								title: "Stundennachweis / Tätigkeitsbericht als PDF",
+								className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileText, { className: "h-3.5 w-3.5" }), "Stundennachweis"]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => void handleExportCsv(),
+								title: "Zeiten als CSV (Excel) exportieren",
+								className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), "CSV"]
+							})
+						]
 					})]
 				}), filteredEntries.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "p-10 text-center",
@@ -43277,13 +47015,23 @@ function TimeTrackerView({ customers, products, nfcTasks, timeEntries, activeTim
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
 											className: "px-4 py-3 text-right",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-												type: "button",
-												onClick: () => onDeleteEntry(entry.id),
-												disabled: Boolean(entry.billedInvoiceId),
-												title: entry.billedInvoiceId ? "Abgerechnete Einträge können nicht gelöscht werden" : "Eintrag löschen",
-												className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center justify-end gap-1",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => openEditEntryForm(entry),
+													disabled: Boolean(entry.billedInvoiceId),
+													title: entry.billedInvoiceId ? "Abgerechnete Einträge können nicht bearbeitet werden" : "Eintrag bearbeiten",
+													className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" })
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => onDeleteEntry(entry.id),
+													disabled: Boolean(entry.billedInvoiceId),
+													title: entry.billedInvoiceId ? "Abgerechnete Einträge können nicht gelöscht werden" : "Eintrag löschen",
+													className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
+												})]
 											})
 										})
 									]
@@ -43333,6 +47081,8 @@ function App() {
 	const [invoiceDraft, setInvoiceDraft] = (0, import_react.useState)(null);
 	const [isWritingNfc, setIsWritingNfc] = (0, import_react.useState)(false);
 	const [pendingScannedUid, setPendingScannedUid] = (0, import_react.useState)(null);
+	const [remoteNewerAt, setRemoteNewerAt] = (0, import_react.useState)(null);
+	const [pushConflictAt, setPushConflictAt] = (0, import_react.useState)(null);
 	const deepLinkHandledRef = (0, import_react.useRef)(false);
 	const lastNfcTriggerRef = (0, import_react.useRef)(null);
 	const dbRef = (0, import_react.useRef)(db);
@@ -43380,15 +47130,15 @@ function App() {
 		if (!task) return {
 			nextDb: sourceDb,
 			message: `Kein NFC-Task mit Tag-ID "${tagUid}" gefunden.`,
-			isError: true
+			isError: true,
+			haptic: "error"
 		};
 		const now = /* @__PURE__ */ new Date();
 		const nowIso = now.toISOString();
 		let nextTimeEntries = [...sourceDb.timeEntries];
 		let nextActiveTimer = sourceDb.activeTimer;
 		const finalizeActive = (timer) => {
-			const startMs = new Date(timer.startTime).getTime();
-			const duration = Math.max(1, Math.floor((now.getTime() - startMs) / 1e3));
+			const duration = Math.max(1, Math.floor(getActiveTimerElapsedMs(timer, now.getTime()) / 1e3));
 			nextTimeEntries = [{
 				id: createId("time"),
 				customerId: timer.customerId,
@@ -43421,7 +47171,8 @@ function App() {
 					timeEntries: nextTimeEntries,
 					activeTimer: null
 				},
-				message: `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`
+				message: `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
+				haptic: "stop"
 			};
 		}
 		if (nextActiveTimer && task.autoStopPrevious) {
@@ -43437,6 +47188,8 @@ function App() {
 			title: task.title,
 			notes: task.description,
 			startTime: nowIso,
+			pausedAt: null,
+			accumulatedPausedMs: 0,
 			hourlyRateNet: product?.unitPriceNet ?? 0,
 			taxRate: product?.taxRate ?? 19,
 			source: "nfc"
@@ -43448,7 +47201,8 @@ function App() {
 				timeEntries: nextTimeEntries,
 				activeTimer: startedTimer
 			},
-			message: `NFC-Aufgabe "${task.title}" gestartet.`
+			message: `NFC-Aufgabe "${task.title}" gestartet.`,
+			haptic: "start"
 		};
 	}, []);
 	(0, import_react.useEffect)(() => {
@@ -43476,6 +47230,7 @@ function App() {
 					if (incomingNfc) {
 						const result = triggerNfcOnDb(loadedDb, incomingNfc);
 						loadedDb = result.nextDb;
+						triggerNfcHaptic(result.haptic);
 						notify(result.message, result.isError);
 						if (!result.isError) await apiSaveDb(loadedDb);
 						else setSection("nfc");
@@ -43483,6 +47238,9 @@ function App() {
 				}
 				dbRef.current = loadedDb;
 				setDb(loadedDb);
+				if (data.nextcloud.configured) apiCheckNextcloudRemote().then((check) => {
+					if (active && check.hasNewerRemote && check.remoteUpdatedAt) setRemoteNewerAt(check.remoteUpdatedAt);
+				});
 			} catch (err) {
 				notify(err instanceof Error ? err.message : "Verbindung zum Server fehlgeschlagen.", true);
 			} finally {
@@ -43504,6 +47262,7 @@ function App() {
 			at: now
 		};
 		const result = triggerNfcOnDb(dbRef.current, clean);
+		triggerNfcHaptic(result.haptic);
 		if (result.isError) {
 			setPendingScannedUid({
 				uid: clean,
@@ -43584,13 +47343,23 @@ function App() {
 			return;
 		}
 		const updateTick = () => {
-			const startMs = new Date(db.activeTimer.startTime).getTime();
-			setElapsedSeconds(Math.max(0, Math.floor((Date.now() - startMs) / 1e3)));
+			const elapsedMs = getActiveTimerElapsedMs(db.activeTimer);
+			setElapsedSeconds(Math.max(0, Math.floor(elapsedMs / 1e3)));
 		};
 		updateTick();
+		if (db.activeTimer.pausedAt) return;
 		const interval = setInterval(updateTick, 1e3);
 		return () => clearInterval(interval);
 	}, [db.activeTimer]);
+	(0, import_react.useEffect)(() => {
+		if (loading) return;
+		const customerName = db.activeTimer ? db.customers.find((c) => c.id === db.activeTimer.customerId)?.companyName ?? "" : "";
+		syncActiveTimerNotification(db.activeTimer, customerName);
+	}, [
+		db.activeTimer,
+		db.customers,
+		loading
+	]);
 	const handleStartTimer = (payload) => {
 		const product = db.products.find((p) => p.id === payload.productId);
 		const nowIso = (/* @__PURE__ */ new Date()).toISOString();
@@ -43602,6 +47371,8 @@ function App() {
 			title: payload.title,
 			notes: payload.notes,
 			startTime: nowIso,
+			pausedAt: null,
+			accumulatedPausedMs: 0,
 			hourlyRateNet: product?.unitPriceNet ?? 0,
 			taxRate: product?.taxRate ?? 19,
 			source: payload.source ?? "timer"
@@ -43612,11 +47383,37 @@ function App() {
 		});
 		notify(`Timer gestartet: ${timer.title}`);
 	};
+	const handlePauseTimer = () => {
+		if (!db.activeTimer || db.activeTimer.pausedAt) return;
+		const updatedTimer = {
+			...db.activeTimer,
+			pausedAt: (/* @__PURE__ */ new Date()).toISOString()
+		};
+		persistDb({
+			...db,
+			activeTimer: updatedTimer
+		});
+		notify(`Timer pausiert: ${updatedTimer.title}`);
+	};
+	const handleResumeTimer = () => {
+		if (!db.activeTimer || !db.activeTimer.pausedAt) return;
+		const pausedMs = new Date(db.activeTimer.pausedAt).getTime();
+		const addedPause = Math.max(0, Date.now() - pausedMs);
+		const updatedTimer = {
+			...db.activeTimer,
+			pausedAt: null,
+			accumulatedPausedMs: (db.activeTimer.accumulatedPausedMs ?? 0) + addedPause
+		};
+		persistDb({
+			...db,
+			activeTimer: updatedTimer
+		});
+		notify(`Timer fortgesetzt: ${updatedTimer.title}`);
+	};
 	const handleStopTimer = () => {
 		if (!db.activeTimer) return;
 		const now = /* @__PURE__ */ new Date();
-		const startMs = new Date(db.activeTimer.startTime).getTime();
-		const durationSeconds = Math.max(1, Math.floor((now.getTime() - startMs) / 1e3));
+		const durationSeconds = Math.max(1, Math.floor(getActiveTimerElapsedMs(db.activeTimer, now.getTime()) / 1e3));
 		const entry = {
 			id: createId("time"),
 			customerId: db.activeTimer.customerId,
@@ -43656,6 +47453,13 @@ function App() {
 		});
 		notify("Zeiteintrag gespeichert.");
 	};
+	const handleUpdateEntry = (updatedEntry) => {
+		persistDb({
+			...db,
+			timeEntries: db.timeEntries.map((e) => e.id === updatedEntry.id ? updatedEntry : e)
+		});
+		notify("Zeiteintrag aktualisiert.");
+	};
 	const handleDeleteEntry = (id) => {
 		persistDb({
 			...db,
@@ -43687,6 +47491,7 @@ function App() {
 	};
 	const handleTriggerNfcTag = (tagUid) => {
 		const result = triggerNfcOnDb(db, tagUid);
+		triggerNfcHaptic(result.haptic);
 		if (result.isError) {
 			notify(result.message, true);
 			return;
@@ -43793,12 +47598,19 @@ function App() {
 		});
 		notify("Rechnung gelöscht. Alle verknüpften Arbeitszeiten bleiben als offen erhalten.");
 	};
-	const handleSyncToNextcloud = async () => {
+	const handleSyncToNextcloud = async (force = false) => {
 		try {
-			const data = await apiSyncNextcloud("push");
+			const data = await apiSyncNextcloud("push", force);
 			setNextcloud(data.nextcloud);
+			setPushConflictAt(null);
+			setRemoteNewerAt(null);
 			notify("Datenbank erfolgreich auf Nextcloud gesichert.");
 		} catch (err) {
+			if (err instanceof NextcloudConflictError) {
+				setPushConflictAt(err.remoteUpdatedAt);
+				notify(err.message, true);
+				return;
+			}
 			notify(err instanceof Error ? err.message : "Upload nach Nextcloud fehlgeschlagen.", true);
 		}
 	};
@@ -43810,10 +47622,16 @@ function App() {
 				setDb(data.db);
 			}
 			setNextcloud(data.nextcloud);
+			setRemoteNewerAt(null);
+			setPushConflictAt(null);
 			notify("Datenbank von Nextcloud geladen.");
 		} catch (err) {
 			notify(err instanceof Error ? err.message : "Laden von Nextcloud fehlgeschlagen.", true);
 		}
+	};
+	const handleImportDatabase = (importedDb) => {
+		persistDb(importedDb);
+		notify("Backup erfolgreich wiederhergestellt.");
 	};
 	const handleSaveCompany = (company) => {
 		persistDb({
@@ -43914,6 +47732,27 @@ function App() {
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
 							})]
 						}),
+						remoteNewerAt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "no-print mb-5 flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+								"In deiner Nextcloud liegt ein neuerer Datenstand (",
+								formatDateTimeDE(remoteNewerAt),
+								") von einem anderen Gerät."
+							] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-2 shrink-0",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => void handleSyncFromNextcloud(),
+									className: "rounded-md bg-amber-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-900 dark:bg-amber-600 dark:hover:bg-amber-500 cursor-pointer",
+									children: "Jetzt von Nextcloud laden"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setRemoteNewerAt(null),
+									className: "rounded-md border border-amber-300 px-2.5 py-1.5 text-xs font-medium hover:bg-amber-100 dark:border-amber-800 dark:hover:bg-amber-900/40 cursor-pointer",
+									children: "Später"
+								})]
+							})]
+						}),
 						!loading && isEmptyWorkspace && section === "tracker" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "mb-6 flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126] sm:flex-row sm:items-center sm:justify-between",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -43945,6 +47784,7 @@ function App() {
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-28 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-64 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" })]
 						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
 							section === "tracker" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimeTrackerView, {
+								company: db.company,
 								customers: db.customers,
 								products: db.products,
 								nfcTasks: db.nfcTasks,
@@ -43952,9 +47792,12 @@ function App() {
 								activeTimer: db.activeTimer,
 								elapsedSeconds,
 								onStartTimer: handleStartTimer,
+								onPauseTimer: handlePauseTimer,
+								onResumeTimer: handleResumeTimer,
 								onStopTimer: handleStopTimer,
 								onDiscardTimer: handleDiscardTimer,
 								onAddManualEntry: handleAddManualEntry,
+								onUpdateEntry: handleUpdateEntry,
 								onDeleteEntry: handleDeleteEntry,
 								onToggleBillable: handleToggleBillable,
 								onCreateInvoiceFromEntries: (custId, entryIds) => {
@@ -43964,7 +47807,8 @@ function App() {
 									});
 									setSection("invoices");
 								},
-								onNavigate: (target) => setSection(target)
+								onNavigate: (target) => setSection(target),
+								onNotify: notify
 							}),
 							section === "analytics" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnalyticsView, {
 								customers: db.customers,
@@ -44019,12 +47863,16 @@ function App() {
 								onNotify: notify
 							}),
 							section === "settings" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NextcloudSettingsView, {
+								db,
 								nextcloud,
 								company: db.company,
+								pushConflictAt,
+								onDismissConflict: () => setPushConflictAt(null),
 								onRefreshConfig: setNextcloud,
 								onSyncFromNextcloud: handleSyncFromNextcloud,
 								onSyncToNextcloud: handleSyncToNextcloud,
 								onSaveCompany: handleSaveCompany,
+								onImportDatabase: handleImportDatabase,
 								onLoadSampleData: handleLoadSampleData,
 								onResetEmpty: handleResetEmpty,
 								onNotify: notify

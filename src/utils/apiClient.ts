@@ -1,5 +1,6 @@
-import { Capacitor, CapacitorHttp } from '@capacitor/core';
-import type { AppDatabase, NextcloudConfigInfo } from '../types';
+import { Capacitor } from '@capacitor/core';
+import type { ActiveTimer, AppDatabase, NextcloudConfigInfo } from '../types';
+import { formatDuration, getActiveTimerElapsedMs } from './format';
 import { createEmptyDatabase } from './sampleData';
 import { TaktWerkNative } from './taktwerkNative';
 
@@ -15,6 +16,16 @@ interface StoredLocalNc {
   autoSync: boolean;
   lastSyncAt: string | null;
   lastSyncError: string | null;
+  lastKnownRemoteUpdatedAt?: string | null;
+}
+
+export class NextcloudConflictError extends Error {
+  remoteUpdatedAt: string;
+  constructor(message: string, remoteUpdatedAt: string) {
+    super(message);
+    this.name = 'NextcloudConflictError';
+    this.remoteUpdatedAt = remoteUpdatedAt;
+  }
 }
 
 export function isNativeCapacitor(): boolean {
@@ -82,6 +93,7 @@ function readNativeNc(): StoredLocalNc {
         autoSync: parsed.autoSync ?? true,
         lastSyncAt: parsed.lastSyncAt ?? null,
         lastSyncError: parsed.lastSyncError ?? null,
+        lastKnownRemoteUpdatedAt: parsed.lastKnownRemoteUpdatedAt ?? null,
       };
     }
   } catch {
@@ -95,6 +107,7 @@ function readNativeNc(): StoredLocalNc {
     autoSync: true,
     lastSyncAt: null,
     lastSyncError: null,
+    lastKnownRemoteUpdatedAt: null,
   };
 }
 
@@ -120,13 +133,6 @@ function normalizeFolder(folder: string): string {
   const trimmed = (folder || '/TaktWerk').trim().replace(/\\/g, '/');
   const withLeading = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
   return withLeading.replace(/\/+$/, '') || '/TaktWerk';
-}
-
-function makeAuthHeader(cfg: StoredLocalNc): string {
-  const bytes = new TextEncoder().encode(`${cfg.username}:${cfg.appPassword}`);
-  let binary = '';
-  for (const b of bytes) binary += String.fromCharCode(b);
-  return `Basic ${btoa(binary)}`;
 }
 
 function buildDavRoot(cfg: StoredLocalNc): string {
@@ -178,24 +184,15 @@ async function nativePushNextcloud(cfg: StoredLocalNc, db: AppDatabase): Promise
   });
 }
 
-async function nativePullNextcloud(cfg: StoredLocalNc): Promise<AppDatabase> {
+async function nativePullNextcloudOptional(cfg: StoredLocalNc): Promise<AppDatabase | null> {
   const fileUrl = buildWebDavFileUrl(cfg, 'taktwerk-db.json');
-  const res = await CapacitorHttp.get({
-    url: fileUrl,
-    headers: {
-      Authorization: makeAuthHeader(cfg),
-    },
+  const res = await TaktWerkNative.webdavDownloadJson({
+    fileUrl,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
   });
-  if (res.status === 404) {
-    throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
-  }
-  if (res.status === 401 || res.status === 403) {
-    throw new Error('Authentifizierung bei Nextcloud fehlgeschlagen.');
-  }
-  if (res.status < 200 || res.status >= 300) {
-    throw new Error(`Laden aus Nextcloud fehlgeschlagen (HTTP ${res.status}).`);
-  }
-  return typeof res.data === 'string' ? (JSON.parse(res.data) as AppDatabase) : (res.data as AppDatabase);
+  if (!res.found || !res.json) return null;
+  return JSON.parse(res.json) as AppDatabase;
 }
 
 export async function apiLoadDb(): Promise<{
@@ -256,6 +253,7 @@ export async function apiSaveDb(nextDb: AppDatabase): Promise<{
     try {
       await nativePushNextcloud(ncCfg, updated);
       ncCfg.lastSyncAt = new Date().toISOString();
+      ncCfg.lastKnownRemoteUpdatedAt = updated.updatedAt;
       ncCfg.lastSyncError = null;
       writeNativeNc(ncCfg);
     } catch (err) {
@@ -269,6 +267,46 @@ export async function apiSaveDb(nextDb: AppDatabase): Promise<{
     nextcloud: toPublicNc(ncCfg),
     syncWarning,
   };
+}
+
+export async function apiCheckNextcloudRemote(): Promise<{
+  hasNewerRemote: boolean;
+  remoteUpdatedAt: string | null;
+}> {
+  try {
+    if (shouldUseRemoteServer()) {
+      const res = await fetch(apiUrl('/api/nextcloud/check'));
+      if (!res.ok) return { hasNewerRemote: false, remoteUpdatedAt: null };
+      return (await res.json()) as {
+        hasNewerRemote: boolean;
+        remoteUpdatedAt: string | null;
+      };
+    }
+
+    const cfg = readNativeNc();
+    if (!cfg.url || !cfg.username || !cfg.appPassword) {
+      return { hasNewerRemote: false, remoteUpdatedAt: null };
+    }
+    const localDb = readNativeDb();
+    const remoteDb = await nativePullNextcloudOptional(cfg);
+    if (!remoteDb?.updatedAt) {
+      return { hasNewerRemote: false, remoteUpdatedAt: null };
+    }
+    const remoteMs = new Date(remoteDb.updatedAt).getTime();
+    const localMs = new Date(localDb.updatedAt).getTime();
+    const knownMs = cfg.lastKnownRemoteUpdatedAt
+      ? new Date(cfg.lastKnownRemoteUpdatedAt).getTime()
+      : 0;
+    return {
+      hasNewerRemote:
+        Number.isFinite(remoteMs) &&
+        remoteMs > knownMs + 1000 &&
+        remoteMs > localMs + 1000,
+      remoteUpdatedAt: remoteDb.updatedAt,
+    };
+  } catch {
+    return { hasNewerRemote: false, remoteUpdatedAt: null };
+  }
 }
 
 export async function apiTestNextcloud(payload: {
@@ -299,6 +337,7 @@ export async function apiTestNextcloud(payload: {
     autoSync: existing.autoSync,
     lastSyncAt: existing.lastSyncAt,
     lastSyncError: null,
+    lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt,
   };
   if (!cfg.url || !cfg.username || !cfg.appPassword) {
     throw new Error('Bitte Server-URL, Benutzername und App-Passwort angeben.');
@@ -344,6 +383,7 @@ export async function apiSaveNextcloudConfig(payload: {
     autoSync: payload.autoSync,
     lastSyncAt: existing.lastSyncAt,
     lastSyncError: null,
+    lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt,
   };
   writeNativeNc(updated);
   return toPublicNc(updated);
@@ -371,12 +411,16 @@ export async function apiClearNextcloudConfig(): Promise<NextcloudConfigInfo> {
     autoSync: true,
     lastSyncAt: null,
     lastSyncError: null,
+    lastKnownRemoteUpdatedAt: null,
   };
   writeNativeNc(empty);
   return toPublicNc(empty);
 }
 
-export async function apiSyncNextcloud(direction: 'push' | 'pull'): Promise<{
+export async function apiSyncNextcloud(
+  direction: 'push' | 'pull',
+  force = false
+): Promise<{
   db?: AppDatabase;
   nextcloud: NextcloudConfigInfo;
 }> {
@@ -384,13 +428,21 @@ export async function apiSyncNextcloud(direction: 'push' | 'pull'): Promise<{
     const res = await fetch(apiUrl('/api/nextcloud/sync'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ direction }),
+      body: JSON.stringify({ direction, force }),
     });
     const data = (await res.json()) as {
       db?: AppDatabase;
       nextcloud?: NextcloudConfigInfo;
+      conflict?: boolean;
+      remoteUpdatedAt?: string;
       error?: string;
     };
+    if (res.status === 409 && data.conflict && data.remoteUpdatedAt) {
+      throw new NextcloudConflictError(
+        data.error || 'Konflikt mit neueren Nextcloud-Daten.',
+        data.remoteUpdatedAt
+      );
+    }
     if (!res.ok || !data.nextcloud) {
       throw new Error(data.error || 'Nextcloud-Synchronisation fehlgeschlagen.');
     }
@@ -403,17 +455,39 @@ export async function apiSyncNextcloud(direction: 'push' | 'pull'): Promise<{
   }
 
   if (direction === 'pull') {
-    const remoteDb = await nativePullNextcloud(cfg);
+    const remoteDb = await nativePullNextcloudOptional(cfg);
+    if (!remoteDb) {
+      throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
+    }
     writeNativeDb(remoteDb);
     cfg.lastSyncAt = new Date().toISOString();
+    cfg.lastKnownRemoteUpdatedAt = remoteDb.updatedAt || cfg.lastSyncAt;
     cfg.lastSyncError = null;
     writeNativeNc(cfg);
     return { db: remoteDb, nextcloud: toPublicNc(cfg) };
   }
 
   const localDb = readNativeDb();
+  if (!force) {
+    const remoteDb = await nativePullNextcloudOptional(cfg).catch(() => null);
+    if (remoteDb?.updatedAt) {
+      const remoteMs = new Date(remoteDb.updatedAt).getTime();
+      const knownMs = cfg.lastKnownRemoteUpdatedAt
+        ? new Date(cfg.lastKnownRemoteUpdatedAt).getTime()
+        : 0;
+      const localMs = new Date(localDb.updatedAt).getTime();
+      if (Number.isFinite(remoteMs) && remoteMs > knownMs + 1000 && remoteMs > localMs + 1000) {
+        throw new NextcloudConflictError(
+          'Auf Nextcloud liegt bereits ein neuerer Stand von einem anderen Gerät. Bitte zuerst "Von Nextcloud laden" oder das Überschreiben bestätigen.',
+          remoteDb.updatedAt
+        );
+      }
+    }
+  }
+
   await nativePushNextcloud(cfg, localDb);
   cfg.lastSyncAt = new Date().toISOString();
+  cfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
   cfg.lastSyncError = null;
   writeNativeNc(cfg);
   return { db: localDb, nextcloud: toPublicNc(cfg) };
@@ -462,4 +536,89 @@ export async function apiUploadInvoicePdf(
     path: `${cfg.folder}/Rechnungen/${safeFilename}`,
     uploadedAt: new Date().toISOString(),
   };
+}
+
+export async function apiUploadInvoiceTextFile(
+  filename: string,
+  content: string,
+  contentType = 'application/xml; charset=utf-8'
+): Promise<{ path: string; uploadedAt: string }> {
+  if (shouldUseRemoteServer()) {
+    const res = await fetch(apiUrl('/api/nextcloud/upload-file'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename, content, contentType }),
+    });
+    const data = (await res.json()) as {
+      ok?: boolean;
+      path?: string;
+      uploadedAt?: string;
+      error?: string;
+    };
+    if (!res.ok) {
+      throw new Error(data.error || 'Datei-Upload fehlgeschlagen.');
+    }
+    return {
+      path: data.path || filename,
+      uploadedAt: data.uploadedAt || new Date().toISOString(),
+    };
+  }
+
+  const cfg = readNativeNc();
+  if (!cfg.url || !cfg.username || !cfg.appPassword) {
+    throw new Error('Nextcloud ist nicht konfiguriert.');
+  }
+  const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, '_');
+  const folderUrls = buildWebDavFolderUrls(cfg, 'Rechnungen');
+  const fileUrl = buildWebDavFileUrl(cfg, `Rechnungen/${safeFilename}`);
+  await TaktWerkNative.webdavUploadFile({
+    folderUrls,
+    fileUrl,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
+    contentType,
+    content,
+  });
+  return {
+    path: `${cfg.folder}/Rechnungen/${safeFilename}`,
+    uploadedAt: new Date().toISOString(),
+  };
+}
+
+export function triggerNfcHaptic(pattern: 'start' | 'stop' | 'error'): void {
+  if (isNativeCapacitor()) {
+    void TaktWerkNative.hapticFeedback({ pattern }).catch(() => {});
+    return;
+  }
+  if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+    if (pattern === 'stop') {
+      navigator.vibrate([60, 70, 60]);
+    } else if (pattern === 'error') {
+      navigator.vibrate([40, 50, 40, 50, 40]);
+    } else {
+      navigator.vibrate(80);
+    }
+  }
+}
+
+export function syncActiveTimerNotification(
+  timer: ActiveTimer | null,
+  customerName: string
+): void {
+  if (!isNativeCapacitor()) return;
+  if (!timer) {
+    void TaktWerkNative.clearActiveTimerNotification().catch(() => {});
+    return;
+  }
+  const elapsedMs = getActiveTimerElapsedMs(timer);
+  const adjustedStartMs = Date.now() - elapsedMs;
+  void TaktWerkNative.showActiveTimerNotification({
+    title: timer.title,
+    customer: customerName,
+    startTimeMs: adjustedStartMs,
+    isPaused: Boolean(timer.pausedAt),
+    pausedDuration: timer.pausedAt
+      ? formatDuration(Math.floor(elapsedMs / 1000))
+      : undefined,
+  }).catch(() => {});
 }

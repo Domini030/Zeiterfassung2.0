@@ -27,12 +27,21 @@ import type {
   TimeEntry,
 } from './types';
 import {
+  NextcloudConflictError,
+  apiCheckNextcloudRemote,
   apiLoadDb,
   apiSaveDb,
   apiSyncNextcloud,
   isNativeCapacitor,
+  syncActiveTimerNotification,
+  triggerNfcHaptic,
 } from './utils/apiClient';
-import { createId, formatDuration } from './utils/format';
+import {
+  createId,
+  formatDateTimeDE,
+  formatDuration,
+  getActiveTimerElapsedMs,
+} from './utils/format';
 import {
   decodeNdefRecordBytes,
   extractTagIdFromPayload,
@@ -87,6 +96,8 @@ export default function App() {
     uid: string;
     at: number;
   } | null>(null);
+  const [remoteNewerAt, setRemoteNewerAt] = useState<string | null>(null);
+  const [pushConflictAt, setPushConflictAt] = useState<string | null>(null);
 
   const deepLinkHandledRef = useRef(false);
   const lastNfcTriggerRef = useRef<{ code: string; at: number } | null>(null);
@@ -146,7 +157,15 @@ export default function App() {
   );
 
   const triggerNfcOnDb = useCallback(
-    (sourceDb: AppDatabase, tagUid: string): { nextDb: AppDatabase; message: string; isError?: boolean } => {
+    (
+      sourceDb: AppDatabase,
+      tagUid: string
+    ): {
+      nextDb: AppDatabase;
+      message: string;
+      isError?: boolean;
+      haptic: 'start' | 'stop' | 'error';
+    } => {
       const task = sourceDb.nfcTasks.find(
         (t) => t.tagUid.toLowerCase() === tagUid.trim().toLowerCase()
       );
@@ -155,6 +174,7 @@ export default function App() {
           nextDb: sourceDb,
           message: `Kein NFC-Task mit Tag-ID "${tagUid}" gefunden.`,
           isError: true,
+          haptic: 'error',
         };
       }
 
@@ -164,8 +184,10 @@ export default function App() {
       let nextActiveTimer: ActiveTimer | null = sourceDb.activeTimer;
 
       const finalizeActive = (timer: ActiveTimer) => {
-        const startMs = new Date(timer.startTime).getTime();
-        const duration = Math.max(1, Math.floor((now.getTime() - startMs) / 1000));
+        const duration = Math.max(
+          1,
+          Math.floor(getActiveTimerElapsedMs(timer, now.getTime()) / 1000)
+        );
         const finished: TimeEntry = {
           id: createId('time'),
           customerId: timer.customerId,
@@ -202,6 +224,7 @@ export default function App() {
             activeTimer: null,
           },
           message: `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
+          haptic: 'stop',
         };
       }
 
@@ -219,6 +242,8 @@ export default function App() {
         title: task.title,
         notes: task.description,
         startTime: nowIso,
+        pausedAt: null,
+        accumulatedPausedMs: 0,
         hourlyRateNet: product?.unitPriceNet ?? 0,
         taxRate: (product?.taxRate ?? 19) as TaxRate,
         source: 'nfc',
@@ -232,6 +257,7 @@ export default function App() {
           activeTimer: startedTimer,
         },
         message: `NFC-Aufgabe "${task.title}" gestartet.`,
+        haptic: 'start',
       };
     },
     []
@@ -270,6 +296,7 @@ export default function App() {
           if (incomingNfc) {
             const result = triggerNfcOnDb(loadedDb, incomingNfc);
             loadedDb = result.nextDb;
+            triggerNfcHaptic(result.haptic);
             notify(result.message, result.isError);
             if (!result.isError) {
               await apiSaveDb(loadedDb);
@@ -281,6 +308,14 @@ export default function App() {
 
         dbRef.current = loadedDb;
         setDb(loadedDb);
+
+        if (data.nextcloud.configured) {
+          void apiCheckNextcloudRemote().then((check) => {
+            if (active && check.hasNewerRemote && check.remoteUpdatedAt) {
+              setRemoteNewerAt(check.remoteUpdatedAt);
+            }
+          });
+        }
       } catch (err) {
         notify(
           err instanceof Error ? err.message : 'Verbindung zum Server fehlgeschlagen.',
@@ -307,6 +342,7 @@ export default function App() {
       lastNfcTriggerRef.current = { code: clean, at: now };
 
       const result = triggerNfcOnDb(dbRef.current, clean);
+      triggerNfcHaptic(result.haptic);
       if (result.isError) {
         setPendingScannedUid({ uid: clean, at: now });
         setSection('nfc');
@@ -409,20 +445,32 @@ export default function App() {
     };
   }, [handleGlobalNfcCode, isWritingNfc]);
 
-  // Live timer tick
+  // Live timer tick (supports pause/resume)
   useEffect(() => {
     if (!db.activeTimer) {
       setElapsedSeconds(0);
       return;
     }
     const updateTick = () => {
-      const startMs = new Date(db.activeTimer!.startTime).getTime();
-      setElapsedSeconds(Math.max(0, Math.floor((Date.now() - startMs) / 1000)));
+      const elapsedMs = getActiveTimerElapsedMs(db.activeTimer!);
+      setElapsedSeconds(Math.max(0, Math.floor(elapsedMs / 1000)));
     };
     updateTick();
+    if (db.activeTimer.pausedAt) {
+      return;
+    }
     const interval = setInterval(updateTick, 1000);
     return () => clearInterval(interval);
   }, [db.activeTimer]);
+
+  // Persistent Android status-bar timer notification
+  useEffect(() => {
+    if (loading) return;
+    const customerName = db.activeTimer
+      ? db.customers.find((c) => c.id === db.activeTimer!.customerId)?.companyName ?? ''
+      : '';
+    syncActiveTimerNotification(db.activeTimer, customerName);
+  }, [db.activeTimer, db.customers, loading]);
 
   const handleStartTimer = (payload: {
     customerId: string;
@@ -442,6 +490,8 @@ export default function App() {
       title: payload.title,
       notes: payload.notes,
       startTime: nowIso,
+      pausedAt: null,
+      accumulatedPausedMs: 0,
       hourlyRateNet: product?.unitPriceNet ?? 0,
       taxRate: (product?.taxRate ?? 19) as TaxRate,
       source: payload.source ?? 'timer',
@@ -450,11 +500,36 @@ export default function App() {
     notify(`Timer gestartet: ${timer.title}`);
   };
 
+  const handlePauseTimer = () => {
+    if (!db.activeTimer || db.activeTimer.pausedAt) return;
+    const updatedTimer: ActiveTimer = {
+      ...db.activeTimer,
+      pausedAt: new Date().toISOString(),
+    };
+    void persistDb({ ...db, activeTimer: updatedTimer });
+    notify(`Timer pausiert: ${updatedTimer.title}`);
+  };
+
+  const handleResumeTimer = () => {
+    if (!db.activeTimer || !db.activeTimer.pausedAt) return;
+    const pausedMs = new Date(db.activeTimer.pausedAt).getTime();
+    const addedPause = Math.max(0, Date.now() - pausedMs);
+    const updatedTimer: ActiveTimer = {
+      ...db.activeTimer,
+      pausedAt: null,
+      accumulatedPausedMs: (db.activeTimer.accumulatedPausedMs ?? 0) + addedPause,
+    };
+    void persistDb({ ...db, activeTimer: updatedTimer });
+    notify(`Timer fortgesetzt: ${updatedTimer.title}`);
+  };
+
   const handleStopTimer = () => {
     if (!db.activeTimer) return;
     const now = new Date();
-    const startMs = new Date(db.activeTimer.startTime).getTime();
-    const durationSeconds = Math.max(1, Math.floor((now.getTime() - startMs) / 1000));
+    const durationSeconds = Math.max(
+      1,
+      Math.floor(getActiveTimerElapsedMs(db.activeTimer, now.getTime()) / 1000)
+    );
     const entry: TimeEntry = {
       id: createId('time'),
       customerId: db.activeTimer.customerId,
@@ -491,6 +566,16 @@ export default function App() {
     notify('Zeiteintrag gespeichert.');
   };
 
+  const handleUpdateEntry = (updatedEntry: TimeEntry) => {
+    void persistDb({
+      ...db,
+      timeEntries: db.timeEntries.map((e) =>
+        e.id === updatedEntry.id ? updatedEntry : e
+      ),
+    });
+    notify('Zeiteintrag aktualisiert.');
+  };
+
   const handleDeleteEntry = (id: string) => {
     void persistDb({
       ...db,
@@ -525,6 +610,7 @@ export default function App() {
 
   const handleTriggerNfcTag = (tagUid: string) => {
     const result = triggerNfcOnDb(db, tagUid);
+    triggerNfcHaptic(result.haptic);
     if (result.isError) {
       notify(result.message, true);
       return;
@@ -641,12 +727,19 @@ export default function App() {
     notify('Rechnung gelöscht. Alle verknüpften Arbeitszeiten bleiben als offen erhalten.');
   };
 
-  const handleSyncToNextcloud = async () => {
+  const handleSyncToNextcloud = async (force = false) => {
     try {
-      const data = await apiSyncNextcloud('push');
+      const data = await apiSyncNextcloud('push', force);
       setNextcloud(data.nextcloud);
+      setPushConflictAt(null);
+      setRemoteNewerAt(null);
       notify('Datenbank erfolgreich auf Nextcloud gesichert.');
     } catch (err) {
+      if (err instanceof NextcloudConflictError) {
+        setPushConflictAt(err.remoteUpdatedAt);
+        notify(err.message, true);
+        return;
+      }
       notify(
         err instanceof Error ? err.message : 'Upload nach Nextcloud fehlgeschlagen.',
         true
@@ -662,6 +755,8 @@ export default function App() {
         setDb(data.db);
       }
       setNextcloud(data.nextcloud);
+      setRemoteNewerAt(null);
+      setPushConflictAt(null);
       notify('Datenbank von Nextcloud geladen.');
     } catch (err) {
       notify(
@@ -669,6 +764,11 @@ export default function App() {
         true
       );
     }
+  };
+
+  const handleImportDatabase = (importedDb: AppDatabase) => {
+    void persistDb(importedDb);
+    notify('Backup erfolgreich wiederhergestellt.');
   };
 
   const handleSaveCompany = (company: CompanyProfile) => {
@@ -797,6 +897,31 @@ export default function App() {
             </div>
           )}
 
+          {/* Multi-device Nextcloud Conflict Notice */}
+          {remoteNewerAt && (
+            <div className="no-print mb-5 flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between">
+              <span>
+                In deiner Nextcloud liegt ein neuerer Datenstand ({formatDateTimeDE(remoteNewerAt)}) von einem anderen Gerät.
+              </span>
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => void handleSyncFromNextcloud()}
+                  className="rounded-md bg-amber-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-900 dark:bg-amber-600 dark:hover:bg-amber-500 cursor-pointer"
+                >
+                  Jetzt von Nextcloud laden
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRemoteNewerAt(null)}
+                  className="rounded-md border border-amber-300 px-2.5 py-1.5 text-xs font-medium hover:bg-amber-100 dark:border-amber-800 dark:hover:bg-amber-900/40 cursor-pointer"
+                >
+                  Später
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* First-run Empty Onboarding Banner */}
           {!loading && isEmptyWorkspace && section === 'tracker' && (
             <div className="mb-6 flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126] sm:flex-row sm:items-center sm:justify-between">
@@ -838,6 +963,7 @@ export default function App() {
             <>
               {section === 'tracker' && (
                 <TimeTrackerView
+                  company={db.company}
                   customers={db.customers}
                   products={db.products}
                   nfcTasks={db.nfcTasks}
@@ -845,9 +971,12 @@ export default function App() {
                   activeTimer={db.activeTimer}
                   elapsedSeconds={elapsedSeconds}
                   onStartTimer={handleStartTimer}
+                  onPauseTimer={handlePauseTimer}
+                  onResumeTimer={handleResumeTimer}
                   onStopTimer={handleStopTimer}
                   onDiscardTimer={handleDiscardTimer}
                   onAddManualEntry={handleAddManualEntry}
+                  onUpdateEntry={handleUpdateEntry}
                   onDeleteEntry={handleDeleteEntry}
                   onToggleBillable={handleToggleBillable}
                   onCreateInvoiceFromEntries={(custId, entryIds) => {
@@ -855,6 +984,7 @@ export default function App() {
                     setSection('invoices');
                   }}
                   onNavigate={(target) => setSection(target)}
+                  onNotify={notify}
                 />
               )}
 
@@ -924,12 +1054,16 @@ export default function App() {
 
               {section === 'settings' && (
                 <NextcloudSettingsView
+                  db={db}
                   nextcloud={nextcloud}
                   company={db.company}
+                  pushConflictAt={pushConflictAt}
+                  onDismissConflict={() => setPushConflictAt(null)}
                   onRefreshConfig={setNextcloud}
                   onSyncFromNextcloud={handleSyncFromNextcloud}
                   onSyncToNextcloud={handleSyncToNextcloud}
                   onSaveCompany={handleSaveCompany}
+                  onImportDatabase={handleImportDatabase}
                   onLoadSampleData={handleLoadSampleData}
                   onResetEmpty={handleResetEmpty}
                   onNotify={notify}

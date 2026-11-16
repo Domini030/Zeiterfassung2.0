@@ -19,6 +19,7 @@ interface StoredNextcloudConfig {
   autoSync: boolean;
   lastSyncAt: string | null;
   lastSyncError: string | null;
+  lastKnownRemoteUpdatedAt?: string | null;
 }
 
 async function ensureDataDir(): Promise<void> {
@@ -66,6 +67,7 @@ async function readStoredNcConfig(): Promise<StoredNextcloudConfig & { fromEnv: 
     autoSync: fileCfg.autoSync ?? true,
     lastSyncAt: fileCfg.lastSyncAt ?? null,
     lastSyncError: fileCfg.lastSyncError ?? null,
+    lastKnownRemoteUpdatedAt: fileCfg.lastKnownRemoteUpdatedAt ?? null,
     fromEnv: useEnv,
   };
 }
@@ -265,6 +267,7 @@ async function startServer() {
         try {
           await pushDbToNextcloud(ncCfg, incoming);
           ncCfg.lastSyncAt = new Date().toISOString();
+          ncCfg.lastKnownRemoteUpdatedAt = incoming.updatedAt;
           ncCfg.lastSyncError = null;
           await writeStoredNcConfig(ncCfg);
         } catch (syncErr) {
@@ -399,10 +402,45 @@ async function startServer() {
     }
   });
 
-  // Manual push / pull sync with Nextcloud
+  // Check if remote Nextcloud DB is newer than local
+  app.get('/api/nextcloud/check', async (_req, res) => {
+    try {
+      const ncCfg = await readStoredNcConfig();
+      if (!ncCfg.url || !ncCfg.username || !ncCfg.appPassword) {
+        res.json({ hasNewerRemote: false, remoteUpdatedAt: null });
+        return;
+      }
+      const localDb = await readLocalDb();
+      const remoteDb = await pullDbFromNextcloud(ncCfg);
+      if (!remoteDb?.updatedAt) {
+        res.json({ hasNewerRemote: false, remoteUpdatedAt: null });
+        return;
+      }
+      const remoteMs = new Date(remoteDb.updatedAt).getTime();
+      const localMs = new Date(localDb.updatedAt).getTime();
+      const knownMs = ncCfg.lastKnownRemoteUpdatedAt
+        ? new Date(ncCfg.lastKnownRemoteUpdatedAt).getTime()
+        : 0;
+      const hasNewerRemote =
+        Number.isFinite(remoteMs) &&
+        remoteMs > knownMs + 1000 &&
+        remoteMs > localMs + 1000;
+      res.json({
+        hasNewerRemote,
+        remoteUpdatedAt: remoteDb.updatedAt,
+      });
+    } catch {
+      res.json({ hasNewerRemote: false, remoteUpdatedAt: null });
+    }
+  });
+
+  // Manual push / pull sync with Nextcloud (with conflict guard)
   app.post('/api/nextcloud/sync', async (req, res) => {
     try {
-      const { direction } = req.body as { direction?: 'push' | 'pull' };
+      const { direction, force } = req.body as {
+        direction?: 'push' | 'pull';
+        force?: boolean;
+      };
       const ncCfg = await readStoredNcConfig();
 
       if (!ncCfg.url || !ncCfg.username || !ncCfg.appPassword) {
@@ -421,16 +459,37 @@ async function startServer() {
         }
         await writeLocalDb(remoteDb);
         ncCfg.lastSyncAt = new Date().toISOString();
+        ncCfg.lastKnownRemoteUpdatedAt = remoteDb.updatedAt || ncCfg.lastSyncAt;
         ncCfg.lastSyncError = null;
         await writeStoredNcConfig(ncCfg);
         res.json({ db: remoteDb, nextcloud: toPublicNcInfo(ncCfg) });
         return;
       }
 
-      // Default: push
+      // Default: push (check for newer remote data first unless force=true)
       const localDb = await readLocalDb();
+      if (!force) {
+        const remoteDb = await pullDbFromNextcloud(ncCfg).catch(() => null);
+        if (remoteDb?.updatedAt) {
+          const remoteMs = new Date(remoteDb.updatedAt).getTime();
+          const knownMs = ncCfg.lastKnownRemoteUpdatedAt
+            ? new Date(ncCfg.lastKnownRemoteUpdatedAt).getTime()
+            : 0;
+          const localMs = new Date(localDb.updatedAt).getTime();
+          if (Number.isFinite(remoteMs) && remoteMs > knownMs + 1000 && remoteMs > localMs + 1000) {
+            res.status(409).json({
+              conflict: true,
+              remoteUpdatedAt: remoteDb.updatedAt,
+              error: `Auf Nextcloud liegt bereits ein neuerer Stand (${remoteDb.updatedAt}) von einem anderen Gerät. Bitte zuerst "Von Nextcloud laden" oder das Überschreiben bestätigen.`,
+            });
+            return;
+          }
+        }
+      }
+
       await pushDbToNextcloud(ncCfg, localDb);
       ncCfg.lastSyncAt = new Date().toISOString();
+      ncCfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
       ncCfg.lastSyncError = null;
       await writeStoredNcConfig(ncCfg);
       res.json({ db: localDb, nextcloud: toPublicNcInfo(ncCfg) });
@@ -493,6 +552,59 @@ async function startServer() {
     } catch (err) {
       res.status(500).json({
         error: err instanceof Error ? err.message : 'PDF konnte nicht zu Nextcloud hochgeladen werden.',
+      });
+    }
+  });
+
+  // Upload generated XRechnung XML or other text file directly into Nextcloud /Rechnungen/
+  app.post('/api/nextcloud/upload-file', async (req, res) => {
+    try {
+      const { filename, content, contentType } = req.body as {
+        filename?: string;
+        content?: string;
+        contentType?: string;
+      };
+
+      if (!filename || !content) {
+        res.status(400).json({ error: 'Dateiname oder Dateiinhalt fehlen.' });
+        return;
+      }
+
+      const ncCfg = await readStoredNcConfig();
+      if (!ncCfg.url || !ncCfg.username || !ncCfg.appPassword) {
+        res.status(400).json({
+          error: 'Nextcloud ist nicht konfiguriert. Bitte zuerst unter "Nextcloud & Setup" verbinden.',
+        });
+        return;
+      }
+
+      const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, '_');
+      const invoicesFolder = `${ncCfg.folder}/Rechnungen`;
+      await ensureNextcloudFolderExists(ncCfg, invoicesFolder);
+
+      const fileUrl = buildWebDavFileUrl(ncCfg, `Rechnungen/${safeFilename}`);
+      const uploadRes = await fetch(fileUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: makeAuthHeader(ncCfg),
+          'Content-Type': contentType || 'application/xml; charset=utf-8',
+        },
+        body: content,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error(`Datei-Upload zu Nextcloud fehlgeschlagen (HTTP ${uploadRes.status}).`);
+      }
+
+      const uploadedAt = new Date().toISOString();
+      res.json({
+        ok: true,
+        path: `${invoicesFolder}/${safeFilename}`,
+        uploadedAt,
+      });
+    } catch (err) {
+      res.status(500).json({
+        error: err instanceof Error ? err.message : 'Datei konnte nicht zu Nextcloud hochgeladen werden.',
       });
     }
   });

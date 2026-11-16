@@ -1,6 +1,11 @@
 import { FilePlus2, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import type { Customer, Invoice, TimeEntry } from '../types';
+import type {
+  Customer,
+  Invoice,
+  TimeEntry,
+  TimeRoundingMinutes,
+} from '../types';
 import { createId, formatCurrency, formatHoursShort } from '../utils/format';
 
 interface CustomersViewProps {
@@ -35,6 +40,7 @@ export function CustomersView({
   const [country, setCountry] = useState('Deutschland');
   const [vatId, setVatId] = useState('');
   const [paymentTermDays, setPaymentTermDays] = useState(14);
+  const [timeRoundingInput, setTimeRoundingInput] = useState<string>('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
 
@@ -52,6 +58,7 @@ export function CustomersView({
     setCountry('Deutschland');
     setVatId('');
     setPaymentTermDays(14);
+    setTimeRoundingInput('');
     setNotes('');
     setError('');
     setShowForm(true);
@@ -70,6 +77,11 @@ export function CustomersView({
     setCountry(c.country);
     setVatId(c.vatId);
     setPaymentTermDays(c.paymentTermDays);
+    setTimeRoundingInput(
+      c.timeRoundingMinutes !== undefined && c.timeRoundingMinutes !== null
+        ? String(c.timeRoundingMinutes)
+        : ''
+    );
     setNotes(c.notes);
     setError('');
     setShowForm(true);
@@ -96,6 +108,10 @@ export function CustomersView({
       country: country.trim() || 'Deutschland',
       vatId: vatId.trim(),
       paymentTermDays: Math.max(0, Number(paymentTermDays) || 14),
+      timeRoundingMinutes:
+        timeRoundingInput === ''
+          ? null
+          : (Number(timeRoundingInput) as TimeRoundingMinutes),
       notes: notes.trim(),
       createdAt: editing?.createdAt ?? new Date().toISOString(),
     };
@@ -297,6 +313,23 @@ export function CustomersView({
               />
             </div>
             <div>
+              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                Zeitrundung (Takt für Rechnungen)
+              </label>
+              <select
+                value={timeRoundingInput}
+                onChange={(e) => setTimeRoundingInput(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">Firmen-Standard verwenden</option>
+                <option value="0">Exakt (keine Aufrundung)</option>
+                <option value="5">Aufrunden auf 5 Minuten</option>
+                <option value="10">Aufrunden auf 10 Minuten</option>
+                <option value="15">Aufrunden auf 15 Minuten</option>
+                <option value="30">Aufrunden auf 30 Minuten</option>
+              </select>
+            </div>
+            <div className="md:col-span-3">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Notizen
               </label>

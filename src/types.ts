@@ -4,6 +4,8 @@ export type UnitType = 'Std.' | 'Stk.' | 'Pauschal' | 'Tag';
 
 export type TaxRate = 19 | 7 | 0;
 
+export type TimeRoundingMinutes = 0 | 5 | 10 | 15 | 30;
+
 export type InvoiceStatus = 'Entwurf' | 'Gesendet' | 'Bezahlt' | 'Storniert';
 
 export type NavSection =
@@ -28,6 +30,7 @@ export interface Customer {
   country: string;
   vatId: string;
   paymentTermDays: number;
+  timeRoundingMinutes?: TimeRoundingMinutes | null;
   notes: string;
   createdAt: string;
 }
@@ -84,6 +87,8 @@ export interface ActiveTimer {
   title: string;
   notes: string;
   startTime: string;
+  pausedAt?: string | null;
+  accumulatedPausedMs?: number;
   hourlyRateNet: number;
   taxRate: TaxRate;
   source: 'timer' | 'nfc';
@@ -155,6 +160,7 @@ export interface CompanyProfile {
   invoicePrefix: string;
   nextInvoiceSequence: number;
   defaultPaymentTermDays: number;
+  defaultTimeRoundingMinutes?: TimeRoundingMinutes;
   logoDataUrl?: string;
   invoiceShowLogo?: boolean;
   invoiceNumberPattern?: string;

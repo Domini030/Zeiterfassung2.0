@@ -1,21 +1,27 @@
 import {
+  AlertTriangle,
   CheckCircle2,
   Cloud,
   Database,
+  Download,
   DownloadCloud,
   FileSliders,
+  FileSpreadsheet,
   ImagePlus,
   RefreshCw,
   RotateCcw,
   Server,
   Trash2,
+  Upload,
   UploadCloud,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import type {
+  AppDatabase,
   CompanyProfile,
   InvoiceAccentPreset,
   NextcloudConfigInfo,
+  TimeRoundingMinutes,
 } from '../types';
 import {
   apiClearNextcloudConfig,
@@ -29,27 +35,42 @@ import {
   INVOICE_ACCENT_STYLES,
   formatDateTimeDE,
   formatInvoiceNumber,
+  toInputDate,
 } from '../utils/format';
+import {
+  downloadOrShareTextFile,
+  invoicesToCsv,
+  timeEntriesToCsv,
+  validateImportedDatabase,
+} from '../utils/exportBackup';
 
 interface NextcloudSettingsViewProps {
+  db: AppDatabase;
   nextcloud: NextcloudConfigInfo;
   company: CompanyProfile;
+  pushConflictAt: string | null;
+  onDismissConflict: () => void;
   onRefreshConfig: (nextcloud: NextcloudConfigInfo) => void;
   onSyncFromNextcloud: () => Promise<void>;
-  onSyncToNextcloud: () => Promise<void>;
+  onSyncToNextcloud: (force?: boolean) => Promise<void>;
   onSaveCompany: (company: CompanyProfile) => void;
+  onImportDatabase: (db: AppDatabase) => void;
   onLoadSampleData: () => void;
   onResetEmpty: () => void;
   onNotify: (msg: string, isError?: boolean) => void;
 }
 
 export function NextcloudSettingsView({
+  db,
   nextcloud,
   company,
+  pushConflictAt,
+  onDismissConflict,
   onRefreshConfig,
   onSyncFromNextcloud,
   onSyncToNextcloud,
   onSaveCompany,
+  onImportDatabase,
   onLoadSampleData,
   onResetEmpty,
   onNotify,
@@ -194,10 +215,10 @@ export function NextcloudSettingsView({
     }
   };
 
-  const handlePush = async () => {
+  const handlePush = async (force = false) => {
     setSyncing('push');
     try {
-      await onSyncToNextcloud();
+      await onSyncToNextcloud(force);
     } finally {
       setSyncing(null);
     }
@@ -215,6 +236,80 @@ export function NextcloudSettingsView({
   const handleCompanySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSaveCompany(companyForm);
+  };
+
+  const handleExportTimeCsv = async () => {
+    try {
+      const csv = timeEntriesToCsv(db.timeEntries, db.customers, db.products);
+      await downloadOrShareTextFile(
+        `taktwerk-arbeitszeiten-${toInputDate()}.csv`,
+        csv,
+        'text/csv'
+      );
+      onNotify('Arbeitszeiten als CSV exportiert.');
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'CSV-Export fehlgeschlagen.',
+        true
+      );
+    }
+  };
+
+  const handleExportInvoicesCsv = async () => {
+    try {
+      const csv = invoicesToCsv(db.invoices);
+      await downloadOrShareTextFile(
+        `taktwerk-rechnungen-${toInputDate()}.csv`,
+        csv,
+        'text/csv'
+      );
+      onNotify('Rechnungen als CSV exportiert.');
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'CSV-Export fehlgeschlagen.',
+        true
+      );
+    }
+  };
+
+  const handleExportJsonBackup = async () => {
+    try {
+      const json = JSON.stringify(db, null, 2);
+      await downloadOrShareTextFile(
+        `taktwerk-backup-${toInputDate()}.json`,
+        json,
+        'application/json'
+      );
+      onNotify('Vollständige JSON-Sicherung erstellt.');
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Backup-Export fehlgeschlagen.',
+        true
+      );
+    }
+  };
+
+  const handleImportJsonBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const text = typeof reader.result === 'string' ? reader.result : '';
+        const imported = validateImportedDatabase(text);
+        onImportDatabase(imported);
+      } catch (err) {
+        onNotify(
+          err instanceof Error ? err.message : 'Backup konnte nicht eingelesen werden.',
+          true
+        );
+      }
+    };
+    reader.onerror = () => {
+      onNotify('Backup-Datei konnte nicht gelesen werden.', true);
+    };
+    reader.readAsText(file);
+    e.target.value = '';
   };
 
   const inputClass =
@@ -383,6 +478,42 @@ export function NextcloudSettingsView({
             </div>
           )}
 
+          {pushConflictAt && (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-xs text-red-900 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-200 md:col-span-2 space-y-3">
+              <div className="flex items-start gap-2 font-semibold">
+                <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                <span>
+                  Mehrgeräte-Konflikt erkannt: In Nextcloud existiert ein neuerer Datenstand vom {formatDateTimeDE(pushConflictAt)}.
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => void handlePull()}
+                  disabled={syncing !== null}
+                  className="rounded-md bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                >
+                  Von Nextcloud laden (empfohlen)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handlePush(true)}
+                  disabled={syncing !== null}
+                  className="rounded-md border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-800 hover:bg-red-100 dark:border-red-800 dark:bg-[#171126] dark:text-red-300 dark:hover:bg-red-950 cursor-pointer"
+                >
+                  Trotzdem lokal überschreiben
+                </button>
+                <button
+                  type="button"
+                  onClick={onDismissConflict}
+                  className="rounded-md px-2.5 py-1.5 text-xs font-medium text-red-800 hover:bg-red-100 dark:text-red-300 dark:hover:bg-red-900/40 cursor-pointer"
+                >
+                  Abbrechen
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-wrap items-center justify-between gap-3 pt-2 md:col-span-2">
             <div className="flex flex-wrap gap-2">
               <button
@@ -416,7 +547,7 @@ export function NextcloudSettingsView({
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={handlePush}
+                  onClick={() => void handlePush(false)}
                   disabled={syncing !== null}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
                 >
@@ -425,7 +556,7 @@ export function NextcloudSettingsView({
                 </button>
                 <button
                   type="button"
-                  onClick={handlePull}
+                  onClick={() => void handlePull()}
                   disabled={syncing !== null}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
                 >
@@ -953,7 +1084,34 @@ export function NextcloudSettingsView({
               )}
             </div>
 
-            <div className="md:col-span-2">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                Standard-Zeitrundung bei Abrechnung (Takt)
+              </label>
+              <select
+                value={companyForm.defaultTimeRoundingMinutes ?? 0}
+                onChange={(e) =>
+                  setCompanyForm({
+                    ...companyForm,
+                    defaultTimeRoundingMinutes: Number(
+                      e.target.value
+                    ) as TimeRoundingMinutes,
+                  })
+                }
+                className={inputClass}
+              >
+                <option value={0}>Keine Rundung (exakt auf die Sekunde)</option>
+                <option value={5}>Auf 5-Minuten-Takt aufrunden</option>
+                <option value={10}>Auf 10-Minuten-Takt aufrunden</option>
+                <option value={15}>Auf 15-Minuten-Takt aufrunden</option>
+                <option value={30}>Auf 30-Minuten-Takt aufrunden</option>
+              </select>
+              <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                Kann pro Kunde individuell überschrieben werden.
+              </p>
+            </div>
+
+            <div>
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Zusätzlicher Fußzeilen-Hinweis (optional, z. B. Handelsregister / Gerichtsstand)
               </label>
@@ -983,17 +1141,17 @@ export function NextcloudSettingsView({
         </form>
       </section>
 
-      {/* Quick Test Data & Reset */}
-      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]">
+      {/* CSV Exports, JSON Backup & Database Reset */}
+      <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
             <Database className="mt-0.5 h-5 w-5 text-slate-600 dark:text-violet-400" />
             <div>
               <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                Testdaten &amp; Datenbankverwaltung
+                Exporte, Sicherungen &amp; Datenbankverwaltung
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Lade zum Ausprobieren fertige Beispielkunden, Leistungen, NFC-Tags und Zeiteinträge oder starte mit einer leeren Datenbank.
+                Exportiere Tabellen für Excel/Steuerberater, erstelle lokale Voll-Backups oder lade Beispieldaten.
               </p>
             </div>
           </div>
@@ -1013,6 +1171,58 @@ export function NextcloudSettingsView({
               <RotateCcw className="h-3.5 w-3.5" />
               Datenbank leeren
             </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 border-t border-slate-200 pt-4 dark:border-[#2e2349] md:grid-cols-2">
+          <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-4 dark:border-[#2e2349] dark:bg-[#211936]/50 space-y-2.5">
+            <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+              Tabellen-Exporte (Excel-kompatibles CSV)
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => void handleExportTimeCsv()}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5" />
+                Arbeitszeiten (CSV)
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleExportInvoicesCsv()}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <FileSpreadsheet className="h-3.5 w-3.5" />
+                Rechnungen (CSV)
+              </button>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-4 dark:border-[#2e2349] dark:bg-[#211936]/50 space-y-2.5">
+            <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+              Vollständige Datenbanksicherung (JSON)
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => void handleExportJsonBackup()}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Download className="h-3.5 w-3.5" />
+                Backup sichern (.json)
+              </button>
+              <label className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer">
+                <Upload className="h-3.5 w-3.5" />
+                Backup einspielen
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  onChange={handleImportJsonBackup}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
         </div>
       </section>

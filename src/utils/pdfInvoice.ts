@@ -1,36 +1,32 @@
 import { jsPDF } from 'jspdf';
-import type { CompanyProfile, Invoice } from '../types';
+import type { CompanyProfile, Customer, Invoice, TimeEntry } from '../types';
+import { generateGiroCodeDataUrl } from './epcQr';
 import {
   INVOICE_ACCENT_STYLES,
   formatCurrency,
   formatDateDE,
+  formatDuration,
   formatNumber,
+  getOverdueDays,
+  toInputDate,
+  toInputTime,
 } from './format';
 
-export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPDF {
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4',
-  });
-
+function drawCompanyHeader(
+  doc: jsPDF,
+  company: CompanyProfile,
+  accentRgb: [number, number, number]
+): { rightBottomY: number } {
   const pageWidth = 210;
   const marginLeft = 20;
   const marginRight = 20;
-  const contentWidth = pageWidth - marginLeft - marginRight;
-  const accentPreset = company.invoiceAccentColor ?? 'slate';
-  const [accentR, accentG, accentB] =
-    INVOICE_ACCENT_STYLES[accentPreset]?.rgb ?? [15, 23, 42];
-  const headerTitle = (company.invoiceHeaderTitle || 'Rechnung').trim();
 
-  // Sender return line
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(100, 116, 139);
   const senderOneLine = `${company.companyName} · ${company.street} · ${company.postalCode} ${company.city}`;
   doc.text(senderOneLine, marginLeft, 34);
 
-  // Optional Logo (Top Right)
   let headerTopY = 24;
   if (company.logoDataUrl && company.invoiceShowLogo !== false) {
     try {
@@ -54,14 +50,13 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
       );
       headerTopY = 14 + drawH + 6;
     } catch {
-      // Ignore malformed logo image gracefully
+      // Ignore malformed logo image
     }
   }
 
-  // Company Header (Right side)
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
-  doc.setTextColor(accentR, accentG, accentB);
+  doc.setTextColor(accentRgb[0], accentRgb[1], accentRgb[2]);
   doc.text(company.companyName || 'TaktWerk', pageWidth - marginRight, headerTopY, {
     align: 'right',
   });
@@ -81,6 +76,63 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
     doc.text(line, pageWidth - marginRight, cy, { align: 'right' });
     cy += 4.2;
   }
+
+  return { rightBottomY: cy };
+}
+
+function drawFooter(doc: jsPDF, company: CompanyProfile) {
+  const pageWidth = 210;
+  const marginLeft = 20;
+  const marginRight = 20;
+  const footerY = 274;
+  doc.setDrawColor(226, 232, 240);
+  doc.setLineWidth(0.2);
+  doc.line(marginLeft, footerY - 3, pageWidth - marginRight, footerY - 3);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+
+  const col1 = [
+    company.companyName,
+    `${company.street}, ${company.postalCode} ${company.city}`,
+    company.website,
+  ].filter(Boolean);
+  const col2 = [
+    company.bankName ? `Bank: ${company.bankName}` : '',
+    company.iban ? `IBAN: ${company.iban}` : '',
+    company.bic ? `BIC: ${company.bic}` : '',
+  ].filter(Boolean);
+  const col3 = [
+    company.taxNumber ? `Steuernr.: ${company.taxNumber}` : '',
+    company.vatId ? `USt-IdNr.: ${company.vatId}` : '',
+    company.email ? `E-Mail: ${company.email}` : '',
+  ].filter(Boolean);
+
+  col1.forEach((line, i) => doc.text(line, marginLeft, footerY + i * 3.8));
+  col2.forEach((line, i) => doc.text(line, marginLeft + 62, footerY + i * 3.8));
+  col3.forEach((line, i) => doc.text(line, marginLeft + 125, footerY + i * 3.8));
+}
+
+export async function buildInvoicePdf(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<jsPDF> {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  const pageWidth = 210;
+  const marginLeft = 20;
+  const marginRight = 20;
+  const contentWidth = pageWidth - marginLeft - marginRight;
+  const accentPreset = company.invoiceAccentColor ?? 'slate';
+  const accentRgb = INVOICE_ACCENT_STYLES[accentPreset]?.rgb ?? [15, 23, 42];
+  const [accentR, accentG, accentB] = accentRgb;
+  const headerTitle = (company.invoiceHeaderTitle || 'Rechnung').trim();
+
+  const { rightBottomY: cy } = drawCompanyHeader(doc, company, accentRgb);
 
   // Recipient Address
   doc.setFont('helvetica', 'bold');
@@ -165,7 +217,6 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
     company.smallBusinessNotice ||
     'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.';
 
-  // Table Header
   const drawTableHeader = (startY: number) => {
     doc.setFillColor(accentR, accentG, accentB);
     doc.rect(marginLeft, startY, contentWidth, 8, 'F');
@@ -189,9 +240,8 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
 
   y = drawTableHeader(y);
 
-  // Table Rows
   invoice.lineItems.forEach((item, index) => {
-    if (y > 245) {
+    if (y > 240) {
       doc.addPage();
       y = drawTableHeader(20);
     }
@@ -237,8 +287,7 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
     y += 2.5;
   });
 
-  // Totals block
-  if (y > 230) {
+  if (y > 220) {
     doc.addPage();
     y = 24;
   }
@@ -254,7 +303,6 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
     doc.text(formatCurrency(invoice.netTotal), pageWidth - marginRight - 2, y, { align: 'right' });
     y += 5.5;
 
-    // Group taxes by rate
     const taxGroups = new Map<number, number>();
     for (const item of invoice.lineItems) {
       taxGroups.set(item.taxRate, (taxGroups.get(item.taxRate) ?? 0) + item.taxAmount);
@@ -284,7 +332,6 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
     { align: 'right' }
   );
 
-  // Small business notice (§ 19 UStG)
   if (isSmallBiz) {
     y += 10;
     doc.setFont('helvetica', 'bold');
@@ -295,91 +342,334 @@ export function buildInvoicePdf(invoice: Invoice, company: CompanyProfile): jsPD
     y += splitSmallBiz.length * 4.2;
   }
 
-  // Outro text & optional footer note
+  // Outro + GiroCode QR block
   y += isSmallBiz ? 8 : 12;
+  const qrDataUrl = await generateGiroCodeDataUrl(invoice, company);
+  if (qrDataUrl && y > 235) {
+    doc.addPage();
+    y = 24;
+  }
+
+  const textWidth = qrDataUrl ? contentWidth - 36 : contentWidth;
+  let outroEndY = y;
+
   if (invoice.outroText) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     doc.setTextColor(51, 65, 85);
-    const splitOutro = doc.splitTextToSize(invoice.outroText, contentWidth);
+    const splitOutro = doc.splitTextToSize(invoice.outroText, textWidth);
     doc.text(splitOutro, marginLeft, y);
-    y += splitOutro.length * 4.2 + 4;
+    outroEndY = y + splitOutro.length * 4.2 + 4;
   }
 
   if (company.invoiceFooterNote) {
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(8.5);
     doc.setTextColor(100, 116, 139);
-    const splitNote = doc.splitTextToSize(company.invoiceFooterNote, contentWidth);
-    doc.text(splitNote, marginLeft, y);
+    const splitNote = doc.splitTextToSize(company.invoiceFooterNote, textWidth);
+    doc.text(splitNote, marginLeft, outroEndY);
+    outroEndY += splitNote.length * 4;
   }
 
-  // Footer with bank & tax info
-  const footerY = 274;
-  doc.setDrawColor(226, 232, 240);
-  doc.setLineWidth(0.2);
-  doc.line(marginLeft, footerY - 3, pageWidth - marginRight, footerY - 3);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(7.5);
-  doc.setTextColor(100, 116, 139);
+  if (qrDataUrl) {
+    const qrSize = 27;
+    const qrX = pageWidth - marginRight - qrSize;
+    const qrY = Math.min(y - 2, 236);
+    doc.setDrawColor(226, 232, 240);
+    doc.setFillColor(248, 250, 252);
+    doc.roundedRect(qrX - 2, qrY - 2, qrSize + 4, qrSize + 9, 1.5, 1.5, 'FD');
+    doc.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.5);
+    doc.setTextColor(71, 85, 105);
+    doc.text('GiroCode (EPC-QR)', qrX + qrSize / 2, qrY + qrSize + 4, { align: 'center' });
+  }
 
-  const col1 = [
-    company.companyName,
-    `${company.street}, ${company.postalCode} ${company.city}`,
-    company.website,
-  ].filter(Boolean);
-  const col2 = [
-    company.bankName ? `Bank: ${company.bankName}` : '',
-    company.iban ? `IBAN: ${company.iban}` : '',
-    company.bic ? `BIC: ${company.bic}` : '',
-  ].filter(Boolean);
-  const col3 = [
-    company.taxNumber ? `Steuernr.: ${company.taxNumber}` : '',
-    company.vatId ? `USt-IdNr.: ${company.vatId}` : '',
-    company.email ? `E-Mail: ${company.email}` : '',
-  ].filter(Boolean);
-
-  col1.forEach((line, i) => doc.text(line, marginLeft, footerY + i * 3.8));
-  col2.forEach((line, i) => doc.text(line, marginLeft + 62, footerY + i * 3.8));
-  col3.forEach((line, i) => doc.text(line, marginLeft + 125, footerY + i * 3.8));
-
+  drawFooter(doc, company);
   return doc;
 }
 
-export function getInvoicePdfBase64(invoice: Invoice, company: CompanyProfile): string {
-  const doc = buildInvoicePdf(invoice, company);
+export async function buildPaymentReminderPdf(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<jsPDF> {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  const pageWidth = 210;
+  const marginLeft = 20;
+  const marginRight = 20;
+  const contentWidth = pageWidth - marginLeft - marginRight;
+  const accentPreset = company.invoiceAccentColor ?? 'slate';
+  const accentRgb = INVOICE_ACCENT_STYLES[accentPreset]?.rgb ?? [15, 23, 42];
+  const [accentR, accentG, accentB] = accentRgb;
+
+  const { rightBottomY: cy } = drawCompanyHeader(doc, company, accentRgb);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(15, 23, 42);
+  let ry = 42;
+  doc.text(invoice.customerSnapshot.companyName, marginLeft, ry);
+  ry += 5;
+  doc.setFont('helvetica', 'normal');
+  if (invoice.customerSnapshot.contactName) {
+    doc.text(invoice.customerSnapshot.contactName, marginLeft, ry);
+    ry += 5;
+  }
+  if (invoice.customerSnapshot.street) {
+    doc.text(invoice.customerSnapshot.street, marginLeft, ry);
+    ry += 5;
+  }
+  const cityLine = `${invoice.customerSnapshot.postalCode} ${invoice.customerSnapshot.city}`.trim();
+  if (cityLine) {
+    doc.text(cityLine, marginLeft, ry);
+    ry += 5;
+  }
+
+  const today = toInputDate();
+  const overdueDays = getOverdueDays(invoice, today);
+  const newDueDate = toInputDate(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000));
+  const isSmallBiz = invoice.isSmallBusiness ?? Boolean(company.smallBusinessMode);
+  const openAmount = isSmallBiz ? invoice.netTotal : invoice.grossTotal;
+
+  let y = Math.max(ry + 18, cy + 16);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.setTextColor(accentR, accentG, accentB);
+  doc.text(`Zahlungserinnerung zur Rechnung ${invoice.invoiceNumber}`, marginLeft, y);
+  y += 6;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(100, 116, 139);
+  doc.text(`Datum: ${formatDateDE(today)}`, marginLeft, y);
+  y += 10;
+
+  const bodyText =
+    `Sehr geehrte Damen und Herren,\n\n` +
+    `bei der Prüfung unserer Buchhaltung haben wir festgestellt, dass die Rechnung ${invoice.invoiceNumber} vom ${formatDateDE(invoice.issueDate)} über ${formatCurrency(openAmount)} seit dem ${formatDateDE(invoice.dueDate)} (${overdueDays} ${overdueDays === 1 ? 'Tag' : 'Tage'} überfällig) noch offen ist.\n\n` +
+    `Sicherlich handelt es sich hierbei um ein Versehen. Wir bitten Sie freundlich, den offenen Betrag bis spätestens ${formatDateDE(newDueDate)} unter Angabe der Rechnungsnummer auf das unten genannte Konto zu überweisen.\n\n` +
+    `Sollte sich Ihre Zahlung mit diesem Schreiben überschnitten haben, betrachten Sie diese Erinnerung bitte als gegenstandslos.\n\n` +
+    `Mit freundlichen Grüßen\n${company.ownerName || company.companyName}`;
+
+  doc.setFontSize(10);
+  doc.setTextColor(30, 41, 59);
+  const lines = doc.splitTextToSize(bodyText, contentWidth);
+  doc.text(lines, marginLeft, y);
+  y += lines.length * 4.8 + 10;
+
+  doc.setDrawColor(226, 232, 240);
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(marginLeft, y, contentWidth, 24, 2, 2, 'FD');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`Offener Rechnungsbetrag: ${formatCurrency(openAmount)}`, marginLeft + 4, y + 7);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(71, 85, 105);
+  doc.text(`Verwendungszweck: ${invoice.invoiceNumber}`, marginLeft + 4, y + 13);
+  if (company.iban) {
+    doc.text(`IBAN: ${company.iban}${company.bic ? ` · BIC: ${company.bic}` : ''}`, marginLeft + 4, y + 19);
+  }
+
+  const qrDataUrl = await generateGiroCodeDataUrl(invoice, company);
+  if (qrDataUrl) {
+    const qrSize = 27;
+    const qrX = pageWidth - marginRight - qrSize;
+    doc.addImage(qrDataUrl, 'PNG', qrX, y + 32, qrSize, qrSize);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.5);
+    doc.setTextColor(71, 85, 105);
+    doc.text('GiroCode (EPC-QR)', qrX + qrSize / 2, y + 32 + qrSize + 4, { align: 'center' });
+  }
+
+  drawFooter(doc, company);
+  return doc;
+}
+
+export function buildTimesheetPdf(
+  title: string,
+  customer: Customer | undefined,
+  entries: TimeEntry[],
+  company: CompanyProfile,
+  subtitle?: string
+): jsPDF {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  const pageWidth = 210;
+  const marginLeft = 20;
+  const marginRight = 20;
+  const contentWidth = pageWidth - marginLeft - marginRight;
+  const accentPreset = company.invoiceAccentColor ?? 'slate';
+  const accentRgb = INVOICE_ACCENT_STYLES[accentPreset]?.rgb ?? [15, 23, 42];
+  const [accentR, accentG, accentB] = accentRgb;
+
+  const { rightBottomY: cy } = drawCompanyHeader(doc, company, accentRgb);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(15, 23, 42);
+  let ry = 42;
+  doc.text(customer?.companyName || 'Kunde', marginLeft, ry);
+  ry += 5;
+  doc.setFont('helvetica', 'normal');
+  if (customer?.contactName) {
+    doc.text(customer.contactName, marginLeft, ry);
+    ry += 5;
+  }
+  if (customer?.street) {
+    doc.text(customer.street, marginLeft, ry);
+    ry += 5;
+  }
+  const cityLine = `${customer?.postalCode || ''} ${customer?.city || ''}`.trim();
+  if (cityLine) {
+    doc.text(cityLine, marginLeft, ry);
+    ry += 5;
+  }
+
+  let y = Math.max(ry + 16, cy + 12);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.setTextColor(accentR, accentG, accentB);
+  doc.text(title, marginLeft, y);
+  y += 6;
+
+  if (subtitle) {
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    doc.text(subtitle, marginLeft, y);
+    y += 8;
+  } else {
+    y += 4;
+  }
+
+  const drawHeader = (startY: number) => {
+    doc.setFillColor(accentR, accentG, accentB);
+    doc.rect(marginLeft, startY, contentWidth, 8, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Datum', marginLeft + 2, startY + 5.4);
+    doc.text('Zeitraum', marginLeft + 26, startY + 5.4);
+    doc.text('Tätigkeit / Notizen', marginLeft + 54, startY + 5.4);
+    doc.text('Dauer', pageWidth - marginRight - 2, startY + 5.4, { align: 'right' });
+    return startY + 11;
+  };
+
+  y = drawHeader(y);
+
+  const sorted = [...entries].sort(
+    (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+  );
+
+  let totalSeconds = 0;
+  for (const entry of sorted) {
+    totalSeconds += entry.durationSeconds;
+    if (y > 246) {
+      doc.addPage();
+      y = drawHeader(20);
+    }
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text(formatDateDE(entry.startTime), marginLeft + 2, y);
+    doc.text(`${toInputTime(entry.startTime)}–${toInputTime(entry.endTime)}`, marginLeft + 26, y);
+
+    doc.setFont('helvetica', 'bold');
+    const titleLines = doc.splitTextToSize(entry.title, 88);
+    doc.text(titleLines, marginLeft + 54, y);
+
+    doc.setFont('helvetica', 'bold');
+    doc.text(formatDuration(entry.durationSeconds), pageWidth - marginRight - 2, y, {
+      align: 'right',
+    });
+
+    let rowHeight = titleLines.length * 4.1;
+    if (entry.notes) {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      const noteLines = doc.splitTextToSize(entry.notes, 88);
+      doc.text(noteLines, marginLeft + 54, y + rowHeight);
+      rowHeight += noteLines.length * 3.8;
+    }
+
+    y += Math.max(rowHeight, 5) + 2.5;
+    doc.setDrawColor(226, 232, 240);
+    doc.line(marginLeft, y - 1, pageWidth - marginRight, y - 1);
+    y += 2;
+  }
+
+  if (y > 235) {
+    doc.addPage();
+    y = 24;
+  }
+
+  y += 4;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(accentR, accentG, accentB);
+  const totalHours = totalSeconds / 3600;
+  doc.text(
+    `Gesamtarbeitszeit (${sorted.length} Einträge): ${formatDuration(totalSeconds)} (${formatNumber(totalHours, 2)} Std.)`,
+    pageWidth - marginRight - 2,
+    y,
+    { align: 'right' }
+  );
+
+  // Customer signature block
+  y += 18;
+  doc.setDrawColor(148, 163, 184);
+  doc.line(marginLeft, y, marginLeft + 65, y);
+  doc.line(pageWidth - marginRight - 65, y, pageWidth - marginRight, y);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(100, 116, 139);
+  doc.text('Ort, Datum', marginLeft, y + 4.5);
+  doc.text('Unterschrift / Leistungsbestätigung Kunde', pageWidth - marginRight - 65, y + 4.5);
+
+  drawFooter(doc, company);
+  return doc;
+}
+
+function docToBase64(doc: jsPDF): string {
   const dataUri = doc.output('datauristring');
   const commaIdx = dataUri.indexOf(',');
   return commaIdx >= 0 ? dataUri.slice(commaIdx + 1) : dataUri;
 }
 
-export async function downloadInvoicePdf(invoice: Invoice, company: CompanyProfile): Promise<void> {
-  const filename = `${invoice.invoiceNumber}.pdf`;
+async function openOrSavePdfDoc(doc: jsPDF, filename: string): Promise<void> {
   if (typeof window !== 'undefined') {
     const { Capacitor } = await import('@capacitor/core');
     if (Capacitor.isNativePlatform()) {
       const { TaktWerkNative } = await import('./taktwerkNative');
-      const base64 = getInvoicePdfBase64(invoice, company);
-      await TaktWerkNative.openPdf({ filename, base64 });
+      await TaktWerkNative.openPdf({ filename, base64: docToBase64(doc) });
       return;
     }
   }
-  const doc = buildInvoicePdf(invoice, company);
   doc.save(filename);
 }
 
-export async function shareInvoicePdf(invoice: Invoice, company: CompanyProfile): Promise<void> {
-  const filename = `${invoice.invoiceNumber}.pdf`;
+async function shareOrSavePdfDoc(doc: jsPDF, filename: string): Promise<void> {
   if (typeof window !== 'undefined') {
     const { Capacitor } = await import('@capacitor/core');
     if (Capacitor.isNativePlatform()) {
       const { TaktWerkNative } = await import('./taktwerkNative');
-      const base64 = getInvoicePdfBase64(invoice, company);
-      await TaktWerkNative.sharePdf({ filename, base64 });
+      await TaktWerkNative.sharePdf({ filename, base64: docToBase64(doc) });
       return;
     }
   }
-  const doc = buildInvoicePdf(invoice, company);
   const blob = doc.output('blob');
   if (typeof navigator !== 'undefined' && navigator.share) {
     const file = new File([blob], filename, { type: 'application/pdf' });
@@ -389,6 +679,62 @@ export async function shareInvoicePdf(invoice: Invoice, company: CompanyProfile)
     }
   }
   doc.save(filename);
+}
+
+export async function getInvoicePdfBase64(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<string> {
+  const doc = await buildInvoicePdf(invoice, company);
+  return docToBase64(doc);
+}
+
+export async function downloadInvoicePdf(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<void> {
+  const doc = await buildInvoicePdf(invoice, company);
+  await openOrSavePdfDoc(doc, `${invoice.invoiceNumber}.pdf`);
+}
+
+export async function shareInvoicePdf(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<void> {
+  const doc = await buildInvoicePdf(invoice, company);
+  await shareOrSavePdfDoc(doc, `${invoice.invoiceNumber}.pdf`);
+}
+
+export async function downloadPaymentReminderPdf(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<void> {
+  const doc = await buildPaymentReminderPdf(invoice, company);
+  await openOrSavePdfDoc(doc, `Zahlungserinnerung-${invoice.invoiceNumber}.pdf`);
+}
+
+export async function downloadTimesheetPdf(
+  title: string,
+  filename: string,
+  customer: Customer | undefined,
+  entries: TimeEntry[],
+  company: CompanyProfile,
+  subtitle?: string
+): Promise<void> {
+  const doc = buildTimesheetPdf(title, customer, entries, company, subtitle);
+  await openOrSavePdfDoc(doc, filename);
+}
+
+export async function shareTimesheetPdf(
+  title: string,
+  filename: string,
+  customer: Customer | undefined,
+  entries: TimeEntry[],
+  company: CompanyProfile,
+  subtitle?: string
+): Promise<void> {
+  const doc = buildTimesheetPdf(title, customer, entries, company, subtitle);
+  await shareOrSavePdfDoc(doc, filename);
 }
 
 export async function printInvoiceView(invoiceNumber: string): Promise<void> {

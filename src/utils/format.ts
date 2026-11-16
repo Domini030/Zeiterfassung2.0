@@ -1,4 +1,10 @@
-import type { CompanyProfile, InvoiceAccentPreset } from '../types';
+import type {
+  ActiveTimer,
+  CompanyProfile,
+  Invoice,
+  InvoiceAccentPreset,
+  TimeRoundingMinutes,
+} from '../types';
 
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('de-DE', {
@@ -64,6 +70,12 @@ export function toInputDate(date: Date = new Date()): string {
   return `${y}-${m}-${d}`;
 }
 
+export function toInputTime(isoString: string): string {
+  const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return '09:00';
+  return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+}
+
 export function addDaysISO(dateStr: string, days: number): string {
   const date = new Date(dateStr);
   if (Number.isNaN(date.getTime())) return toInputDate();
@@ -74,6 +86,41 @@ export function addDaysISO(dateStr: string, days: number): string {
 export function createId(prefix: string): string {
   const rand = Math.random().toString(36).slice(2, 8);
   return `${prefix}-${Date.now().toString(36)}-${rand}`;
+}
+
+export function roundDurationSeconds(
+  totalSeconds: number,
+  roundingMinutes?: TimeRoundingMinutes | null
+): number {
+  const safe = Math.max(0, Math.floor(totalSeconds));
+  if (!roundingMinutes || roundingMinutes <= 0) return safe;
+  const blockSeconds = roundingMinutes * 60;
+  return Math.ceil(safe / blockSeconds) * blockSeconds;
+}
+
+export function getActiveTimerElapsedMs(
+  timer: ActiveTimer,
+  nowMs: number = Date.now()
+): number {
+  const startMs = new Date(timer.startTime).getTime();
+  const accPaused = timer.accumulatedPausedMs ?? 0;
+  const effectiveEndMs = timer.pausedAt
+    ? new Date(timer.pausedAt).getTime()
+    : nowMs;
+  return Math.max(0, effectiveEndMs - startMs - accPaused);
+}
+
+export function getOverdueDays(invoice: Invoice, todayIso: string = toInputDate()): number {
+  if (invoice.status !== 'Gesendet' || !invoice.dueDate) return 0;
+  const due = new Date(`${invoice.dueDate}T00:00:00`);
+  const today = new Date(`${todayIso}T00:00:00`);
+  if (Number.isNaN(due.getTime()) || Number.isNaN(today.getTime())) return 0;
+  const diffDays = Math.floor((today.getTime() - due.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.max(0, diffDays);
+}
+
+export function isInvoiceOverdue(invoice: Invoice, todayIso: string = toInputDate()): boolean {
+  return getOverdueDays(invoice, todayIso) > 0;
 }
 
 export function formatInvoiceNumber(
