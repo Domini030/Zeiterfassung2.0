@@ -2,6 +2,7 @@ import { App as CapacitorApp } from '@capacitor/app';
 import { Cloud, FilePlus2, Moon, Play, Square, Sun, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnalyticsView } from './components/AnalyticsView';
+import { CalendarView } from './components/CalendarView';
 import { CustomersView } from './components/CustomersView';
 import { InvoicesView } from './components/InvoicesView';
 import { NextcloudSettingsView } from './components/NextcloudSettingsView';
@@ -14,10 +15,12 @@ import { TimeTrackerView } from './components/TimeTrackerView';
 import type {
   ActiveTimer,
   AppDatabase,
+  CalendarAppointment,
   CompanyProfile,
   Customer,
   Invoice,
   InvoiceStatus,
+  LocationSnapshot,
   NavSection,
   NextcloudConfigInfo,
   NfcTask,
@@ -29,34 +32,54 @@ import {
   NextcloudConflictError,
   apiCheckNextcloudRemote,
   apiLoadDb,
+  apiPushNextcloudCalendarEvent,
+  apiRunMultiFormatBackup,
   apiSaveDb,
   apiSyncNextcloud,
+  cancelNativeTimerReminder,
   getNativeNotificationStatus,
   isNativeCapacitor,
   openNativeNotificationSettings,
   requestNativeNotificationPermission,
+  scheduleNativeTimerReminder,
   syncActiveTimerNotification,
+  syncNativeWidgetState,
   triggerNfcHaptic,
 } from './utils/apiClient';
+import { isBackupDue } from './utils/exportBackup';
 import {
   createId,
   formatDateTimeDE,
   formatDuration,
   getActiveTimerElapsedMs,
 } from './utils/format';
+import { captureCurrentLocation } from './utils/geolocation';
 import { extractTagIdFromPayload } from './utils/nfcHelpers';
 import { createEmptyDatabase, createSampleDatabase } from './utils/sampleData';
+import { playReminderSound, showWebReminderNotification } from './utils/soundReminder';
 import { TaktWerkNative, type NativeNotificationStatus } from './utils/taktwerkNative';
 
 const SECTION_TITLES: Record<NavSection, string> = {
   tracker: 'Zeiterfassung',
+  calendar: 'Kalender',
   analytics: 'Auswertung & Grafik',
   nfc: 'NFC-Aufgaben',
   customers: 'Kundendatenbank',
   products: 'Produkte & Leistungen',
-  invoices: 'Rechnungen',
+  invoices: 'Rechnungen & Angebote',
   settings: 'Nextcloud & Setup',
 };
+
+const NAV_ORDER: NavSection[] = [
+  'tracker',
+  'calendar',
+  'analytics',
+  'nfc',
+  'customers',
+  'products',
+  'invoices',
+  'settings',
+];
 
 const DEFAULT_NC_INFO: NextcloudConfigInfo = {
   configured: false,
@@ -117,11 +140,54 @@ export default function App() {
   }, [checkNotificationStatus]);
 
   const deepLinkHandledRef = useRef(false);
+  const autoBackupCheckedRef = useRef(false);
+  const reminderFiredKeyRef = useRef<string | null>(null);
+  const sectionHistoryRef = useRef<NavSection[]>([]);
+  const touchStartRef = useRef<{ x: number; y: number; ignore: boolean } | null>(null);
   const lastNfcTriggerRef = useRef<{ code: string; at: number } | null>(null);
   const dbRef = useRef<AppDatabase>(db);
   useEffect(() => {
     dbRef.current = db;
   }, [db]);
+
+  const navigateToSection = useCallback((target: NavSection, pushHistory = true) => {
+    setSection((prev) => {
+      if (pushHistory && prev !== target) {
+        sectionHistoryRef.current = [...sectionHistoryRef.current.slice(-14), prev];
+      }
+      return target;
+    });
+  }, []);
+
+  const goBackSection = useCallback((): boolean => {
+    const prev = sectionHistoryRef.current.pop();
+    if (prev) {
+      setSection(prev);
+      return true;
+    }
+    if (section !== 'tracker') {
+      setSection('tracker');
+      return true;
+    }
+    return false;
+  }, [section]);
+
+  // Apply UI customization attributes & custom invoice color CSS variable
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-ui-accent', db.company.uiAccent ?? 'violet');
+    root.setAttribute('data-ui-density', db.company.uiDensity ?? 'comfortable');
+    root.setAttribute('data-ui-scale', db.company.uiFontScale ?? 'normal');
+    root.style.setProperty(
+      '--tw-invoice-accent',
+      db.company.invoiceCustomAccentHex || '#1d4ed8'
+    );
+  }, [
+    db.company.uiAccent,
+    db.company.uiDensity,
+    db.company.uiFontScale,
+    db.company.invoiceCustomAccentHex,
+  ]);
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => {
@@ -220,6 +286,7 @@ export default function App() {
           billable: true,
           billedInvoiceId: null,
           source: timer.source,
+          location: timer.location ?? null,
           createdAt: nowIso,
         };
         nextTimeEntries = [finished, ...nextTimeEntries];
@@ -264,6 +331,7 @@ export default function App() {
         hourlyRateNet: product?.unitPriceNet ?? 0,
         taxRate: (product?.taxRate ?? 19) as TaxRate,
         source: 'nfc',
+        location: null,
       };
 
       return {
@@ -280,6 +348,52 @@ export default function App() {
     []
   );
 
+  const attachAutoLocationToTimer = useCallback(
+    (timerId: string) => {
+      if (!dbRef.current.company.autoCaptureLocation) return;
+      void captureCurrentLocation()
+        .then((loc) => {
+          const current = dbRef.current;
+          if (!current.activeTimer || current.activeTimer.id !== timerId) return;
+          void persistDb({
+            ...current,
+            activeTimer: {
+              ...current.activeTimer,
+              location: loc,
+            },
+          });
+        })
+        .catch(() => {
+          // Best-effort GPS capture: never block timer
+        });
+    },
+    [persistDb]
+  );
+
+  const pushFinishedEntryToNextcloudCalendar = useCallback(
+    (entry: TimeEntry) => {
+      const calCfg = dbRef.current.company.calendarConfig;
+      if (!calCfg?.autoSyncTimeEntries || !calCfg.selectedCalendarUrl) return;
+      const custName =
+        dbRef.current.customers.find((c) => c.id === entry.customerId)?.companyName ?? '';
+      const appt: CalendarAppointment = {
+        id: entry.id,
+        uid: `${entry.id}@taktwerk.app`,
+        title: custName ? `${entry.title} (${custName})` : entry.title,
+        startTime: entry.startTime,
+        endTime: entry.endTime,
+        location: entry.location?.address ?? '',
+        description: entry.notes || '',
+        calendarName: calCfg.selectedCalendarName,
+        source: 'nextcloud',
+        customerId: entry.customerId,
+        productId: entry.productId,
+      };
+      void apiPushNextcloudCalendarEvent(calCfg.selectedCalendarUrl, appt).catch(() => {});
+    },
+    []
+  );
+
   // Initial Load + URL Deep-Link (?nfc=<tagId> or Capacitor taktwerk://nfc/<tagId>)
   useEffect(() => {
     let active = true;
@@ -290,6 +404,7 @@ export default function App() {
 
         let loadedDb = data.db ?? createEmptyDatabase();
         setNextcloud(data.nextcloud);
+        let sectionOverridden = false;
 
         if (!deepLinkHandledRef.current) {
           deepLinkHandledRef.current = true;
@@ -318,15 +433,37 @@ export default function App() {
             notify(result.message, result.isError);
             if (!result.isError) {
               await apiSaveDb(loadedDb);
+              if (loadedDb.activeTimer) {
+                attachAutoLocationToTimer(loadedDb.activeTimer.id);
+              }
             } else {
               setPendingScannedUid({ uid: incomingNfc, at: Date.now() });
               setSection('nfc');
+              sectionOverridden = true;
+            }
+          } else if (isNativeCapacitor()) {
+            const widgetAction = await TaktWerkNative.getPendingWidgetAction().catch(
+              () => ({ action: null, tagUid: null })
+            );
+            if (widgetAction?.action === 'trigger' && widgetAction.tagUid) {
+              const result = triggerNfcOnDb(loadedDb, widgetAction.tagUid);
+              loadedDb = result.nextDb;
+              triggerNfcHaptic(result.haptic);
+              notify(result.message, result.isError);
+              if (!result.isError) {
+                await apiSaveDb(loadedDb);
+              }
             }
           }
         }
 
+        if (!sectionOverridden && loadedDb.company.defaultStartSection) {
+          setSection(loadedDb.company.defaultStartSection);
+        }
+
         dbRef.current = loadedDb;
         setDb(loadedDb);
+        void syncNativeWidgetState(loadedDb);
 
         if (data.nextcloud.configured) {
           void apiCheckNextcloudRemote().then((check) => {
@@ -334,6 +471,36 @@ export default function App() {
               setRemoteNewerAt(check.remoteUpdatedAt);
             }
           });
+        }
+
+        // Scheduled Automated Multi-Format Backup Check
+        if (!autoBackupCheckedRef.current && isBackupDue(loadedDb)) {
+          autoBackupCheckedRef.current = true;
+          const backupCfg = loadedDb.company.autoBackup!;
+          void apiRunMultiFormatBackup(loadedDb, backupCfg.formats, {
+            uploadToNextcloud: backupCfg.uploadToNextcloud && data.nextcloud.configured,
+            localDownload: backupCfg.localDownload,
+          })
+            .then((res) => {
+              if (!active) return;
+              const current = dbRef.current;
+              const nextWithStamp: AppDatabase = {
+                ...current,
+                company: {
+                  ...current.company,
+                  autoBackup: {
+                    ...backupCfg,
+                    lastRunAt: new Date().toISOString(),
+                    lastRunSummary: res.summary,
+                  },
+                },
+              };
+              void persistDb(nextWithStamp);
+              notify(`Automatisches Backup abgeschlossen (${res.summary}).`);
+            })
+            .catch(() => {
+              // Silent fallback if offline at startup
+            });
         }
       } catch (err) {
         notify(
@@ -347,7 +514,7 @@ export default function App() {
     return () => {
       active = false;
     };
-  }, [notify, triggerNfcOnDb]);
+  }, [attachAutoLocationToTimer, notify, persistDb, triggerNfcOnDb]);
 
   const handleGlobalNfcCode = useCallback(
     (rawCode: string) => {
@@ -360,11 +527,12 @@ export default function App() {
       }
       lastNfcTriggerRef.current = { code: clean, at: now };
 
+      const prevTimer = dbRef.current.activeTimer;
       const result = triggerNfcOnDb(dbRef.current, clean);
       triggerNfcHaptic(result.haptic);
       if (result.isError) {
         setPendingScannedUid({ uid: clean, at: now });
-        setSection('nfc');
+        navigateToSection('nfc');
         notify(
           `Unbekannter NFC-Tag "${clean}" erkannt — du kannst ihn jetzt einer Aufgabe zuweisen.`,
           true
@@ -373,8 +541,21 @@ export default function App() {
       }
       void persistDb(result.nextDb);
       notify(result.message);
+
+      if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) {
+        attachAutoLocationToTimer(result.nextDb.activeTimer.id);
+      } else if (!result.nextDb.activeTimer && result.nextDb.timeEntries[0]) {
+        pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0]);
+      }
     },
-    [notify, persistDb, triggerNfcOnDb]
+    [
+      attachAutoLocationToTimer,
+      navigateToSection,
+      notify,
+      persistDb,
+      pushFinishedEntryToNextcloudCalendar,
+      triggerNfcOnDb,
+    ]
   );
 
   // Listen for warm/background NFC app launches via Capacitor deep-link (taktwerk://nfc/<tagId>)
@@ -475,6 +656,105 @@ export default function App() {
     });
   }, [db.activeTimer, db.customers, loading]);
 
+  // Sync native Android Home Widget & 1-Hour Reminder Alarm
+  useEffect(() => {
+    if (loading) return;
+    void syncNativeWidgetState(db);
+  }, [db.activeTimer, db.timeEntries, db.nfcTasks, db.customers, loading, db]);
+
+  // Android Widget Quick-Start Tap Listener & Native Back Button
+  useEffect(() => {
+    if (!isNativeCapacitor()) return;
+    let widgetHandle: { remove: () => Promise<void> } | null = null;
+    let backHandle: { remove: () => Promise<void> } | null = null;
+    let cancelled = false;
+
+    void TaktWerkNative.addListener('widgetActionTriggered', (event) => {
+      if (event.action === 'trigger' && event.tagUid) {
+        handleGlobalNfcCode(event.tagUid);
+      } else {
+        navigateToSection('tracker');
+      }
+    })
+      .then((h) => {
+        if (cancelled) void h.remove();
+        else widgetHandle = h;
+      })
+      .catch(() => {});
+
+    void CapacitorApp.addListener('backButton', () => {
+      const handled = goBackSection();
+      if (!handled) {
+        void CapacitorApp.exitApp();
+      }
+    }).then((h) => {
+      if (cancelled) void h.remove();
+      else backHandle = h;
+    });
+
+    return () => {
+      cancelled = true;
+      if (widgetHandle) void widgetHandle.remove();
+      if (backHandle) void backHandle.remove();
+    };
+  }, [goBackSection, handleGlobalNfcCode, navigateToSection]);
+
+  // 1-Hour Running Task Reminder (Native AlarmManager + Web Notification & Sound)
+  useEffect(() => {
+    if (loading) return;
+    const timer = db.activeTimer;
+    const enabled = db.company.timerReminderEnabled !== false;
+    const reminderMinutes = Math.max(1, db.company.timerReminderMinutes ?? 60);
+    const soundPreset = db.company.timerReminderSound ?? 'chime';
+
+    if (!timer || timer.pausedAt || !enabled) {
+      void cancelNativeTimerReminder();
+      return;
+    }
+
+    const elapsedMs = getActiveTimerElapsedMs(timer);
+    const thresholdMs = reminderMinutes * 60_000;
+    const remainingMs = thresholdMs - elapsedMs;
+    const fireKey = `${timer.id}:${reminderMinutes}`;
+
+    if (isNativeCapacitor() && remainingMs > 1500) {
+      void scheduleNativeTimerReminder({
+        delayMs: remainingMs,
+        title: `Laufende Aufgabe (${reminderMinutes} Min.): ${timer.title}`,
+        body: 'Der Timer läuft noch — möchtest du pausieren oder stoppen?',
+        soundPreset,
+      });
+    }
+
+    const triggerReminder = () => {
+      if (reminderFiredKeyRef.current === fireKey) return;
+      reminderFiredKeyRef.current = fireKey;
+      playReminderSound(soundPreset);
+      void showWebReminderNotification(
+        `TaktWerk Erinnerung (${reminderMinutes} Min.)`,
+        `Aufgabe "${timer.title}" läuft noch.`
+      );
+      notify(`Erinnerung: Aufgabe "${timer.title}" läuft bereits ${reminderMinutes} Minuten.`);
+    };
+
+    if (remainingMs <= 0) {
+      triggerReminder();
+      return;
+    }
+
+    const timeoutId = setTimeout(triggerReminder, remainingMs);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [
+    db.activeTimer,
+    db.company.timerReminderEnabled,
+    db.company.timerReminderMinutes,
+    db.company.timerReminderSound,
+    loading,
+    notify,
+  ]);
+
   const handleStartTimer = (payload: {
     customerId: string;
     productId: string;
@@ -482,6 +762,7 @@ export default function App() {
     notes: string;
     nfcTaskId?: string | null;
     source?: 'timer' | 'nfc';
+    location?: LocationSnapshot | null;
   }) => {
     const product = db.products.find((p) => p.id === payload.productId);
     const nowIso = new Date().toISOString();
@@ -498,10 +779,44 @@ export default function App() {
       hourlyRateNet: product?.unitPriceNet ?? 0,
       taxRate: (product?.taxRate ?? 19) as TaxRate,
       source: payload.source ?? 'timer',
+      location: payload.location ?? null,
     };
     void persistDb({ ...db, activeTimer: timer });
     notify(`Timer gestartet: ${timer.title}`);
+    if (!payload.location) {
+      attachAutoLocationToTimer(timer.id);
+    }
   };
+
+  const handleUpdateActiveTimerNotes = useCallback(
+    (notes: string) => {
+      const current = dbRef.current;
+      if (!current.activeTimer) return;
+      void persistDb({
+        ...current,
+        activeTimer: {
+          ...current.activeTimer,
+          notes,
+        },
+      });
+    },
+    [persistDb]
+  );
+
+  const handleUpdateActiveTimerLocation = useCallback(
+    (location: LocationSnapshot | null) => {
+      const current = dbRef.current;
+      if (!current.activeTimer) return;
+      void persistDb({
+        ...current,
+        activeTimer: {
+          ...current.activeTimer,
+          location,
+        },
+      });
+    },
+    [persistDb]
+  );
 
   const handleStopTimer = useCallback(() => {
     if (!dbRef.current.activeTimer) return;
@@ -525,15 +840,18 @@ export default function App() {
       billable: true,
       billedInvoiceId: null,
       source: dbRef.current.activeTimer.source,
+      location: dbRef.current.activeTimer.location ?? null,
       createdAt: now.toISOString(),
     };
+    void cancelNativeTimerReminder();
     void persistDb({
       ...dbRef.current,
       activeTimer: null,
       timeEntries: [entry, ...dbRef.current.timeEntries],
     });
+    pushFinishedEntryToNextcloudCalendar(entry);
     notify(`Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`);
-  }, [notify, persistDb]);
+  }, [notify, persistDb, pushFinishedEntryToNextcloudCalendar]);
 
   const handlePauseTimer = useCallback(() => {
     if (!dbRef.current.activeTimer || dbRef.current.activeTimer.pausedAt) return;
@@ -541,6 +859,7 @@ export default function App() {
       ...dbRef.current.activeTimer,
       pausedAt: new Date().toISOString(),
     };
+    void cancelNativeTimerReminder();
     void persistDb({ ...dbRef.current, activeTimer: updatedTimer });
     notify(`Timer pausiert: ${updatedTimer.title}`);
   }, [notify, persistDb]);
@@ -674,6 +993,7 @@ export default function App() {
   };
 
   const handleTriggerNfcTag = (tagUid: string) => {
+    const prevTimer = db.activeTimer;
     const result = triggerNfcOnDb(db, tagUid);
     triggerNfcHaptic(result.haptic);
     if (result.isError) {
@@ -682,6 +1002,11 @@ export default function App() {
     }
     void persistDb(result.nextDb);
     notify(result.message);
+    if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) {
+      attachAutoLocationToTimer(result.nextDb.activeTimer.id);
+    } else if (!result.nextDb.activeTimer && result.nextDb.timeEntries[0]) {
+      pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0]);
+    }
   };
 
   const handleSaveCustomer = (customer: Customer) => {
@@ -700,12 +1025,18 @@ export default function App() {
     });
   };
 
-  const handleSaveProduct = (product: Product) => {
+  const handleSaveProduct = (product: Product, incrementSkuSequence = false) => {
     const exists = db.products.some((p) => p.id === product.id);
     const nextProducts = exists
       ? db.products.map((p) => (p.id === product.id ? product : p))
       : [...db.products, product];
-    void persistDb({ ...db, products: nextProducts });
+    const nextCompany = incrementSkuSequence
+      ? {
+          ...db.company,
+          nextProductSequence: (db.company.nextProductSequence || 1) + 1,
+        }
+      : db.company;
+    void persistDb({ ...db, company: nextCompany, products: nextProducts });
     notify(`Artikel "${product.name}" gespeichert.`);
   };
 
@@ -716,24 +1047,38 @@ export default function App() {
     });
   };
 
+  const handleSaveCalendarEvents = (events: CalendarAppointment[]) => {
+    void persistDb({ ...dbRef.current, calendarEvents: events });
+  };
+
   const handleCreateInvoice = (invoice: Invoice, billedEntryIds: string[]) => {
     const currentDb = dbRef.current;
-    const nextTimeEntries = currentDb.timeEntries.map((entry) =>
-      billedEntryIds.includes(entry.id)
-        ? { ...entry, billedInvoiceId: invoice.id }
-        : entry
-    );
+    const isQuote = invoice.documentType === 'quote';
+    const nextTimeEntries = isQuote
+      ? currentDb.timeEntries
+      : currentDb.timeEntries.map((entry) =>
+          billedEntryIds.includes(entry.id)
+            ? { ...entry, billedInvoiceId: invoice.id }
+            : entry
+        );
     const nextDb: AppDatabase = {
       ...currentDb,
       company: {
         ...currentDb.company,
-        nextInvoiceSequence: (currentDb.company.nextInvoiceSequence || 1) + 1,
+        nextInvoiceSequence: isQuote
+          ? currentDb.company.nextInvoiceSequence || 1
+          : (currentDb.company.nextInvoiceSequence || 1) + 1,
+        nextQuoteSequence: isQuote
+          ? (currentDb.company.nextQuoteSequence || 1) + 1
+          : currentDb.company.nextQuoteSequence || 1,
       },
       timeEntries: nextTimeEntries,
       invoices: [invoice, ...currentDb.invoices],
     };
     void persistDb(nextDb);
-    notify(`Rechnung ${invoice.invoiceNumber} erstellt.`);
+    notify(
+      `${isQuote ? 'Angebot' : 'Rechnung'} ${invoice.invoiceNumber} erstellt.`
+    );
   };
 
   const handleUpdateInvoice = (updatedInvoice: Invoice, billedEntryIds: string[]) => {
@@ -870,11 +1215,56 @@ export default function App() {
     db.timeEntries.length === 0 &&
     db.invoices.length === 0;
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (db.company.swipeNavigationEnabled === false) return;
+    if (e.touches.length !== 1) return;
+    const target = e.target as HTMLElement | null;
+    const ignore = Boolean(
+      target?.closest('input, textarea, select, [data-no-swipe], .overflow-x-auto')
+    );
+    touchStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      ignore,
+    };
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (db.company.swipeNavigationEnabled === false) return;
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    if (!start || start.ignore || e.changedTouches.length !== 1) return;
+
+    const dx = e.changedTouches[0].clientX - start.x;
+    const dy = e.changedTouches[0].clientY - start.y;
+    if (Math.abs(dx) < 80 || Math.abs(dy) > 55) return;
+
+    if (dx > 0) {
+      // Swipe Right = Back in history, or previous section
+      if (sectionHistoryRef.current.length > 0) {
+        goBackSection();
+      } else {
+        const idx = NAV_ORDER.indexOf(section);
+        if (idx > 0) navigateToSection(NAV_ORDER[idx - 1], false);
+      }
+    } else {
+      // Swipe Left = Next section
+      const idx = NAV_ORDER.indexOf(section);
+      if (idx >= 0 && idx < NAV_ORDER.length - 1) {
+        navigateToSection(NAV_ORDER[idx + 1]);
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0e0a18] dark:text-slate-100 lg:flex">
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0e0a18] dark:text-slate-100 lg:flex"
+    >
       <Sidebar
         activeSection={section}
-        onSelectSection={setSection}
+        onSelectSection={navigateToSection}
         nextcloud={nextcloud}
         openTimeCount={openTimeCount}
         unpaidInvoiceCount={unpaidInvoiceCount}
@@ -928,7 +1318,7 @@ export default function App() {
             ) : (
               <button
                 type="button"
-                onClick={() => setSection('invoices')}
+                onClick={() => navigateToSection('invoices')}
                 className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <FilePlus2 className="h-3.5 w-3.5" />
@@ -1001,7 +1391,7 @@ export default function App() {
               <div className="flex flex-wrap gap-2 shrink-0">
                 <button
                   type="button"
-                  onClick={() => setSection('settings')}
+                  onClick={() => navigateToSection('settings')}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
                 >
                   <Cloud className="h-3.5 w-3.5" />
@@ -1033,9 +1423,13 @@ export default function App() {
                   products={db.products}
                   nfcTasks={db.nfcTasks}
                   timeEntries={db.timeEntries}
+                  invoices={db.invoices}
+                  calendarEvents={db.calendarEvents ?? []}
                   activeTimer={db.activeTimer}
                   elapsedSeconds={elapsedSeconds}
                   onStartTimer={handleStartTimer}
+                  onUpdateActiveTimerNotes={handleUpdateActiveTimerNotes}
+                  onUpdateActiveTimerLocation={handleUpdateActiveTimerLocation}
                   onPauseTimer={handlePauseTimer}
                   onResumeTimer={handleResumeTimer}
                   onStopTimer={handleStopTimer}
@@ -1046,13 +1440,38 @@ export default function App() {
                   onToggleBillable={handleToggleBillable}
                   onCreateInvoiceFromEntries={(custId, entryIds) => {
                     setInvoiceDraft({ customerId: custId, entryIds });
-                    setSection('invoices');
+                    navigateToSection('invoices');
                   }}
-                  onNavigate={(target) => setSection(target)}
+                  onNavigate={(target) => navigateToSection(target)}
                   onNotify={notify}
                   notificationStatus={notificationStatus}
                   onRequestNotificationPermission={handleRequestNotificationPermission}
                   onOpenNotificationSettings={handleOpenNotificationSettings}
+                />
+              )}
+
+              {section === 'calendar' && (
+                <CalendarView
+                  company={db.company}
+                  customers={db.customers}
+                  products={db.products}
+                  timeEntries={db.timeEntries}
+                  invoices={db.invoices}
+                  calendarEvents={db.calendarEvents ?? []}
+                  nextcloud={nextcloud}
+                  onSaveCalendarEvents={handleSaveCalendarEvents}
+                  onStartTimerFromAppointment={(payload) => {
+                    handleStartTimer({
+                      customerId: payload.customerId,
+                      productId: payload.productId,
+                      title: payload.title,
+                      notes: payload.notes,
+                      source: 'timer',
+                    });
+                    navigateToSection('tracker');
+                  }}
+                  onNavigateSettings={() => navigateToSection('settings')}
+                  onNotify={notify}
                 />
               )}
 
@@ -1084,17 +1503,19 @@ export default function App() {
                   customers={db.customers}
                   timeEntries={db.timeEntries}
                   invoices={db.invoices}
+                  categories={db.company.customerCategories ?? []}
                   onSaveCustomer={handleSaveCustomer}
                   onDeleteCustomer={handleDeleteCustomer}
                   onCreateInvoiceForCustomer={(custId) => {
                     setInvoiceDraft({ customerId: custId, entryIds: [] });
-                    setSection('invoices');
+                    navigateToSection('invoices');
                   }}
                 />
               )}
 
               {section === 'products' && (
                 <ProductsView
+                  company={db.company}
                   products={db.products}
                   onSaveProduct={handleSaveProduct}
                   onDeleteProduct={handleDeleteProduct}

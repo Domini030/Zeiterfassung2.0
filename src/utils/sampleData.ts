@@ -1,5 +1,20 @@
 import type { AppDatabase, CompanyProfile } from '../types';
 
+export const DEFAULT_CUSTOMER_CATEGORIES = [
+  'Stammkunde',
+  'Projektkunde',
+  'Wartungsvertrag',
+  'Behörde / KMU',
+];
+
+export const DEFAULT_PRODUCT_CATEGORIES = [
+  'Beratung',
+  'Entwicklung',
+  'Wartung & Support',
+  'Hardware & Material',
+  'Pauschalen',
+];
+
 export function createDefaultCompany(): CompanyProfile {
   return {
     companyName: 'Meine Firma GmbH',
@@ -23,20 +38,62 @@ export function createDefaultCompany(): CompanyProfile {
     invoiceNumberPattern: '{PREFIX}{YYYY}-{NR}',
     invoiceSequenceDigits: 4,
     invoiceAccentColor: 'slate',
+    invoiceCustomAccentHex: '#1d4ed8',
+    invoiceFontFamily: 'sans',
+    invoiceLayoutStyle: 'classic',
     invoiceHeaderTitle: 'Rechnung',
     invoiceDefaultIntroText:
       'Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihren Auftrag. Vereinbarungsgemäß berechnen wir Ihnen folgende erbrachte Leistungen:',
     invoiceDefaultOutroText:
       'Bitte überweisen Sie den Rechnungsbetrag innerhalb der Zahlungsfrist unter Angabe der Rechnungsnummer auf das unten genannte Konto.',
     invoiceFooterNote: '',
+    quotePrefix: 'ANG-',
+    nextQuoteSequence: 1,
+    quoteNumberPattern: '{PREFIX}{YYYY}-{NR}',
+    quoteHeaderTitle: 'Angebot',
+    quoteDefaultIntroText:
+      'Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes unverbindliches Angebot:',
+    quoteDefaultOutroText:
+      'Dieses Angebot ist 14 Tage gültig. Bei Rückfragen oder Beauftragung freuen wir uns über Ihre Rückmeldung.',
+    productPrefix: 'ART-',
+    nextProductSequence: 101,
+    productSequenceDigits: 3,
+    productNumberPattern: '{PREFIX}{NR}',
+    skuFieldLabel: 'Artikel-Nr.',
+    customerCategories: DEFAULT_CUSTOMER_CATEGORIES,
+    productCategories: DEFAULT_PRODUCT_CATEGORIES,
     smallBusinessMode: false,
     smallBusinessNotice: 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.',
+    uiAccent: 'violet',
+    uiDensity: 'comfortable',
+    uiFontScale: 'normal',
+    defaultStartSection: 'tracker',
+    swipeNavigationEnabled: true,
+    autoCaptureLocation: false,
+    dailyGoalHours: 8,
+    timerReminderEnabled: true,
+    timerReminderMinutes: 60,
+    timerReminderSound: 'chime',
+    autoBackup: {
+      enabled: false,
+      frequency: 'weekly',
+      formats: ['json', 'excel'],
+      uploadToNextcloud: true,
+      localDownload: false,
+      lastRunAt: null,
+      lastRunSummary: null,
+    },
+    calendarConfig: {
+      selectedCalendarUrl: '',
+      selectedCalendarName: '',
+      autoSyncTimeEntries: false,
+    },
   };
 }
 
 export function createEmptyDatabase(): AppDatabase {
   return {
-    version: 1,
+    version: 2,
     updatedAt: new Date().toISOString(),
     company: createDefaultCompany(),
     customers: [],
@@ -45,17 +102,21 @@ export function createEmptyDatabase(): AppDatabase {
     timeEntries: [],
     activeTimer: null,
     invoices: [],
+    calendarEvents: [],
   };
 }
 
 export function createSampleDatabase(): AppDatabase {
   const now = new Date();
   const hoursAgo = (h: number) => new Date(now.getTime() - h * 3600 * 1000).toISOString();
+  const tomorrow = new Date(now.getTime() + 24 * 3600 * 1000);
+  const tomorrowIsoDate = tomorrow.toISOString().slice(0, 10);
 
   return {
-    version: 1,
+    version: 2,
     updatedAt: now.toISOString(),
     company: {
+      ...createDefaultCompany(),
       companyName: 'Nordwerk IT & Beratung GmbH',
       ownerName: 'Lukas Brenner',
       street: 'Alsterufer 44',
@@ -70,21 +131,10 @@ export function createSampleDatabase(): AppDatabase {
       bankName: 'Hamburger Sparkasse',
       iban: 'DE12 2005 0550 1012 3456 78',
       bic: 'HASPDEHHXXX',
-      invoicePrefix: 'RE-',
       nextInvoiceSequence: 2,
-      defaultPaymentTermDays: 14,
-      invoiceShowLogo: true,
-      invoiceNumberPattern: '{PREFIX}{YYYY}-{NR}',
-      invoiceSequenceDigits: 4,
+      nextQuoteSequence: 2,
+      nextProductSequence: 106,
       invoiceAccentColor: 'violet',
-      invoiceHeaderTitle: 'Rechnung',
-      invoiceDefaultIntroText:
-        'Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihren Auftrag. Vereinbarungsgemäß berechnen wir Ihnen folgende erbrachte Leistungen:',
-      invoiceDefaultOutroText:
-        'Bitte überweisen Sie den Rechnungsbetrag innerhalb der Zahlungsfrist unter Angabe der Rechnungsnummer auf das unten genannte Konto.',
-      invoiceFooterNote: '',
-      smallBusinessMode: false,
-      smallBusinessNotice: 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.',
     },
     customers: [
       {
@@ -100,6 +150,7 @@ export function createSampleDatabase(): AppDatabase {
         country: 'Deutschland',
         vatId: 'DE284910332',
         paymentTermDays: 14,
+        category: 'Wartungsvertrag',
         notes: 'Monatliche Wartung & IT-Support vor Ort über NFC-Tags im Serverraum.',
         createdAt: hoursAgo(240),
       },
@@ -116,6 +167,7 @@ export function createSampleDatabase(): AppDatabase {
         country: 'Deutschland',
         vatId: 'DE194827110',
         paymentTermDays: 30,
+        category: 'Projektkunde',
         notes: 'Entwicklung & Nextcloud-Infrastruktur.',
         createdAt: hoursAgo(200),
       },
@@ -132,6 +184,7 @@ export function createSampleDatabase(): AppDatabase {
         country: 'Deutschland',
         vatId: 'DE302918475',
         paymentTermDays: 14,
+        category: 'Stammkunde',
         notes: 'Projektbegleitung & Vor-Ort-Termine.',
         createdAt: hoursAgo(120),
       },
@@ -146,6 +199,7 @@ export function createSampleDatabase(): AppDatabase {
         unit: 'Std.',
         unitPriceNet: 115,
         taxRate: 19,
+        category: 'Wartung & Support',
         createdAt: hoursAgo(240),
       },
       {
@@ -157,6 +211,7 @@ export function createSampleDatabase(): AppDatabase {
         unit: 'Std.',
         unitPriceNet: 135,
         taxRate: 19,
+        category: 'Entwicklung',
         createdAt: hoursAgo(240),
       },
       {
@@ -168,6 +223,7 @@ export function createSampleDatabase(): AppDatabase {
         unit: 'Std.',
         unitPriceNet: 125,
         taxRate: 19,
+        category: 'Beratung',
         createdAt: hoursAgo(240),
       },
       {
@@ -179,6 +235,7 @@ export function createSampleDatabase(): AppDatabase {
         unit: 'Stk.',
         unitPriceNet: 29,
         taxRate: 19,
+        category: 'Hardware & Material',
         createdAt: hoursAgo(200),
       },
       {
@@ -190,6 +247,7 @@ export function createSampleDatabase(): AppDatabase {
         unit: 'Pauschal',
         unitPriceNet: 45,
         taxRate: 19,
+        category: 'Pauschalen',
         createdAt: hoursAgo(200),
       },
     ],
@@ -250,6 +308,12 @@ export function createSampleDatabase(): AppDatabase {
         billable: true,
         billedInvoiceId: null,
         source: 'nfc',
+        location: {
+          lat: 48.1372,
+          lng: 11.5582,
+          address: 'Schwanthalerstraße 82, 80336 München',
+          capturedAt: hoursAgo(30),
+        },
         createdAt: hoursAgo(27.5),
       },
       {
@@ -308,6 +372,7 @@ export function createSampleDatabase(): AppDatabase {
     invoices: [
       {
         id: 'inv-1',
+        documentType: 'invoice',
         invoiceNumber: 'RE-2026-0001',
         customerId: 'cust-3',
         customerSnapshot: {
@@ -341,6 +406,10 @@ export function createSampleDatabase(): AppDatabase {
             productId: 'prod-3',
           },
         ],
+        subtotalNetBeforeDiscount: 250,
+        discountType: 'percent',
+        discountValue: 0,
+        discountNetAmount: 0,
         netTotal: 250,
         taxTotal: 47.5,
         grossTotal: 297.5,
@@ -348,6 +417,19 @@ export function createSampleDatabase(): AppDatabase {
         outroText: 'Bitte überweisen Sie den Rechnungsbetrag innerhalb von 14 Tagen unter Angabe der Rechnungsnummer auf das unten genannte Konto.',
         nextcloudUploadedAt: null,
         createdAt: hoursAgo(48),
+      },
+    ],
+    calendarEvents: [
+      {
+        id: 'cal-1',
+        title: 'Vor-Ort Wartung Alpenholz Serverraum',
+        startTime: `${tomorrowIsoDate}T10:00:00`,
+        endTime: `${tomorrowIsoDate}T12:00:00`,
+        location: 'Schwanthalerstraße 82, München',
+        description: 'Monatliches Wartungsfenster & USV-Check.',
+        source: 'local',
+        customerId: 'cust-1',
+        productId: 'prod-1',
       },
     ],
   };

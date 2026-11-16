@@ -1,5 +1,7 @@
 import {
   AlertTriangle,
+  ArrowRightCircle,
+  ChevronDown,
   Clock,
   CloudUpload,
   Download,
@@ -8,6 +10,7 @@ import {
   FilePlus2,
   FileSpreadsheet,
   Pencil,
+  Percent,
   Plus,
   Printer,
   Share2,
@@ -18,6 +21,8 @@ import { useEffect, useMemo, useState } from 'react';
 import type {
   CompanyProfile,
   Customer,
+  DiscountType,
+  DocumentType,
   Invoice,
   InvoiceLineItem,
   InvoiceStatus,
@@ -30,13 +35,16 @@ import type {
 } from '../types';
 import {
   INVOICE_ACCENT_STYLES,
+  INVOICE_FONT_OPTIONS,
   addDaysISO,
+  calculateDocumentTotals,
   createId,
   formatCurrency,
   formatDateDE,
   formatDuration,
   formatInvoiceNumber,
   formatNumber,
+  formatQuoteNumber,
   getOverdueDays,
   isInvoiceOverdue,
   roundDurationSeconds,
@@ -106,13 +114,16 @@ export function InvoicesView({
   onNotify,
 }: InvoicesViewProps) {
   const [statusFilter, setStatusFilter] = useState<'all' | InvoiceStatus | 'Überfällig'>('all');
+  const [docFilter, setDocFilter] = useState<'all' | 'invoice' | 'quote'>('all');
   const [showBuilder, setShowBuilder] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
+  const [showPreviewMenu, setShowPreviewMenu] = useState(false);
   const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
+  const [documentType, setDocumentType] = useState<DocumentType>('invoice');
   const [customerId, setCustomerId] = useState<string>(customers[0]?.id ?? '');
   const [selectedEntryIds, setSelectedEntryIds] = useState<string[]>([]);
   const [groupByProduct, setGroupByProduct] = useState(true);
@@ -124,13 +135,26 @@ export function InvoicesView({
   const [dueDateInput, setDueDateInput] = useState(() =>
     addDaysISO(toInputDate(), company.defaultPaymentTermDays || 14)
   );
+  const [quoteValidUntil, setQuoteValidUntil] = useState(() =>
+    addDaysISO(toInputDate(), 30)
+  );
   const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [discountType, setDiscountType] = useState<DiscountType>('percent');
+  const [discountValue, setDiscountValue] = useState<number>(0);
+  const [discountLabel, setDiscountLabel] = useState<string>('Rabatt');
+
   const defaultIntro =
     company.invoiceDefaultIntroText ??
     'Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihren Auftrag. Vereinbarungsgemäß berechnen wir Ihnen folgende erbrachte Leistungen:';
   const defaultOutro =
     company.invoiceDefaultOutroText ??
     'Bitte überweisen Sie den Rechnungsbetrag innerhalb der Zahlungsfrist unter Angabe der Rechnungsnummer auf das unten genannte Konto.';
+  const defaultQuoteIntro =
+    company.quoteDefaultIntroText ??
+    'Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot:';
+  const defaultQuoteOutro =
+    company.quoteDefaultOutroText ??
+    'Dieses Angebot ist freibleibend. Bei Fragen oder zur Beauftragung freuen wir uns auf Ihre Rückmeldung.';
 
   const [introText, setIntroText] = useState(defaultIntro);
   const [outroText, setOutroText] = useState(defaultOutro);
@@ -143,15 +167,35 @@ export function InvoicesView({
     company.smallBusinessNotice ||
     'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.';
 
-  const nextSeqNumber = useMemo(
-    () => formatInvoiceNumber(company, company.nextInvoiceSequence || invoices.length + 1),
-    [company, invoices.length]
+  const nextInvoiceSeqNumber = useMemo(
+    () =>
+      formatInvoiceNumber(
+        company,
+        company.nextInvoiceSequence ||
+          invoices.filter((i) => i.documentType !== 'quote').length + 1
+      ),
+    [company, invoices]
+  );
+
+  const nextQuoteSeqNumber = useMemo(
+    () =>
+      formatQuoteNumber(
+        company,
+        company.nextQuoteSequence ||
+          invoices.filter((i) => i.documentType === 'quote').length + 1
+      ),
+    [company, invoices]
   );
 
   const accentStyle =
     INVOICE_ACCENT_STYLES[company.invoiceAccentColor ?? 'slate'] ??
     INVOICE_ACCENT_STYLES.slate;
+  const fontOption =
+    INVOICE_FONT_OPTIONS[company.invoiceFontFamily ?? 'sans'] ??
+    INVOICE_FONT_OPTIONS.sans;
+  const layoutStyle = company.invoiceLayoutStyle ?? 'classic';
   const headerTitle = (company.invoiceHeaderTitle || 'Rechnung').trim();
+  const quoteTitle = (company.quoteHeaderTitle || 'Angebot').trim();
 
   const customerMap = useMemo(
     () => new Map(customers.map((c) => [c.id, c])),
@@ -171,8 +215,9 @@ export function InvoicesView({
   };
 
   useEffect(() => {
+    setShowPreviewMenu(false);
     let cancelled = false;
-    if (!previewInvoice) {
+    if (!previewInvoice || previewInvoice.documentType === 'quote') {
       setPreviewGiroCodeUrl(null);
       return;
     }
@@ -188,6 +233,7 @@ export function InvoicesView({
 
   useEffect(() => {
     if (!preselectedDraft) return;
+    setDocumentType('invoice');
     setCustomerId(preselectedDraft.customerId);
     if (preselectedDraft.entryIds.length > 0) {
       setSelectedEntryIds(preselectedDraft.entryIds);
@@ -211,7 +257,11 @@ export function InvoicesView({
       company.defaultPaymentTermDays ||
       14;
     setDueDateInput(addDaysISO(today, custTerm));
-    setInvoiceNumber(nextSeqNumber);
+    setQuoteValidUntil(addDaysISO(today, 30));
+    setInvoiceNumber(nextInvoiceSeqNumber);
+    setDiscountType('percent');
+    setDiscountValue(0);
+    setDiscountLabel('Rabatt');
     setIntroText(defaultIntro);
     setOutroText(defaultOutro);
     setIsSmallBusiness(Boolean(company.smallBusinessMode));
@@ -222,7 +272,7 @@ export function InvoicesView({
   }, [
     preselectedDraft,
     timeEntries,
-    nextSeqNumber,
+    nextInvoiceSeqNumber,
     defaultIntro,
     defaultOutro,
     company.smallBusinessMode,
@@ -232,9 +282,10 @@ export function InvoicesView({
     onClearPreselectedDraft,
   ]);
 
-  const openBuilderFresh = () => {
+  const openBuilderFresh = (type: DocumentType = 'invoice') => {
     const firstCust = customers[0]?.id ?? '';
     setEditingInvoice(null);
+    setDocumentType(type);
     setCustomerId(firstCust);
     const openIds = timeEntries
       .filter((t) => t.customerId === firstCust && t.billable && !t.billedInvoiceId)
@@ -248,18 +299,32 @@ export function InvoicesView({
       company.defaultPaymentTermDays ||
       14;
     setDueDateInput(addDaysISO(today, custTerm));
-    setInvoiceNumber(nextSeqNumber);
-    setIntroText(defaultIntro);
-    setOutroText(defaultOutro);
+    setQuoteValidUntil(addDaysISO(today, 30));
+    setInvoiceNumber(type === 'quote' ? nextQuoteSeqNumber : nextInvoiceSeqNumber);
+    setDiscountType('percent');
+    setDiscountValue(0);
+    setDiscountLabel('Rabatt');
+    setIntroText(type === 'quote' ? defaultQuoteIntro : defaultIntro);
+    setOutroText(type === 'quote' ? defaultQuoteOutro : defaultOutro);
     setIsSmallBusiness(Boolean(company.smallBusinessMode));
     setRoundingMinutes(getEffectiveRounding(firstCust));
     setBuilderError('');
     setShowBuilder(true);
   };
 
+  const handleBuilderDocTypeChange = (nextType: DocumentType) => {
+    setDocumentType(nextType);
+    if (!editingInvoice) {
+      setInvoiceNumber(nextType === 'quote' ? nextQuoteSeqNumber : nextInvoiceSeqNumber);
+      setIntroText(nextType === 'quote' ? defaultQuoteIntro : defaultIntro);
+      setOutroText(nextType === 'quote' ? defaultQuoteOutro : defaultOutro);
+    }
+  };
+
   const openEditBuilder = (inv: Invoice) => {
     setPreviewInvoice(null);
     setEditingInvoice(inv);
+    setDocumentType(inv.documentType ?? 'invoice');
     setCustomerId(inv.customerId);
 
     const linkedIds = timeEntries
@@ -296,7 +361,11 @@ export function InvoicesView({
     setExtraItems(manualRows);
     setIssueDate(inv.issueDate);
     setDueDateInput(inv.dueDate);
+    setQuoteValidUntil(inv.quoteValidUntil || inv.dueDate);
     setInvoiceNumber(inv.invoiceNumber);
+    setDiscountType(inv.discountType ?? 'percent');
+    setDiscountValue(inv.discountValue ?? 0);
+    setDiscountLabel(inv.discountLabel ?? 'Rabatt');
     setIntroText(inv.introText ?? '');
     setOutroText(inv.outroText ?? '');
     setIsSmallBusiness(inv.isSmallBusiness ?? Boolean(company.smallBusinessMode));
@@ -478,16 +547,16 @@ export function InvoicesView({
     isSmallBusiness,
   ]);
 
-  const builderTotals = useMemo(() => {
-    const netTotal = computedLineItems.reduce((acc, i) => acc + i.netTotal, 0);
-    const taxTotal = computedLineItems.reduce((acc, i) => acc + i.taxAmount, 0);
-    const grossTotal = Math.round((netTotal + taxTotal) * 100) / 100;
-    return {
-      netTotal: Math.round(netTotal * 100) / 100,
-      taxTotal: Math.round(taxTotal * 100) / 100,
-      grossTotal,
-    };
-  }, [computedLineItems]);
+  const builderTotals = useMemo(
+    () =>
+      calculateDocumentTotals(
+        computedLineItems,
+        isSmallBusiness,
+        discountType,
+        discountValue
+      ),
+    [computedLineItems, isSmallBusiness, discountType, discountValue]
+  );
 
   const handleSaveInvoice = (e: React.FormEvent) => {
     e.preventDefault();
@@ -516,10 +585,13 @@ export function InvoicesView({
         issueDate,
         cust.paymentTermDays || company.defaultPaymentTermDays || 14
       );
+    const fallbackNum =
+      documentType === 'quote' ? nextQuoteSeqNumber : nextInvoiceSeqNumber;
 
     const savedInvoice: Invoice = {
-      id: editingInvoice?.id ?? createId('inv'),
-      invoiceNumber: invoiceNumber.trim() || nextSeqNumber,
+      id: editingInvoice?.id ?? createId(documentType === 'quote' ? 'quote' : 'inv'),
+      documentType,
+      invoiceNumber: invoiceNumber.trim() || fallbackNum,
       customerId: cust.id,
       customerSnapshot: {
         companyName: cust.companyName,
@@ -534,9 +606,16 @@ export function InvoicesView({
       issueDate,
       servicePeriodStart,
       servicePeriodEnd,
-      dueDate,
+      dueDate: documentType === 'quote' ? quoteValidUntil || dueDate : dueDate,
+      quoteValidUntil: documentType === 'quote' ? quoteValidUntil || dueDate : undefined,
       status: editingInvoice?.status ?? 'Entwurf',
       lineItems: computedLineItems,
+      subtotalNetBeforeDiscount: builderTotals.subtotalNetBeforeDiscount,
+      discountType: discountValue > 0 ? discountType : undefined,
+      discountValue: discountValue > 0 ? discountValue : undefined,
+      discountLabel: discountValue > 0 ? discountLabel.trim() || 'Rabatt' : undefined,
+      discountNetAmount:
+        builderTotals.discountNetAmount > 0 ? builderTotals.discountNetAmount : undefined,
       netTotal: builderTotals.netTotal,
       taxTotal: builderTotals.taxTotal,
       grossTotal: builderTotals.grossTotal,
@@ -544,14 +623,15 @@ export function InvoicesView({
       outroText: outroText.trim(),
       isSmallBusiness,
       smallBusinessNotice: isSmallBusiness ? defaultSmallBusinessNotice : undefined,
-      nextcloudUploadedAt: editingInvoice ? null : null,
+      nextcloudUploadedAt: null,
       createdAt: editingInvoice?.createdAt ?? new Date().toISOString(),
     };
 
+    const entryIdsToBill = documentType === 'quote' ? [] : selectedEntryIds;
     if (editingInvoice) {
-      onUpdateInvoice(savedInvoice, selectedEntryIds);
+      onUpdateInvoice(savedInvoice, entryIdsToBill);
     } else {
-      onCreateInvoice(savedInvoice, selectedEntryIds);
+      onCreateInvoice(savedInvoice, entryIdsToBill);
     }
     setShowBuilder(false);
     setEditingInvoice(null);
@@ -560,6 +640,39 @@ export function InvoicesView({
     if (nextcloud.configured && nextcloud.autoSync) {
       void handleUploadToNextcloud(savedInvoice);
     }
+  };
+
+  const handleConvertQuoteToInvoice = (quote: Invoice) => {
+    const today = toInputDate();
+    const cust = customerMap.get(quote.customerId);
+    const term = cust?.paymentTermDays || company.defaultPaymentTermDays || 14;
+    const due = addDaysISO(today, term);
+
+    const quotedEntryIds = new Set(
+      quote.lineItems.flatMap((li) => li.timeEntryIds || [])
+    );
+    const toBillIds = timeEntries
+      .filter((t) => quotedEntryIds.has(t.id) && t.billable && !t.billedInvoiceId)
+      .map((t) => t.id);
+
+    const converted: Invoice = {
+      ...quote,
+      id: createId('inv'),
+      documentType: 'invoice',
+      invoiceNumber: nextInvoiceSeqNumber,
+      issueDate: today,
+      dueDate: due,
+      quoteValidUntil: undefined,
+      status: 'Entwurf',
+      introText: defaultIntro,
+      outroText: defaultOutro,
+      nextcloudUploadedAt: null,
+      createdAt: new Date().toISOString(),
+    };
+
+    onCreateInvoice(converted, toBillIds);
+    setShowPreviewMenu(false);
+    setPreviewInvoice(converted);
   };
 
   const handleUploadToNextcloud = async (inv: Invoice) => {
@@ -720,12 +833,15 @@ export function InvoicesView({
   const filteredInvoices = useMemo(() => {
     return [...invoices]
       .filter((inv) => {
+        const isQuote = inv.documentType === 'quote';
+        if (docFilter === 'invoice' && isQuote) return false;
+        if (docFilter === 'quote' && !isQuote) return false;
         if (statusFilter === 'all') return true;
         if (statusFilter === 'Überfällig') return isInvoiceOverdue(inv);
         return inv.status === statusFilter;
       })
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  }, [invoices, statusFilter]);
+  }, [invoices, statusFilter, docFilter]);
 
   const handleExportCsv = async () => {
     try {
@@ -749,10 +865,10 @@ export function InvoicesView({
       <div className="no-print flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            Rechnungen
+            Rechnungen &amp; Angebote
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Aus offenen Arbeitszeiten rechtssichere PDF-Rechnungen, GiroCodes, XRechnungen und Tätigkeitsberichte erstellen.
+            Rechnungen, Angebote mit Rabatten, rechtssichere PDFs, GiroCodes, XRechnungen und Tätigkeitsberichte erstellen.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
@@ -768,7 +884,16 @@ export function InvoicesView({
           )}
           <button
             type="button"
-            onClick={openBuilderFresh}
+            onClick={() => openBuilderFresh('quote')}
+            disabled={customers.length === 0}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+          >
+            <Plus className="h-4 w-4" />
+            Neues Angebot
+          </button>
+          <button
+            type="button"
+            onClick={() => openBuilderFresh('invoice')}
             disabled={customers.length === 0}
             className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
           >
@@ -778,15 +903,37 @@ export function InvoicesView({
         </div>
       </div>
 
-      {/* Invoice Builder */}
+      {/* Invoice / Quote Builder */}
       {showBuilder && (
         <section className="no-print rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-lg font-semibold text-slate-900 dark:text-slate-100">
-              {editingInvoice
-                ? `Rechnung ${editingInvoice.invoiceNumber} bearbeiten`
-                : 'Rechnung aus Arbeitszeiten generieren'}
-            </h2>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="font-display text-lg font-semibold text-slate-900 dark:text-slate-100">
+                {editingInvoice
+                  ? `${documentType === 'quote' ? 'Angebot' : 'Rechnung'} ${editingInvoice.invoiceNumber} bearbeiten`
+                  : documentType === 'quote'
+                    ? 'Neues Angebot erstellen'
+                    : 'Rechnung aus Arbeitszeiten generieren'}
+              </h2>
+              {!editingInvoice && (
+                <div className="flex rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
+                  {(['invoice', 'quote'] as const).map((dt) => (
+                    <button
+                      key={dt}
+                      type="button"
+                      onClick={() => handleBuilderDocTypeChange(dt)}
+                      className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors cursor-pointer ${
+                        documentType === dt
+                          ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                          : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                      }`}
+                    >
+                      {dt === 'invoice' ? 'Rechnung' : 'Angebot'}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <button
               type="button"
               onClick={() => {
@@ -819,7 +966,7 @@ export function InvoicesView({
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Rechnungsnummer
+                  {documentType === 'quote' ? 'Angebotsnummer' : 'Rechnungsnummer'}
                 </label>
                 <input
                   type="text"
@@ -830,7 +977,7 @@ export function InvoicesView({
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Rechnungsdatum
+                  {documentType === 'quote' ? 'Angebotsdatum' : 'Rechnungsdatum'}
                 </label>
                 <input
                   type="date"
@@ -841,12 +988,16 @@ export function InvoicesView({
               </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Fällig bis
+                  {documentType === 'quote' ? 'Gültig bis' : 'Fällig bis'}
                 </label>
                 <input
                   type="date"
-                  value={dueDateInput}
-                  onChange={(e) => setDueDateInput(e.target.value)}
+                  value={documentType === 'quote' ? quoteValidUntil : dueDateInput}
+                  onChange={(e) =>
+                    documentType === 'quote'
+                      ? setQuoteValidUntil(e.target.value)
+                      : setDueDateInput(e.target.value)
+                  }
                   className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
                 />
               </div>
@@ -1059,8 +1210,8 @@ export function InvoicesView({
                   />
                 </div>
               </div>
-              <div className="w-full space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-[#2e2349] dark:bg-[#211936]/70 sm:w-80">
-                <label className="flex items-center gap-2 pb-1.5 border-b border-slate-200 dark:border-[#3b2d5e] text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer">
+              <div className="w-full space-y-2.5 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-[#2e2349] dark:bg-[#211936]/70 sm:w-96">
+                <label className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-[#3b2d5e] text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isSmallBusiness}
@@ -1069,6 +1220,59 @@ export function InvoicesView({
                   />
                   Kleinunternehmerregelung (§ 19 UStG)
                 </label>
+
+                {/* Rabatt-Konfiguration */}
+                <div className="space-y-1.5 border-b border-slate-200 pb-2.5 dark:border-[#3b2d5e]">
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-200">
+                    <Percent className="h-3.5 w-3.5 text-blue-700 dark:text-violet-400" />
+                    Rabatt (optional)
+                  </div>
+                  <div className="grid grid-cols-12 gap-1.5">
+                    <input
+                      type="text"
+                      value={discountLabel}
+                      onChange={(e) => setDiscountLabel(e.target.value)}
+                      placeholder="Bezeichnung"
+                      className="col-span-5 rounded-md border border-slate-300 bg-white px-2 py-1 text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+                    />
+                    <select
+                      value={discountType}
+                      onChange={(e) => setDiscountType(e.target.value as DiscountType)}
+                      className="col-span-3 rounded-md border border-slate-300 bg-white px-1.5 py-1 text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+                    >
+                      <option value="percent">%</option>
+                      <option value="fixed">€ Netto</option>
+                    </select>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.5"
+                      value={discountValue}
+                      onChange={(e) => setDiscountValue(Math.max(0, Number(e.target.value) || 0))}
+                      className="col-span-4 rounded-md border border-slate-300 bg-white px-2 py-1 text-right font-mono text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+                    />
+                  </div>
+                </div>
+
+                {builderTotals.discountNetAmount > 0 && (
+                  <>
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                      <span>Zwischensumme Netto</span>
+                      <span className="font-mono tabular-nums">
+                        {formatCurrency(builderTotals.subtotalNetBeforeDiscount)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs text-emerald-700 dark:text-emerald-400">
+                      <span>
+                        {discountLabel || 'Rabatt'} (
+                        {discountType === 'percent' ? `${discountValue}%` : formatCurrency(discountValue)})
+                      </span>
+                      <span className="font-mono tabular-nums">
+                        − {formatCurrency(builderTotals.discountNetAmount)}
+                      </span>
+                    </div>
+                  </>
+                )}
 
                 {!isSmallBusiness ? (
                   <>
@@ -1091,7 +1295,13 @@ export function InvoicesView({
                   </p>
                 )}
                 <div className="flex justify-between border-t border-slate-200 pt-1.5 text-sm font-bold text-slate-900 dark:border-[#3b2d5e] dark:text-slate-100">
-                  <span>{isSmallBusiness ? 'Rechnungsbetrag' : 'Gesamt Brutto'}</span>
+                  <span>
+                    {isSmallBusiness
+                      ? documentType === 'quote'
+                        ? 'Angebotsbetrag'
+                        : 'Rechnungsbetrag'
+                      : 'Gesamt Brutto'}
+                  </span>
                   <span className="font-mono tabular-nums">
                     {formatCurrency(builderTotals.grossTotal)}
                   </span>
@@ -1122,16 +1332,18 @@ export function InvoicesView({
               >
                 {editingInvoice
                   ? 'Änderungen speichern'
-                  : 'Rechnung erzeugen & Zeiten verbuchen'}
+                  : documentType === 'quote'
+                    ? 'Angebot erzeugen (Zeiten bleiben offen)'
+                    : 'Rechnung erzeugen & Zeiten verbuchen'}
               </button>
             </div>
           </form>
         </section>
       )}
 
-      {/* Invoices Table */}
+      {/* Invoices & Quotes Table */}
       <section className="no-print rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]">
-        <div className="flex items-center justify-between border-b border-slate-200 p-4 dark:border-[#2e2349]">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4 dark:border-[#2e2349]">
           <div className="flex flex-wrap items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
             {(['all', 'Entwurf', 'Gesendet', 'Überfällig', 'Bezahlt', 'Storniert'] as const).map(
               (st) => (
@@ -1156,15 +1368,36 @@ export function InvoicesView({
               )
             )}
           </div>
+
+          <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
+            {([
+              { id: 'all', label: 'Alle Typen' },
+              { id: 'invoice', label: 'Rechnungen' },
+              { id: 'quote', label: 'Angebote' },
+            ] as const).map((dt) => (
+              <button
+                key={dt.id}
+                type="button"
+                onClick={() => setDocFilter(dt.id)}
+                className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                  docFilter === dt.id
+                    ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                {dt.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {filteredInvoices.length === 0 ? (
           <div className="p-10 text-center">
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Noch keine Rechnungen erstellt.
+              Noch keine Dokumente in dieser Ansicht vorhanden.
             </p>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Erfasse Arbeitszeiten für einen Kunden und erstelle daraus mit einem Klick eine Rechnung.
+              Erfasse Arbeitszeiten für einen Kunden oder erstelle ein Angebot mit einem Klick.
             </p>
           </div>
         ) : (
@@ -1172,7 +1405,7 @@ export function InvoicesView({
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70">
-                  <th className="px-4 py-3">Rechnungs-Nr.</th>
+                  <th className="px-4 py-3">Nr. / Typ</th>
                   <th className="px-4 py-3">Kunde</th>
                   <th className="px-4 py-3">Datum / Fällig</th>
                   <th className="px-4 py-3">Status</th>
@@ -1187,8 +1420,15 @@ export function InvoicesView({
                     onClick={() => setPreviewInvoice(inv)}
                     className="cursor-pointer transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50"
                   >
-                    <td className="px-4 py-3 font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 whitespace-nowrap">
-                      {inv.invoiceNumber}
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">
+                        {inv.invoiceNumber}
+                      </div>
+                      {inv.documentType === 'quote' && (
+                        <span className="mt-0.5 inline-block text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+                          Angebot
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-slate-900 dark:text-slate-100">
@@ -1196,6 +1436,9 @@ export function InvoicesView({
                       </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400">
                         {inv.lineItems.length} Positionen
+                        {(inv.discountNetAmount ?? 0) > 0
+                          ? ` · inkl. Rabatt (−${formatCurrency(inv.discountNetAmount ?? 0)})`
+                          : ''}
                         {inv.nextcloudUploadedAt
                           ? ` · Nextcloud-PDF gesichert`
                           : ''}
@@ -1331,31 +1574,138 @@ export function InvoicesView({
         )}
       </section>
 
-      {/* Invoice Document Preview Modal */}
+      {/* Invoice / Quote Document Preview Modal */}
       {previewInvoice && (
         <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#0e0a18]/75 p-4 sm:p-8">
           <div className="w-full max-w-3xl rounded-xl border border-slate-200 bg-white shadow-xl dark:border-[#3b2d5e]">
             <div className="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-6 py-4 rounded-t-xl dark:border-[#2e2349] dark:bg-[#171126]">
               <div className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                Rechnungsvorschau · {previewInvoice.invoiceNumber}
+                {previewInvoice.documentType === 'quote' ? 'Angebotsvorschau' : 'Rechnungsvorschau'} · {previewInvoice.invoiceNumber}
               </div>
+
               <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => openEditBuilder(previewInvoice)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer"
-                >
-                  <Pencil className="h-3.5 w-3.5" />
-                  Bearbeiten
-                </button>
-                <button
-                  type="button"
-                  onClick={() => void handleOpenPdf(previewInvoice)}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-[#211936] dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  PDF öffnen
-                </button>
+                {/* Dropdown: Weitere Aktionen */}
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setShowPreviewMenu((prev) => !prev)}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    Weitere Aktionen
+                    <ChevronDown className="h-3.5 w-3.5" />
+                  </button>
+
+                  {showPreviewMenu && (
+                    <div className="absolute left-0 top-full z-30 mt-1.5 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-[#3b2d5e] dark:bg-[#1e1730]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowPreviewMenu(false);
+                          openEditBuilder(previewInvoice);
+                        }}
+                        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                        Bearbeiten
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowPreviewMenu(false);
+                          void handleOpenPdf(previewInvoice);
+                        }}
+                        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        PDF öffnen / herunterladen
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowPreviewMenu(false);
+                          void handlePrint(previewInvoice);
+                        }}
+                        className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                      >
+                        <Printer className="h-3.5 w-3.5" />
+                        Drucken
+                      </button>
+
+                      {previewInvoice.documentType === 'quote' && (
+                        <button
+                          type="button"
+                          onClick={() => handleConvertQuoteToInvoice(previewInvoice)}
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                        >
+                          <ArrowRightCircle className="h-3.5 w-3.5" />
+                          In Rechnung umwandeln
+                        </button>
+                      )}
+
+                      {getLinkedEntriesForInvoice(previewInvoice).length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowPreviewMenu(false);
+                            void handleDownloadTimesheet(previewInvoice);
+                          }}
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                        >
+                          <Clock className="h-3.5 w-3.5" />
+                          Tätigkeitsbericht (PDF)
+                        </button>
+                      )}
+
+                      {isInvoiceOverdue(previewInvoice) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowPreviewMenu(false);
+                            void handlePaymentReminderPdf(previewInvoice);
+                          }}
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/60 cursor-pointer"
+                        >
+                          <AlertTriangle className="h-3.5 w-3.5" />
+                          Zahlungserinnerung (PDF)
+                        </button>
+                      )}
+
+                      {previewInvoice.documentType !== 'quote' && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowPreviewMenu(false);
+                              void handleDownloadXRechnungXml(previewInvoice);
+                            }}
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                          >
+                            <FileCode2 className="h-3.5 w-3.5" />
+                            XRechnung (.xml)
+                          </button>
+                          {nextcloud.configured && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setShowPreviewMenu(false);
+                                void handleUploadXRechnungXml(previewInvoice);
+                              }}
+                              disabled={uploadingId === previewInvoice.id}
+                              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                            >
+                              <CloudUpload className="h-3.5 w-3.5" />
+                              XML → Nextcloud
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Directly visible top-bar buttons: Teilen, PDF -> Nextcloud, Löschen, Schließen */}
                 <button
                   type="button"
                   onClick={() => void handleSharePdf(previewInvoice)}
@@ -1364,36 +1714,7 @@ export function InvoicesView({
                   <Share2 className="h-3.5 w-3.5" />
                   Teilen
                 </button>
-                {getLinkedEntriesForInvoice(previewInvoice).length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => void handleDownloadTimesheet(previewInvoice)}
-                    title="Separaten Tätigkeitsbericht mit Kundenunterschrift als PDF öffnen"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    <Clock className="h-3.5 w-3.5" />
-                    Tätigkeitsbericht
-                  </button>
-                )}
-                {isInvoiceOverdue(previewInvoice) && (
-                  <button
-                    type="button"
-                    onClick={() => void handlePaymentReminderPdf(previewInvoice)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-300 dark:hover:bg-red-900/60 whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    <AlertTriangle className="h-3.5 w-3.5" />
-                    Zahlungserinnerung (PDF)
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => void handleDownloadXRechnungXml(previewInvoice)}
-                  title="E-Rechnung im XRechnung-3.0-Standard (.xml) herunterladen"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer"
-                >
-                  <FileCode2 className="h-3.5 w-3.5" />
-                  XRechnung (.xml)
-                </button>
+
                 <button
                   type="button"
                   onClick={() => void handleUploadToNextcloud(previewInvoice)}
@@ -1405,26 +1726,7 @@ export function InvoicesView({
                     ? 'Lade hoch...'
                     : 'PDF → Nextcloud'}
                 </button>
-                {nextcloud.configured && (
-                  <button
-                    type="button"
-                    onClick={() => void handleUploadXRechnungXml(previewInvoice)}
-                    disabled={uploadingId === previewInvoice.id}
-                    title="XRechnung (.xml) zusätzlich im Nextcloud-Ordner /Rechnungen speichern"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-800 hover:bg-blue-100 disabled:opacity-50 dark:border-violet-800 dark:bg-violet-950/50 dark:text-violet-200 dark:hover:bg-violet-900/50 whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    <CloudUpload className="h-3.5 w-3.5" />
-                    XML → Nextcloud
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => void handlePrint(previewInvoice)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer"
-                >
-                  <Printer className="h-3.5 w-3.5" />
-                  Drucken
-                </button>
+
                 <button
                   type="button"
                   onClick={() => {
@@ -1436,7 +1738,7 @@ export function InvoicesView({
                       setConfirmDeleteId(previewInvoice.id);
                     }
                   }}
-                  title="Rechnung löschen (Arbeitszeiten bleiben erhalten)"
+                  title="Dokument löschen (Arbeitszeiten bleiben erhalten)"
                   className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium cursor-pointer ${
                     confirmDeleteId === previewInvoice.id
                       ? 'border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300'
@@ -1448,10 +1750,12 @@ export function InvoicesView({
                     ? 'Wirklich löschen? (Zeiten bleiben)'
                     : 'Löschen'}
                 </button>
+
                 <button
                   type="button"
                   onClick={() => {
                     setConfirmDeleteId(null);
+                    setShowPreviewMenu(false);
                     setPreviewInvoice(null);
                   }}
                   className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-[#231b38] cursor-pointer"
@@ -1461,8 +1765,12 @@ export function InvoicesView({
               </div>
             </div>
 
+            {layoutStyle === 'modern' && (
+              <div className={`h-3 w-full ${accentStyle.bgClass}`} />
+            )}
+
             {/* DIN-inspired Printable Sheet (always crisp white paper) */}
-            <div className="p-8 sm:p-12 bg-white text-slate-900 rounded-b-xl">
+            <div className={`p-8 sm:p-12 bg-white text-slate-900 rounded-b-xl ${fontOption.previewClass}`}>
               <div className="flex flex-col justify-between gap-6 sm:flex-row">
                 <div>
                   <div className="text-[11px] text-slate-500 underline">
@@ -1499,7 +1807,7 @@ export function InvoicesView({
                       />
                     </div>
                   )}
-                  <div className={`font-display text-lg font-bold ${accentStyle.textClass}`}>
+                  <div className={`text-lg font-bold ${accentStyle.textClass}`}>
                     {company.companyName}
                   </div>
                   <div className="mt-1 text-xs text-slate-500 space-y-0.5">
@@ -1511,9 +1819,17 @@ export function InvoicesView({
                     <div>{company.email}</div>
                   </div>
 
-                  <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs space-y-1 text-left">
+                  <div
+                    className={`mt-5 rounded-lg p-3 text-xs space-y-1 text-left ${
+                      layoutStyle === 'minimal'
+                        ? 'border-l-2 border-slate-300 bg-transparent pl-3'
+                        : 'border border-slate-200 bg-slate-50'
+                    }`}
+                  >
                     <div className="flex justify-between gap-6">
-                      <span className="text-slate-500">Rechnungsnr.</span>
+                      <span className="text-slate-500">
+                        {previewInvoice.documentType === 'quote' ? 'Angebotsnr.' : 'Rechnungsnr.'}
+                      </span>
                       <span className="font-mono font-semibold">
                         {previewInvoice.invoiceNumber}
                       </span>
@@ -1532,17 +1848,20 @@ export function InvoicesView({
                       </span>
                     </div>
                     <div className="flex justify-between gap-6">
-                      <span className="text-slate-500">Fällig bis</span>
+                      <span className="text-slate-500">
+                        {previewInvoice.documentType === 'quote' ? 'Gültig bis' : 'Fällig bis'}
+                      </span>
                       <span className="font-mono tabular-nums">
-                        {formatDateDE(previewInvoice.dueDate)}
+                        {formatDateDE(previewInvoice.quoteValidUntil || previewInvoice.dueDate)}
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <h2 className={`mt-8 font-display text-xl font-bold ${accentStyle.textClass}`}>
-                {headerTitle} {previewInvoice.invoiceNumber}
+              <h2 className={`mt-8 text-xl font-bold ${accentStyle.textClass}`}>
+                {previewInvoice.documentType === 'quote' ? quoteTitle : headerTitle}{' '}
+                {previewInvoice.invoiceNumber}
               </h2>
               {previewInvoice.introText && (
                 <p className="mt-3 whitespace-pre-line text-sm text-slate-600">
@@ -1612,6 +1931,30 @@ export function InvoicesView({
 
                     <div className="mt-6 flex justify-end">
                       <div className="w-full max-w-xs space-y-1.5 text-sm">
+                        {(previewInvoice.discountNetAmount ?? 0) > 0 && (
+                          <>
+                            <div className="flex justify-between text-slate-600">
+                              <span>Zwischensumme Netto</span>
+                              <span className="font-mono tabular-nums">
+                                {formatCurrency(
+                                  previewInvoice.subtotalNetBeforeDiscount ??
+                                    previewInvoice.netTotal + (previewInvoice.discountNetAmount ?? 0)
+                                )}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-emerald-700">
+                              <span>
+                                {previewInvoice.discountLabel || 'Rabatt'}
+                                {previewInvoice.discountType === 'percent' && previewInvoice.discountValue
+                                  ? ` (${previewInvoice.discountValue}%)`
+                                  : ''}
+                              </span>
+                              <span className="font-mono tabular-nums">
+                                − {formatCurrency(previewInvoice.discountNetAmount ?? 0)}
+                              </span>
+                            </div>
+                          </>
+                        )}
                         {!previewSmallBiz && (
                           <>
                             <div className="flex justify-between text-slate-600">
@@ -1629,7 +1972,11 @@ export function InvoicesView({
                           </>
                         )}
                         <div className={`flex justify-between border-t-2 ${accentStyle.borderClass} pt-2 text-base font-bold ${accentStyle.textClass}`}>
-                          <span>Rechnungsbetrag</span>
+                          <span>
+                            {previewInvoice.documentType === 'quote'
+                              ? 'Angebotsbetrag'
+                              : 'Rechnungsbetrag'}
+                          </span>
                           <span className="font-mono tabular-nums">
                             {formatCurrency(
                               previewSmallBiz

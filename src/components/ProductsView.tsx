@@ -1,21 +1,30 @@
 import { Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import type { Product, ProductType, TaxRate, UnitType } from '../types';
-import { createId, formatCurrency } from '../utils/format';
+import type {
+  CompanyProfile,
+  Product,
+  ProductType,
+  TaxRate,
+  UnitType,
+} from '../types';
+import { createId, formatCurrency, formatProductSku } from '../utils/format';
 
 interface ProductsViewProps {
+  company: CompanyProfile;
   products: Product[];
-  onSaveProduct: (product: Product) => void;
+  onSaveProduct: (product: Product, incrementSkuSequence?: boolean) => void;
   onDeleteProduct: (id: string) => void;
 }
 
 export function ProductsView({
+  company,
   products,
   onSaveProduct,
   onDeleteProduct,
 }: ProductsViewProps) {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | ProductType>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
 
@@ -26,17 +35,34 @@ export function ProductsView({
   const [unit, setUnit] = useState<UnitType>('Std.');
   const [unitPriceNet, setUnitPriceNet] = useState('95');
   const [taxRate, setTaxRate] = useState<TaxRate>(19);
+  const [category, setCategory] = useState('');
   const [error, setError] = useState('');
+
+  const skuLabel = (company.skuFieldLabel || 'Artikel-Nr.').trim();
+
+  const availableCategories = useMemo(() => {
+    const set = new Set<string>(company.productCategories ?? []);
+    for (const p of products) {
+      if (p.category?.trim()) set.add(p.category.trim());
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'de'));
+  }, [company.productCategories, products]);
 
   const openNew = () => {
     setEditing(null);
-    setSku(`ART-${101 + products.length}`);
+    setSku(
+      formatProductSku(
+        company,
+        company.nextProductSequence ?? products.length + 101
+      )
+    );
     setName('');
     setDescription('');
     setType('service');
     setUnit('Std.');
     setUnitPriceNet('95');
     setTaxRate(19);
+    setCategory('');
     setError('');
     setShowForm(true);
   };
@@ -50,6 +76,7 @@ export function ProductsView({
     setUnit(p.unit);
     setUnitPriceNet(String(p.unitPriceNet));
     setTaxRate(p.taxRate);
+    setCategory(p.category ?? '');
     setError('');
     setShowForm(true);
   };
@@ -67,18 +94,23 @@ export function ProductsView({
       return;
     }
 
+    const fallbackSku = formatProductSku(
+      company,
+      company.nextProductSequence ?? products.length + 101
+    );
     const saved: Product = {
       id: editing?.id ?? createId('prod'),
-      sku: sku.trim() || `ART-${101 + products.length}`,
+      sku: sku.trim() || fallbackSku,
       name: name.trim(),
       description: description.trim(),
       type,
       unit,
       unitPriceNet: price,
       taxRate,
+      category: category.trim() || undefined,
       createdAt: editing?.createdAt ?? new Date().toISOString(),
     };
-    onSaveProduct(saved);
+    onSaveProduct(saved, !editing);
     setShowForm(false);
   };
 
@@ -86,14 +118,18 @@ export function ProductsView({
     const q = search.trim().toLowerCase();
     return products.filter((p) => {
       if (typeFilter !== 'all' && p.type !== typeFilter) return false;
+      if (categoryFilter !== 'all' && (p.category ?? '') !== categoryFilter) {
+        return false;
+      }
       if (!q) return true;
       return (
         p.name.toLowerCase().includes(q) ||
         p.sku.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
+        p.description.toLowerCase().includes(q) ||
+        (p.category ?? '').toLowerCase().includes(q)
       );
     });
-  }, [products, search, typeFilter]);
+  }, [products, search, typeFilter, categoryFilter]);
 
   const inputClass =
     'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500';
@@ -127,7 +163,7 @@ export function ProductsView({
           <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-4">
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Artikel-Nr.
+                {skuLabel}
               </label>
               <input
                 type="text"
@@ -214,6 +250,24 @@ export function ProductsView({
                 <option value={0}>0 % (Steuerfrei)</option>
               </select>
             </div>
+            <div className="md:col-span-2">
+              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                Kategorie
+              </label>
+              <input
+                type="text"
+                list="product-category-list"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="z. B. Beratung, Entwicklung, Hardware"
+                className={inputClass}
+              />
+              <datalist id="product-category-list">
+                {availableCategories.map((cat) => (
+                  <option key={cat} value={cat} />
+                ))}
+              </datalist>
+            </div>
             {error && (
               <p className="text-xs font-medium text-red-600 dark:text-red-400 md:col-span-4">
                 {error}
@@ -251,27 +305,43 @@ export function ProductsView({
             />
           </div>
 
-          <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936] self-start">
-            {(
-              [
-                { id: 'all', label: 'Alle' },
-                { id: 'service', label: 'Dienstleistungen' },
-                { id: 'product', label: 'Produkte' },
-              ] as const
-            ).map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setTypeFilter(tab.id)}
-                className={`rounded-md px-3 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                  typeFilter === tab.id
-                    ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
-                }`}
+          <div className="flex flex-wrap items-center gap-2">
+            {availableCategories.length > 0 && (
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
               >
-                {tab.label}
-              </button>
-            ))}
+                <option value="all">Alle Kategorien</option>
+                {availableCategories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            )}
+            <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936] self-start">
+              {(
+                [
+                  { id: 'all', label: 'Alle' },
+                  { id: 'service', label: 'Dienstleistungen' },
+                  { id: 'product', label: 'Produkte' },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setTypeFilter(tab.id)}
+                  className={`rounded-md px-3 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    typeFilter === tab.id
+                      ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -289,9 +359,9 @@ export function ProductsView({
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70">
-                  <th className="px-4 py-3">SKU</th>
+                  <th className="px-4 py-3">{skuLabel}</th>
                   <th className="px-4 py-3">Bezeichnung &amp; Beschreibung</th>
-                  <th className="px-4 py-3">Typ</th>
+                  <th className="px-4 py-3">Typ &amp; Kategorie</th>
                   <th className="px-4 py-3 text-right">Netto-Preis</th>
                   <th className="px-4 py-3 text-right">MwSt.</th>
                   <th className="px-4 py-3 text-right">Aktionen</th>
@@ -317,7 +387,12 @@ export function ProductsView({
                       )}
                     </td>
                     <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                      {p.type === 'service' ? 'Dienstleistung' : 'Produkt / Pauschale'}
+                      <div>{p.type === 'service' ? 'Dienstleistung' : 'Produkt / Pauschale'}</div>
+                      {p.category && (
+                        <span className="mt-0.5 inline-block rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-[#231b38] dark:text-violet-300">
+                          {p.category}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap">
                       {formatCurrency(p.unitPriceNet)} / {p.unit}

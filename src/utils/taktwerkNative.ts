@@ -33,6 +33,11 @@ export interface NativeTimerNotificationActionEvent {
   action: 'pause' | 'resume' | 'stop';
 }
 
+export interface NativeWidgetActionEvent {
+  action: string;
+  tagUid?: string;
+}
+
 export interface TaktWerkNativePluginInterface {
   webdavEnsureFolders(options: {
     folderUrls: string[];
@@ -45,6 +50,15 @@ export interface TaktWerkNativePluginInterface {
     fileUrl: string;
     username: string;
     appPassword: string;
+    base64: string;
+  }): Promise<{ ok: boolean; status: number }>;
+
+  webdavUploadBinary(options: {
+    folderUrls: string[];
+    fileUrl: string;
+    username: string;
+    appPassword: string;
+    contentType: string;
     base64: string;
   }): Promise<{ ok: boolean; status: number }>;
 
@@ -71,9 +85,31 @@ export interface TaktWerkNativePluginInterface {
     appPassword: string;
   }): Promise<{ found: boolean; json?: string }>;
 
+  caldavRequest(options: {
+    method: string;
+    url: string;
+    username: string;
+    appPassword: string;
+    depth?: string;
+    contentType?: string;
+    body?: string;
+  }): Promise<{ status: number; body: string }>;
+
+  getCurrentLocation(): Promise<{
+    lat: number;
+    lng: number;
+    accuracyMeters: number;
+  }>;
+
   openPdf(options: { filename: string; base64: string }): Promise<void>;
 
   sharePdf(options: { filename: string; base64: string }): Promise<void>;
+
+  shareBinaryFile(options: {
+    filename: string;
+    mimeType: string;
+    base64: string;
+  }): Promise<void>;
 
   shareTextFile(options: {
     filename: string;
@@ -104,6 +140,29 @@ export interface TaktWerkNativePluginInterface {
 
   clearActiveTimerNotification(): Promise<void>;
 
+  scheduleTimerReminder(options: {
+    delayMs: number;
+    title: string;
+    body: string;
+    soundPreset: string;
+  }): Promise<void>;
+
+  cancelTimerReminder(): Promise<void>;
+
+  playReminderTone(options: { preset: string }): Promise<void>;
+
+  updateWidgetState(options: {
+    isRunning: boolean;
+    isPaused: boolean;
+    timerTitle: string;
+    customerName: string;
+    startTimeMs: number;
+    todayHoursLabel: string;
+    quickTasksJson: string;
+  }): Promise<void>;
+
+  getPendingWidgetAction(): Promise<{ action?: string | null; tagUid?: string | null }>;
+
   getNfcStatus(): Promise<{
     supported: boolean;
     enabled: boolean;
@@ -129,6 +188,11 @@ export interface TaktWerkNativePluginInterface {
   addListener(
     eventName: 'timerNotificationAction',
     listenerFunc: (event: NativeTimerNotificationActionEvent) => void
+  ): Promise<PluginListenerHandle>;
+
+  addListener(
+    eventName: 'widgetActionTriggered',
+    listenerFunc: (event: NativeWidgetActionEvent) => void
   ): Promise<PluginListenerHandle>;
 }
 

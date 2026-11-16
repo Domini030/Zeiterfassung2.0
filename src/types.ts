@@ -8,14 +8,27 @@ export type TimeRoundingMinutes = 0 | 5 | 10 | 15 | 30;
 
 export type InvoiceStatus = 'Entwurf' | 'Gesendet' | 'Bezahlt' | 'Storniert';
 
+export type DocumentType = 'invoice' | 'quote';
+
+export type DiscountType = 'percent' | 'fixed';
+
 export type NavSection =
   | 'tracker'
+  | 'calendar'
   | 'analytics'
   | 'nfc'
   | 'customers'
   | 'products'
   | 'invoices'
   | 'settings';
+
+export interface LocationSnapshot {
+  lat: number;
+  lng: number;
+  address?: string;
+  accuracyMeters?: number;
+  capturedAt: string;
+}
 
 export interface Customer {
   id: string;
@@ -31,6 +44,7 @@ export interface Customer {
   vatId: string;
   paymentTermDays: number;
   timeRoundingMinutes?: TimeRoundingMinutes | null;
+  category?: string;
   notes: string;
   createdAt: string;
 }
@@ -44,6 +58,7 @@ export interface Product {
   unit: UnitType;
   unitPriceNet: number;
   taxRate: TaxRate;
+  category?: string;
   createdAt: string;
 }
 
@@ -76,6 +91,7 @@ export interface TimeEntry {
   billable: boolean;
   billedInvoiceId: string | null;
   source: 'manual' | 'timer' | 'nfc';
+  location?: LocationSnapshot | null;
   createdAt: string;
 }
 
@@ -92,6 +108,7 @@ export interface ActiveTimer {
   hourlyRateNet: number;
   taxRate: TaxRate;
   source: 'timer' | 'nfc';
+  location?: LocationSnapshot | null;
 }
 
 export interface InvoiceLineItem {
@@ -111,6 +128,7 @@ export interface InvoiceLineItem {
 
 export interface Invoice {
   id: string;
+  documentType?: DocumentType;
   invoiceNumber: string;
   customerId: string;
   customerSnapshot: {
@@ -127,8 +145,14 @@ export interface Invoice {
   servicePeriodStart: string;
   servicePeriodEnd: string;
   dueDate: string;
+  quoteValidUntil?: string;
   status: InvoiceStatus;
   lineItems: InvoiceLineItem[];
+  subtotalNetBeforeDiscount?: number;
+  discountType?: DiscountType;
+  discountValue?: number;
+  discountLabel?: string;
+  discountNetAmount?: number;
   netTotal: number;
   taxTotal: number;
   grossTotal: number;
@@ -140,7 +164,62 @@ export interface Invoice {
   createdAt: string;
 }
 
-export type InvoiceAccentPreset = 'slate' | 'blue' | 'violet' | 'emerald' | 'rose';
+export type InvoiceAccentPreset =
+  | 'slate'
+  | 'blue'
+  | 'violet'
+  | 'emerald'
+  | 'rose'
+  | 'teal'
+  | 'amber'
+  | 'indigo'
+  | 'custom';
+
+export type InvoiceFontFamily = 'sans' | 'serif' | 'mono';
+
+export type InvoiceLayoutStyle = 'classic' | 'modern' | 'minimal';
+
+export type UiAccentPreset = 'violet' | 'blue' | 'emerald' | 'amber' | 'rose';
+
+export type UiDensity = 'comfortable' | 'compact';
+
+export type UiFontScale = 'normal' | 'large';
+
+export type ReminderSoundPreset = 'chime' | 'bell' | 'pulse' | 'alarm' | 'silent';
+
+export type AutoBackupFrequency = 'daily' | 'weekly' | 'monthly';
+
+export type AutoBackupFormat = 'json' | 'csv' | 'excel' | 'pdf';
+
+export interface AutoBackupConfig {
+  enabled: boolean;
+  frequency: AutoBackupFrequency;
+  formats: AutoBackupFormat[];
+  uploadToNextcloud: boolean;
+  localDownload: boolean;
+  lastRunAt: string | null;
+  lastRunSummary?: string | null;
+}
+
+export interface NextcloudCalendarConfig {
+  selectedCalendarUrl: string;
+  selectedCalendarName: string;
+  autoSyncTimeEntries: boolean;
+}
+
+export interface CalendarAppointment {
+  id: string;
+  uid?: string;
+  title: string;
+  startTime: string;
+  endTime: string;
+  location?: string;
+  description?: string;
+  calendarName?: string;
+  source: 'nextcloud' | 'local';
+  customerId?: string | null;
+  productId?: string | null;
+}
 
 export interface CompanyProfile {
   companyName: string;
@@ -166,12 +245,40 @@ export interface CompanyProfile {
   invoiceNumberPattern?: string;
   invoiceSequenceDigits?: number;
   invoiceAccentColor?: InvoiceAccentPreset;
+  invoiceCustomAccentHex?: string;
+  invoiceFontFamily?: InvoiceFontFamily;
+  invoiceLayoutStyle?: InvoiceLayoutStyle;
   invoiceHeaderTitle?: string;
   invoiceDefaultIntroText?: string;
   invoiceDefaultOutroText?: string;
   invoiceFooterNote?: string;
+  quotePrefix?: string;
+  nextQuoteSequence?: number;
+  quoteNumberPattern?: string;
+  quoteHeaderTitle?: string;
+  quoteDefaultIntroText?: string;
+  quoteDefaultOutroText?: string;
+  productPrefix?: string;
+  nextProductSequence?: number;
+  productSequenceDigits?: number;
+  productNumberPattern?: string;
+  skuFieldLabel?: string;
+  customerCategories?: string[];
+  productCategories?: string[];
   smallBusinessMode?: boolean;
   smallBusinessNotice?: string;
+  uiAccent?: UiAccentPreset;
+  uiDensity?: UiDensity;
+  uiFontScale?: UiFontScale;
+  defaultStartSection?: NavSection;
+  swipeNavigationEnabled?: boolean;
+  autoCaptureLocation?: boolean;
+  dailyGoalHours?: number;
+  timerReminderEnabled?: boolean;
+  timerReminderMinutes?: number;
+  timerReminderSound?: ReminderSoundPreset;
+  autoBackup?: AutoBackupConfig;
+  calendarConfig?: NextcloudCalendarConfig;
 }
 
 export interface AppDatabase {
@@ -184,6 +291,7 @@ export interface AppDatabase {
   timeEntries: TimeEntry[];
   activeTimer: ActiveTimer | null;
   invoices: Invoice[];
+  calendarEvents?: CalendarAppointment[];
 }
 
 export interface NextcloudConfigInfo {

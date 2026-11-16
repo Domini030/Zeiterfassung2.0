@@ -19,6 +19,75 @@
   }
 }
 
+html[data-ui-scale="large"] {
+  font-size: 17px;
+}
+
+.invoice-custom-swatch {
+  background-color: var(--tw-invoice-accent, #1d4ed8);
+}
+
+.invoice-custom-bg {
+  background-color: var(--tw-invoice-accent, #1d4ed8);
+}
+
+.invoice-custom-text {
+  color: var(--tw-invoice-accent, #1d4ed8);
+}
+
+.invoice-custom-border {
+  border-color: var(--tw-invoice-accent, #1d4ed8);
+}
+
+:root {
+  --tw-ui-accent: #7c3aed;
+  --tw-ui-accent-soft: #f5f3ff;
+}
+
+html[data-ui-accent="blue"] {
+  --tw-ui-accent: #2563eb;
+  --tw-ui-accent-soft: #eff6ff;
+}
+
+html[data-ui-accent="emerald"] {
+  --tw-ui-accent: #059669;
+  --tw-ui-accent-soft: #ecfdf5;
+}
+
+html[data-ui-accent="amber"] {
+  --tw-ui-accent: #d97706;
+  --tw-ui-accent-soft: #fffbeb;
+}
+
+html[data-ui-accent="rose"] {
+  --tw-ui-accent: #e11d48;
+  --tw-ui-accent-soft: #fff1f2;
+}
+
+.ui-accent-active {
+  background-color: #0f172a;
+}
+
+html.dark .ui-accent-active,
+html[data-ui-accent="blue"] .ui-accent-active,
+html[data-ui-accent="emerald"] .ui-accent-active,
+html[data-ui-accent="amber"] .ui-accent-active,
+html[data-ui-accent="rose"] .ui-accent-active {
+  background-color: var(--tw-ui-accent);
+}
+
+.ui-accent-btn {
+  background-color: var(--tw-ui-accent);
+}
+
+html[data-ui-density="compact"] main {
+  padding: 1rem;
+}
+
+html[data-ui-density="compact"] .space-y-6 > :not(:last-child) {
+  margin-bottom: 1rem;
+}
+
 @media print {
   body {
     background: #ffffff !important;

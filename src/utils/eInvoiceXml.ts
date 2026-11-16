@@ -1,4 +1,5 @@
 import type { CompanyProfile, Invoice, UnitType } from '../types';
+import { calculateDocumentTotals } from './format';
 
 function escapeXml(value: string | undefined | null): string {
   return (value ?? '')
@@ -29,24 +30,20 @@ function cleanSpaces(value: string | undefined): string {
 
 export function buildXRechnungXml(invoice: Invoice, company: CompanyProfile): string {
   const isSmallBiz = invoice.isSmallBusiness ?? Boolean(company.smallBusinessMode);
+  const totals = calculateDocumentTotals(
+    invoice.lineItems,
+    isSmallBiz,
+    invoice.discountType ?? 'percent',
+    invoice.discountValue ?? 0
+  );
   const totalPayable = isSmallBiz ? invoice.netTotal : invoice.grossTotal;
   const taxTotal = isSmallBiz ? 0 : invoice.taxTotal;
   const iban = cleanSpaces(company.iban);
   const bic = cleanSpaces(company.bic);
 
-  // Group tax subtotals by effective rate
-  const taxGroups = new Map<number, { taxable: number; tax: number }>();
-  for (const item of invoice.lineItems) {
-    const rate = isSmallBiz ? 0 : item.taxRate;
-    const prev = taxGroups.get(rate) ?? { taxable: 0, tax: 0 };
-    taxGroups.set(rate, {
-      taxable: Math.round((prev.taxable + item.netTotal) * 100) / 100,
-      tax: Math.round((prev.tax + (isSmallBiz ? 0 : item.taxAmount)) * 100) / 100,
-    });
-  }
-
-  const taxSubtotalsXml = Array.from(taxGroups.entries())
-    .map(([rate, grp]) => {
+  const taxSubtotalsXml = totals.taxBreakdown
+    .map((grp) => {
+      const rate = grp.rate;
       const catId = isSmallBiz || rate === 0 ? 'E' : 'S';
       const exemptionReason =
         isSmallBiz
@@ -73,6 +70,26 @@ export function buildXRechnungXml(invoice: Invoice, company: CompanyProfile): st
     </cac:TaxSubtotal>`;
     })
     .join('\n');
+
+  const discountAmount = invoice.discountNetAmount ?? totals.discountNetAmount;
+  const lineExtensionSum =
+    invoice.subtotalNetBeforeDiscount ?? totals.subtotalNetBeforeDiscount;
+
+  const allowanceChargeXml =
+    discountAmount > 0
+      ? `  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+    <cbc:AllowanceChargeReason>${escapeXml(invoice.discountLabel || 'Rabatt')}</cbc:AllowanceChargeReason>
+    <cbc:Amount currencyID="EUR">${discountAmount.toFixed(2)}</cbc:Amount>
+    <cac:TaxCategory>
+      <cbc:ID>${isSmallBiz ? 'E' : 'S'}</cbc:ID>
+      <cbc:Percent>${(isSmallBiz ? 0 : totals.taxBreakdown[0]?.rate ?? 19).toFixed(2)}</cbc:Percent>
+      <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:AllowanceCharge>`
+      : '';
 
   const linesXml = invoice.lineItems
     .map((item, idx) => {
@@ -205,14 +222,16 @@ export function buildXRechnungXml(invoice: Invoice, company: CompanyProfile): st
   <cac:PaymentTerms>
     <cbc:Note>${escapeXml(invoice.outroText || `Zahlbar bis ${invoice.dueDate}`)}</cbc:Note>
   </cac:PaymentTerms>
+${allowanceChargeXml}
   <cac:TaxTotal>
     <cbc:TaxAmount currencyID="EUR">${taxTotal.toFixed(2)}</cbc:TaxAmount>
 ${taxSubtotalsXml}
   </cac:TaxTotal>
   <cac:LegalMonetaryTotal>
-    <cbc:LineExtensionAmount currencyID="EUR">${invoice.netTotal.toFixed(2)}</cbc:LineExtensionAmount>
+    <cbc:LineExtensionAmount currencyID="EUR">${lineExtensionSum.toFixed(2)}</cbc:LineExtensionAmount>
     <cbc:TaxExclusiveAmount currencyID="EUR">${invoice.netTotal.toFixed(2)}</cbc:TaxExclusiveAmount>
     <cbc:TaxInclusiveAmount currencyID="EUR">${totalPayable.toFixed(2)}</cbc:TaxInclusiveAmount>
+    ${discountAmount > 0 ? `<cbc:AllowanceTotalAmount currencyID="EUR">${discountAmount.toFixed(2)}</cbc:AllowanceTotalAmount>` : ''}
     <cbc:PayableAmount currencyID="EUR">${totalPayable.toFixed(2)}</cbc:PayableAmount>
   </cac:LegalMonetaryTotal>
 ${linesXml}

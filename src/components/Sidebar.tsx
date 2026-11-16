@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Calendar,
   Clock,
   Cloud,
   FileText,
@@ -27,6 +28,7 @@ interface SidebarProps {
 
 const NAV_ITEMS: { id: NavSection; label: string; icon: typeof Clock }[] = [
   { id: 'tracker', label: 'Zeiterfassung', icon: Clock },
+  { id: 'calendar', label: 'Kalender', icon: Calendar },
   { id: 'analytics', label: 'Auswertung', icon: BarChart3 },
   { id: 'nfc', label: 'NFC-Aufgaben', icon: Nfc },
   { id: 'customers', label: 'Kunden', icon: Users },
@@ -69,7 +71,7 @@ export function Sidebar({
             onClick={() => handleNav(item.id)}
             className={`flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
               isActive
-                ? 'bg-slate-900 text-white dark:bg-violet-600 dark:text-white'
+                ? 'ui-accent-active text-white'
                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-[#231b38] dark:hover:text-white'
             }`}
           >

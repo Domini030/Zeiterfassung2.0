@@ -1,10 +1,13 @@
 import {
   Bell,
   BellRing,
+  Calendar as CalendarIcon,
   CheckSquare,
   Download,
   FilePlus2,
   FileText,
+  LocateFixed,
+  MapPin,
   Nfc,
   Pause,
   Pencil,
@@ -12,18 +15,23 @@ import {
   Plus,
   Settings,
   Square,
+  StickyNote,
   Trash2,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type {
   ActiveTimer,
+  CalendarAppointment,
   CompanyProfile,
   Customer,
+  Invoice,
+  LocationSnapshot,
   NfcTask,
   Product,
   TaxRate,
   TimeEntry,
 } from '../types';
+import { captureCurrentLocation } from '../utils/geolocation';
 import type { NativeNotificationStatus } from '../utils/taktwerkNative';
 import { downloadOrShareTextFile, timeEntriesToCsv } from '../utils/exportBackup';
 import {
@@ -32,6 +40,7 @@ import {
   formatDateTimeDE,
   formatDuration,
   formatHoursShort,
+  isInvoiceOverdue,
   toInputDate,
   toInputTime,
 } from '../utils/format';
@@ -43,6 +52,8 @@ interface TimeTrackerViewProps {
   products: Product[];
   nfcTasks: NfcTask[];
   timeEntries: TimeEntry[];
+  invoices?: Invoice[];
+  calendarEvents?: CalendarAppointment[];
   activeTimer: ActiveTimer | null;
   elapsedSeconds: number;
   onStartTimer: (payload: {
@@ -52,7 +63,10 @@ interface TimeTrackerViewProps {
     notes: string;
     nfcTaskId?: string | null;
     source?: 'timer' | 'nfc';
+    location?: LocationSnapshot | null;
   }) => void;
+  onUpdateActiveTimerNotes?: (notes: string) => void;
+  onUpdateActiveTimerLocation?: (location: LocationSnapshot | null) => void;
   onPauseTimer: () => void;
   onResumeTimer: () => void;
   onStopTimer: () => void;
@@ -62,7 +76,9 @@ interface TimeTrackerViewProps {
   onDeleteEntry: (id: string) => void;
   onToggleBillable: (id: string) => void;
   onCreateInvoiceFromEntries: (customerId: string, entryIds: string[]) => void;
-  onNavigate: (section: 'customers' | 'products' | 'nfc') => void;
+  onNavigate: (
+    section: 'customers' | 'products' | 'nfc' | 'invoices' | 'calendar'
+  ) => void;
   onNotify: (msg: string, isError?: boolean) => void;
   notificationStatus?: NativeNotificationStatus | null;
   onRequestNotificationPermission?: () => void;
@@ -75,9 +91,13 @@ export function TimeTrackerView({
   products,
   nfcTasks,
   timeEntries,
+  invoices = [],
+  calendarEvents = [],
   activeTimer,
   elapsedSeconds,
   onStartTimer,
+  onUpdateActiveTimerNotes,
+  onUpdateActiveTimerLocation,
   onPauseTimer,
   onResumeTimer,
   onStopTimer,
@@ -104,6 +124,13 @@ export function TimeTrackerView({
   );
   const [title, setTitle] = useState('');
   const [notes, setNotes] = useState('');
+  const [draftLocation, setDraftLocation] = useState<LocationSnapshot | null>(null);
+  const [locating, setLocating] = useState(false);
+
+  const [liveNotes, setLiveNotes] = useState(activeTimer?.notes ?? '');
+  useEffect(() => {
+    setLiveNotes(activeTimer?.notes ?? '');
+  }, [activeTimer?.id, activeTimer?.notes]);
 
   const [showManualForm, setShowManualForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
@@ -189,6 +216,61 @@ export function TimeTrackerView({
     [selectedEntries]
   );
 
+  const todayTotalSeconds = useMemo(() => {
+    const todayStr = toInputDate();
+    const booked = timeEntries
+      .filter((e) => e.startTime.slice(0, 10) === todayStr)
+      .reduce((acc, e) => acc + e.durationSeconds, 0);
+    return booked + (activeTimer ? elapsedSeconds : 0);
+  }, [timeEntries, activeTimer, elapsedSeconds]);
+
+  const overdueInvoicesCount = useMemo(
+    () => invoices.filter((inv) => isInvoiceOverdue(inv)).length,
+    [invoices]
+  );
+
+  const nextAppointment = useMemo(() => {
+    const nowMs = Date.now() - 15 * 60 * 1000;
+    return [...calendarEvents]
+      .filter((ev) => new Date(ev.startTime).getTime() >= nowMs)
+      .sort(
+        (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+      )[0];
+  }, [calendarEvents]);
+
+  const handleCaptureLocationForStart = async () => {
+    setLocating(true);
+    try {
+      const snap = await captureCurrentLocation();
+      setDraftLocation(snap);
+      onNotify(`Standort erfasst: ${snap.address || 'Koordinaten gespeichert'}`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Standort konnte nicht ermittelt werden.',
+        true
+      );
+    } finally {
+      setLocating(false);
+    }
+  };
+
+  const handleCaptureLocationForActive = async () => {
+    if (!onUpdateActiveTimerLocation) return;
+    setLocating(true);
+    try {
+      const snap = await captureCurrentLocation();
+      onUpdateActiveTimerLocation(snap);
+      onNotify(`Standort zur laufenden Aufgabe gespeichert: ${snap.address || ''}`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Standort konnte nicht ermittelt werden.',
+        true
+      );
+    } finally {
+      setLocating(false);
+    }
+  };
+
   const handleStartClick = (e: React.FormEvent) => {
     e.preventDefault();
     if (!effectiveCustomerId || !effectiveProductId) return;
@@ -199,9 +281,11 @@ export function TimeTrackerView({
       title: title.trim() || prod?.name || 'Arbeitszeit',
       notes: notes.trim(),
       source: 'timer',
+      location: draftLocation,
     });
     setTitle('');
     setNotes('');
+    setDraftLocation(null);
   };
 
   const openCreateManualForm = () => {
@@ -409,6 +493,89 @@ export function TimeTrackerView({
         </div>
       </div>
 
+      {/* Overview Widgets Bar */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* Widget 1: Tagesfortschritt */}
+        {(() => {
+          const goalHours = Math.max(1, company.dailyGoalHours ?? 8);
+          const todayHours = todayTotalSeconds / 3600;
+          const pct = Math.min(100, Math.round((todayHours / goalHours) * 100));
+          return (
+            <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-[#2e2349] dark:bg-[#171126]">
+              <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span className="font-medium">Tagesziel ({goalHours} Std.)</span>
+                <span className="font-mono font-semibold text-slate-800 dark:text-violet-300">
+                  {pct} %
+                </span>
+              </div>
+              <div className="mt-1.5 font-mono text-lg font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+                {formatHoursShort(todayTotalSeconds)}
+              </div>
+              <progress
+                value={Math.min(todayHours, goalHours)}
+                max={goalHours}
+                className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-slate-100 accent-blue-700 dark:bg-[#211936] dark:accent-violet-500 [&::-webkit-progress-bar]:rounded-full [&::-webkit-progress-bar]:bg-slate-100 dark:[&::-webkit-progress-bar]:bg-[#211936] [&::-webkit-progress-value]:rounded-full [&::-webkit-progress-value]:bg-blue-700 dark:[&::-webkit-progress-value]:bg-violet-500"
+              />
+            </div>
+          );
+        })()}
+
+        {/* Widget 2: Abrechnung & Überfällig */}
+        <button
+          type="button"
+          onClick={() => onNavigate('invoices')}
+          className="rounded-xl border border-slate-200 bg-white p-4 text-left transition-colors hover:border-blue-400 hover:bg-slate-50/70 dark:border-[#2e2349] dark:bg-[#171126] dark:hover:border-violet-500 dark:hover:bg-[#211936]/50 cursor-pointer"
+        >
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span className="font-medium">Abrechnungs-Widget</span>
+            <FileText className="h-3.5 w-3.5 text-blue-700 dark:text-violet-400" />
+          </div>
+          <div className="mt-1.5 font-mono text-lg font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+            {formatCurrency(unbilledTotalNet)}
+          </div>
+          <div className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+            {overdueInvoicesCount > 0 ? (
+              <span className="font-semibold text-red-600 dark:text-red-400">
+                {overdueInvoicesCount} überfällige Rechnung(en) →
+              </span>
+            ) : (
+              <span>Offen zum Abrechnen · Rechnungen öffnen →</span>
+            )}
+          </div>
+        </button>
+
+        {/* Widget 3: Nächster Termin */}
+        <button
+          type="button"
+          onClick={() => onNavigate('calendar')}
+          className="rounded-xl border border-slate-200 bg-white p-4 text-left transition-colors hover:border-blue-400 hover:bg-slate-50/70 dark:border-[#2e2349] dark:bg-[#171126] dark:hover:border-violet-500 dark:hover:bg-[#211936]/50 cursor-pointer"
+        >
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span className="font-medium">Nächster Termin</span>
+            <CalendarIcon className="h-3.5 w-3.5 text-blue-700 dark:text-violet-400" />
+          </div>
+          {nextAppointment ? (
+            <>
+              <div className="mt-1.5 truncate text-sm font-semibold text-slate-900 dark:text-slate-100">
+                {nextAppointment.title}
+              </div>
+              <div className="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400">
+                {formatDateTimeDE(nextAppointment.startTime)}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="mt-1.5 text-sm font-medium text-slate-700 dark:text-slate-300">
+                Keine anstehenden Termine
+              </div>
+              <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                Kalender &amp; Nextcloud öffnen →
+              </div>
+            </>
+          )}
+        </button>
+      </div>
+
       {/* Onboarding hint if customers or products are missing */}
       {missingMasterData && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/40">
@@ -481,186 +648,299 @@ export function TimeTrackerView({
       {/* Dominant Chronometer / Active Timer Section */}
       <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
         {activeTimer ? (
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-blue-700 dark:text-violet-400">
-                <span>
-                  {activeTimer.pausedAt
-                    ? 'Timer pausiert'
-                    : activeTimer.source === 'nfc'
-                      ? 'Gestartet per NFC-Tag'
-                      : 'Timer läuft'}
-                </span>
-                <span aria-hidden="true">·</span>
-                <span className="text-slate-600 dark:text-slate-300">
-                  {customerMap.get(activeTimer.customerId)?.companyName ?? 'Kunde'}
-                </span>
-                <span aria-hidden="true">·</span>
-                <span className="text-slate-600 dark:text-slate-300">
-                  {productMap.get(activeTimer.productId)?.name ?? 'Leistung'}
-                </span>
-              </div>
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
-                  {activeTimer.title}
-                </h2>
-                {notificationStatus?.enabled && (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 dark:border-violet-800 dark:bg-[#231b3b] dark:text-violet-300">
-                    <Bell className="h-3 w-3 text-violet-500" />
-                    Statusleiste aktiv (oberste Priorität)
+          <div className="space-y-4">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-blue-700 dark:text-violet-400">
+                  <span>
+                    {activeTimer.pausedAt
+                      ? 'Timer pausiert'
+                      : activeTimer.source === 'nfc'
+                        ? 'Gestartet per NFC-Tag'
+                        : 'Timer läuft'}
                   </span>
-                )}
+                  <span aria-hidden="true">·</span>
+                  <span className="text-slate-600 dark:text-slate-300">
+                    {customerMap.get(activeTimer.customerId)?.companyName ?? 'Kunde'}
+                  </span>
+                  <span aria-hidden="true">·</span>
+                  <span className="text-slate-600 dark:text-slate-300">
+                    {productMap.get(activeTimer.productId)?.name ?? 'Leistung'}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
+                    {activeTimer.title}
+                  </h2>
+                  {notificationStatus?.enabled && (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 dark:border-violet-800 dark:bg-[#231b3b] dark:text-violet-300">
+                      <Bell className="h-3 w-3 text-violet-500" />
+                      Statusleiste aktiv
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                  <span>
+                    Gestartet am {formatDateTimeDE(activeTimer.startTime)} ·{' '}
+                    <span className="font-mono tabular-nums">
+                      {formatCurrency(activeTimer.hourlyRateNet)}/Std.
+                    </span>
+                  </span>
+                  {activeTimer.location && (
+                    <span className="inline-flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {activeTimer.location.address ||
+                        `${activeTimer.location.lat.toFixed(4)}, ${activeTimer.location.lng.toFixed(4)}`}
+                    </span>
+                  )}
+                </div>
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Gestartet am {formatDateTimeDE(activeTimer.startTime)} · Stundensatz{' '}
-                <span className="font-mono tabular-nums">
-                  {formatCurrency(activeTimer.hourlyRateNet)}/Std.
-                </span>
-              </p>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <div
+                  className={`rounded-lg border px-5 py-3 font-mono text-3xl font-bold tracking-tight tabular-nums ${
+                    activeTimer.pausedAt
+                      ? 'border-amber-300 bg-amber-950/80 text-amber-200 dark:border-amber-700'
+                      : 'border-slate-200 bg-slate-900 text-white dark:border-[#3b2d5e] dark:bg-[#0e0a18]'
+                  }`}
+                >
+                  {formatDuration(elapsedSeconds)}
+                </div>
+                {activeTimer.pausedAt ? (
+                  <button
+                    type="button"
+                    onClick={onResumeTimer}
+                    className="inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200 dark:hover:bg-emerald-950 whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    <Play className="h-4 w-4 fill-current" />
+                    Fortsetzen
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={onPauseTimer}
+                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    <Pause className="h-4 w-4" />
+                    Pausieren
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={onStopTimer}
+                  className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <Square className="h-4 w-4 fill-current" />
+                  Stoppen &amp; Speichern
+                </button>
+                <button
+                  type="button"
+                  onClick={onDiscardTimer}
+                  className="rounded-lg border border-slate-200 px-3.5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-red-700 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] dark:hover:text-red-400 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  Verwerfen
+                </button>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <div
-                className={`rounded-lg border px-5 py-3 font-mono text-3xl font-bold tracking-tight tabular-nums ${
-                  activeTimer.pausedAt
-                    ? 'border-amber-300 bg-amber-950/80 text-amber-200 dark:border-amber-700'
-                    : 'border-slate-200 bg-slate-900 text-white dark:border-[#3b2d5e] dark:bg-[#0e0a18]'
-                }`}
-              >
-                {formatDuration(elapsedSeconds)}
+            {/* Live Notes & GPS Capture while timer is running */}
+            <div className="grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 dark:border-[#2e2349] lg:grid-cols-12">
+              <div className="lg:col-span-9">
+                <label className="mb-1 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400">
+                  <StickyNote className="h-3.5 w-3.5 text-violet-500" />
+                  Notizen während der laufenden Aufgabe (fließen automatisch in Rechnung &amp; Statusleiste ein)
+                </label>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <textarea
+                    rows={2}
+                    value={liveNotes}
+                    onChange={(e) => setLiveNotes(e.target.value)}
+                    onBlur={() => {
+                      if (
+                        onUpdateActiveTimerNotes &&
+                        liveNotes.trim() !== (activeTimer.notes ?? '').trim()
+                      ) {
+                        onUpdateActiveTimerNotes(liveNotes.trim());
+                      }
+                    }}
+                    placeholder="Zwischenstand, verwendetes Material oder Abrechnungshinweis festhalten..."
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                  />
+                  {onUpdateActiveTimerNotes &&
+                    liveNotes.trim() !== (activeTimer.notes ?? '').trim() && (
+                      <button
+                        type="button"
+                        onClick={() => onUpdateActiveTimerNotes(liveNotes.trim())}
+                        className="rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 self-end cursor-pointer"
+                      >
+                        Notiz sichern
+                      </button>
+                    )}
+                </div>
               </div>
-              {activeTimer.pausedAt ? (
+              <div className="flex flex-col justify-end lg:col-span-3">
                 <button
                   type="button"
-                  onClick={onResumeTimer}
-                  className="inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200 dark:hover:bg-emerald-950 whitespace-nowrap shrink-0 cursor-pointer"
+                  onClick={() => void handleCaptureLocationForActive()}
+                  disabled={locating}
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer"
                 >
-                  <Play className="h-4 w-4 fill-current" />
-                  Fortsetzen
+                  <LocateFixed className={`h-4 w-4 ${locating ? 'animate-spin' : ''}`} />
+                  {locating
+                    ? 'Ermittle GPS...'
+                    : activeTimer.location
+                      ? 'Standort aktualisieren'
+                      : 'Standort erfassen (GPS)'}
                 </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={onPauseTimer}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
-                >
-                  <Pause className="h-4 w-4" />
-                  Pausieren
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={onStopTimer}
-                className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
-              >
-                <Square className="h-4 w-4 fill-current" />
-                Stoppen &amp; Speichern
-              </button>
-              <button
-                type="button"
-                onClick={onDiscardTimer}
-                className="rounded-lg border border-slate-200 px-3.5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-red-700 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] dark:hover:text-red-400 whitespace-nowrap shrink-0 cursor-pointer"
-              >
-                Verwerfen
-              </button>
+              </div>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleStartClick} className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-            <div className="lg:col-span-3">
-              <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Kunde
-              </label>
-              <select
-                value={effectiveCustomerId}
-                onChange={(e) => setCustomerId(e.target.value)}
-                disabled={customers.length === 0}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              >
-                {customers.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.companyName}
-                  </option>
-                ))}
-              </select>
+          <form onSubmit={handleStartClick} className="space-y-3">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+              <div className="lg:col-span-3">
+                <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Kunde
+                </label>
+                <select
+                  value={effectiveCustomerId}
+                  onChange={(e) => setCustomerId(e.target.value)}
+                  disabled={customers.length === 0}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                >
+                  {customers.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.companyName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="lg:col-span-3">
+                <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Leistung / Produkt
+                </label>
+                <select
+                  value={effectiveProductId}
+                  onChange={(e) => setProductId(e.target.value)}
+                  disabled={products.length === 0}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                >
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({formatCurrency(p.unitPriceNet)}/{p.unit})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="lg:col-span-4">
+                <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Aufgabe / Tätigkeit
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="z. B. Serverwartung oder API-Anbindung..."
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-violet-500"
+                />
+              </div>
+
+              <div className="flex items-end lg:col-span-2">
+                <button
+                  type="submit"
+                  disabled={missingMasterData}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <Play className="h-4 w-4 fill-current" />
+                  Timer starten
+                </button>
+              </div>
             </div>
 
-            <div className="lg:col-span-3">
-              <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Leistung / Produkt
-              </label>
-              <select
-                value={effectiveProductId}
-                onChange={(e) => setProductId(e.target.value)}
-                disabled={products.length === 0}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              >
-                {products.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} ({formatCurrency(p.unitPriceNet)}/{p.unit})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="lg:col-span-4">
-              <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Aufgabe / Tätigkeit
-              </label>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <input
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="z. B. Serverwartung oder API-Anbindung..."
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-violet-500"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Startnotiz (optional — kann auch während der Aufgabe bearbeitet werden)..."
+                className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 focus:border-blue-600 focus:bg-white focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-100"
               />
-            </div>
-
-            <div className="flex items-end lg:col-span-2">
               <button
-                type="submit"
-                disabled={missingMasterData}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                type="button"
+                onClick={() => void handleCaptureLocationForStart()}
+                disabled={locating}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                  draftLocation
+                    ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200'
+                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045]'
+                }`}
               >
-                <Play className="h-4 w-4 fill-current" />
-                Timer starten
+                <MapPin className="h-3.5 w-3.5" />
+                {locating
+                  ? 'Ermittle Ort...'
+                  : draftLocation
+                    ? draftLocation.address || 'Ort erfasst'
+                    : company.autoCaptureLocation
+                      ? 'Auto-Ortung aktiv (manuell prüfen)'
+                      : 'Standort beim Start erfassen'}
               </button>
             </div>
           </form>
         )}
 
-        {/* Quick NFC shortcuts */}
-        {nfcTasks.length > 0 && !activeTimer && (
+        {/* Quick-Start Widgets (NFC tasks + fallback quick product widgets) */}
+        {!activeTimer && (nfcTasks.length > 0 || (customers.length > 0 && serviceProducts.length > 0)) && (
           <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 dark:border-[#2e2349]">
             <span className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
               <Nfc className="h-3.5 w-3.5 text-violet-400" />
-              NFC-Schnellstart:
+              Schnellstart-Widget:
             </span>
-            {nfcTasks.slice(0, 4).map((task) => (
-              <button
-                key={task.id}
-                type="button"
-                onClick={() =>
-                  onStartTimer({
-                    customerId: task.customerId,
-                    productId: task.productId,
-                    title: task.title,
-                    notes: task.description,
-                    nfcTaskId: task.id,
-                    source: 'nfc',
-                  })
-                }
-                className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
-              >
-                {task.title}
-              </button>
-            ))}
+            {nfcTasks.length > 0
+              ? nfcTasks.slice(0, 4).map((task) => (
+                  <button
+                    key={task.id}
+                    type="button"
+                    onClick={() =>
+                      onStartTimer({
+                        customerId: task.customerId,
+                        productId: task.productId,
+                        title: task.title,
+                        notes: task.description,
+                        nfcTaskId: task.id,
+                        source: 'nfc',
+                      })
+                    }
+                    className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    ▶ {task.title}
+                  </button>
+                ))
+              : serviceProducts.slice(0, 3).map((prod) => (
+                  <button
+                    key={prod.id}
+                    type="button"
+                    onClick={() =>
+                      onStartTimer({
+                        customerId: effectiveCustomerId,
+                        productId: prod.id,
+                        title: prod.name,
+                        notes: '',
+                        source: 'timer',
+                      })
+                    }
+                    className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    ▶ {prod.name}
+                  </button>
+                ))}
             <button
               type="button"
               onClick={() => onNavigate('nfc')}
               className="text-xs font-medium text-blue-700 hover:underline dark:text-violet-400 whitespace-nowrap shrink-0 cursor-pointer"
             >
-              Alle NFC-Tags verwalten
+              NFC-Tags verwalten
             </button>
           </div>
         )}
@@ -966,6 +1246,15 @@ export function TimeTrackerView({
                         {entry.notes && (
                           <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                             {entry.notes}
+                          </div>
+                        )}
+                        {entry.location && (
+                          <div className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-emerald-700 dark:text-emerald-400">
+                            <MapPin className="h-3 w-3 shrink-0" />
+                            <span>
+                              {entry.location.address ||
+                                `${entry.location.lat.toFixed(4)}, ${entry.location.lng.toFixed(4)}`}
+                            </span>
                           </div>
                         )}
                       </td>

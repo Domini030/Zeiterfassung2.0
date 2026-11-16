@@ -1,5 +1,23 @@
 import { Capacitor } from '@capacitor/core';
-import type { ActiveTimer, AppDatabase, NextcloudConfigInfo } from '../types';
+import type {
+  ActiveTimer,
+  AppDatabase,
+  AutoBackupFormat,
+  CalendarAppointment,
+  NextcloudConfigInfo,
+  ReminderSoundPreset,
+} from '../types';
+import {
+  buildIcsEvent,
+  parseCalDavCalendarDataXml,
+  parseCalDavCalendarsXml,
+  type DiscoveredCalendar,
+} from './caldavClient';
+import {
+  downloadOrShareBinaryFile,
+  downloadOrShareTextFile,
+  generateBackupArtifacts,
+} from './exportBackup';
 import { formatDuration, getActiveTimerElapsedMs } from './format';
 import { createEmptyDatabase } from './sampleData';
 import { TaktWerkNative, type NativeNotificationStatus } from './taktwerkNative';
@@ -652,5 +670,326 @@ export async function syncActiveTimerNotification(
     });
   } catch {
     return null;
+  }
+}
+
+export async function apiUploadNextcloudFile(options: {
+  subFolder?: string;
+  filename: string;
+  contentOrBase64: string;
+  isBinary: boolean;
+  contentType: string;
+}): Promise<{ path: string; uploadedAt: string }> {
+  const subFolder = options.subFolder || 'Backups';
+  if (shouldUseRemoteServer()) {
+    const res = await fetch(apiUrl('/api/nextcloud/upload-backup'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subFolder,
+        filename: options.filename,
+        contentOrBase64: options.contentOrBase64,
+        isBinary: options.isBinary,
+        contentType: options.contentType,
+      }),
+    });
+    const data = (await res.json()) as {
+      ok?: boolean;
+      path?: string;
+      uploadedAt?: string;
+      error?: string;
+    };
+    if (!res.ok) {
+      throw new Error(data.error || 'Backup-Upload fehlgeschlagen.');
+    }
+    return {
+      path: data.path || `${subFolder}/${options.filename}`,
+      uploadedAt: data.uploadedAt || new Date().toISOString(),
+    };
+  }
+
+  const cfg = readNativeNc();
+  if (!cfg.url || !cfg.username || !cfg.appPassword) {
+    throw new Error('Nextcloud ist nicht konfiguriert.');
+  }
+  const safeFilename = options.filename.replace(/[^a-zA-Z0-9_.-]/g, '_');
+  const folderUrls = buildWebDavFolderUrls(cfg, subFolder);
+  const fileUrl = buildWebDavFileUrl(cfg, `${subFolder}/${safeFilename}`);
+  if (options.isBinary) {
+    await TaktWerkNative.webdavUploadBinary({
+      folderUrls,
+      fileUrl,
+      username: cfg.username,
+      appPassword: cfg.appPassword,
+      contentType: options.contentType,
+      base64: options.contentOrBase64,
+    });
+  } else {
+    await TaktWerkNative.webdavUploadFile({
+      folderUrls,
+      fileUrl,
+      username: cfg.username,
+      appPassword: cfg.appPassword,
+      contentType: options.contentType,
+      content: options.contentOrBase64,
+    });
+  }
+  return {
+    path: `${cfg.folder}/${subFolder}/${safeFilename}`,
+    uploadedAt: new Date().toISOString(),
+  };
+}
+
+export async function apiRunMultiFormatBackup(
+  db: AppDatabase,
+  formats: AutoBackupFormat[],
+  options: { uploadToNextcloud: boolean; localDownload: boolean }
+): Promise<{ uploadedCount: number; downloadedCount: number; summary: string }> {
+  const artifacts = await generateBackupArtifacts(db, formats);
+  let uploadedCount = 0;
+  let downloadedCount = 0;
+  const errors: string[] = [];
+
+  for (const file of artifacts) {
+    if (options.uploadToNextcloud) {
+      try {
+        await apiUploadNextcloudFile({
+          subFolder: 'Backups',
+          filename: file.filename,
+          contentOrBase64: file.data,
+          isBinary: file.isBinary,
+          contentType: file.mimeType,
+        });
+        uploadedCount += 1;
+      } catch (err) {
+        errors.push(
+          `${file.filename}: ${err instanceof Error ? err.message : 'Upload fehlgeschlagen'}`
+        );
+      }
+    }
+    if (options.localDownload) {
+      if (file.isBinary) {
+        await downloadOrShareBinaryFile(file.filename, file.data, file.mimeType);
+      } else {
+        await downloadOrShareTextFile(file.filename, file.data, file.mimeType);
+      }
+      downloadedCount += 1;
+    }
+  }
+
+  if (options.uploadToNextcloud && uploadedCount === 0 && errors.length > 0) {
+    throw new Error(errors[0]);
+  }
+
+  const parts: string[] = [];
+  if (uploadedCount > 0) parts.push(`${uploadedCount} Datei(en) nach Nextcloud/Backups`);
+  if (downloadedCount > 0) parts.push(`${downloadedCount} Datei(en) lokal gesichert`);
+  const summary = parts.length > 0 ? parts.join(' · ') : 'Keine Formate ausgewählt';
+  return { uploadedCount, downloadedCount, summary };
+}
+
+export async function apiDiscoverNextcloudCalendars(): Promise<DiscoveredCalendar[]> {
+  if (shouldUseRemoteServer()) {
+    const res = await fetch(apiUrl('/api/nextcloud/caldav/discover'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data = (await res.json()) as {
+      xml?: string;
+      baseOrigin?: string;
+      error?: string;
+    };
+    if (!res.ok || !data.xml) {
+      throw new Error(data.error || 'Nextcloud-Kalender konnten nicht abgerufen werden.');
+    }
+    return parseCalDavCalendarsXml(data.xml, data.baseOrigin || '');
+  }
+
+  const cfg = readNativeNc();
+  if (!cfg.url || !cfg.username || !cfg.appPassword) {
+    throw new Error('Nextcloud ist noch nicht konfiguriert.');
+  }
+  const baseUrl = cfg.url.trim().replace(/\/+$/, '').replace(/\/remote\.php\/.*$/, '');
+  const homeUrl = `${baseUrl}/remote.php/dav/calendars/${encodeURIComponent(cfg.username)}/`;
+  const propfindBody = `<?xml version="1.0" encoding="utf-8" ?>
+<d:propfind xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
+  <d:prop>
+    <d:displayname />
+    <d:resourcetype />
+  </d:prop>
+</d:propfind>`;
+
+  const res = await TaktWerkNative.caldavRequest({
+    method: 'PROPFIND',
+    url: homeUrl,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
+    depth: '1',
+    contentType: 'application/xml; charset=utf-8',
+    body: propfindBody,
+  });
+  if (res.status !== 207 && (res.status < 200 || res.status >= 300)) {
+    throw new Error(`CalDAV PROPFIND fehlgeschlagen (HTTP ${res.status}).`);
+  }
+  const origin = new URL(baseUrl).origin;
+  return parseCalDavCalendarsXml(res.body, origin);
+}
+
+export async function apiFetchNextcloudCalendarEvents(
+  calendarUrl: string,
+  calendarName?: string
+): Promise<CalendarAppointment[]> {
+  const startIso = new Date(Date.now() - 30 * 86400 * 1000).toISOString();
+  const endIso = new Date(Date.now() + 90 * 86400 * 1000).toISOString();
+
+  if (shouldUseRemoteServer()) {
+    const res = await fetch(apiUrl('/api/nextcloud/caldav/events'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ calendarUrl, startIso, endIso }),
+    });
+    const data = (await res.json()) as { xml?: string; error?: string };
+    if (!res.ok || !data.xml) {
+      throw new Error(data.error || 'Termine konnten nicht aus Nextcloud geladen werden.');
+    }
+    return parseCalDavCalendarDataXml(data.xml, calendarName);
+  }
+
+  const cfg = readNativeNc();
+  if (!cfg.url || !cfg.username || !cfg.appPassword) {
+    throw new Error('Nextcloud ist noch nicht konfiguriert.');
+  }
+  const startCompact = startIso.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+  const endCompact = endIso.replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+  const reportBody = `<?xml version="1.0" encoding="utf-8" ?>
+<c:calendar-query xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
+  <d:prop>
+    <d:getetag />
+    <c:calendar-data />
+  </d:prop>
+  <c:filter>
+    <c:comp-filter name="VCALENDAR">
+      <c:comp-filter name="VEVENT">
+        <c:time-range start="${startCompact}" end="${endCompact}" />
+      </c:comp-filter>
+    </c:comp-filter>
+  </c:filter>
+</c:calendar-query>`;
+
+  const target = calendarUrl.endsWith('/') ? calendarUrl : `${calendarUrl}/`;
+  const res = await TaktWerkNative.caldavRequest({
+    method: 'REPORT',
+    url: target,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
+    depth: '1',
+    contentType: 'application/xml; charset=utf-8',
+    body: reportBody,
+  });
+  if (res.status !== 207 && (res.status < 200 || res.status >= 300)) {
+    throw new Error(`CalDAV REPORT fehlgeschlagen (HTTP ${res.status}).`);
+  }
+  return parseCalDavCalendarDataXml(res.body, calendarName);
+}
+
+export async function apiPushNextcloudCalendarEvent(
+  calendarUrl: string,
+  appointment: CalendarAppointment
+): Promise<void> {
+  const uid = appointment.uid || `${appointment.id}@taktwerk.app`;
+  const icsContent = buildIcsEvent({ ...appointment, uid });
+
+  if (shouldUseRemoteServer()) {
+    const res = await fetch(apiUrl('/api/nextcloud/caldav/push'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ calendarUrl, uid, icsContent }),
+    });
+    const data = (await res.json()) as { error?: string };
+    if (!res.ok) {
+      throw new Error(data.error || 'Termin konnte nicht in Nextcloud gespeichert werden.');
+    }
+    return;
+  }
+
+  const cfg = readNativeNc();
+  if (!cfg.url || !cfg.username || !cfg.appPassword) {
+    throw new Error('Nextcloud ist noch nicht konfiguriert.');
+  }
+  const safeUid = uid.replace(/[^a-zA-Z0-9@._-]/g, '_');
+  const eventUrl = `${calendarUrl.replace(/\/+$/, '')}/${encodeURIComponent(safeUid)}.ics`;
+  const res = await TaktWerkNative.caldavRequest({
+    method: 'PUT',
+    url: eventUrl,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
+    contentType: 'text/calendar; charset=utf-8',
+    body: icsContent,
+  });
+  if (res.status < 200 || res.status >= 300) {
+    throw new Error(`CalDAV PUT fehlgeschlagen (HTTP ${res.status}).`);
+  }
+}
+
+export async function playNativeReminderTone(preset: ReminderSoundPreset): Promise<void> {
+  if (!isNativeCapacitor()) return;
+  try {
+    await TaktWerkNative.playReminderTone({ preset });
+  } catch {
+    // Ignore native tone errors
+  }
+}
+
+export async function scheduleNativeTimerReminder(options: {
+  delayMs: number;
+  title: string;
+  body: string;
+  soundPreset: ReminderSoundPreset;
+}): Promise<void> {
+  if (!isNativeCapacitor()) return;
+  try {
+    await TaktWerkNative.scheduleTimerReminder(options);
+  } catch {
+    // Ignore scheduling errors
+  }
+}
+
+export async function cancelNativeTimerReminder(): Promise<void> {
+  if (!isNativeCapacitor()) return;
+  try {
+    await TaktWerkNative.cancelTimerReminder();
+  } catch {
+    // Ignore cancel errors
+  }
+}
+
+export async function syncNativeWidgetState(db: AppDatabase): Promise<void> {
+  if (!isNativeCapacitor()) return;
+  try {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const todaySecs = db.timeEntries
+      .filter((e) => e.startTime.slice(0, 10) === todayStr)
+      .reduce((acc, e) => acc + e.durationSeconds, 0);
+    const todayHours = (todaySecs / 3600).toFixed(1).replace('.', ',');
+    const custName = db.activeTimer
+      ? db.customers.find((c) => c.id === db.activeTimer?.customerId)?.companyName ?? ''
+      : '';
+    const quickTasks = db.nfcTasks.slice(0, 2).map((t) => ({
+      tagUid: t.tagUid,
+      title: t.title,
+    }));
+
+    const elapsedMs = db.activeTimer ? getActiveTimerElapsedMs(db.activeTimer) : 0;
+    await TaktWerkNative.updateWidgetState({
+      isRunning: Boolean(db.activeTimer),
+      isPaused: Boolean(db.activeTimer?.pausedAt),
+      timerTitle: db.activeTimer?.title || '',
+      customerName: custName,
+      startTimeMs: db.activeTimer ? Date.now() - elapsedMs : 0,
+      todayHoursLabel: `${todayHours} Std.`,
+      quickTasksJson: JSON.stringify(quickTasks),
+    });
+  } catch {
+    // Ignore widget update failures
   }
 }

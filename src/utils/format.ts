@@ -1,8 +1,12 @@
 import type {
   ActiveTimer,
   CompanyProfile,
+  DiscountType,
   Invoice,
   InvoiceAccentPreset,
+  InvoiceFontFamily,
+  InvoiceLayoutStyle,
+  InvoiceLineItem,
   TimeRoundingMinutes,
 } from '../types';
 
@@ -111,6 +115,7 @@ export function getActiveTimerElapsedMs(
 }
 
 export function getOverdueDays(invoice: Invoice, todayIso: string = toInputDate()): number {
+  if (invoice.documentType === 'quote') return 0;
   if (invoice.status !== 'Gesendet' || !invoice.dueDate) return 0;
   const due = new Date(`${invoice.dueDate}T00:00:00`);
   const today = new Date(`${todayIso}T00:00:00`);
@@ -123,19 +128,21 @@ export function isInvoiceOverdue(invoice: Invoice, todayIso: string = toInputDat
   return getOverdueDays(invoice, todayIso) > 0;
 }
 
-export function formatInvoiceNumber(
-  company: CompanyProfile,
-  sequenceOverride?: number,
+function applyNumberPattern(
+  patternInput: string | undefined,
+  prefix: string,
+  seqNum: number,
+  digits: number,
+  fallbackPrefix: string,
   date: Date = new Date()
 ): string {
-  const seqNum = Math.max(1, sequenceOverride ?? company.nextInvoiceSequence ?? 1);
-  const digits = Math.min(8, Math.max(2, company.invoiceSequenceDigits ?? 4));
-  const paddedSeq = String(seqNum).padStart(digits, '0');
-  const prefix = company.invoicePrefix ?? 'RE-';
-  const pattern = (company.invoiceNumberPattern || '').trim();
-
+  const paddedSeq = String(Math.max(1, seqNum)).padStart(
+    Math.min(8, Math.max(2, digits)),
+    '0'
+  );
+  const pattern = (patternInput || '').trim();
   if (!pattern) {
-    return `${prefix || 'RE-2026-'}${paddedSeq}`;
+    return `${prefix || fallbackPrefix}${paddedSeq}`;
   }
 
   const yyyy = String(date.getFullYear());
@@ -152,6 +159,131 @@ export function formatInvoiceNumber(
     .replace(/\{NR\}/g, paddedSeq);
 }
 
+export function formatInvoiceNumber(
+  company: CompanyProfile,
+  sequenceOverride?: number,
+  date: Date = new Date()
+): string {
+  return applyNumberPattern(
+    company.invoiceNumberPattern,
+    company.invoicePrefix ?? 'RE-',
+    sequenceOverride ?? company.nextInvoiceSequence ?? 1,
+    company.invoiceSequenceDigits ?? 4,
+    'RE-2026-',
+    date
+  );
+}
+
+export function formatQuoteNumber(
+  company: CompanyProfile,
+  sequenceOverride?: number,
+  date: Date = new Date()
+): string {
+  return applyNumberPattern(
+    company.quoteNumberPattern ?? company.invoiceNumberPattern,
+    company.quotePrefix ?? 'ANG-',
+    sequenceOverride ?? company.nextQuoteSequence ?? 1,
+    company.invoiceSequenceDigits ?? 4,
+    'ANG-2026-',
+    date
+  );
+}
+
+export function formatProductSku(
+  company: CompanyProfile,
+  sequenceOverride?: number,
+  date: Date = new Date()
+): string {
+  return applyNumberPattern(
+    company.productNumberPattern ?? '{PREFIX}{NR}',
+    company.productPrefix ?? 'ART-',
+    sequenceOverride ?? company.nextProductSequence ?? 1,
+    company.productSequenceDigits ?? 3,
+    'ART-',
+    date
+  );
+}
+
+export function calculateDocumentTotals(
+  lineItems: InvoiceLineItem[],
+  isSmallBusiness: boolean,
+  discountType: DiscountType = 'percent',
+  discountValue = 0
+): {
+  subtotalNetBeforeDiscount: number;
+  discountNetAmount: number;
+  netTotal: number;
+  taxTotal: number;
+  grossTotal: number;
+  taxBreakdown: { rate: number; taxable: number; tax: number }[];
+} {
+  const subtotalNet = Math.round(
+    lineItems.reduce((acc, i) => acc + i.netTotal, 0) * 100
+  ) / 100;
+
+  const cleanVal = Math.max(0, Number.isFinite(discountValue) ? discountValue : 0);
+  let discountNet = 0;
+  if (subtotalNet > 0 && cleanVal > 0) {
+    if (discountType === 'percent') {
+      const clampedPct = Math.min(100, cleanVal);
+      discountNet = Math.round(subtotalNet * (clampedPct / 100) * 100) / 100;
+    } else {
+      discountNet = Math.min(subtotalNet, Math.round(cleanVal * 100) / 100);
+    }
+  }
+
+  const netAfterDiscount = Math.max(0, Math.round((subtotalNet - discountNet) * 100) / 100);
+  const netFactor = subtotalNet > 0 ? netAfterDiscount / subtotalNet : 1;
+
+  const rateMap = new Map<number, { taxable: number; tax: number }>();
+  for (const item of lineItems) {
+    const rate = isSmallBusiness ? 0 : item.taxRate;
+    const prev = rateMap.get(rate) ?? { taxable: 0, tax: 0 };
+    const discountedLineNet = Math.round(item.netTotal * netFactor * 100) / 100;
+    const discountedTax = Math.round(discountedLineNet * (rate / 100) * 100) / 100;
+    rateMap.set(rate, {
+      taxable: Math.round((prev.taxable + discountedLineNet) * 100) / 100,
+      tax: Math.round((prev.tax + discountedTax) * 100) / 100,
+    });
+  }
+
+  const taxBreakdown = Array.from(rateMap.entries())
+    .map(([rate, vals]) => ({ rate, taxable: vals.taxable, tax: vals.tax }))
+    .sort((a, b) => b.rate - a.rate);
+
+  const taxTotal = isSmallBusiness
+    ? 0
+    : Math.round(taxBreakdown.reduce((acc, g) => acc + g.tax, 0) * 100) / 100;
+  const grossTotal = Math.round((netAfterDiscount + taxTotal) * 100) / 100;
+
+  return {
+    subtotalNetBeforeDiscount: subtotalNet,
+    discountNetAmount: discountNet,
+    netTotal: netAfterDiscount,
+    taxTotal,
+    grossTotal,
+    taxBreakdown,
+  };
+}
+
+export function hexToRgbTuple(hex: string | undefined): [number, number, number] | null {
+  if (!hex) return null;
+  const cleaned = hex.trim().replace(/^#/, '');
+  if (!/^[0-9a-fA-F]{6}$/.test(cleaned)) return null;
+  const r = parseInt(cleaned.slice(0, 2), 16);
+  const g = parseInt(cleaned.slice(2, 4), 16);
+  const b = parseInt(cleaned.slice(4, 6), 16);
+  return [r, g, b];
+}
+
+export function resolveInvoiceAccentRgb(company: CompanyProfile): [number, number, number] {
+  const preset = company.invoiceAccentColor ?? 'slate';
+  if (preset === 'custom') {
+    return hexToRgbTuple(company.invoiceCustomAccentHex) ?? [15, 23, 42];
+  }
+  return INVOICE_ACCENT_STYLES[preset]?.rgb ?? [15, 23, 42];
+}
+
 export const INVOICE_ACCENT_STYLES: Record<
   InvoiceAccentPreset,
   {
@@ -159,6 +291,7 @@ export const INVOICE_ACCENT_STYLES: Record<
     swatchClass: string;
     borderClass: string;
     textClass: string;
+    bgClass: string;
     rgb: [number, number, number];
   }
 > = {
@@ -167,6 +300,7 @@ export const INVOICE_ACCENT_STYLES: Record<
     swatchClass: 'bg-slate-900',
     borderClass: 'border-slate-900',
     textClass: 'text-slate-900',
+    bgClass: 'bg-slate-900',
     rgb: [15, 23, 42],
   },
   blue: {
@@ -174,6 +308,7 @@ export const INVOICE_ACCENT_STYLES: Record<
     swatchClass: 'bg-blue-700',
     borderClass: 'border-blue-700',
     textClass: 'text-blue-700',
+    bgClass: 'bg-blue-700',
     rgb: [29, 78, 216],
   },
   violet: {
@@ -181,6 +316,7 @@ export const INVOICE_ACCENT_STYLES: Record<
     swatchClass: 'bg-violet-700',
     borderClass: 'border-violet-700',
     textClass: 'text-violet-700',
+    bgClass: 'bg-violet-700',
     rgb: [109, 40, 217],
   },
   emerald: {
@@ -188,6 +324,7 @@ export const INVOICE_ACCENT_STYLES: Record<
     swatchClass: 'bg-emerald-700',
     borderClass: 'border-emerald-700',
     textClass: 'text-emerald-700',
+    bgClass: 'bg-emerald-700',
     rgb: [4, 120, 87],
   },
   rose: {
@@ -195,6 +332,78 @@ export const INVOICE_ACCENT_STYLES: Record<
     swatchClass: 'bg-rose-700',
     borderClass: 'border-rose-700',
     textClass: 'text-rose-700',
+    bgClass: 'bg-rose-700',
     rgb: [190, 18, 60],
+  },
+  teal: {
+    label: 'Petrol / Ozean',
+    swatchClass: 'bg-teal-700',
+    borderClass: 'border-teal-700',
+    textClass: 'text-teal-700',
+    bgClass: 'bg-teal-700',
+    rgb: [15, 118, 110],
+  },
+  amber: {
+    label: 'Bernstein / Gold',
+    swatchClass: 'bg-amber-700',
+    borderClass: 'border-amber-700',
+    textClass: 'text-amber-700',
+    bgClass: 'bg-amber-700',
+    rgb: [180, 83, 9],
+  },
+  indigo: {
+    label: 'Indigo',
+    swatchClass: 'bg-indigo-700',
+    borderClass: 'border-indigo-700',
+    textClass: 'text-indigo-700',
+    bgClass: 'bg-indigo-700',
+    rgb: [67, 56, 202],
+  },
+  custom: {
+    label: 'Individuell',
+    swatchClass: 'invoice-custom-swatch',
+    borderClass: 'invoice-custom-border',
+    textClass: 'invoice-custom-text',
+    bgClass: 'invoice-custom-bg',
+    rgb: [15, 23, 42],
+  },
+};
+
+export const INVOICE_FONT_OPTIONS: Record<
+  InvoiceFontFamily,
+  { label: string; previewClass: string; pdfFont: 'helvetica' | 'times' | 'courier' }
+> = {
+  sans: {
+    label: 'Modern Sans (Helvetica / DM Sans)',
+    previewClass: 'font-sans',
+    pdfFont: 'helvetica',
+  },
+  serif: {
+    label: 'Klassisch Serif (Times / Georgia)',
+    previewClass: 'font-serif',
+    pdfFont: 'times',
+  },
+  mono: {
+    label: 'Technisch Mono (Courier / JetBrains)',
+    previewClass: 'font-mono',
+    pdfFont: 'courier',
+  },
+};
+
+export const INVOICE_LAYOUT_OPTIONS: Record<
+  InvoiceLayoutStyle,
+  { label: string; description: string }
+> = {
+  classic: {
+    label: 'Klassisch DIN',
+    description: 'Dezenter Briefkopf mit Infobox rechts und farbiger Tabellenkopfzeile.',
+  },
+  modern: {
+    label: 'Modern Balken',
+    description: 'Kräftige Farbakzent-Kopfzeile und klare Akzent-Trennlinien.',
+  },
+  minimal: {
+    label: 'Minimalistisch',
+    description: 'Viel Weißraum, schmale Linien und ruhige typografische Struktur.',
   },
 };

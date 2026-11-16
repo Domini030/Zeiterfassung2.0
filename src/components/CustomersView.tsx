@@ -12,6 +12,7 @@ interface CustomersViewProps {
   customers: Customer[];
   timeEntries: TimeEntry[];
   invoices: Invoice[];
+  categories?: string[];
   onSaveCustomer: (customer: Customer) => void;
   onDeleteCustomer: (id: string) => void;
   onCreateInvoiceForCustomer: (customerId: string) => void;
@@ -21,11 +22,13 @@ export function CustomersView({
   customers,
   timeEntries,
   invoices,
+  categories = [],
   onSaveCustomer,
   onDeleteCustomer,
   onCreateInvoiceForCustomer,
 }: CustomersViewProps) {
   const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Customer | null>(null);
 
@@ -41,8 +44,17 @@ export function CustomersView({
   const [vatId, setVatId] = useState('');
   const [paymentTermDays, setPaymentTermDays] = useState(14);
   const [timeRoundingInput, setTimeRoundingInput] = useState<string>('');
+  const [category, setCategory] = useState('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
+
+  const availableCategories = useMemo(() => {
+    const set = new Set<string>(categories);
+    for (const c of customers) {
+      if (c.category?.trim()) set.add(c.category.trim());
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'de'));
+  }, [categories, customers]);
 
   const openNew = () => {
     setEditing(null);
@@ -59,6 +71,7 @@ export function CustomersView({
     setVatId('');
     setPaymentTermDays(14);
     setTimeRoundingInput('');
+    setCategory('');
     setNotes('');
     setError('');
     setShowForm(true);
@@ -82,6 +95,7 @@ export function CustomersView({
         ? String(c.timeRoundingMinutes)
         : ''
     );
+    setCategory(c.category ?? '');
     setNotes(c.notes);
     setError('');
     setShowForm(true);
@@ -112,6 +126,7 @@ export function CustomersView({
         timeRoundingInput === ''
           ? null
           : (Number(timeRoundingInput) as TimeRoundingMinutes),
+      category: category.trim() || undefined,
       notes: notes.trim(),
       createdAt: editing?.createdAt ?? new Date().toISOString(),
     };
@@ -146,15 +161,20 @@ export function CustomersView({
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return customers;
-    return customers.filter(
-      (c) =>
+    return customers.filter((c) => {
+      if (categoryFilter !== 'all' && (c.category ?? '') !== categoryFilter) {
+        return false;
+      }
+      if (!q) return true;
+      return (
         c.companyName.toLowerCase().includes(q) ||
         c.contactName.toLowerCase().includes(q) ||
         c.customerNumber.toLowerCase().includes(q) ||
-        c.city.toLowerCase().includes(q)
-    );
-  }, [customers, search]);
+        c.city.toLowerCase().includes(q) ||
+        (c.category ?? '').toLowerCase().includes(q)
+      );
+    });
+  }, [customers, search, categoryFilter]);
 
   const inputClass =
     'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500';
@@ -329,7 +349,25 @@ export function CustomersView({
                 <option value="30">Aufrunden auf 30 Minuten</option>
               </select>
             </div>
-            <div className="md:col-span-3">
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                Kategorie
+              </label>
+              <input
+                type="text"
+                list="customer-category-list"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="z. B. Stammkunde oder Wartungsvertrag"
+                className={inputClass}
+              />
+              <datalist id="customer-category-list">
+                {availableCategories.map((cat) => (
+                  <option key={cat} value={cat} />
+                ))}
+              </datalist>
+            </div>
+            <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                 Notizen
               </label>
@@ -365,8 +403,8 @@ export function CustomersView({
       )}
 
       <section className="rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]">
-        <div className="border-b border-slate-200 p-4 dark:border-[#2e2349]">
-          <div className="relative max-w-sm">
+        <div className="flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative max-w-sm flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-violet-300/60" />
             <input
               type="text"
@@ -376,6 +414,20 @@ export function CustomersView({
               className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
             />
           </div>
+          {availableCategories.length > 0 && (
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+            >
+              <option value="all">Alle Kategorien</option>
+              {availableCategories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {filtered.length === 0 ? (
@@ -413,8 +465,15 @@ export function CustomersView({
                         {c.customerNumber}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-medium text-slate-900 dark:text-slate-100">
-                          {c.companyName}
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-medium text-slate-900 dark:text-slate-100">
+                            {c.companyName}
+                          </span>
+                          {c.category && (
+                            <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-[#231b38] dark:text-violet-300">
+                              {c.category}
+                            </span>
+                          )}
                         </div>
                         <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                           {[c.contactName, c.email].filter(Boolean).join(' · ') || '—'}

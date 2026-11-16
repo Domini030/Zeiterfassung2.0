@@ -2,6 +2,7 @@ package de.taktwerk.app;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,7 +10,15 @@ import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.media.ToneGenerator;
 import android.net.Uri;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -20,6 +29,9 @@ import android.nfc.TagLostException;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -64,7 +76,8 @@ import okhttp3.Response;
 @CapacitorPlugin(
     name = "TaktWerkNative",
     permissions = {
-        @Permission(alias = "notifications", strings = { Manifest.permission.POST_NOTIFICATIONS })
+        @Permission(alias = "notifications", strings = { Manifest.permission.POST_NOTIFICATIONS }),
+        @Permission(alias = "location", strings = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION })
     }
 )
 public class TaktWerkNativePlugin extends Plugin {
@@ -73,6 +86,7 @@ public class TaktWerkNativePlugin extends Plugin {
     private static final String LEGACY_TIMER_CHANNEL_ID_V2 = "taktwerk_active_timer_v2";
     private static final String TIMER_CHANNEL_ID = "taktwerk_active_timer_v3";
     private static final int TIMER_NOTIFICATION_ID = 4102;
+    private static final int REMINDER_ALARM_REQUEST_CODE = 4110;
 
     private static final String[] NFC_URI_PREFIXES = new String[] {
         "", "http://www.", "https://www.", "http://", "https://", "tel:", "mailto:",
@@ -85,6 +99,8 @@ public class TaktWerkNativePlugin extends Plugin {
 
     private volatile String armedWriteUri = null;
     private volatile String pendingTimerAction = null;
+    private volatile String pendingWidgetAction = null;
+    private volatile String pendingWidgetTagUid = null;
     private boolean foregroundDispatchActive = false;
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
@@ -93,6 +109,40 @@ public class TaktWerkNativePlugin extends Plugin {
         .readTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .build();
+
+    @Override
+    public void load() {
+        super.load();
+        Activity activity = getActivity();
+        if (activity != null && activity.getIntent() != null) {
+            handleWidgetUri(activity.getIntent(), false);
+        }
+    }
+
+    private boolean handleWidgetUri(Intent intent, boolean emitNow) {
+        if (intent == null) return false;
+        Uri data = intent.getData();
+        if (data == null || !"taktwerk".equals(data.getScheme()) || !"widget".equals(data.getHost())) {
+            return false;
+        }
+        String path = data.getPath();
+        String act = (path != null && path.contains("trigger")) ? "trigger" : "open";
+        String tagUid = data.getQueryParameter("tagUid");
+        pendingWidgetAction = act;
+        pendingWidgetTagUid = tagUid;
+        if (emitNow) {
+            JSObject obj = new JSObject();
+            obj.put("action", act);
+            if (tagUid != null) {
+                obj.put("tagUid", tagUid);
+            }
+            Activity activity = getActivity();
+            if (activity != null) {
+                activity.runOnUiThread(() -> notifyListeners("widgetActionTriggered", obj, true));
+            }
+        }
+        return true;
+    }
 
     @Override
     protected void handleOnResume() {
@@ -110,6 +160,9 @@ public class TaktWerkNativePlugin extends Plugin {
     protected void handleOnNewIntent(Intent intent) {
         super.handleOnNewIntent(intent);
         if (intent == null || (intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
+            return;
+        }
+        if (handleWidgetUri(intent, true)) {
             return;
         }
         String action = intent.getAction();
@@ -1172,5 +1225,355 @@ public class TaktWerkNativePlugin extends Plugin {
             }
         } catch (Exception ignored) {}
         call.resolve();
+    }
+
+    @PluginMethod
+    public void webdavUploadBinary(PluginCall call) {
+        String fileUrl = call.getString("fileUrl", "");
+        String username = call.getString("username", "");
+        String appPassword = call.getString("appPassword", "");
+        String contentType = call.getString("contentType", "application/octet-stream");
+        String base64 = call.getString("base64", "");
+        List<String> folderUrls = extractFolderUrls(call);
+
+        if (fileUrl.isEmpty() || username.isEmpty() || appPassword.isEmpty() || base64.isEmpty()) {
+            call.reject("Unvollständige Parameter für Binär-Upload.");
+            return;
+        }
+
+        String authHeader = Credentials.basic(username, appPassword, StandardCharsets.UTF_8);
+        EXECUTOR.execute(() -> {
+            try {
+                ensureFolders(folderUrls, authHeader);
+                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+                RequestBody body = RequestBody.create(bytes, MediaType.parse(contentType));
+                Request putReq = new Request.Builder()
+                    .url(fileUrl)
+                    .header("Authorization", authHeader)
+                    .put(body)
+                    .build();
+
+                try (Response res = HTTP_CLIENT.newCall(putReq).execute()) {
+                    if (!res.isSuccessful()) {
+                        call.reject("Nextcloud-Upload fehlgeschlagen (HTTP " + res.code() + ").");
+                        return;
+                    }
+                    JSObject result = new JSObject();
+                    result.put("ok", true);
+                    result.put("status", res.code());
+                    call.resolve(result);
+                }
+            } catch (Exception e) {
+                call.reject(e.getMessage() != null ? e.getMessage() : "Nextcloud-Upload fehlgeschlagen.");
+            }
+        });
+    }
+
+    @PluginMethod
+    public void caldavRequest(PluginCall call) {
+        String method = call.getString("method", "PROPFIND");
+        String url = call.getString("url", "");
+        String username = call.getString("username", "");
+        String appPassword = call.getString("appPassword", "");
+        String depth = call.getString("depth", "");
+        String contentType = call.getString("contentType", "application/xml; charset=utf-8");
+        String bodyStr = call.getString("body", "");
+
+        if (url.isEmpty() || username.isEmpty() || appPassword.isEmpty()) {
+            call.reject("Unvollständige CalDAV-Parameter.");
+            return;
+        }
+
+        String authHeader = Credentials.basic(username, appPassword, StandardCharsets.UTF_8);
+        EXECUTOR.execute(() -> {
+            try {
+                Request.Builder builder = new Request.Builder()
+                    .url(url)
+                    .header("Authorization", authHeader);
+                if (depth != null && !depth.isEmpty()) {
+                    builder.header("Depth", depth);
+                }
+                RequestBody reqBody = null;
+                if (!"GET".equalsIgnoreCase(method) && !"HEAD".equalsIgnoreCase(method) && !"DELETE".equalsIgnoreCase(method)) {
+                    byte[] bytes = bodyStr != null ? bodyStr.getBytes(StandardCharsets.UTF_8) : new byte[0];
+                    reqBody = RequestBody.create(bytes, MediaType.parse(contentType));
+                }
+                builder.method(method.toUpperCase(), reqBody);
+
+                try (Response res = HTTP_CLIENT.newCall(builder.build()).execute()) {
+                    String resBody = res.body() != null ? res.body().string() : "";
+                    JSObject result = new JSObject();
+                    result.put("status", res.code());
+                    result.put("body", resBody);
+                    call.resolve(result);
+                }
+            } catch (Exception e) {
+                call.reject(e.getMessage() != null ? e.getMessage() : "CalDAV-Anfrage fehlgeschlagen.");
+            }
+        });
+    }
+
+    @PluginMethod
+    public void shareBinaryFile(PluginCall call) {
+        String filename = call.getString("filename", "export.bin");
+        String mimeType = call.getString("mimeType", "application/octet-stream");
+        String base64 = call.getString("base64", "");
+        if (base64.isEmpty()) {
+            call.reject("Dateidaten fehlen.");
+            return;
+        }
+
+        try {
+            byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+            Uri uri = writeCacheBytesAndGetUri(filename, bytes);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType(mimeType);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, filename);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            getActivity().startActivity(Intent.createChooser(shareIntent, "Datei speichern / teilen"));
+            call.resolve();
+        } catch (Exception e) {
+            call.reject(e.getMessage() != null ? e.getMessage() : "Datei konnte nicht geteilt werden.");
+        }
+    }
+
+    private boolean hasLocationPermission(Context context) {
+        boolean fine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED;
+        boolean coarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED;
+        return fine || coarse;
+    }
+
+    @PluginMethod
+    public void getCurrentLocation(PluginCall call) {
+        Context context = getContext();
+        if (!hasLocationPermission(context)) {
+            requestPermissionForAlias("location", call, "locationPermsCallback");
+            return;
+        }
+        resolveNativeLocation(call);
+    }
+
+    @PermissionCallback
+    private void locationPermsCallback(PluginCall call) {
+        if (hasLocationPermission(getContext())) {
+            resolveNativeLocation(call);
+        } else {
+            call.reject("Standortberechtigung wurde nicht erteilt.");
+        }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void resolveNativeLocation(PluginCall call) {
+        Activity activity = getActivity();
+        Context context = getContext();
+        if (activity == null) {
+            call.reject("Aktivität nicht verfügbar.");
+            return;
+        }
+        activity.runOnUiThread(() -> {
+            try {
+                LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                if (lm == null) {
+                    call.reject("Standortdienst auf diesem Gerät nicht verfügbar.");
+                    return;
+                }
+                Location bestLast = null;
+                for (String provider : lm.getProviders(true)) {
+                    Location l = lm.getLastKnownLocation(provider);
+                    if (l != null && (bestLast == null || l.getAccuracy() < bestLast.getAccuracy())) {
+                        bestLast = l;
+                    }
+                }
+                long now = System.currentTimeMillis();
+                if (bestLast != null && (now - bestLast.getTime()) < 180_000L) {
+                    JSObject res = new JSObject();
+                    res.put("lat", bestLast.getLatitude());
+                    res.put("lng", bestLast.getLongitude());
+                    res.put("accuracyMeters", Math.round(bestLast.getAccuracy()));
+                    call.resolve(res);
+                    return;
+                }
+
+                String provider = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    ? LocationManager.GPS_PROVIDER
+                    : (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ? LocationManager.NETWORK_PROVIDER : null);
+
+                if (provider == null) {
+                    if (bestLast != null) {
+                        JSObject res = new JSObject();
+                        res.put("lat", bestLast.getLatitude());
+                        res.put("lng", bestLast.getLongitude());
+                        res.put("accuracyMeters", Math.round(bestLast.getAccuracy()));
+                        call.resolve(res);
+                    } else {
+                        call.reject("Bitte aktiviere GPS / Standort in den Android-Einstellungen.");
+                    }
+                    return;
+                }
+
+                final boolean[] settled = new boolean[] { false };
+                final Handler timeoutHandler = new Handler(Looper.getMainLooper());
+                final Location fallbackLocation = bestLast;
+
+                final LocationListener listener = new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location loc) {
+                        if (settled[0]) return;
+                        settled[0] = true;
+                        timeoutHandler.removeCallbacksAndMessages(null);
+                        try { lm.removeUpdates(this); } catch (Exception ignored) {}
+                        JSObject res = new JSObject();
+                        res.put("lat", loc.getLatitude());
+                        res.put("lng", loc.getLongitude());
+                        res.put("accuracyMeters", Math.round(loc.getAccuracy()));
+                        call.resolve(res);
+                    }
+                    @Override public void onStatusChanged(String p, int status, Bundle extras) {}
+                    @Override public void onProviderEnabled(String p) {}
+                    @Override public void onProviderDisabled(String p) {}
+                };
+
+                lm.requestLocationUpdates(provider, 0L, 0f, listener, Looper.getMainLooper());
+                timeoutHandler.postDelayed(() -> {
+                    if (settled[0]) return;
+                    settled[0] = true;
+                    try { lm.removeUpdates(listener); } catch (Exception ignored) {}
+                    if (fallbackLocation != null) {
+                        JSObject res = new JSObject();
+                        res.put("lat", fallbackLocation.getLatitude());
+                        res.put("lng", fallbackLocation.getLongitude());
+                        res.put("accuracyMeters", Math.round(fallbackLocation.getAccuracy()));
+                        call.resolve(res);
+                    } else {
+                        call.reject("Standort-Timeout (kein GPS-Signal gefunden).");
+                    }
+                }, 9000L);
+            } catch (Exception e) {
+                call.reject(e.getMessage() != null ? e.getMessage() : "Standort konnte nicht ermittelt werden.");
+            }
+        });
+    }
+
+    @PluginMethod
+    public void scheduleTimerReminder(PluginCall call) {
+        Context context = getContext();
+        long delayMs = 3_600_000L;
+        Object rawDelay = call.getData().opt("delayMs");
+        if (rawDelay instanceof Number) {
+            delayMs = Math.max(5_000L, ((Number) rawDelay).longValue());
+        }
+        String title = call.getString("title", "TaktWerk Erinnerung");
+        String body = call.getString("body", "Deine Aufgabe läuft bereits seit längerer Zeit.");
+        String soundPreset = call.getString("soundPreset", "chime");
+
+        try {
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            if (alarmManager != null) {
+                Intent intent = new Intent(context, TimerReminderReceiver.class);
+                intent.putExtra("title", title);
+                intent.putExtra("body", body);
+                intent.putExtra("soundPreset", soundPreset);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    REMINDER_ALARM_REQUEST_CODE,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+                long triggerAt = System.currentTimeMillis() + delayMs;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent);
+                } else {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent);
+                }
+            }
+        } catch (Exception ignored) {}
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void cancelTimerReminder(PluginCall call) {
+        Context context = getContext();
+        try {
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            if (alarmManager != null) {
+                Intent intent = new Intent(context, TimerReminderReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    REMINDER_ALARM_REQUEST_CODE,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
+                alarmManager.cancel(pendingIntent);
+            }
+        } catch (Exception ignored) {}
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void playReminderTone(PluginCall call) {
+        String preset = call.getString("preset", "chime");
+        if ("silent".equals(preset)) {
+            call.resolve();
+            return;
+        }
+        Context context = getContext();
+        EXECUTOR.execute(() -> {
+            try {
+                if ("alarm".equals(preset)) {
+                    Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+                    if (alarmUri == null) {
+                        alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    }
+                    Ringtone r = alarmUri != null ? RingtoneManager.getRingtone(context, alarmUri) : null;
+                    if (r != null) {
+                        r.play();
+                        Thread.sleep(1600);
+                        r.stop();
+                    }
+                } else {
+                    int toneType = "bell".equals(preset)
+                        ? ToneGenerator.TONE_PROP_BEEP2
+                        : ("pulse".equals(preset) ? ToneGenerator.TONE_PROP_ACK : ToneGenerator.TONE_PROP_BEEP);
+                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 85);
+                    tg.startTone(toneType, 450);
+                    Thread.sleep(520);
+                    tg.release();
+                }
+            } catch (Exception ignored) {}
+        });
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void updateWidgetState(PluginCall call) {
+        Context context = getContext();
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(TaktWerkWidgetProvider.PREFS_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor ed = prefs.edit();
+            ed.putBoolean("isRunning", call.getBoolean("isRunning", false));
+            ed.putBoolean("isPaused", call.getBoolean("isPaused", false));
+            ed.putString("timerTitle", call.getString("timerTitle", ""));
+            ed.putString("customerName", call.getString("customerName", ""));
+            ed.putString("todayHoursLabel", call.getString("todayHoursLabel", "0,0 Std."));
+            ed.putString("quickTasksJson", call.getString("quickTasksJson", "[]"));
+            ed.apply();
+            TaktWerkWidgetProvider.updateAllWidgets(context);
+        } catch (Exception ignored) {}
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void getPendingWidgetAction(PluginCall call) {
+        String act = pendingWidgetAction;
+        String uid = pendingWidgetTagUid;
+        pendingWidgetAction = null;
+        pendingWidgetTagUid = null;
+        JSObject res = new JSObject();
+        res.put("action", act);
+        res.put("tagUid", uid);
+        call.resolve(res);
     }
 }

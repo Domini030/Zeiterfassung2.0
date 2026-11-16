@@ -609,6 +609,212 @@ async function startServer() {
     }
   });
 
+  // Upload automated backup files (JSON, CSV, XLSX, PDF) into Nextcloud subfolder (e.g. Backups)
+  app.post('/api/nextcloud/upload-backup', async (req, res) => {
+    try {
+      const { subFolder, filename, contentOrBase64, isBinary, contentType } = req.body as {
+        subFolder?: string;
+        filename?: string;
+        contentOrBase64?: string;
+        isBinary?: boolean;
+        contentType?: string;
+      };
+
+      if (!filename || !contentOrBase64) {
+        res.status(400).json({ error: 'Dateiname oder Backup-Inhalt fehlen.' });
+        return;
+      }
+
+      const ncCfg = await readStoredNcConfig();
+      if (!ncCfg.url || !ncCfg.username || !ncCfg.appPassword) {
+        res.status(400).json({ error: 'Nextcloud ist nicht konfiguriert.' });
+        return;
+      }
+
+      const cleanSub = (subFolder || 'Backups').replace(/[^a-zA-Z0-9_/-]/g, '').replace(/^\/+|\/+$/g, '') || 'Backups';
+      const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, '_');
+      const targetFolder = `${ncCfg.folder}/${cleanSub}`;
+      await ensureNextcloudFolderExists(ncCfg, targetFolder);
+
+      const fileUrl = buildWebDavFileUrl(ncCfg, `${cleanSub}/${safeFilename}`);
+      const payloadBody = isBinary
+        ? Buffer.from(contentOrBase64, 'base64')
+        : Buffer.from(contentOrBase64, 'utf-8');
+
+      const uploadRes = await fetch(fileUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: makeAuthHeader(ncCfg),
+          'Content-Type': contentType || 'application/octet-stream',
+        },
+        body: payloadBody,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error(`Backup-Upload zu Nextcloud fehlgeschlagen (HTTP ${uploadRes.status}).`);
+      }
+
+      res.json({
+        ok: true,
+        path: `${targetFolder}/${safeFilename}`,
+        uploadedAt: new Date().toISOString(),
+      });
+    } catch (err) {
+      res.status(500).json({
+        error: err instanceof Error ? err.message : 'Backup-Upload fehlgeschlagen.',
+      });
+    }
+  });
+
+  // CalDAV: Discover user calendars on Nextcloud
+  app.post('/api/nextcloud/caldav/discover', async (_req, res) => {
+    try {
+      const ncCfg = await readStoredNcConfig();
+      if (!ncCfg.url || !ncCfg.username || !ncCfg.appPassword) {
+        res.status(400).json({ error: 'Nextcloud ist noch nicht konfiguriert.' });
+        return;
+      }
+      const baseUrl = validateHttpUrl(ncCfg.url).replace(/\/remote\.php\/.*$/, '');
+      const homeUrl = `${baseUrl}/remote.php/dav/calendars/${encodeURIComponent(ncCfg.username)}/`;
+
+      const propfindBody = `<?xml version="1.0" encoding="utf-8" ?>
+<d:propfind xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
+  <d:prop>
+    <d:displayname />
+    <d:resourcetype />
+  </d:prop>
+</d:propfind>`;
+
+      const calRes = await fetch(homeUrl, {
+        method: 'PROPFIND',
+        headers: {
+          Authorization: makeAuthHeader(ncCfg),
+          Depth: '1',
+          'Content-Type': 'application/xml; charset=utf-8',
+        },
+        body: propfindBody,
+      });
+
+      if (calRes.status === 401 || calRes.status === 403) {
+        res.status(401).json({ error: 'Nextcloud CalDAV Authentifizierung fehlgeschlagen.' });
+        return;
+      }
+      if (!calRes.ok && calRes.status !== 207) {
+        throw new Error(`CalDAV PROPFIND fehlgeschlagen (HTTP ${calRes.status}).`);
+      }
+      const xml = await calRes.text();
+      res.json({ xml, baseOrigin: new URL(baseUrl).origin });
+    } catch (err) {
+      res.status(500).json({
+        error: err instanceof Error ? err.message : 'Nextcloud Kalender konnten nicht abgerufen werden.',
+      });
+    }
+  });
+
+  // CalDAV: Query events from a specific calendar collection
+  app.post('/api/nextcloud/caldav/events', async (req, res) => {
+    try {
+      const { calendarUrl, startIso, endIso } = req.body as {
+        calendarUrl?: string;
+        startIso?: string;
+        endIso?: string;
+      };
+      const ncCfg = await readStoredNcConfig();
+      if (!ncCfg.url || !ncCfg.username || !ncCfg.appPassword) {
+        res.status(400).json({ error: 'Nextcloud ist noch nicht konfiguriert.' });
+        return;
+      }
+      if (!calendarUrl) {
+        res.status(400).json({ error: 'Kalender-URL fehlt.' });
+        return;
+      }
+      const validatedTarget = validateHttpUrl(calendarUrl);
+      const startCompact = (startIso || new Date(Date.now() - 30 * 86400 * 1000).toISOString())
+        .replace(/[-:]/g, '')
+        .replace(/\.\d+Z$/, 'Z');
+      const endCompact = (endIso || new Date(Date.now() + 90 * 86400 * 1000).toISOString())
+        .replace(/[-:]/g, '')
+        .replace(/\.\d+Z$/, 'Z');
+
+      const reportBody = `<?xml version="1.0" encoding="utf-8" ?>
+<c:calendar-query xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
+  <d:prop>
+    <d:getetag />
+    <c:calendar-data />
+  </d:prop>
+  <c:filter>
+    <c:comp-filter name="VCALENDAR">
+      <c:comp-filter name="VEVENT">
+        <c:time-range start="${startCompact}" end="${endCompact}" />
+      </c:comp-filter>
+    </c:comp-filter>
+  </c:filter>
+</c:calendar-query>`;
+
+      const repRes = await fetch(validatedTarget.endsWith('/') ? validatedTarget : `${validatedTarget}/`, {
+        method: 'REPORT',
+        headers: {
+          Authorization: makeAuthHeader(ncCfg),
+          Depth: '1',
+          'Content-Type': 'application/xml; charset=utf-8',
+        },
+        body: reportBody,
+      });
+
+      if (!repRes.ok && repRes.status !== 207) {
+        throw new Error(`CalDAV REPORT fehlgeschlagen (HTTP ${repRes.status}).`);
+      }
+      const xml = await repRes.text();
+      res.json({ xml });
+    } catch (err) {
+      res.status(500).json({
+        error: err instanceof Error ? err.message : 'Kalendertermine konnten nicht geladen werden.',
+      });
+    }
+  });
+
+  // CalDAV: Put (.ics) event into a Nextcloud calendar collection
+  app.post('/api/nextcloud/caldav/push', async (req, res) => {
+    try {
+      const { calendarUrl, uid, icsContent } = req.body as {
+        calendarUrl?: string;
+        uid?: string;
+        icsContent?: string;
+      };
+      const ncCfg = await readStoredNcConfig();
+      if (!ncCfg.url || !ncCfg.username || !ncCfg.appPassword) {
+        res.status(400).json({ error: 'Nextcloud ist noch nicht konfiguriert.' });
+        return;
+      }
+      if (!calendarUrl || !uid || !icsContent) {
+        res.status(400).json({ error: 'Kalender-URL, UID oder ICS-Daten fehlen.' });
+        return;
+      }
+      const safeUid = uid.replace(/[^a-zA-Z0-9@._-]/g, '_');
+      const baseCal = validateHttpUrl(calendarUrl).replace(/\/+$/, '');
+      const eventUrl = `${baseCal}/${encodeURIComponent(safeUid)}.ics`;
+
+      const putRes = await fetch(eventUrl, {
+        method: 'PUT',
+        headers: {
+          Authorization: makeAuthHeader(ncCfg),
+          'Content-Type': 'text/calendar; charset=utf-8',
+        },
+        body: icsContent,
+      });
+
+      if (!putRes.ok) {
+        throw new Error(`CalDAV PUT fehlgeschlagen (HTTP ${putRes.status}).`);
+      }
+      res.json({ ok: true, eventUrl });
+    } catch (err) {
+      res.status(500).json({
+        error: err instanceof Error ? err.message : 'Termin konnte nicht in Nextcloud gespeichert werden.',
+      });
+    }
+  });
+
+
   const isProd = process.env.NODE_ENV === 'production';
   if (!isProd) {
     const { createServer: createViteServer } = await import('vite');
