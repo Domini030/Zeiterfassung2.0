@@ -17,6 +17,7 @@ import {
   FileText,
   ImagePlus,
   Loader2,
+  Map as MapIcon,
   MapPin,
   Palette,
   Plus,
@@ -32,7 +33,7 @@ import {
   Volume2,
   X,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type {
   AppDatabase,
   AutoBackupFormat,
@@ -95,6 +96,7 @@ import {
   type FilteredReportOptions,
 } from '../utils/pdfInvoice';
 import { REMINDER_SOUND_OPTIONS, playReminderSound } from '../utils/soundReminder';
+import { GeoFenceMapPicker, type PickedMapLocation } from './GeoFenceMapPicker';
 import { ThemedSelect } from './ThemedSelect';
 
 type SettingsTab = 'general' | 'company' | 'cloud' | 'backups' | 'automation';
@@ -117,6 +119,7 @@ interface NextcloudSettingsViewProps {
   onLoadSampleData: () => void;
   onResetEmpty: () => void;
   onNotify: (msg: string, isError?: boolean) => void;
+  theme?: 'light' | 'dark';
 }
 
 const UI_ACCENTS: { id: UiAccentPreset; label: string; dotClass: string }[] = [
@@ -157,6 +160,7 @@ export function NextcloudSettingsView({
   onLoadSampleData,
   onResetEmpty,
   onNotify,
+  theme = 'light',
 }: NextcloudSettingsViewProps) {
   const [activeTab, setActiveTab] = useState<SettingsTab>('general');
 
@@ -232,6 +236,9 @@ export function NextcloudSettingsView({
   const [newRuleAutoStop, setNewRuleAutoStop] = useState(true);
   const [searchingRuleLoc, setSearchingRuleLoc] = useState(false);
   const [locatingRule, setLocatingRule] = useState(false);
+  const [focusedRuleId, setFocusedRuleId] = useState<string | null>(null);
+  const [mapCameraNonce, setMapCameraNonce] = useState(0);
+  const mapSectionRef = useRef<HTMLDivElement | null>(null);
 
   const invoiceNumberPreview = useMemo(
     () => formatInvoiceNumber(companyForm),
@@ -640,6 +647,8 @@ export function NextcloudSettingsView({
       if (loc.address) {
         setNewRuleAddress(loc.address);
       }
+      setFocusedRuleId(null);
+      setMapCameraNonce((n) => n + 1);
       onNotify('Aktuelle GPS-Koordinaten für die Ortsregel übernommen.');
     } catch (err) {
       onNotify(
@@ -668,12 +677,43 @@ export function NextcloudSettingsView({
       if (found.address) {
         setNewRuleAddress(found.address);
       }
+      setFocusedRuleId(null);
+      setMapCameraNonce((n) => n + 1);
       onNotify(`Standort gefunden (${found.lat.toFixed(4)}, ${found.lng.toFixed(4)}).`);
     } catch {
       onNotify('Adresssuche fehlgeschlagen.', true);
     } finally {
       setSearchingRuleLoc(false);
     }
+  };
+
+  const handleMapPickLocation = (loc: PickedMapLocation) => {
+    setNewRuleLat(loc.lat.toFixed(6));
+    setNewRuleLng(loc.lng.toFixed(6));
+    if (loc.address) {
+      setNewRuleAddress(loc.address);
+    }
+    if (loc.suggestedName && !newRuleName.trim()) {
+      setNewRuleName(loc.suggestedName);
+    }
+    setFocusedRuleId(null);
+  };
+
+  const handleFocusRuleOnMap = (rule: GeoFenceRule) => {
+    setFocusedRuleId(rule.id);
+    setMapCameraNonce((n) => n + 1);
+    mapSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const handleUseRuleAsDraft = (rule: GeoFenceRule) => {
+    setNewRuleLat(rule.lat.toFixed(6));
+    setNewRuleLng(rule.lng.toFixed(6));
+    setNewRuleAddress(rule.address || '');
+    setNewRuleRadius(String(rule.radiusMeters));
+    if (!newRuleName.trim()) setNewRuleName(`${rule.name} (Kopie)`);
+    setFocusedRuleId(null);
+    setMapCameraNonce((n) => n + 1);
+    onNotify(`Koordinaten von "${rule.name}" in das Formular übernommen.`);
   };
 
   const handleAddGeoRule = () => {
@@ -3086,6 +3126,15 @@ export function NextcloudSettingsView({
                         <div className="flex items-center gap-2 shrink-0">
                           <button
                             type="button"
+                            onClick={() => handleFocusRuleOnMap(rule)}
+                            title="Auf der Karte anzeigen"
+                            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                          >
+                            <MapIcon className="h-3.5 w-3.5" />
+                            Karte
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => handleToggleGeoRule(rule.id)}
                             className={`rounded-lg border px-2.5 py-1 text-xs font-semibold cursor-pointer ${
                               rule.enabled
@@ -3109,6 +3158,39 @@ export function NextcloudSettingsView({
                   })}
                 </div>
               )}
+
+              {/* Interactive OpenStreetMap View for Location Selection & Rule Preview */}
+              <div
+                ref={mapSectionRef}
+                className="mt-4 space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-4 dark:border-[#2e2349] dark:bg-[#211936]/40"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <MapIcon className="h-4 w-4 text-blue-700 dark:text-violet-400" />
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                      Interaktive OpenStreetMap-Kartenansicht (Orte wählen &amp; Zielradius prüfen)
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Kostenlos · Klicken, Pin ziehen oder Adresse suchen
+                  </span>
+                </div>
+                <GeoFenceMapPicker
+                  selectedLat={newRuleLat.trim() ? Number(newRuleLat) : null}
+                  selectedLng={newRuleLng.trim() ? Number(newRuleLng) : null}
+                  selectedAddress={newRuleAddress}
+                  radiusMeters={Math.max(30, Number(newRuleRadius) || 150)}
+                  rules={geoFenceRules}
+                  customers={db.customers}
+                  products={db.products}
+                  focusedRuleId={focusedRuleId}
+                  cameraRequestNonce={mapCameraNonce}
+                  theme={theme}
+                  onSelectLocation={handleMapPickLocation}
+                  onUseRuleAsDraft={handleUseRuleAsDraft}
+                  onNotify={onNotify}
+                />
+              </div>
 
               {/* Create GeoFence Rule */}
               <div className="mt-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/50 p-4 dark:border-[#3b2d5e] dark:bg-[#211936]/30 space-y-3">

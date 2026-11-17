@@ -127,6 +127,38 @@ html[data-ui-density="compact"] .space-y-6 > :not(:last-child) {
   animation: twPopupIn 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.tw-osm-map {
+  z-index: 0;
+}
+
+html.dark .tw-osm-map .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(92%) contrast(88%);
+}
+
+html.dark .tw-osm-map .leaflet-control-attribution {
+  background: rgba(23, 17, 38, 0.85);
+  color: #cbd5e1;
+}
+
+html.dark .tw-osm-map .leaflet-control-attribution a {
+  color: #c4b5fd;
+}
+
+html.dark .tw-osm-map .leaflet-bar a {
+  background-color: #171126;
+  color: #e2e8f0;
+  border-color: #3b2d5e;
+}
+
+html.dark .tw-osm-map .leaflet-bar a:hover {
+  background-color: #241b3a;
+}
+
+.tw-osm-pin {
+  background: transparent;
+  border: 0;
+}
+
 @media print {
   body {
     background: #ffffff !important;
@@ -135,3 +167,5 @@ html[data-ui-density="compact"] .space-y-6 > :not(:last-child) {
     display: none !important;
   }
 }
+
+

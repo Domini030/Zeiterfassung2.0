@@ -1,8 +1,76 @@
 import { Capacitor } from '@capacitor/core';
 import type { LocationSnapshot } from '../types';
+import { getBackendServerUrl } from './apiClient';
 import { TaktWerkNative } from './taktwerkNative';
 
-async function reverseGeocode(lat: number, lng: number): Promise<string> {
+export interface AddressSearchSuggestion {
+  lat: number;
+  lng: number;
+  address: string;
+  label: string;
+  name?: string;
+}
+
+function buildOsmApiUrl(path: string): string {
+  const base = Capacitor.isNativePlatform() ? getBackendServerUrl() : '';
+  return `${base}${path}`;
+}
+
+function canUseServerOsmProxy(): boolean {
+  if (!Capacitor.isNativePlatform()) return true;
+  return Boolean(getBackendServerUrl());
+}
+
+function formatOsmAddressParts(
+  addr?: {
+    road?: string;
+    house_number?: string;
+    postcode?: string;
+    city?: string;
+    town?: string;
+    village?: string;
+    municipality?: string;
+  },
+  displayName?: string
+): string {
+  if (addr) {
+    const streetPart = [addr.road, addr.house_number].filter(Boolean).join(' ');
+    const cityName =
+      addr.city || addr.town || addr.village || addr.municipality || '';
+    const cityPart = [addr.postcode, cityName].filter(Boolean).join(' ');
+    const formatted = [streetPart, cityPart].filter(Boolean).join(', ');
+    if (formatted) return formatted;
+  }
+  if (displayName) {
+    return displayName.split(',').slice(0, 3).join(',').trim();
+  }
+  return '';
+}
+
+export async function reverseGeocodeAddress(lat: number, lng: number): Promise<string> {
+  if (canUseServerOsmProxy()) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4500);
+    try {
+      const res = await fetch(
+        buildOsmApiUrl(
+          `/api/osm/reverse?lat=${encodeURIComponent(String(lat))}&lng=${encodeURIComponent(
+            String(lng)
+          )}`
+        ),
+        { signal: controller.signal, headers: { Accept: 'application/json' } }
+      );
+      if (res.ok) {
+        const data = (await res.json()) as { address?: string };
+        if (data.address) return data.address;
+      }
+    } catch {
+      // Fallback to direct Nominatim below
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3500);
   try {
@@ -29,18 +97,8 @@ async function reverseGeocode(lat: number, lng: number): Promise<string> {
         municipality?: string;
       };
     };
-    const addr = data.address;
-    if (addr) {
-      const streetPart = [addr.road, addr.house_number].filter(Boolean).join(' ');
-      const cityName =
-        addr.city || addr.town || addr.village || addr.municipality || '';
-      const cityPart = [addr.postcode, cityName].filter(Boolean).join(' ');
-      const formatted = [streetPart, cityPart].filter(Boolean).join(', ');
-      if (formatted) return formatted;
-    }
-    if (data.display_name) {
-      return data.display_name.split(',').slice(0, 3).join(',').trim();
-    }
+    const formatted = formatOsmAddressParts(data.address, data.display_name);
+    if (formatted) return formatted;
   } catch {
     // Fallback to coordinate display when offline
   } finally {
@@ -75,7 +133,7 @@ export async function captureCurrentLocation(): Promise<LocationSnapshot> {
     accuracyMeters = Math.round(pos.coords.accuracy);
   }
 
-  const address = await reverseGeocode(lat, lng);
+  const address = await reverseGeocodeAddress(lat, lng);
   return {
     lat,
     lng,
@@ -111,17 +169,44 @@ export function calculateDistanceMeters(
   return Math.round(R * c);
 }
 
-export async function geocodeAddress(
-  query: string
-): Promise<{ lat: number; lng: number; address: string } | null> {
+export async function searchAddressesOsm(
+  query: string,
+  limit = 5
+): Promise<AddressSearchSuggestion[]> {
   const trimmed = query.trim();
-  if (!trimmed) return null;
+  if (!trimmed) return [];
+
+  if (canUseServerOsmProxy()) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    try {
+      const res = await fetch(
+        buildOsmApiUrl(
+          `/api/osm/search?q=${encodeURIComponent(trimmed)}&limit=${encodeURIComponent(
+            String(limit)
+          )}`
+        ),
+        { signal: controller.signal, headers: { Accept: 'application/json' } }
+      );
+      if (res.ok) {
+        const data = (await res.json()) as { results?: AddressSearchSuggestion[] };
+        if (Array.isArray(data.results)) {
+          return data.results;
+        }
+      }
+    } catch {
+      // Fallback to direct Nominatim below
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 5000);
   try {
     const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(
       trimmed
-    )}&limit=1&addressdetails=1`;
+    )}&limit=${limit}&addressdetails=1`;
     const res = await fetch(url, {
       signal: controller.signal,
       headers: {
@@ -129,26 +214,51 @@ export async function geocodeAddress(
         'Accept-Language': 'de',
       },
     });
-    if (!res.ok) return null;
+    if (!res.ok) return [];
     const list = (await res.json()) as Array<{
       lat: string;
       lon: string;
       display_name?: string;
+      name?: string;
+      address?: {
+        road?: string;
+        house_number?: string;
+        postcode?: string;
+        city?: string;
+        town?: string;
+        village?: string;
+        municipality?: string;
+      };
     }>;
-    const hit = list[0];
-    if (!hit) return null;
-    const lat = Number(hit.lat);
-    const lng = Number(hit.lon);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
-    const shortAddr = hit.display_name
-      ? hit.display_name.split(',').slice(0, 3).join(',').trim()
-      : trimmed;
-    return { lat, lng, address: shortAddr };
+    return list
+      .map((hit) => {
+        const lat = Number(hit.lat);
+        const lng = Number(hit.lon);
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+        const compact = formatOsmAddressParts(hit.address, hit.display_name) || trimmed;
+        return {
+          lat,
+          lng,
+          address: compact,
+          label: hit.display_name || compact,
+          name: hit.name || undefined,
+        } as AddressSearchSuggestion;
+      })
+      .filter((item): item is AddressSearchSuggestion => item !== null);
   } catch {
-    return null;
+    return [];
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+export async function geocodeAddress(
+  query: string
+): Promise<{ lat: number; lng: number; address: string } | null> {
+  const results = await searchAddressesOsm(query, 1);
+  const hit = results[0];
+  if (!hit) return null;
+  return { lat: hit.lat, lng: hit.lng, address: hit.address };
 }
 
 export function computeTravelFromBase(
@@ -171,4 +281,3 @@ export function computeTravelFromBase(
     costNet,
   };
 }
-

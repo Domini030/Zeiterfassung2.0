@@ -6,3 +6,5 @@ import './index.css';
 registerSW({immediate: true});
 
 createRoot(document.getElementById('root')!).render(<App />);
+
+

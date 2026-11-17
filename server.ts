@@ -971,6 +971,145 @@ Extrahiere möglichst exakt:
       });
     }
   });
+  // Free OpenStreetMap Nominatim proxy (address search & reverse geocoding, no API key required)
+  app.get('/api/osm/search', async (req, res) => {
+    try {
+      const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+      const limit = Math.min(8, Math.max(1, Number(req.query.limit) || 5));
+      if (!q) {
+        res.json({ results: [] });
+        return;
+      }
+
+      const url = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(
+        q
+      )}&limit=${limit}&addressdetails=1`;
+
+      const osmRes = await fetch(url, {
+        headers: {
+          Accept: 'application/json',
+          'Accept-Language': 'de',
+          'User-Agent': 'TaktWerk/1.0 (OpenStreetMap Geofence Picker)',
+        },
+      });
+
+      if (!osmRes.ok) {
+        res.status(502).json({ error: 'OpenStreetMap-Adresssuche derzeit nicht erreichbar.' });
+        return;
+      }
+
+      const list = (await osmRes.json()) as Array<{
+        lat: string;
+        lon: string;
+        display_name?: string;
+        name?: string;
+        address?: {
+          road?: string;
+          house_number?: string;
+          postcode?: string;
+          city?: string;
+          town?: string;
+          village?: string;
+          municipality?: string;
+        };
+      }>;
+
+      const results = list
+        .map((item) => {
+          const lat = Number(item.lat);
+          const lng = Number(item.lon);
+          if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+          const addr = item.address;
+          const streetPart = addr
+            ? [addr.road, addr.house_number].filter(Boolean).join(' ')
+            : '';
+          const cityName =
+            addr?.city || addr?.town || addr?.village || addr?.municipality || '';
+          const cityPart = [addr?.postcode, cityName].filter(Boolean).join(' ');
+          const compact = [streetPart, cityPart].filter(Boolean).join(', ');
+          const fallback = item.display_name
+            ? item.display_name.split(',').slice(0, 3).join(',').trim()
+            : q;
+          return {
+            lat,
+            lng,
+            address: compact || fallback,
+            label: item.display_name || compact || fallback,
+            name: item.name || '',
+          };
+        })
+        .filter((r): r is NonNullable<typeof r> => r !== null);
+
+      res.json({ results });
+    } catch (err) {
+      res.status(500).json({
+        error: err instanceof Error ? err.message : 'OpenStreetMap-Suche fehlgeschlagen.',
+      });
+    }
+  });
+
+  app.get('/api/osm/reverse', async (req, res) => {
+    try {
+      const lat = Number(req.query.lat);
+      const lng = Number(req.query.lng);
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+        res.status(400).json({ error: 'Ungültige Koordinaten.' });
+        return;
+      }
+
+      const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(
+        String(lat)
+      )}&lon=${encodeURIComponent(String(lng))}&zoom=18&addressdetails=1`;
+
+      const osmRes = await fetch(url, {
+        headers: {
+          Accept: 'application/json',
+          'Accept-Language': 'de',
+          'User-Agent': 'TaktWerk/1.0 (OpenStreetMap Geofence Picker)',
+        },
+      });
+
+      if (!osmRes.ok) {
+        res.json({ address: `${lat.toFixed(5)}°, ${lng.toFixed(5)}°` });
+        return;
+      }
+
+      const data = (await osmRes.json()) as {
+        display_name?: string;
+        address?: {
+          road?: string;
+          house_number?: string;
+          postcode?: string;
+          city?: string;
+          town?: string;
+          village?: string;
+          municipality?: string;
+        };
+      };
+
+      const addr = data.address;
+      if (addr) {
+        const streetPart = [addr.road, addr.house_number].filter(Boolean).join(' ');
+        const cityName =
+          addr.city || addr.town || addr.village || addr.municipality || '';
+        const cityPart = [addr.postcode, cityName].filter(Boolean).join(' ');
+        const formatted = [streetPart, cityPart].filter(Boolean).join(', ');
+        if (formatted) {
+          res.json({ address: formatted });
+          return;
+        }
+      }
+
+      if (data.display_name) {
+        res.json({ address: data.display_name.split(',').slice(0, 3).join(',').trim() });
+        return;
+      }
+
+      res.json({ address: `${lat.toFixed(5)}°, ${lng.toFixed(5)}°` });
+    } catch {
+      res.json({ address: '' });
+    }
+  });
 
 
   const isProd = process.env.NODE_ENV === 'production';
