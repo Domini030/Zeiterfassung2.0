@@ -48,6 +48,7 @@ interface NdefReaderLike {
 interface NfcTasksViewProps {
   customers: Customer[];
   products: Product[];
+  internalCategories?: string[];
   nfcTasks: NfcTask[];
   activeTimer: ActiveTimer | null;
   incomingUnknownTag?: { uid: string; at: number } | null;
@@ -58,9 +59,18 @@ interface NfcTasksViewProps {
   onTriggerTag: (tagUid: string) => void;
 }
 
+const FALLBACK_INTERNAL_CATEGORIES = [
+  'Kundenakquise',
+  'Studio-Reinigung & Pflege',
+  'Buchhaltung & Administration',
+  'Weiterbildung',
+  'Sonstiges',
+];
+
 export function NfcTasksView({
   customers,
   products,
+  internalCategories,
   nfcTasks,
   activeTimer,
   incomingUnknownTag,
@@ -70,13 +80,29 @@ export function NfcTasksView({
   onDeleteTask,
   onTriggerTag,
 }: NfcTasksViewProps) {
+  const effectiveInternalCategories = useMemo(
+    () =>
+      internalCategories && internalCategories.length > 0
+        ? internalCategories
+        : FALLBACK_INTERNAL_CATEGORIES,
+    [internalCategories]
+  );
+
+  const hasProjectMasterData = customers.length > 0 && products.length > 0;
+
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [taskType, setTaskType] = useState<'project' | 'internal'>(
+    hasProjectMasterData ? 'project' : 'internal'
+  );
   const [tagUid, setTagUid] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [customerId, setCustomerId] = useState(customers[0]?.id ?? '');
   const [productId, setProductId] = useState(products[0]?.id ?? '');
+  const [internalCategory, setInternalCategory] = useState(
+    effectiveInternalCategories[0] ?? 'Sonstiges'
+  );
   const [autoStopPrevious, setAutoStopPrevious] = useState(true);
   const [toggleOnRescan, setToggleOnRescan] = useState(true);
   const [formError, setFormError] = useState('');
@@ -161,26 +187,28 @@ export function NfcTasksView({
     if (!incomingUnknownTag) return;
     setTagUid(incomingUnknownTag.uid);
     setNfcError(null);
-    if (customers.length > 0 && products.length > 0) {
-      setEditingId(null);
-      setTitle('');
-      setDescription('');
-      setCustomerId((prev) => prev || customers[0].id);
-      setProductId((prev) => prev || products[0].id);
-      setAutoStopPrevious(true);
-      setToggleOnRescan(true);
-      setFormError('');
-      setShowForm(true);
-      setNfcMessage(
-        `Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Du kannst ihn jetzt direkt einer Aufgabe zuweisen.`
-      );
-    } else {
-      setNfcMessage(
-        `Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Lege zuerst mindestens einen Kunden und eine Leistung an, um ihn zuzuweisen.`
-      );
-    }
+    setEditingId(null);
+    setTitle('');
+    setDescription('');
+    setTaskType(customers.length > 0 && products.length > 0 ? 'project' : 'internal');
+    setCustomerId((prev) => prev || customers[0]?.id || '');
+    setProductId((prev) => prev || products[0]?.id || '');
+    setInternalCategory((prev) => prev || effectiveInternalCategories[0] || 'Sonstiges');
+    setAutoStopPrevious(true);
+    setToggleOnRescan(true);
+    setFormError('');
+    setShowForm(true);
+    setNfcMessage(
+      `Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Du kannst ihn jetzt direkt einem Kundenauftrag oder einer internen Aufgabe zuweisen.`
+    );
     onConsumeIncomingUnknownTag?.();
-  }, [incomingUnknownTag, customers, products, onConsumeIncomingUnknownTag]);
+  }, [
+    incomingUnknownTag,
+    customers,
+    products,
+    effectiveInternalCategories,
+    onConsumeIncomingUnknownTag,
+  ]);
 
   const customerMap = useMemo(
     () => new Map(customers.map((c) => [c.id, c])),
@@ -193,11 +221,13 @@ export function NfcTasksView({
 
   const openNewForm = () => {
     setEditingId(null);
+    setTaskType(hasProjectMasterData ? 'project' : 'internal');
     setTagUid(`NFC-${Math.random().toString(36).slice(2, 7).toUpperCase()}`);
     setTitle('');
     setDescription('');
     setCustomerId(customers[0]?.id ?? '');
     setProductId(products[0]?.id ?? '');
+    setInternalCategory(effectiveInternalCategories[0] ?? 'Sonstiges');
     setAutoStopPrevious(true);
     setToggleOnRescan(true);
     setFormError('');
@@ -205,12 +235,17 @@ export function NfcTasksView({
   };
 
   const openEditForm = (task: NfcTask) => {
+    const isInternal = task.entryType === 'internal' || !task.customerId;
     setEditingId(task.id);
+    setTaskType(isInternal ? 'internal' : 'project');
     setTagUid(task.tagUid);
     setTitle(task.title);
     setDescription(task.description);
-    setCustomerId(task.customerId);
-    setProductId(task.productId);
+    setCustomerId(task.customerId || customers[0]?.id || '');
+    setProductId(task.productId || products[0]?.id || '');
+    setInternalCategory(
+      task.internalCategory || effectiveInternalCategories[0] || 'Sonstiges'
+    );
     setAutoStopPrevious(task.autoStopPrevious);
     setToggleOnRescan(task.toggleOnRescan);
     setFormError('');
@@ -221,8 +256,15 @@ export function NfcTasksView({
     e.preventDefault();
     setFormError('');
     const cleanUid = tagUid.trim();
-    if (!cleanUid || !title.trim() || !customerId || !productId) {
-      setFormError('Bitte Tag-ID, Aufgabentitel, Kunde und Leistung ausfüllen.');
+    if (!cleanUid || !title.trim()) {
+      setFormError('Bitte Tag-ID und Aufgabentitel ausfüllen.');
+      return;
+    }
+
+    if (taskType === 'project' && (!customerId || !productId)) {
+      setFormError(
+        'Bitte Kunde und Leistung wählen — oder oben auf „Interne Aufgabe (ohne Kunde)“ umschalten.'
+      );
       return;
     }
 
@@ -240,8 +282,13 @@ export function NfcTasksView({
       tagUid: cleanUid,
       title: title.trim(),
       description: description.trim(),
-      customerId,
-      productId,
+      entryType: taskType,
+      internalCategory:
+        taskType === 'internal'
+          ? internalCategory.trim() || effectiveInternalCategories[0] || 'Sonstiges'
+          : undefined,
+      customerId: taskType === 'internal' ? '' : customerId,
+      productId: taskType === 'internal' ? '' : productId,
       autoStopPrevious,
       toggleOnRescan,
       triggerCount: existing?.triggerCount ?? 0,
@@ -282,12 +329,14 @@ export function NfcTasksView({
       setNfcMessage(
         `Unbekannter Tag "${detectedCode}" gelesen. Du kannst ihn jetzt einer neuen Aufgabe zuweisen.`
       );
-      if (!showForm && customers.length > 0 && products.length > 0) {
+      if (!showForm) {
         setEditingId(null);
+        setTaskType(hasProjectMasterData ? 'project' : 'internal');
         setTitle('');
         setDescription('');
-        setCustomerId(customers[0].id);
-        setProductId(products[0].id);
+        setCustomerId(customers[0]?.id ?? '');
+        setProductId(products[0]?.id ?? '');
+        setInternalCategory(effectiveInternalCategories[0] ?? 'Sonstiges');
         setShowForm(true);
       }
     }
@@ -460,14 +509,13 @@ export function NfcTasksView({
             NFC-Aufgaben &amp; Trigger
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Verknüpfe physische NFC-Tags mit Kunden und Leistungen, um Timer per Smartphone-Tap zu starten oder zu stoppen.
+            Verknüpfe physische NFC-Tags mit Kundenaufträgen oder internen Aufgaben (z. B. Reinigung, Akquise), um Timer per Smartphone-Tap zu starten oder zu stoppen.
           </p>
         </div>
         <button
           type="button"
           onClick={openNewForm}
-          disabled={customers.length === 0 || products.length === 0}
-          className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+          className="inline-flex items-center justify-center gap-2 rounded-lg ui-accent-active px-4 py-2.5 text-sm font-semibold text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           Neue NFC-Aufgabe
@@ -480,7 +528,7 @@ export function NfcTasksView({
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <Radio className="h-4 w-4 text-blue-700 dark:text-violet-400" />
+                <Radio className="h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" />
                 <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                   {nativeCapacitor
                     ? 'Automatischer NFC-Empfang (Android-App)'
@@ -572,7 +620,7 @@ export function NfcTasksView({
         {/* Manual / Simulation Trigger */}
         <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-5">
           <div className="flex items-center gap-2">
-            <Smartphone className="h-4 w-4 text-slate-700 dark:text-violet-300" />
+            <Smartphone className="h-4 w-4 shrink-0 text-slate-700 dark:text-violet-300" />
             <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
               Tag-ID direkt testen / auslösen
             </h2>
@@ -580,17 +628,17 @@ export function NfcTasksView({
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
             Gib eine Tag-UID ein oder nutze die Auslösen-Buttons unten in der Liste.
           </p>
-          <form onSubmit={handleManualScanSubmit} className="mt-3 flex gap-2">
+          <form onSubmit={handleManualScanSubmit} className="mt-3 flex items-center gap-2">
             <input
               type="text"
               value={manualScanCode}
               onChange={(e) => setManualScanCode(e.target.value)}
               placeholder="z. B. NFC-ALPEN-SRV"
-              className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+              className="min-w-0 w-full flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
             />
             <button
               type="submit"
-              className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+              className="rounded-lg ui-accent-active px-3.5 py-2 text-sm font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer sm:px-4"
             >
               Auslösen
             </button>
@@ -601,9 +649,36 @@ export function NfcTasksView({
       {/* Create / Edit Form */}
       {showForm && (
         <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
-          <h2 className="mb-4 font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-            {editingId ? 'NFC-Aufgabe bearbeiten' : 'Neue NFC-Aufgabe anlegen'}
-          </h2>
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+              {editingId ? 'NFC-Aufgabe bearbeiten' : 'Neue NFC-Aufgabe anlegen'}
+            </h2>
+            <div className="grid grid-cols-2 rounded-lg border border-slate-200 bg-slate-100 p-1 dark:border-[#3b2d5e] dark:bg-[#211936]">
+              <button
+                type="button"
+                onClick={() => setTaskType('project')}
+                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                  taskType === 'project'
+                    ? 'ui-accent-active text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                Kundenauftrag
+              </button>
+              <button
+                type="button"
+                onClick={() => setTaskType('internal')}
+                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                  taskType === 'internal'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                Interne Aufgabe
+              </button>
+            </div>
+          </div>
+
           <form onSubmit={handleSave} className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
@@ -613,7 +688,11 @@ export function NfcTasksView({
                 type="text"
                 value={tagUid}
                 onChange={(e) => setTagUid(e.target.value)}
-                placeholder="z. B. NFC-WERKSTATT-01 oder 04:A1:2B:..."
+                placeholder={
+                  taskType === 'internal'
+                    ? 'z. B. NFC-STUDIO-REINIGUNG'
+                    : 'z. B. NFC-WERKSTATT-01 oder 04:A1:2B:...'
+                }
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
               />
             </div>
@@ -625,48 +704,103 @@ export function NfcTasksView({
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="z. B. Serverraum Wartung vor Ort"
+                placeholder={
+                  taskType === 'internal'
+                    ? 'z. B. Studio reinigen oder Kundenakquise'
+                    : 'z. B. Serverraum Wartung vor Ort'
+                }
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
               />
             </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Kunde
-              </label>
-              <ThemedSelect
-                value={customerId}
-                onChange={setCustomerId}
-                ariaLabel="Kunde für NFC-Aufgabe"
-                options={customers.map((c) => ({
-                  value: c.id,
-                  label: c.companyName,
-                  hint: c.city || undefined,
-                }))}
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Leistung / Stundensatz
-              </label>
-              <ThemedSelect
-                value={productId}
-                onChange={setProductId}
-                ariaLabel="Leistung für NFC-Aufgabe"
-                options={products.map((p) => ({
-                  value: p.id,
-                  label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`,
-                }))}
-              />
-            </div>
+
+            {taskType === 'project' ? (
+              <>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                    Kunde
+                  </label>
+                  {customers.length > 0 ? (
+                    <ThemedSelect
+                      value={customerId}
+                      onChange={setCustomerId}
+                      ariaLabel="Kunde für NFC-Aufgabe"
+                      options={customers.map((c) => ({
+                        value: c.id,
+                        label: c.companyName,
+                        hint: c.city || undefined,
+                      }))}
+                    />
+                  ) : (
+                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200">
+                      Noch kein Kunde angelegt. Wechsle oben auf „Interne Aufgabe“ oder lege erst einen Kunden an.
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                    Leistung / Stundensatz
+                  </label>
+                  {products.length > 0 ? (
+                    <ThemedSelect
+                      value={productId}
+                      onChange={setProductId}
+                      ariaLabel="Leistung für NFC-Aufgabe"
+                      options={products.map((p) => ({
+                        value: p.id,
+                        label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`,
+                      }))}
+                    />
+                  ) : (
+                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200">
+                      Noch keine Leistung angelegt.
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                    Interne Kategorie
+                  </label>
+                  <ThemedSelect
+                    value={internalCategory}
+                    onChange={setInternalCategory}
+                    ariaLabel="Interne Kategorie für NFC-Aufgabe"
+                    options={Array.from(
+                      new Set([
+                        ...effectiveInternalCategories,
+                        ...(internalCategory ? [internalCategory] : []),
+                      ])
+                    ).map((cat) => ({
+                      value: cat,
+                      label: cat,
+                    }))}
+                  />
+                </div>
+                <div className="flex items-end">
+                  <div className="w-full rounded-lg border border-amber-200/80 bg-amber-50/70 px-3 py-2 text-xs text-amber-900 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-200">
+                    Interne Aufgaben benötigen keinen Kunden und keine Rechnung. Sie werden per NFC gestartet/gestoppt und separat ausgewertet.
+                  </div>
+                </div>
+              </>
+            )}
+
             <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Beschreibung / Standardnotiz für die Rechnung
+                {taskType === 'internal'
+                  ? 'Beschreibung / Standardnotiz (optional)'
+                  : 'Beschreibung / Standardnotiz für die Rechnung'}
               </label>
               <input
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Optionaler Hinweis zum Arbeitsplatz oder Leistungsumfang..."
+                placeholder={
+                  taskType === 'internal'
+                    ? 'Optionaler Hinweis zur internen Aufgabe...'
+                    : 'Optionaler Hinweis zum Arbeitsplatz oder Leistungsumfang...'
+                }
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
               />
             </div>
@@ -705,7 +839,11 @@ export function NfcTasksView({
               </button>
               <button
                 type="submit"
-                className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white cursor-pointer ${
+                  taskType === 'internal'
+                    ? 'bg-amber-600 hover:bg-amber-700'
+                    : 'ui-accent-active'
+                }`}
               >
                 NFC-Aufgabe speichern
               </button>
@@ -722,7 +860,7 @@ export function NfcTasksView({
               Noch keine NFC-Aufgaben eingerichtet.
             </p>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Lege eine Aufgabe an, um einen NFC-Sticker mit einem Kunden und Stundensatz zu verknüpfen.
+              Lege eine Aufgabe an, um einen NFC-Sticker mit einem Kundenauftrag oder einer internen Tätigkeit zu verknüpfen.
             </p>
           </div>
         ) : (
@@ -731,16 +869,17 @@ export function NfcTasksView({
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70">
                   <th className="px-4 py-3">Tag-ID</th>
-                  <th className="px-4 py-3">Aufgabe &amp; Kunde</th>
-                  <th className="px-4 py-3">Verknüpfte Leistung</th>
+                  <th className="px-4 py-3">Aufgabe &amp; Zuordnung</th>
+                  <th className="px-4 py-3">Leistung / Art</th>
                   <th className="px-4 py-3 text-right">Auslösungen</th>
                   <th className="px-4 py-3 text-right">Aktionen</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-[#2e2349]">
                 {nfcTasks.map((task) => {
-                  const customer = customerMap.get(task.customerId);
-                  const product = productMap.get(task.productId);
+                  const isInternal = task.entryType === 'internal' || !task.customerId;
+                  const customer = isInternal ? undefined : customerMap.get(task.customerId);
+                  const product = isInternal ? undefined : productMap.get(task.productId);
                   const isRunning = activeTimer?.nfcTaskId === task.id;
                   const isCopied = copiedId === task.id;
 
@@ -753,21 +892,43 @@ export function NfcTasksView({
                         {task.tagUid}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-medium text-slate-900 dark:text-slate-100">
-                          {task.title}
+                        <div className="flex flex-wrap items-center gap-1.5 font-medium text-slate-900 dark:text-slate-100">
+                          <span>{task.title}</span>
+                          {isInternal && (
+                            <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
+                              Intern
+                            </span>
+                          )}
                         </div>
                         <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                          {customer?.companyName ?? 'Unbekannter Kunde'}
+                          {isInternal
+                            ? `Interne Aufgabe · ${task.internalCategory || 'Sonstiges'}`
+                            : customer?.companyName ?? 'Unbekannter Kunde'}
                           {task.lastTriggeredAt
                             ? ` · Zuletzt ${formatDateTimeDE(task.lastTriggeredAt)}`
                             : ' · Noch nie ausgelöst'}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-300">
-                        <div>{product?.name ?? 'Leistung'}</div>
-                        <div className="font-mono text-slate-500 dark:text-slate-400 tabular-nums">
-                          {product ? `${formatCurrency(product.unitPriceNet)} / ${product.unit}` : '—'}
-                        </div>
+                        {isInternal ? (
+                          <>
+                            <div className="font-medium text-amber-700 dark:text-amber-300">
+                              {task.internalCategory || 'Interne Tätigkeit'}
+                            </div>
+                            <div className="text-slate-500 dark:text-slate-400">
+                              Ohne Rechnung / Auswertung
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div>{product?.name ?? 'Leistung'}</div>
+                            <div className="font-mono text-slate-500 dark:text-slate-400 tabular-nums">
+                              {product
+                                ? `${formatCurrency(product.unitPriceNet)} / ${product.unit}`
+                                : '—'}
+                            </div>
+                          </>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-right font-mono text-sm font-medium text-slate-800 dark:text-slate-200 tabular-nums">
                         {task.triggerCount}
@@ -779,7 +940,7 @@ export function NfcTasksView({
                             onClick={() => onTriggerTag(task.tagUid)}
                             className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                               isRunning
-                                ? 'bg-blue-700 text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500'
+                                ? 'ui-accent-btn text-white'
                                 : 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:hover:bg-violet-600'
                             }`}
                           >

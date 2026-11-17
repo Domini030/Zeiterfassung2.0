@@ -14,10 +14,12 @@ import android.net.Uri;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import java.util.List;
 
 public class TimerReminderReceiver extends BroadcastReceiver {
 
     private static final int REMINDER_NOTIFICATION_ID = 4109;
+    private static final String SYS_CHANNEL_PREFIX = "taktwerk_reminder_sys_";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -34,6 +36,8 @@ public class TimerReminderReceiver extends BroadcastReceiver {
         String title = intent.getStringExtra("title");
         String body = intent.getStringExtra("body");
         String soundPreset = intent.getStringExtra("soundPreset");
+        String systemSoundUriStr = intent.getStringExtra("systemSoundUri");
+
         if (title == null || title.trim().isEmpty()) {
             title = "TaktWerk Erinnerung";
         }
@@ -45,9 +49,33 @@ public class TimerReminderReceiver extends BroadcastReceiver {
         }
 
         boolean isSilent = "silent".equals(soundPreset);
-        String channelId = isSilent
-            ? "taktwerk_reminder_silent_v1"
-            : ("alarm".equals(soundPreset) ? "taktwerk_reminder_alarm_v1" : "taktwerk_reminder_sound_v1");
+        boolean isDeviceSound = "device".equals(soundPreset);
+        boolean isAlarm = "alarm".equals(soundPreset);
+        boolean playCustomSynth = !isSilent && !isDeviceSound && !isAlarm;
+
+        Uri resolvedDeviceUri = null;
+        if (isDeviceSound) {
+            if (systemSoundUriStr != null && !systemSoundUriStr.trim().isEmpty()) {
+                try {
+                    resolvedDeviceUri = Uri.parse(systemSoundUriStr.trim());
+                } catch (Exception ignored) {}
+            }
+            if (resolvedDeviceUri == null) {
+                resolvedDeviceUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            }
+        }
+
+        String channelId;
+        if (isSilent) {
+            channelId = "taktwerk_reminder_silent_v1";
+        } else if (isDeviceSound) {
+            String uriKey = resolvedDeviceUri != null ? resolvedDeviceUri.toString() : "default";
+            channelId = SYS_CHANNEL_PREFIX + Integer.toHexString(uriKey.hashCode());
+        } else if (isAlarm) {
+            channelId = "taktwerk_reminder_alarm_v1";
+        } else {
+            channelId = "taktwerk_reminder_custom_v1";
+        }
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (manager == null) {
@@ -55,26 +83,49 @@ public class TimerReminderReceiver extends BroadcastReceiver {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (isDeviceSound) {
+                // Keep channel list clean and ensure Android 8+ never plays a stale cached sound
+                try {
+                    List<NotificationChannel> allChannels = manager.getNotificationChannels();
+                    if (allChannels != null) {
+                        for (NotificationChannel ch : allChannels) {
+                            if (ch != null && ch.getId() != null
+                                && ch.getId().startsWith(SYS_CHANNEL_PREFIX)
+                                && !channelId.equals(ch.getId())) {
+                                manager.deleteNotificationChannel(ch.getId());
+                            }
+                        }
+                    }
+                } catch (Exception ignored) {}
+            }
+
             NotificationChannel existing = manager.getNotificationChannel(channelId);
             if (existing == null) {
+                String channelName = isSilent
+                    ? "Aufgaben-Erinnerungen (Lautlos)"
+                    : (isDeviceSound
+                        ? "Aufgaben-Erinnerungen (System-/Pixel-Ton)"
+                        : (isAlarm
+                            ? "Aufgaben-Erinnerungen (Alarm)"
+                            : "Aufgaben-Erinnerungen (TaktWerk-Ton)"));
                 NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    isSilent ? "Aufgaben-Erinnerungen (Lautlos)" : "Aufgaben-Erinnerungen (mit Ton)",
+                    channelName,
                     NotificationManager.IMPORTANCE_HIGH
                 );
                 channel.setDescription("Erinnert automatisch an laufende Zeiterfassungs-Aufgaben.");
                 channel.enableVibration(!isSilent);
-                if (isSilent) {
+                if (isSilent || playCustomSynth) {
                     channel.setSound(null, null);
                 } else {
-                    Uri soundUri = "alarm".equals(soundPreset)
-                        ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
-                        : RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Uri soundUri = isDeviceSound
+                        ? resolvedDeviceUri
+                        : RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                     if (soundUri == null) {
                         soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                     }
                     AudioAttributes attrs = new AudioAttributes.Builder()
-                        .setUsage("alarm".equals(soundPreset)
+                        .setUsage(isAlarm
                             ? AudioAttributes.USAGE_ALARM
                             : AudioAttributes.USAGE_NOTIFICATION)
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -106,8 +157,14 @@ public class TimerReminderReceiver extends BroadcastReceiver {
 
         if (isSilent) {
             builder.setSilent(true);
+        } else if (isDeviceSound && resolvedDeviceUri != null) {
+            builder.setSound(resolvedDeviceUri);
         }
 
         manager.notify(REMINDER_NOTIFICATION_ID, builder.build());
+
+        if (playCustomSynth) {
+            ReminderToneSynth.playPresetAsync(context, soundPreset, true);
+        }
     }
 }

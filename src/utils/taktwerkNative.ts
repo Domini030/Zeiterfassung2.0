@@ -38,6 +38,17 @@ export interface NativeWidgetActionEvent {
   tagUid?: string;
 }
 
+export interface NativeSystemSoundItem {
+  uri: string;
+  title: string;
+}
+
+export interface NativePickedSoundResult {
+  cancelled: boolean;
+  uri?: string;
+  title?: string;
+}
+
 export interface TaktWerkNativePluginInterface {
   webdavEnsureFolders(options: {
     folderUrls: string[];
@@ -151,11 +162,21 @@ export interface TaktWerkNativePluginInterface {
     title: string;
     body: string;
     soundPreset: string;
+    systemSoundUri?: string;
   }): Promise<void>;
 
   cancelTimerReminder(): Promise<void>;
 
-  playReminderTone(options: { preset: string }): Promise<void>;
+  playReminderTone(options: { preset: string; systemSoundUri?: string }): Promise<void>;
+
+  pickSystemNotificationSound(options?: {
+    existingUri?: string;
+    ringtoneType?: 'notification' | 'alarm' | 'all';
+  }): Promise<NativePickedSoundResult>;
+
+  listSystemNotificationSounds(options?: {
+    ringtoneType?: 'notification' | 'alarm';
+  }): Promise<{ sounds: NativeSystemSoundItem[] }>;
 
   updateWidgetState(options: {
     isRunning: boolean;

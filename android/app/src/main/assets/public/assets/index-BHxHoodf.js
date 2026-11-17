@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-DnGlLXu4.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-BLqOsIes.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-Btx5hRfo.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-Db7VpIOG.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -13243,6 +13243,30 @@ var Moon = createLucideIcon("moon", [["path", {
 	d: "M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401",
 	key: "kfwtm"
 }]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Music = createLucideIcon("music", [
+	["path", {
+		d: "M9 18V5l12-2v13",
+		key: "1jmyc2"
+	}],
+	["circle", {
+		cx: "6",
+		cy: "18",
+		r: "3",
+		key: "fqmcym"
+	}],
+	["circle", {
+		cx: "18",
+		cy: "16",
+		r: "3",
+		key: "1hluhg"
+	}]
+]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -34905,7 +34929,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-DnGlLXu4.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-BLqOsIes.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -63199,11 +63223,16 @@ var DEFAULT_PRODUCT_CATEGORIES = [
 	"Pauschalen"
 ];
 var DEFAULT_EXPENSE_CATEGORIES = [
+	"Miete & Raumkosten",
 	"Fahrtkosten & Kraftstoff",
 	"Hardware & Material",
 	"Software & Lizenzen",
 	"Bürobedarf & Porto",
 	"Reisekosten & Verpflegung",
+	"Strom & Energie",
+	"Versicherungen",
+	"Telefon & Internet",
+	"Werbung & Marketing",
 	"Fremdleistungen",
 	"Sonstiges"
 ];
@@ -63250,9 +63279,11 @@ function createDefaultCompany() {
 		skuFieldLabel: "Artikel-Nr.",
 		customerCategories: DEFAULT_CUSTOMER_CATEGORIES,
 		productCategories: DEFAULT_PRODUCT_CATEGORIES,
+		expenseCategories: DEFAULT_EXPENSE_CATEGORIES,
 		smallBusinessMode: false,
 		smallBusinessNotice: "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.",
 		uiAccent: "violet",
+		uiCustomAccentHex: "#7c3aed",
 		uiDensity: "comfortable",
 		uiFontScale: "normal",
 		defaultStartSection: "tracker",
@@ -63279,6 +63310,8 @@ function createDefaultCompany() {
 		timerReminderEnabled: true,
 		timerReminderMinutes: 60,
 		timerReminderSound: "chime",
+		timerReminderSystemSoundUri: "",
+		timerReminderSystemSoundTitle: "",
 		autoBackup: {
 			enabled: false,
 			frequency: "weekly",
@@ -63735,6 +63768,7 @@ function normalizeDatabase(raw) {
 		...raw.company ?? {},
 		customerCategories: Array.isArray(raw.company?.customerCategories) && raw.company.customerCategories.length > 0 ? raw.company.customerCategories : DEFAULT_CUSTOMER_CATEGORIES,
 		productCategories: Array.isArray(raw.company?.productCategories) && raw.company.productCategories.length > 0 ? raw.company.productCategories : DEFAULT_PRODUCT_CATEGORIES,
+		expenseCategories: Array.isArray(raw.company?.expenseCategories) ? raw.company.expenseCategories : DEFAULT_EXPENSE_CATEGORIES,
 		internalCategories: Array.isArray(raw.company?.internalCategories) && raw.company.internalCategories.length > 0 ? raw.company.internalCategories : defaults.internalCategories,
 		autoBackup: {
 			...defaults.autoBackup,
@@ -63751,7 +63785,10 @@ function normalizeDatabase(raw) {
 		company,
 		customers: Array.isArray(raw.customers) ? raw.customers : [],
 		products: Array.isArray(raw.products) ? raw.products : [],
-		nfcTasks: Array.isArray(raw.nfcTasks) ? raw.nfcTasks : [],
+		nfcTasks: Array.isArray(raw.nfcTasks) ? raw.nfcTasks.map((t) => ({
+			...t,
+			entryType: t.entryType ?? (t.customerId ? "project" : "internal")
+		})) : [],
 		geoFenceRules: Array.isArray(raw.geoFenceRules) ? raw.geoFenceRules : [],
 		timeEntries: Array.isArray(raw.timeEntries) ? raw.timeEntries.map((e) => ({
 			...e,
@@ -64884,11 +64921,30 @@ async function apiPushNextcloudCalendarEvent(calendarUrl, appointment) {
 	});
 	if (res.status < 200 || res.status >= 300) throw new Error(`CalDAV PUT fehlgeschlagen (HTTP ${res.status}).`);
 }
-async function playNativeReminderTone(preset) {
+async function playNativeReminderTone(preset, systemSoundUri) {
 	if (!isNativeCapacitor()) return;
 	try {
-		await TaktWerkNative.playReminderTone({ preset });
+		await TaktWerkNative.playReminderTone({
+			preset,
+			systemSoundUri: systemSoundUri?.trim() || void 0
+		});
 	} catch {}
+}
+async function pickNativeSystemSound(options) {
+	if (!isNativeCapacitor()) throw new Error("Smartphone-Systemtöne sind direkt in der Android-App verfügbar.");
+	return await TaktWerkNative.pickSystemNotificationSound({
+		existingUri: options?.existingUri?.trim() || void 0,
+		ringtoneType: options?.ringtoneType ?? "notification"
+	});
+}
+async function listNativeSystemSounds(ringtoneType = "notification") {
+	if (!isNativeCapacitor()) return [];
+	try {
+		const res = await TaktWerkNative.listSystemNotificationSounds({ ringtoneType });
+		return Array.isArray(res?.sounds) ? res.sounds : [];
+	} catch {
+		return [];
+	}
 }
 async function scheduleNativeTimerReminder(options) {
 	if (!isNativeCapacitor()) return;
@@ -64907,7 +64963,7 @@ async function syncNativeWidgetState(db) {
 	try {
 		const todayStr = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 		const todayHours = (db.timeEntries.filter((e) => e.startTime.slice(0, 10) === todayStr).reduce((acc, e) => acc + e.durationSeconds, 0) / 3600).toFixed(1).replace(".", ",");
-		const custName = db.activeTimer ? db.customers.find((c) => c.id === db.activeTimer?.customerId)?.companyName ?? "" : "";
+		const custName = db.activeTimer ? db.activeTimer.entryType === "internal" || !db.activeTimer.customerId ? `Intern · ${db.activeTimer.internalCategory || "Sonstiges"}` : db.customers.find((c) => c.id === db.activeTimer?.customerId)?.companyName ?? "" : "";
 		const quickTasks = db.nfcTasks.slice(0, 2).map((t) => ({
 			tagUid: t.tagUid,
 			title: t.title
@@ -66011,18 +66067,6 @@ function CustomersView({ customers, timeEntries, invoices, categories = [], onSa
 	});
 }
 // src/components/ExpensesView.tsx
-var OPERATING_EXPENSE_CATEGORIES = [
-	"Miete & Raumkosten",
-	"Strom & Energie",
-	"Versicherungen",
-	"Telefon & Internet",
-	"Software & Hosting",
-	"Steuerberater & Buchhaltung",
-	"Werbung & Marketing",
-	"Leasing & Fuhrpark",
-	"Reinigung & Studio",
-	"Bürobedarf"
-];
 var INTERVAL_LABELS$1 = {
 	monthly: "Monatlich",
 	quarterly: "Quartalsweise",
@@ -66060,9 +66104,14 @@ async function compressImageFileToJpeg(file) {
 		reader.readAsDataURL(file);
 	});
 }
-function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudConfigured, onAddExpense, onUpdateExpense, onDeleteExpense, onUploadExpenseReceipt, onAddRecurringExpense, onUpdateRecurringExpense, onDeleteRecurringExpense, onBookRecurringExpense, onBookAllDueRecurringExpenses, onNotify }) {
+function ExpensesView({ expenses, recurringExpenses = [], customers, expenseCategories, nextcloudConfigured, onAddExpense, onUpdateExpense, onDeleteExpense, onUploadExpenseReceipt, onAddRecurringExpense, onUpdateRecurringExpense, onDeleteRecurringExpense, onBookRecurringExpense, onBookAllDueRecurringExpenses, onNotify }) {
 	const cameraInputRef = (0, import_react.useRef)(null);
 	const galleryInputRef = (0, import_react.useRef)(null);
+	const recCameraInputRef = (0, import_react.useRef)(null);
+	const recGalleryInputRef = (0, import_react.useRef)(null);
+	const configuredCategories = (0, import_react.useMemo)(() => expenseCategories && expenseCategories.length > 0 ? expenseCategories : DEFAULT_EXPENSE_CATEGORIES, [expenseCategories]);
+	const defaultOperatingCategory = (0, import_react.useMemo)(() => configuredCategories.find((c) => /miete|raum/i.test(c)) ?? configuredCategories[0] ?? "Sonstiges", [configuredCategories]);
+	const defaultProjectCategory = (0, import_react.useMemo)(() => configuredCategories.find((c) => !/miete|raum/i.test(c)) ?? configuredCategories[0] ?? "Sonstiges", [configuredCategories]);
 	const [activeSubTab, setActiveSubTab] = (0, import_react.useState)("receipts");
 	const [typeFilter, setTypeFilter] = (0, import_react.useState)("ALL");
 	const [categoryFilter, setCategoryFilter] = (0, import_react.useState)("ALL");
@@ -66075,7 +66124,7 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 	const [date, setDate] = (0, import_react.useState)(toInputDate());
 	const [vendor, setVendor] = (0, import_react.useState)("");
 	const [description, setDescription] = (0, import_react.useState)("");
-	const [category, setCategory] = (0, import_react.useState)(DEFAULT_EXPENSE_CATEGORIES[0]);
+	const [category, setCategory] = (0, import_react.useState)(defaultOperatingCategory);
 	const [expenseType, setExpenseType] = (0, import_react.useState)("operating");
 	const [taxRate, setTaxRate] = (0, import_react.useState)(19);
 	const [grossAmount, setGrossAmount] = (0, import_react.useState)(0);
@@ -66088,7 +66137,7 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 	const [editingRecId, setEditingRecId] = (0, import_react.useState)(null);
 	const [recVendor, setRecVendor] = (0, import_react.useState)("");
 	const [recDescription, setRecDescription] = (0, import_react.useState)("");
-	const [recCategory, setRecCategory] = (0, import_react.useState)("Miete & Raumkosten");
+	const [recCategory, setRecCategory] = (0, import_react.useState)(defaultOperatingCategory);
 	const [recTaxRate, setRecTaxRate] = (0, import_react.useState)(19);
 	const [recGross, setRecGross] = (0, import_react.useState)(0);
 	const [recNet, setRecNet] = (0, import_react.useState)(0);
@@ -66096,16 +66145,27 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 	const [recNextDueDate, setRecNextDueDate] = (0, import_react.useState)(toInputDate());
 	const [recActive, setRecActive] = (0, import_react.useState)(true);
 	const [recNotes, setRecNotes] = (0, import_react.useState)("");
+	const [recReceiptImageDataUrl, setRecReceiptImageDataUrl] = (0, import_react.useState)("");
+	const [recScanningAi, setRecScanningAi] = (0, import_react.useState)(false);
 	const availableCategories = (0, import_react.useMemo)(() => {
-		const set = /* @__PURE__ */ new Set([...DEFAULT_EXPENSE_CATEGORIES, ...OPERATING_EXPENSE_CATEGORIES]);
-		expenses.forEach((e) => {
-			if (e.category?.trim()) set.add(e.category.trim());
-		});
-		recurringExpenses.forEach((r) => {
-			if (r.category?.trim()) set.add(r.category.trim());
-		});
-		return Array.from(set).sort((a, b) => a.localeCompare(b, "de"));
-	}, [expenses, recurringExpenses]);
+		const ordered = [];
+		const seen = /* @__PURE__ */ new Set();
+		const addUnique = (val) => {
+			const clean = val?.trim();
+			if (clean && !seen.has(clean)) {
+				seen.add(clean);
+				ordered.push(clean);
+			}
+		};
+		configuredCategories.forEach(addUnique);
+		expenses.forEach((e) => addUnique(e.category));
+		recurringExpenses.forEach((r) => addUnique(r.category));
+		return ordered;
+	}, [
+		configuredCategories,
+		expenses,
+		recurringExpenses
+	]);
 	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
 	const todayStr = toInputDate();
 	const dueRecurringList = (0, import_react.useMemo)(() => recurringExpenses.filter((r) => r.active && r.nextDueDate <= todayStr), [recurringExpenses, todayStr]);
@@ -66153,7 +66213,7 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 		setDate(toInputDate());
 		setVendor("");
 		setDescription("");
-		setCategory(DEFAULT_EXPENSE_CATEGORIES[0]);
+		setCategory(defaultProjectCategory);
 		setExpenseType("operating");
 		setTaxRate(19);
 		setGrossAmount(0);
@@ -66166,7 +66226,7 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 	const openNewModal = (defaultType = "operating") => {
 		resetForm();
 		setExpenseType(defaultType);
-		if (defaultType === "operating") setCategory("Miete & Raumkosten");
+		setCategory(defaultType === "operating" ? defaultOperatingCategory : defaultProjectCategory);
 		setFormOpen(true);
 	};
 	const openEditModal = (exp) => {
@@ -66174,7 +66234,7 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 		setDate(exp.date);
 		setVendor(exp.vendor);
 		setDescription(exp.description);
-		setCategory(exp.category || DEFAULT_EXPENSE_CATEGORIES[0]);
+		setCategory(exp.category || defaultOperatingCategory);
 		setExpenseType(exp.expenseType ?? (exp.customerId ? "project" : "operating"));
 		setTaxRate(exp.taxRate);
 		setGrossAmount(exp.grossAmount);
@@ -66189,7 +66249,7 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 		setEditingRecId(null);
 		setRecVendor("");
 		setRecDescription("");
-		setRecCategory("Miete & Raumkosten");
+		setRecCategory(defaultOperatingCategory);
 		setRecTaxRate(19);
 		setRecGross(0);
 		setRecNet(0);
@@ -66197,13 +66257,14 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 		setRecNextDueDate(toInputDate());
 		setRecActive(true);
 		setRecNotes("");
+		setRecReceiptImageDataUrl("");
 		setRecFormOpen(true);
 	};
 	const openEditRecurringModal = (item) => {
 		setEditingRecId(item.id);
 		setRecVendor(item.vendor);
 		setRecDescription(item.description);
-		setRecCategory(item.category || "Miete & Raumkosten");
+		setRecCategory(item.category || defaultOperatingCategory);
 		setRecTaxRate(item.taxRate);
 		setRecGross(item.grossAmount);
 		setRecNet(item.netAmount);
@@ -66211,7 +66272,39 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 		setRecNextDueDate(item.nextDueDate);
 		setRecActive(item.active);
 		setRecNotes(item.notes || "");
+		setRecReceiptImageDataUrl(item.receiptImageDataUrl || "");
 		setRecFormOpen(true);
+	};
+	const runRecurringReceiptAiScan = async (imageDataUrl) => {
+		setRecScanningAi(true);
+		try {
+			const parsed = await apiScanReceiptWithAi(imageDataUrl);
+			if (parsed.vendor) setRecVendor(parsed.vendor);
+			if (parsed.description) setRecDescription(parsed.description);
+			if (parsed.category) setRecCategory(parsed.category);
+			setRecTaxRate(parsed.taxRate);
+			if (parsed.grossAmount > 0) setRecGross(parsed.grossAmount);
+			if (parsed.netAmount > 0) setRecNet(parsed.netAmount);
+			if (parsed.notes) setRecNotes(parsed.notes);
+			onNotify("Belegdaten für Fixkosten übernommen.", "success");
+		} catch (aiErr) {
+			onNotify(aiErr instanceof Error ? aiErr.message : "Beleg angehängt. Werte bitte bei Bedarf manuell ergänzen.", "warning");
+		} finally {
+			setRecScanningAi(false);
+		}
+	};
+	const handleRecurringReceiptSelected = async (e) => {
+		const file = e.target.files?.[0];
+		e.target.value = "";
+		if (!file) return;
+		try {
+			const dataUrl = await compressImageFileToJpeg(file);
+			setRecReceiptImageDataUrl(dataUrl);
+			if (!recVendor.trim() && recGross === 0) await runRecurringReceiptAiScan(dataUrl);
+			else onNotify("Beleg / Vertrag an Fixkosten angehängt.", "success");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Bild konnte nicht verarbeitet werden.", "warning");
+		}
 	};
 	const handleRecGrossChange = (val) => {
 		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
@@ -66247,6 +66340,7 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 			active: recActive,
 			nextDueDate: recNextDueDate || toInputDate(),
 			lastBookedDate: existing?.lastBookedDate ?? null,
+			receiptImageDataUrl: recReceiptImageDataUrl || void 0,
 			notes: recNotes.trim() || void 0,
 			createdAt: existing?.createdAt || (/* @__PURE__ */ new Date()).toISOString()
 		};
@@ -66348,6 +66442,21 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 				type: "file",
 				accept: "image/*",
 				onChange: (e) => void handleReceiptSelected(e, true),
+				className: "hidden"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				ref: recCameraInputRef,
+				type: "file",
+				accept: "image/*",
+				capture: "environment",
+				onChange: (e) => void handleRecurringReceiptSelected(e),
+				className: "hidden"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				ref: recGalleryInputRef,
+				type: "file",
+				accept: "image/*",
+				onChange: (e) => void handleRecurringReceiptSelected(e),
 				className: "hidden"
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -66529,70 +66638,103 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 						const isDue = rec.active && rec.nextDueDate <= todayStr;
 						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: `flex flex-col justify-between gap-3 rounded-2xl border bg-white p-4 shadow-sm dark:bg-[#19122c] ${isDue ? "border-amber-300 dark:border-amber-700/70" : "border-slate-200 dark:border-[#342653]"} ${!rec.active ? "opacity-65" : ""}`,
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex items-start justify-between gap-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "min-w-0",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex flex-wrap items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-3",
+								children: [rec.receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => setPreviewReceipt({
+										title: rec.vendor,
+										subtitle: `${INTERVAL_LABELS$1[rec.interval]} · ${formatCurrency(rec.grossAmount)}`,
+										imageDataUrl: rec.receiptImageDataUrl
+									}),
+									className: "group relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-[#3b2d5e] cursor-pointer",
+									title: "Hinterlegten Beleg / Vertrag vergrößern",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+										src: rec.receiptImageDataUrl,
+										alt: `Beleg ${rec.vendor}`,
+										className: "h-full w-full object-cover"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 transition-opacity group-hover:opacity-100",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-4 w-4 text-white" })
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "min-w-0 flex-1",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-start justify-between gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "min-w-0",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex flex-wrap items-center gap-1.5",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+															className: "truncate text-sm font-bold text-slate-900 dark:text-white",
+															children: rec.vendor
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
+															children: INTERVAL_LABELS$1[rec.interval]
+														}),
+														!rec.active && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "rounded-md bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2a2045] dark:text-slate-400",
+															children: "Pausiert"
+														})
+													]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-0.5 text-xs text-slate-600 dark:text-slate-300",
+													children: rec.description
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "text-right shrink-0",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "font-mono text-sm font-bold text-slate-900 dark:text-white tabular-nums",
+													children: formatCurrency(rec.grossAmount)
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "font-mono text-[11px] text-slate-500 dark:text-slate-400 tabular-nums",
+													children: [
+														"Netto ",
+														formatCurrency(rec.netAmount),
+														" (",
+														rec.taxRate,
+														"%)"
+													]
+												})]
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-2.5 flex flex-wrap items-center gap-2 text-[11px]",
 											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
-													className: "truncate text-sm font-bold text-slate-900 dark:text-white",
-													children: rec.vendor
-												}),
 												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
-													children: INTERVAL_LABELS$1[rec.interval]
+													className: "rounded-md bg-violet-50 px-2 py-0.5 font-medium text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
+													children: rec.category
 												}),
-												!rec.active && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "rounded-md bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2a2045] dark:text-slate-400",
-													children: "Pausiert"
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: `rounded-md px-2 py-0.5 font-medium ${isDue ? "bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300" : "bg-slate-100 text-slate-700 dark:bg-[#2a2045] dark:text-slate-300"}`,
+													children: [isDue ? "Fällig seit " : "Nächste Buchung: ", formatDateDE(rec.nextDueDate)]
+												}),
+												rec.receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => setPreviewReceipt({
+														title: rec.vendor,
+														subtitle: `${INTERVAL_LABELS$1[rec.interval]} · ${formatCurrency(rec.grossAmount)}`,
+														imageDataUrl: rec.receiptImageDataUrl
+													}),
+													className: "inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25 cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-3 w-3" }), "Beleg ansehen"]
+												}),
+												rec.lastBookedDate && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "text-slate-500 dark:text-slate-400",
+													children: ["Zuletzt: ", formatDateDE(rec.lastBookedDate)]
 												})
 											]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-											className: "mt-0.5 text-xs text-slate-600 dark:text-slate-300",
-											children: rec.description
-										})]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "text-right shrink-0",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "font-mono text-sm font-bold text-slate-900 dark:text-white tabular-nums",
-											children: formatCurrency(rec.grossAmount)
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "font-mono text-[11px] text-slate-500 dark:text-slate-400 tabular-nums",
-											children: [
-												"Netto ",
-												formatCurrency(rec.netAmount),
-												" (",
-												rec.taxRate,
-												"%)"
-											]
-										})]
-									})]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "mt-2.5 flex flex-wrap items-center gap-2 text-[11px]",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "rounded-md bg-violet-50 px-2 py-0.5 font-medium text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
-											children: rec.category
 										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: `rounded-md px-2 py-0.5 font-medium ${isDue ? "bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300" : "bg-slate-100 text-slate-700 dark:bg-[#2a2045] dark:text-slate-300"}`,
-											children: [isDue ? "Fällig seit " : "Nächste Buchung: ", formatDateDE(rec.nextDueDate)]
-										}),
-										rec.lastBookedDate && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: "text-slate-500 dark:text-slate-400",
-											children: ["Zuletzt: ", formatDateDE(rec.lastBookedDate)]
+										rec.notes && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1.5 text-xs text-slate-500 dark:text-slate-400",
+											children: rec.notes
 										})
 									]
-								}),
-								rec.notes && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-1.5 text-xs text-slate-500 dark:text-slate-400",
-									children: rec.notes
-								})
-							] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2.5 dark:border-[#2e234a]",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 									className: "inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer",
@@ -66709,7 +66851,11 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 							className: "flex items-start gap-3",
 							children: [exp.receiptImageDataUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 								type: "button",
-								onClick: () => setPreviewReceipt(exp),
+								onClick: () => setPreviewReceipt({
+									title: exp.vendor,
+									subtitle: `${formatDateDE(exp.date)} · ${formatCurrency(exp.grossAmount)}`,
+									imageDataUrl: exp.receiptImageDataUrl
+								}),
 								className: "group relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-[#3b2d5e] cursor-pointer",
 								title: "Belegfoto vergrößern",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
@@ -66858,41 +67004,60 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 								})]
 							}),
 							receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
+								className: "flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
 								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-										src: receiptImageDataUrl,
-										alt: "Belegvorschau",
-										className: "h-16 w-14 rounded-lg object-cover border border-slate-200"
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => setPreviewReceipt({
+											title: vendor.trim() || "Belegvorschau",
+											subtitle: `${formatDateDE(date)} · ${formatCurrency(grossAmount)}`,
+											imageDataUrl: receiptImageDataUrl
+										}),
+										className: "h-16 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 cursor-pointer",
+										title: "Vorschau vergrößern",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+											src: receiptImageDataUrl,
+											alt: "Belegvorschau",
+											className: "h-full w-full object-cover"
+										})
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 										className: "min-w-0 flex-1 text-xs text-slate-600 dark:text-slate-300",
 										children: "Belegfoto angehängt."
 									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										disabled: scanningAi,
-										onClick: async () => {
-											setScanningAi(true);
-											try {
-												const parsed = await apiScanReceiptWithAi(receiptImageDataUrl);
-												if (parsed.vendor) setVendor(parsed.vendor);
-												if (parsed.date) setDate(parsed.date);
-												if (parsed.description) setDescription(parsed.description);
-												if (parsed.category) setCategory(parsed.category);
-												setTaxRate(parsed.taxRate);
-												if (parsed.grossAmount > 0) setGrossAmount(parsed.grossAmount);
-												if (parsed.netAmount > 0) setNetAmount(parsed.netAmount);
-												if (parsed.notes) setNotes(parsed.notes);
-												onNotify("Belegdaten aktualisiert.", "success");
-											} catch (err) {
-												onNotify(err instanceof Error ? err.message : "Scan fehlgeschlagen.", "warning");
-											} finally {
-												setScanningAi(false);
-											}
-										},
-										className: "inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-3.5 w-3.5" }), "Erneut scannen"]
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											disabled: scanningAi,
+											onClick: async () => {
+												setScanningAi(true);
+												try {
+													const parsed = await apiScanReceiptWithAi(receiptImageDataUrl);
+													if (parsed.vendor) setVendor(parsed.vendor);
+													if (parsed.date) setDate(parsed.date);
+													if (parsed.description) setDescription(parsed.description);
+													if (parsed.category) setCategory(parsed.category);
+													setTaxRate(parsed.taxRate);
+													if (parsed.grossAmount > 0) setGrossAmount(parsed.grossAmount);
+													if (parsed.netAmount > 0) setNetAmount(parsed.netAmount);
+													if (parsed.notes) setNotes(parsed.notes);
+													onNotify("Belegdaten aktualisiert.", "success");
+												} catch (err) {
+													onNotify(err instanceof Error ? err.message : "Scan fehlgeschlagen.", "warning");
+												} finally {
+													setScanningAi(false);
+												}
+											},
+											className: "inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-3.5 w-3.5" }), "Erneut scannen"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setReceiptImageDataUrl(""),
+											className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:bg-[#19122c] dark:text-rose-300 cursor-pointer",
+											title: "Beleg entfernen",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+										})]
 									})
 								]
 							}),
@@ -67088,6 +67253,74 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 						className: "overflow-y-auto p-5 space-y-4",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2 rounded-xl border border-violet-200 bg-violet-50/70 p-3 dark:border-violet-500/30 dark:bg-violet-500/10",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2 text-xs text-violet-900 dark:text-violet-200",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: recScanningAi ? "KI liest Belegdaten aus..." : "Vertrag, Dauerrechnung oder Belegfoto hinterlegen (wird bei Verbuchung übernommen)" })]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										disabled: recScanningAi,
+										onClick: () => recCameraInputRef.current?.click(),
+										className: "inline-flex items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer",
+										children: [recScanningAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5" }), "Kamera"]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										disabled: recScanningAi,
+										onClick: () => recGalleryInputRef.current?.click(),
+										className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileImage, { className: "h-3.5 w-3.5" }), "Datei"]
+									})]
+								})]
+							}),
+							recReceiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => setPreviewReceipt({
+											title: recVendor.trim() || "Fixkosten-Beleg",
+											subtitle: `${INTERVAL_LABELS$1[recInterval]} · ${formatCurrency(recGross)}`,
+											imageDataUrl: recReceiptImageDataUrl
+										}),
+										className: "h-16 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 cursor-pointer",
+										title: "Beleg vergrößern",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+											src: recReceiptImageDataUrl,
+											alt: "Fixkosten-Belegvorschau",
+											className: "h-full w-full object-cover"
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "min-w-0 flex-1 text-xs text-slate-600 dark:text-slate-300",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold text-slate-800 dark:text-slate-100",
+											children: "Beleg / Vertrag angehängt"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-[11px] text-slate-500 dark:text-slate-400",
+											children: "Tippen zum Vergrößern — wird bei jeder Buchung mit übernommen."
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											disabled: recScanningAi,
+											onClick: () => void runRecurringReceiptAiScan(recReceiptImageDataUrl),
+											className: "inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-3.5 w-3.5" }), "KI auslesen"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setRecReceiptImageDataUrl(""),
+											className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:bg-[#19122c] dark:text-rose-300 cursor-pointer",
+											title: "Beleg entfernen",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+										})]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
@@ -67234,7 +67467,7 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 					})]
 				})
 			}),
-			previewReceipt && previewReceipt.receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			previewReceipt && previewReceipt.imageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				role: "dialog",
 				"aria-modal": "true",
 				"data-no-swipe": "true",
@@ -67249,14 +67482,10 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 							className: "min-w-0",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 								className: "truncate text-sm font-bold",
-								children: previewReceipt.vendor
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								children: previewReceipt.title
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 								className: "text-xs text-slate-400",
-								children: [
-									formatDateDE(previewReceipt.date),
-									" · ",
-									formatCurrency(previewReceipt.grossAmount)
-								]
+								children: previewReceipt.subtitle
 							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 							type: "button",
@@ -67267,8 +67496,8 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, nextcloudCo
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 						className: "p-3 bg-slate-950 flex items-center justify-center",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-							src: previewReceipt.receiptImageDataUrl,
-							alt: previewReceipt.vendor,
+							src: previewReceipt.imageDataUrl,
+							alt: previewReceipt.title,
 							className: "max-h-[75vh] w-auto rounded-lg object-contain"
 						})
 					})]
@@ -69387,7 +69616,7 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 											className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
 											children: ["Weitere Aktionen", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: "h-3.5 w-3.5" })]
 										}), showPreviewMenu && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "absolute left-0 top-full z-30 mt-1.5 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-[#3b2d5e] dark:bg-[#1e1730]",
+											className: "absolute left-0 top-full z-30 mt-1.5 w-60 max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-[#3b2d5e] dark:bg-[#1e1730]",
 											children: [
 												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 													type: "button",
@@ -69937,27 +70166,107 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 }
 // src/utils/soundReminder.ts
 var REMINDER_SOUND_OPTIONS = {
+	device: {
+		label: "Pixel- / Smartphone-Systemton",
+		description: "Nutzt einen direkt gewählten Google Pixel- oder Android-Benachrichtigungston.",
+		group: "system"
+	},
+	popcorn: {
+		label: "Popcorn (Pixel-Stil)",
+		description: "Fröhliche, leicht hüpfende 3-Ton-Folge im Stil klassischer Pixel-Sounds.",
+		group: "pixel"
+	},
+	eureka: {
+		label: "Eureka (Pixel-Stil)",
+		description: "Heller, optimistischer Aufwärts-Akzent für klare Erinnerungen.",
+		group: "pixel"
+	},
+	chord: {
+		label: "Akkord (Pixel-Stil)",
+		description: "Weicher, warmer Major-7-Klang im modernen Material-Design-Stil.",
+		group: "pixel"
+	},
+	droplet: {
+		label: "Wassertropfen",
+		description: "Klarer, unaufdringlicher Tropfen-Impuls mit sanftem Frequenz-Aufstieg.",
+		group: "pixel"
+	},
+	crystal: {
+		label: "Kristall-Glockenspiel",
+		description: "Feiner, brillanter Oberton-Klang mit sanftem Nachhall.",
+		group: "melodic"
+	},
+	marimba: {
+		label: "Marimba (Warm)",
+		description: "Natürlicher, holziger Dreiklang mit angenehmem Volumen.",
+		group: "melodic"
+	},
+	piano: {
+		label: "Klavier-Hinweis",
+		description: "Kurzer, eleganter Klavier-Akkord mit warmem Ausklang.",
+		group: "melodic"
+	},
 	chime: {
 		label: "Dreiklang (Sanft)",
-		description: "Angenehmer, aufsteigender Dreiklang."
+		description: "Angenehmer, klassisch aufsteigender Dreiklang.",
+		group: "melodic"
 	},
 	bell: {
 		label: "Glocke (Klar)",
-		description: "Heller, länger ausklingender Glockenton."
+		description: "Heller, länger ausklingender Glockenton.",
+		group: "melodic"
+	},
+	woodblock: {
+		label: "Holzklang (Minimal)",
+		description: "Sehr dezenter Doppel-Klick für ruhige Arbeitsumgebungen.",
+		group: "melodic"
+	},
+	sonar: {
+		label: "Sonar-Echo",
+		description: "Weicher, mitteltiefer Impuls mit leisem Echo.",
+		group: "melodic"
+	},
+	fanfare: {
+		label: "Erfolgs-Signal",
+		description: "Kräftige, aufsteigende Vierklang-Melodie.",
+		group: "alert"
 	},
 	pulse: {
 		label: "Doppel-Signal",
-		description: "Kurzer, moderner Doppel-Impuls."
+		description: "Kurzer, moderner Doppel-Impuls.",
+		group: "alert"
 	},
 	alarm: {
 		label: "Deutlicher Hinweiston",
-		description: "Gut hörbare Tonfolge bei lauter Umgebung."
+		description: "Gut hörbare Tonfolge bei lauter Umgebung.",
+		group: "alert"
 	},
 	silent: {
 		label: "Lautlos (nur Banner / Vibration)",
-		description: "Kein Ton, nur sichtbarer Hinweis & Vibration."
+		description: "Kein Ton, nur sichtbarer Hinweis & Vibration.",
+		group: "system"
 	}
 };
+var REMINDER_SOUND_PRESET_ORDER = [
+	"device",
+	"popcorn",
+	"eureka",
+	"chord",
+	"droplet",
+	"crystal",
+	"marimba",
+	"piano",
+	"chime",
+	"bell",
+	"woodblock",
+	"sonar",
+	"fanfare",
+	"pulse",
+	"alarm",
+	"silent"
+];
+var activeAudioCtx = null;
+var activeCleanupTimer = null;
 function playReminderSound(preset) {
 	if (preset === "silent") {
 		if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") navigator.vibrate([
@@ -69971,40 +70280,127 @@ function playReminderSound(preset) {
 	const AudioCtx = window.AudioContext || window.webkitAudioContext;
 	if (!AudioCtx) return;
 	try {
+		if (activeCleanupTimer) {
+			clearTimeout(activeCleanupTimer);
+			activeCleanupTimer = null;
+		}
+		if (activeAudioCtx) {
+			activeAudioCtx.close().catch(() => {});
+			activeAudioCtx = null;
+		}
 		const ctx = new AudioCtx();
+		activeAudioCtx = ctx;
 		const now = ctx.currentTime;
-		const scheduleNote = (freq, startOffset, duration, type = "sine", peakGain = .2) => {
+		const scheduleNote = (freq, startOffset, duration, type = "sine", peakGain = .2, attack = .015) => {
 			const osc = ctx.createOscillator();
 			const gain = ctx.createGain();
 			osc.type = type;
 			osc.frequency.setValueAtTime(freq, now + startOffset);
 			gain.gain.setValueAtTime(1e-4, now + startOffset);
-			gain.gain.exponentialRampToValueAtTime(peakGain, now + startOffset + .02);
+			gain.gain.exponentialRampToValueAtTime(Math.max(.001, peakGain), now + startOffset + Math.min(attack, duration * .4));
 			gain.gain.exponentialRampToValueAtTime(1e-4, now + startOffset + duration);
 			osc.connect(gain);
 			gain.connect(ctx.destination);
 			osc.start(now + startOffset);
-			osc.stop(now + startOffset + duration + .02);
+			osc.stop(now + startOffset + duration + .03);
 		};
-		if (preset === "chime") {
-			scheduleNote(523.25, 0, .25, "sine", .18);
-			scheduleNote(659.25, .14, .28, "sine", .18);
-			scheduleNote(783.99, .28, .45, "sine", .2);
-		} else if (preset === "bell") {
-			scheduleNote(880, 0, .75, "triangle", .24);
-			scheduleNote(1760, 0, .4, "sine", .1);
-		} else if (preset === "pulse") {
-			scheduleNote(660, 0, .14, "sine", .22);
-			scheduleNote(660, .2, .18, "sine", .22);
-		} else if (preset === "alarm") {
-			scheduleNote(740, 0, .18, "triangle", .25);
-			scheduleNote(987.77, .2, .18, "triangle", .25);
-			scheduleNote(740, .42, .18, "triangle", .25);
-			scheduleNote(987.77, .62, .26, "triangle", .25);
+		const scheduleGlide = (startFreq, endFreq, startOffset, duration, type = "sine", peakGain = .22) => {
+			const osc = ctx.createOscillator();
+			const gain = ctx.createGain();
+			osc.type = type;
+			osc.frequency.setValueAtTime(startFreq, now + startOffset);
+			osc.frequency.exponentialRampToValueAtTime(endFreq, now + startOffset + duration);
+			gain.gain.setValueAtTime(1e-4, now + startOffset);
+			gain.gain.exponentialRampToValueAtTime(peakGain, now + startOffset + .012);
+			gain.gain.exponentialRampToValueAtTime(1e-4, now + startOffset + duration);
+			osc.connect(gain);
+			gain.connect(ctx.destination);
+			osc.start(now + startOffset);
+			osc.stop(now + startOffset + duration + .03);
+		};
+		switch (preset) {
+			case "popcorn":
+				scheduleNote(698.46, 0, .09, "sine", .22, .006);
+				scheduleNote(1396.91, 0, .05, "triangle", .07, .004);
+				scheduleNote(880, .095, .09, "sine", .24, .006);
+				scheduleNote(1046.5, .19, .22, "sine", .22, .008);
+				scheduleNote(2093, .19, .12, "sine", .06, .006);
+				break;
+			case "eureka":
+				scheduleNote(659.25, 0, .14, "sine", .18, .01);
+				scheduleNote(830.61, .08, .16, "sine", .19, .01);
+				scheduleNote(987.77, .16, .2, "sine", .2, .01);
+				scheduleNote(1318.51, .24, .42, "sine", .22, .012);
+				scheduleNote(2637.02, .24, .22, "sine", .05, .01);
+				break;
+			case "chord":
+				scheduleNote(523.25, 0, .65, "sine", .14, .04);
+				scheduleNote(659.25, .03, .65, "sine", .13, .04);
+				scheduleNote(783.99, .06, .65, "sine", .12, .04);
+				scheduleNote(987.77, .09, .7, "triangle", .08, .05);
+				break;
+			case "droplet":
+				scheduleGlide(520, 1240, 0, .14, "sine", .22);
+				scheduleGlide(680, 1520, .16, .16, "sine", .18);
+				break;
+			case "crystal":
+				scheduleNote(1318.51, 0, .55, "sine", .16, .008);
+				scheduleNote(2637.02, 0, .35, "sine", .06, .006);
+				scheduleNote(1975.53, .12, .65, "sine", .17, .008);
+				scheduleNote(3951.07, .12, .3, "sine", .04, .006);
+				break;
+			case "marimba":
+				scheduleNote(587.33, 0, .16, "triangle", .25, .005);
+				scheduleNote(1174.66, 0, .06, "sine", .08, .004);
+				scheduleNote(739.99, .13, .16, "triangle", .24, .005);
+				scheduleNote(880, .26, .34, "triangle", .24, .005);
+				break;
+			case "piano":
+				scheduleNote(523.25, 0, .5, "triangle", .16, .008);
+				scheduleNote(659.25, 0, .5, "triangle", .14, .008);
+				scheduleNote(783.99, 0, .5, "sine", .14, .008);
+				scheduleNote(1046.5, .18, .58, "triangle", .16, .008);
+				break;
+			case "woodblock":
+				scheduleNote(720, 0, .055, "triangle", .24, .003);
+				scheduleNote(1440, 0, .03, "sine", .09, .002);
+				scheduleNote(960, .12, .065, "triangle", .22, .003);
+				break;
+			case "sonar":
+				scheduleNote(440, 0, .45, "sine", .22, .015);
+				scheduleNote(880, 0, .22, "sine", .06, .015);
+				scheduleNote(440, .38, .5, "sine", .1, .02);
+				break;
+			case "fanfare":
+				scheduleNote(523.25, 0, .14, "triangle", .2, .008);
+				scheduleNote(659.25, .11, .14, "triangle", .2, .008);
+				scheduleNote(783.99, .22, .16, "triangle", .22, .008);
+				scheduleNote(1046.5, .34, .46, "triangle", .24, .01);
+				scheduleNote(1046.5, .34, .46, "sine", .12, .01);
+				break;
+			case "bell":
+				scheduleNote(880, 0, .75, "triangle", .24, .01);
+				scheduleNote(1760, 0, .4, "sine", .1, .008);
+				break;
+			case "pulse":
+				scheduleNote(660, 0, .14, "sine", .22, .01);
+				scheduleNote(660, .2, .18, "sine", .22, .01);
+				break;
+			case "alarm":
+				scheduleNote(740, 0, .18, "triangle", .25, .01);
+				scheduleNote(987.77, .2, .18, "triangle", .25, .01);
+				scheduleNote(740, .42, .18, "triangle", .25, .01);
+				scheduleNote(987.77, .62, .26, "triangle", .25, .01);
+				break;
+			default:
+				scheduleNote(523.25, 0, .25, "sine", .18, .015);
+				scheduleNote(659.25, .14, .28, "sine", .18, .015);
+				scheduleNote(783.99, .28, .45, "sine", .2, .015);
 		}
-		setTimeout(() => {
+		activeCleanupTimer = setTimeout(() => {
+			if (activeAudioCtx === ctx) activeAudioCtx = null;
 			ctx.close().catch(() => {});
-		}, 1500);
+		}, 1600);
 	} catch {}
 }
 async function showWebReminderNotification(title, body) {
@@ -77320,6 +77716,43 @@ var UI_ACCENTS = [
 		id: "rose",
 		label: "Rubin Rot",
 		dotClass: "bg-rose-600"
+	},
+	{
+		id: "custom",
+		label: "Eigene Farbe",
+		dotClass: "ui-custom-swatch"
+	}
+];
+var CUSTOM_UI_SWATCHES = [
+	{
+		hex: "#0891b2",
+		label: "Petrol",
+		dotClass: "bg-cyan-600"
+	},
+	{
+		hex: "#4f46e5",
+		label: "Indigo",
+		dotClass: "bg-indigo-600"
+	},
+	{
+		hex: "#15803d",
+		label: "Waldgrün",
+		dotClass: "bg-green-700"
+	},
+	{
+		hex: "#ea580c",
+		label: "Terrakotta",
+		dotClass: "bg-orange-600"
+	},
+	{
+		hex: "#c026d3",
+		label: "Magenta",
+		dotClass: "bg-fuchsia-600"
+	},
+	{
+		hex: "#334155",
+		label: "Schiefer",
+		dotClass: "bg-slate-700"
 	}
 ];
 var START_SECTION_OPTIONS = [
@@ -77375,12 +77808,34 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 	(0, import_react.useEffect)(() => {
 		setCompanyForm(company);
 	}, [company]);
+	(0, import_react.useEffect)(() => {
+		const root = document.documentElement;
+		root.setAttribute("data-ui-accent", companyForm.uiAccent ?? "violet");
+		const candidate = (companyForm.uiCustomAccentHex || "").trim();
+		if (/^#[0-9a-fA-F]{6}$/.test(candidate)) root.style.setProperty("--tw-ui-custom-accent", candidate);
+		return () => {
+			root.setAttribute("data-ui-accent", company.uiAccent ?? "violet");
+			const savedHex = /^#[0-9a-fA-F]{6}$/.test((company.uiCustomAccentHex || "").trim()) ? company.uiCustomAccentHex.trim() : "#7c3aed";
+			root.style.setProperty("--tw-ui-custom-accent", savedHex);
+		};
+	}, [
+		companyForm.uiAccent,
+		companyForm.uiCustomAccentHex,
+		company.uiAccent,
+		company.uiCustomAccentHex
+	]);
 	const [newCustomerCategory, setNewCustomerCategory] = (0, import_react.useState)("");
 	const [newProductCategory, setNewProductCategory] = (0, import_react.useState)("");
+	const [newExpenseCategory, setNewExpenseCategory] = (0, import_react.useState)("");
 	const [newInternalCategory, setNewInternalCategory] = (0, import_react.useState)("");
 	const [discoveredCalendars, setDiscoveredCalendars] = (0, import_react.useState)([]);
 	const [discoveringCalendars, setDiscoveringCalendars] = (0, import_react.useState)(false);
 	const [runningBackup, setRunningBackup] = (0, import_react.useState)(false);
+	const [deviceSounds, setDeviceSounds] = (0, import_react.useState)([]);
+	const [deviceSoundsType, setDeviceSoundsType] = (0, import_react.useState)("notification");
+	const [loadingDeviceSounds, setLoadingDeviceSounds] = (0, import_react.useState)(false);
+	const [pickingSystemSound, setPickingSystemSound] = (0, import_react.useState)(false);
+	const [deviceSoundFilter, setDeviceSoundFilter] = (0, import_react.useState)("");
 	const [zipIncludeQuotes, setZipIncludeQuotes] = (0, import_react.useState)(true);
 	const [zipIncludeArchived, setZipIncludeArchived] = (0, import_react.useState)(true);
 	const [exportingZip, setExportingZip] = (0, import_react.useState)(false);
@@ -77700,10 +78155,71 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 			setRunningBackup(false);
 		}
 	};
+	const previewReminderTone = (preset, customUri) => {
+		const uriToPlay = customUri ?? companyForm.timerReminderSystemSoundUri;
+		if (nativeApp) playNativeReminderTone(preset, preset === "device" ? uriToPlay : void 0);
+		else playReminderSound(preset);
+	};
 	const handleTestSound = () => {
 		const preset = companyForm.timerReminderSound ?? "chime";
-		playReminderSound(preset);
-		if (nativeApp) playNativeReminderTone(preset);
+		previewReminderTone(preset);
+	};
+	const handlePickPixelSystemSound = async (ringtoneType = "notification") => {
+		if (!nativeApp) {
+			onNotify("Direkter Zugriff auf Google Pixel- / Android-Systemtöne funktioniert in der installierten Android-App. Im Browser stehen dir alle 14 eingebauten TaktWerk-Töne zur Verfügung.", false);
+			return;
+		}
+		setPickingSystemSound(true);
+		try {
+			const picked = await pickNativeSystemSound({
+				existingUri: companyForm.timerReminderSystemSoundUri,
+				ringtoneType
+			});
+			if (picked.cancelled || !picked.uri) return;
+			const chosenTitle = picked.title?.trim() || "Smartphone-Systemton";
+			const nextCompany = {
+				...companyForm,
+				timerReminderSound: "device",
+				timerReminderSystemSoundUri: picked.uri,
+				timerReminderSystemSoundTitle: chosenTitle
+			};
+			setCompanyForm(nextCompany);
+			onSaveCompany(nextCompany);
+			playNativeReminderTone("device", picked.uri);
+			onNotify(`Systemton „${chosenTitle}“ übernommen.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "System-Tonauswahl konnte nicht geöffnet werden.", true);
+		} finally {
+			setPickingSystemSound(false);
+		}
+	};
+	const handleLoadDeviceSounds = async (ringtoneType = "notification") => {
+		if (!nativeApp) {
+			onNotify("Geräte-Systemtöne können nur innerhalb der Android-App ausgelesen werden.", false);
+			return;
+		}
+		setLoadingDeviceSounds(true);
+		setDeviceSoundsType(ringtoneType);
+		try {
+			const list = await listNativeSystemSounds(ringtoneType);
+			setDeviceSounds(list);
+			setDeviceSoundFilter("");
+			if (list.length === 0) onNotify("Keine direkte Liste geliefert — nutze „Pixel- / Systemtöne öffnen“ für die offizielle Android-Tonauswahl.", false);
+		} finally {
+			setLoadingDeviceSounds(false);
+		}
+	};
+	const handleSelectListedDeviceSound = (sound) => {
+		const nextCompany = {
+			...companyForm,
+			timerReminderSound: "device",
+			timerReminderSystemSoundUri: sound.uri,
+			timerReminderSystemSoundTitle: sound.title
+		};
+		setCompanyForm(nextCompany);
+		onSaveCompany(nextCompany);
+		playNativeReminderTone("device", sound.uri);
+		onNotify(`Systemton „${sound.title}“ ausgewählt.`);
 	};
 	const handleCaptureHomeBaseGps = async () => {
 		setHomeLocating(true);
@@ -78073,6 +78589,15 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 				productCategories: [...list, val]
 			});
 			setNewProductCategory("");
+		} else if (kind === "expense") {
+			const val = newExpenseCategory.trim();
+			if (!val) return;
+			const list = companyForm.expenseCategories ?? [];
+			if (!list.includes(val)) setCompanyForm({
+				...companyForm,
+				expenseCategories: [...list, val]
+			});
+			setNewExpenseCategory("");
 		} else {
 			const val = newInternalCategory.trim();
 			if (!val) return;
@@ -78093,12 +78618,16 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 			...companyForm,
 			productCategories: (companyForm.productCategories ?? []).filter((c) => c !== item)
 		});
+		else if (kind === "expense") setCompanyForm({
+			...companyForm,
+			expenseCategories: (companyForm.expenseCategories ?? []).filter((c) => c !== item)
+		});
 		else setCompanyForm({
 			...companyForm,
 			internalCategories: (companyForm.internalCategories ?? []).filter((c) => c !== item)
 		});
 	};
-	const inputClass = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500";
+	const inputClass = "min-w-0 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500";
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
@@ -78164,24 +78693,95 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 								children: "Steuere Akzentfarbe, Informationsdichte, Textgröße, Startansicht und Wischgesten."
 							})]
 						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-2 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "App-Akzentfarbe"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "flex flex-wrap gap-2",
-							children: UI_ACCENTS.map((item) => {
-								const selected = (companyForm.uiAccent ?? "violet") === item.id;
-								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: () => setCompanyForm({
-										...companyForm,
-										uiAccent: item.id
-									}),
-									className: `inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors cursor-pointer ${selected ? "border-slate-900 bg-slate-100 text-slate-900 dark:border-violet-400 dark:bg-[#2a2045] dark:text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-300"}`,
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-3 w-3 rounded-full ${item.dotClass}` }), item.label]
-								}, item.id);
-							})
-						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-3",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "App-Akzentfarbe (Vorlagen oder eigene Wunschfarbe)"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "flex flex-wrap items-center gap-2",
+									children: UI_ACCENTS.map((item) => {
+										const selected = (companyForm.uiAccent ?? "violet") === item.id;
+										return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: () => setCompanyForm({
+												...companyForm,
+												uiAccent: item.id
+											}),
+											className: `inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors cursor-pointer ${selected ? "border-slate-900 bg-slate-100 text-slate-900 dark:border-violet-400 dark:bg-[#2a2045] dark:text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-300"}`,
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-3 w-3 shrink-0 rounded-full ring-1 ring-black/15 dark:ring-white/20 ${item.dotClass}` }), item.label]
+										}, item.id);
+									})
+								}),
+								companyForm.uiAccent === "custom" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-[#3b2d5e] dark:bg-[#211936]/70 space-y-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "color",
+												value: /^#[0-9a-fA-F]{6}$/.test((companyForm.uiCustomAccentHex || "").trim()) ? companyForm.uiCustomAccentHex.trim() : "#7c3aed",
+												onChange: (e) => setCompanyForm({
+													...companyForm,
+													uiAccent: "custom",
+													uiCustomAccentHex: e.target.value
+												}),
+												"aria-label": "Eigene App-Akzentfarbe wählen",
+												className: "h-9 w-12 cursor-pointer rounded-lg border border-slate-300 bg-white p-0.5 dark:border-[#4b3a73] dark:bg-[#171126]"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: companyForm.uiCustomAccentHex ?? "#7c3aed",
+												onChange: (e) => {
+													const raw = e.target.value;
+													const normalized = raw && !raw.startsWith("#") ? `#${raw}` : raw;
+													setCompanyForm({
+														...companyForm,
+														uiAccent: "custom",
+														uiCustomAccentHex: normalized.slice(0, 7)
+													});
+												},
+												placeholder: "#7c3aed",
+												"aria-label": "Hex-Farbcode der App-Akzentfarbe",
+												className: "w-28 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-xs text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "flex flex-wrap items-center gap-1.5",
+											children: CUSTOM_UI_SWATCHES.map((swatch) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												onClick: () => setCompanyForm({
+													...companyForm,
+													uiAccent: "custom",
+													uiCustomAccentHex: swatch.hex
+												}),
+												title: `${swatch.label} (${swatch.hex})`,
+												className: "inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-2.5 w-2.5 rounded-full ${swatch.dotClass}` }), swatch.label]
+											}, swatch.hex))
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Live-Vorschau:" }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "inline-flex items-center rounded-md ui-accent-btn px-2.5 py-1 font-semibold text-white",
+												children: "Aktiver Button"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "inline-flex items-center rounded-md ui-accent-selected px-2.5 py-1 font-semibold",
+												children: "Ausgewählter Eintrag"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "text-[11px] opacity-80",
+												children: "(Unten speichern, um dauerhaft zu übernehmen)"
+											})
+										]
+									})]
+								})
+							]
+						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "grid grid-cols-1 gap-4 md:grid-cols-4",
 							children: [
@@ -78273,14 +78873,14 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 							className: "border-b border-slate-200 pb-3 dark:border-[#2e2349]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "Kategorien für Kunden, Produkte & interne Arbeiten"
+								children: "Kategorien für Kunden, Produkte, Kosten & interne Arbeiten"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 								className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-								children: "Stehen in der Kunden-, Produkt- und Zeiterfassung (inkl. nicht-ertragbringender interner Arbeiten) als Schnellauswahl & Filter zur Verfügung."
+								children: "Stehen in der Kunden-, Produkt-, Beleg-/Kosten-, NFC- und Zeiterfassung als Schnellauswahl & Filter zur Verfügung."
 							})]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "grid grid-cols-1 gap-6 md:grid-cols-3",
+							className: "grid grid-cols-1 gap-6 md:grid-cols-2",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "space-y-3",
@@ -78308,6 +78908,12 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 												type: "text",
 												value: newCustomerCategory,
 												onChange: (e) => setNewCustomerCategory(e.target.value),
+												onKeyDown: (e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+														addCategory("customer");
+													}
+												},
 												placeholder: "Neue Kunden-Kategorie...",
 												className: inputClass
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
@@ -78345,6 +78951,12 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 												type: "text",
 												value: newProductCategory,
 												onChange: (e) => setNewProductCategory(e.target.value),
+												onKeyDown: (e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+														addCategory("product");
+													}
+												},
 												placeholder: "Neue Produkt-Kategorie...",
 												className: inputClass
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
@@ -78361,7 +78973,50 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 									children: [
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 											className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
-											children: "Interne Tätigkeiten (ohne Kunde)"
+											children: "Kosten- & Ausgaben-Kategorien (Belege & Betriebskosten)"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "flex flex-wrap gap-1.5",
+											children: (companyForm.expenseCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50/70 px-2.5 py-1 text-xs font-medium text-rose-900 dark:border-rose-800/60 dark:bg-rose-950/40 dark:text-rose-200",
+												children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => removeCategory("expense", cat),
+													"aria-label": `${cat} entfernen`,
+													className: "text-rose-500/80 hover:text-red-600 cursor-pointer",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
+												})]
+											}, cat))
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: newExpenseCategory,
+												onChange: (e) => setNewExpenseCategory(e.target.value),
+												onKeyDown: (e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+														addCategory("expense");
+													}
+												},
+												placeholder: "Neue Kosten-Kategorie (z. B. Miete, Material)...",
+												className: inputClass
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												onClick: () => addCategory("expense"),
+												className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
+											})]
+										})
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "space-y-3",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
+											children: "Interne Tätigkeiten (Zeiterfassung & NFC ohne Kunde)"
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 											className: "flex flex-wrap gap-1.5",
@@ -78382,6 +79037,12 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 												type: "text",
 												value: newInternalCategory,
 												onChange: (e) => setNewInternalCategory(e.target.value),
+												onKeyDown: (e) => {
+													if (e.key === "Enter") {
+														e.preventDefault();
+														addCategory("internal");
+													}
+												},
 												placeholder: "z. B. Kundenakquise, Reinigung...",
 												className: inputClass
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
@@ -78399,7 +79060,7 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 							className: "flex justify-end pt-2",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 								type: "submit",
-								className: "rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+								className: "rounded-lg ui-accent-active px-5 py-2 text-sm font-semibold text-white cursor-pointer",
 								children: "Oberfläche & Kategorien speichern"
 							})
 						})
@@ -80352,31 +81013,30 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 															className: "mb-1 block text-xs text-slate-500",
 															children: "Adresse suchen oder per GPS übernehmen"
 														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex gap-1.5",
-															children: [
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-																	type: "text",
-																	value: newRuleAddress,
-																	onChange: (e) => setNewRuleAddress(e.target.value),
-																	placeholder: "Straße Nr., PLZ Ort",
-																	className: inputClass
-																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															className: "flex flex-col gap-2 sm:flex-row sm:gap-1.5",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																type: "text",
+																value: newRuleAddress,
+																onChange: (e) => setNewRuleAddress(e.target.value),
+																placeholder: "Straße Nr., PLZ Ort",
+																className: `${inputClass} flex-1`
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "flex gap-1.5 shrink-0",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 																	type: "button",
 																	onClick: () => void handleSearchRuleAddress(),
 																	disabled: searchingRuleLoc,
-																	className: "rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100 cursor-pointer shrink-0",
+																	className: "flex-1 sm:flex-initial rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100 cursor-pointer shrink-0",
 																	children: searchingRuleLoc ? "..." : "Suchen"
-																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 																	type: "button",
 																	onClick: () => void handleCaptureRuleGps(),
 																	disabled: locatingRule,
 																	title: "Aktuellen GPS-Standort übernehmen",
-																	className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 cursor-pointer shrink-0",
+																	className: "inline-flex flex-1 sm:flex-initial items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 cursor-pointer shrink-0",
 																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), locatingRule ? "..." : "GPS"]
-																})
-															]
+																})]
+															})]
 														})]
 													}),
 													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -80458,7 +81118,7 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 												value: homeAddressQuery,
 												onChange: (e) => setHomeAddressQuery(e.target.value),
 												placeholder: "z. B. Musterstraße 1, 80331 München",
-												className: `${inputClass} flex-1 min-w-56`
+												className: `${inputClass} sm:flex-1 sm:min-w-56`
 											}),
 											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 												type: "button",
@@ -80597,32 +81257,134 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 										timerReminderMinutes: Math.max(1, Number(e.target.value) || 60)
 									}),
 									className: `${inputClass} font-mono`
-								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Klingelton / Signalpreset"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex gap-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "flex-1",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-											value: companyForm.timerReminderSound ?? "chime",
-											onChange: (val) => setCompanyForm({
-												...companyForm,
-												timerReminderSound: val
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: [
+											"Benachrichtigungston / Signalpreset (",
+											REMINDER_SOUND_PRESET_ORDER.length,
+											" Optionen)"
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "min-w-0 flex-1",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+												value: companyForm.timerReminderSound ?? "chime",
+												onChange: (val) => {
+													const nextPreset = val;
+													setCompanyForm({
+														...companyForm,
+														timerReminderSound: nextPreset
+													});
+													if (nextPreset !== "silent") previewReminderTone(nextPreset);
+												},
+												ariaLabel: "Benachrichtigungston auswählen",
+												options: REMINDER_SOUND_PRESET_ORDER.map((key) => ({
+													value: key,
+													label: key === "device" && companyForm.timerReminderSystemSoundTitle ? `Pixel- / Systemton: ${companyForm.timerReminderSystemSoundTitle}` : REMINDER_SOUND_OPTIONS[key].label,
+													hint: REMINDER_SOUND_OPTIONS[key].description
+												}))
+											})
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: handleTestSound,
+											className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Volume2, { className: "h-4 w-4" }), "Testen"]
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-1.5 text-[11px] text-slate-500 dark:text-slate-400",
+										children: REMINDER_SOUND_OPTIONS[companyForm.timerReminderSound ?? "chime"]?.description
+									})
+								] })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-xl border border-slate-200 bg-slate-50/80 p-4 space-y-3 dark:border-[#342653] dark:bg-[#1e1633]/80",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-start justify-between gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-start gap-2.5 min-w-0",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Music, { className: "mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "min-w-0",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-xs font-semibold text-slate-900 dark:text-slate-100",
+													children: "Google Pixel & Android Systemtöne direkt nutzen"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-0.5 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed",
+													children: nativeApp ? "Öffne die native Pixel-Sounds-Auswahl deines Smartphones (z. B. Popcorn, Eureka, Akkord, Vogelgezwitscher oder eigene Töne) oder liste installierte Gerätetöne direkt hier auf." : "In der installierten Android-App kannst du hier direkt die Google Pixel Sounds und alle Smartphone-Systemtöne auswählen. Im Webbrowser stehen dir bereits 14 integrierte Töne inkl. Pixel-Stil-Klängen zur Verfügung."
+												})]
+											})]
+										}), companyForm.timerReminderSystemSoundTitle && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-3.5 w-3.5 shrink-0" }), companyForm.timerReminderSystemSoundTitle]
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												disabled: pickingSystemSound,
+												onClick: () => void handlePickPixelSystemSound("notification"),
+												className: "inline-flex items-center gap-1.5 rounded-lg ui-accent-btn px-3.5 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer disabled:opacity-60",
+												children: [pickingSystemSound ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, { className: "h-3.5 w-3.5" }), "Pixel- / Systemtöne öffnen"]
 											}),
-											ariaLabel: "Klingelton auswählen",
-											options: Object.keys(REMINDER_SOUND_OPTIONS).map((key) => ({
-												value: key,
-												label: REMINDER_SOUND_OPTIONS[key].label
-											}))
-										})
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: handleTestSound,
-										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Volume2, { className: "h-4 w-4" }), "Ton testen"]
-									})]
-								})] })]
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												disabled: pickingSystemSound,
+												onClick: () => void handlePickPixelSystemSound("alarm"),
+												className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer disabled:opacity-60",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BellRing, { className: "h-3.5 w-3.5" }), "Wecker-Töne"]
+											}),
+											nativeApp && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												disabled: loadingDeviceSounds,
+												onClick: () => void handleLoadDeviceSounds("notification"),
+												className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer disabled:opacity-60",
+												children: [loadingDeviceSounds ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, { className: "h-3.5 w-3.5" }), "Gerätetöne hier laden"]
+											})
+										]
+									}),
+									deviceSounds.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-2 border-t border-slate-200 pt-3 dark:border-[#342653]",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-wrap items-center justify-between gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "text-[11px] font-semibold text-slate-600 dark:text-slate-300",
+												children: [
+													"Installierte ",
+													deviceSoundsType === "alarm" ? "Wecker-" : "Benachrichtigungs-",
+													"Töne (",
+													deviceSounds.length,
+													") — Tippen zum Vorhören & Übernehmen:"
+												]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: deviceSoundFilter,
+												onChange: (e) => setDeviceSoundFilter(e.target.value),
+												placeholder: "Ton suchen...",
+												className: "w-full sm:w-48 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "grid max-h-56 grid-cols-1 gap-1.5 overflow-y-auto pr-1 sm:grid-cols-2",
+											children: deviceSounds.filter((s) => deviceSoundFilter.trim() ? s.title.toLowerCase().includes(deviceSoundFilter.trim().toLowerCase()) : true).map((sound) => {
+												const isSelected = companyForm.timerReminderSound === "device" && companyForm.timerReminderSystemSoundUri === sound.uri;
+												return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => handleSelectListedDeviceSound(sound),
+													className: `flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-left text-xs transition-colors cursor-pointer ${isSelected ? "border-violet-500 bg-violet-50 font-semibold text-violet-900 dark:border-violet-400 dark:bg-violet-500/20 dark:text-violet-100" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#342653] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#241b3d]"}`,
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "truncate",
+														children: sound.title
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Volume2, { className: "h-3.5 w-3.5 shrink-0 opacity-70" })]
+												}, sound.uri);
+											})
+										})]
+									})
+								]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 								className: "flex justify-end pt-2",
@@ -80688,14 +81450,25 @@ function buildAppNfcUri(tagUid) {
 	return `taktwerk://nfc/${encodeURIComponent(tagUid)}`;
 }
 // src/components/NfcTasksView.tsx
-function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnknownTag, onConsumeIncomingUnknownTag, onWritingStateChange, onSaveTask, onDeleteTask, onTriggerTag }) {
+var FALLBACK_INTERNAL_CATEGORIES = [
+	"Kundenakquise",
+	"Studio-Reinigung & Pflege",
+	"Buchhaltung & Administration",
+	"Weiterbildung",
+	"Sonstiges"
+];
+function NfcTasksView({ customers, products, internalCategories, nfcTasks, activeTimer, incomingUnknownTag, onConsumeIncomingUnknownTag, onWritingStateChange, onSaveTask, onDeleteTask, onTriggerTag }) {
+	const effectiveInternalCategories = (0, import_react.useMemo)(() => internalCategories && internalCategories.length > 0 ? internalCategories : FALLBACK_INTERNAL_CATEGORIES, [internalCategories]);
+	const hasProjectMasterData = customers.length > 0 && products.length > 0;
 	const [showForm, setShowForm] = (0, import_react.useState)(false);
 	const [editingId, setEditingId] = (0, import_react.useState)(null);
+	const [taskType, setTaskType] = (0, import_react.useState)(hasProjectMasterData ? "project" : "internal");
 	const [tagUid, setTagUid] = (0, import_react.useState)("");
 	const [title, setTitle] = (0, import_react.useState)("");
 	const [description, setDescription] = (0, import_react.useState)("");
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [productId, setProductId] = (0, import_react.useState)(products[0]?.id ?? "");
+	const [internalCategory, setInternalCategory] = (0, import_react.useState)(effectiveInternalCategories[0] ?? "Sonstiges");
 	const [autoStopPrevious, setAutoStopPrevious] = (0, import_react.useState)(true);
 	const [toggleOnRescan, setToggleOnRescan] = (0, import_react.useState)(true);
 	const [formError, setFormError] = (0, import_react.useState)("");
@@ -80763,46 +81536,52 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 		if (!incomingUnknownTag) return;
 		setTagUid(incomingUnknownTag.uid);
 		setNfcError(null);
-		if (customers.length > 0 && products.length > 0) {
-			setEditingId(null);
-			setTitle("");
-			setDescription("");
-			setCustomerId((prev) => prev || customers[0].id);
-			setProductId((prev) => prev || products[0].id);
-			setAutoStopPrevious(true);
-			setToggleOnRescan(true);
-			setFormError("");
-			setShowForm(true);
-			setNfcMessage(`Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Du kannst ihn jetzt direkt einer Aufgabe zuweisen.`);
-		} else setNfcMessage(`Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Lege zuerst mindestens einen Kunden und eine Leistung an, um ihn zuzuweisen.`);
+		setEditingId(null);
+		setTitle("");
+		setDescription("");
+		setTaskType(customers.length > 0 && products.length > 0 ? "project" : "internal");
+		setCustomerId((prev) => prev || customers[0]?.id || "");
+		setProductId((prev) => prev || products[0]?.id || "");
+		setInternalCategory((prev) => prev || effectiveInternalCategories[0] || "Sonstiges");
+		setAutoStopPrevious(true);
+		setToggleOnRescan(true);
+		setFormError("");
+		setShowForm(true);
+		setNfcMessage(`Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Du kannst ihn jetzt direkt einem Kundenauftrag oder einer internen Aufgabe zuweisen.`);
 		onConsumeIncomingUnknownTag?.();
 	}, [
 		incomingUnknownTag,
 		customers,
 		products,
+		effectiveInternalCategories,
 		onConsumeIncomingUnknownTag
 	]);
 	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
 	const productMap = (0, import_react.useMemo)(() => new Map(products.map((p) => [p.id, p])), [products]);
 	const openNewForm = () => {
 		setEditingId(null);
+		setTaskType(hasProjectMasterData ? "project" : "internal");
 		setTagUid(`NFC-${Math.random().toString(36).slice(2, 7).toUpperCase()}`);
 		setTitle("");
 		setDescription("");
 		setCustomerId(customers[0]?.id ?? "");
 		setProductId(products[0]?.id ?? "");
+		setInternalCategory(effectiveInternalCategories[0] ?? "Sonstiges");
 		setAutoStopPrevious(true);
 		setToggleOnRescan(true);
 		setFormError("");
 		setShowForm(true);
 	};
 	const openEditForm = (task) => {
+		const isInternal = task.entryType === "internal" || !task.customerId;
 		setEditingId(task.id);
+		setTaskType(isInternal ? "internal" : "project");
 		setTagUid(task.tagUid);
 		setTitle(task.title);
 		setDescription(task.description);
-		setCustomerId(task.customerId);
-		setProductId(task.productId);
+		setCustomerId(task.customerId || customers[0]?.id || "");
+		setProductId(task.productId || products[0]?.id || "");
+		setInternalCategory(task.internalCategory || effectiveInternalCategories[0] || "Sonstiges");
 		setAutoStopPrevious(task.autoStopPrevious);
 		setToggleOnRescan(task.toggleOnRescan);
 		setFormError("");
@@ -80812,8 +81591,12 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 		e.preventDefault();
 		setFormError("");
 		const cleanUid = tagUid.trim();
-		if (!cleanUid || !title.trim() || !customerId || !productId) {
-			setFormError("Bitte Tag-ID, Aufgabentitel, Kunde und Leistung ausfüllen.");
+		if (!cleanUid || !title.trim()) {
+			setFormError("Bitte Tag-ID und Aufgabentitel ausfüllen.");
+			return;
+		}
+		if (taskType === "project" && (!customerId || !productId)) {
+			setFormError("Bitte Kunde und Leistung wählen — oder oben auf „Interne Aufgabe (ohne Kunde)“ umschalten.");
 			return;
 		}
 		if (nfcTasks.find((t) => t.tagUid.toLowerCase() === cleanUid.toLowerCase() && t.id !== editingId)) {
@@ -80826,8 +81609,10 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 			tagUid: cleanUid,
 			title: title.trim(),
 			description: description.trim(),
-			customerId,
-			productId,
+			entryType: taskType,
+			internalCategory: taskType === "internal" ? internalCategory.trim() || effectiveInternalCategories[0] || "Sonstiges" : void 0,
+			customerId: taskType === "internal" ? "" : customerId,
+			productId: taskType === "internal" ? "" : productId,
 			autoStopPrevious,
 			toggleOnRescan,
 			triggerCount: existing?.triggerCount ?? 0,
@@ -80856,12 +81641,14 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 		} else {
 			setTagUid(detectedCode);
 			setNfcMessage(`Unbekannter Tag "${detectedCode}" gelesen. Du kannst ihn jetzt einer neuen Aufgabe zuweisen.`);
-			if (!showForm && customers.length > 0 && products.length > 0) {
+			if (!showForm) {
 				setEditingId(null);
+				setTaskType(hasProjectMasterData ? "project" : "internal");
 				setTitle("");
 				setDescription("");
-				setCustomerId(customers[0].id);
-				setProductId(products[0].id);
+				setCustomerId(customers[0]?.id ?? "");
+				setProductId(products[0]?.id ?? "");
+				setInternalCategory(effectiveInternalCategories[0] ?? "Sonstiges");
 				setShowForm(true);
 			}
 		}
@@ -80996,12 +81783,11 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 					children: "NFC-Aufgaben & Trigger"
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Verknüpfe physische NFC-Tags mit Kunden und Leistungen, um Timer per Smartphone-Tap zu starten oder zu stoppen."
+					children: "Verknüpfe physische NFC-Tags mit Kundenaufträgen oder internen Aufgaben (z. B. Reinigung, Akquise), um Timer per Smartphone-Tap zu starten oder zu stoppen."
 				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 					type: "button",
 					onClick: openNewForm,
-					disabled: customers.length === 0 || products.length === 0,
-					className: "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+					className: "inline-flex items-center justify-center gap-2 rounded-lg ui-accent-active px-4 py-2.5 text-sm font-semibold text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neue NFC-Aufgabe"]
 				})]
 			}),
@@ -81016,7 +81802,7 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 								className: "space-y-1",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "flex items-center gap-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Radio, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Radio, { className: "h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 										children: nativeCapacitor ? "Automatischer NFC-Empfang (Android-App)" : "Live NFC-Scanner (Web NFC & Deep-Link)"
 									})]
@@ -81063,7 +81849,7 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "flex items-center gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, { className: "h-4 w-4 text-slate-700 dark:text-violet-300" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, { className: "h-4 w-4 shrink-0 text-slate-700 dark:text-violet-300" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 								children: "Tag-ID direkt testen / auslösen"
 							})]
@@ -81074,16 +81860,16 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 							onSubmit: handleManualScanSubmit,
-							className: "mt-3 flex gap-2",
+							className: "mt-3 flex items-center gap-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 								type: "text",
 								value: manualScanCode,
 								onChange: (e) => setManualScanCode(e.target.value),
 								placeholder: "z. B. NFC-ALPEN-SRV",
-								className: "flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+								className: "min-w-0 w-full flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 								type: "submit",
-								className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+								className: "rounded-lg ui-accent-active px-3.5 py-2 text-sm font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer sm:px-4",
 								children: "Auslösen"
 							})]
 						})
@@ -81092,9 +81878,25 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 			}),
 			showForm && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 				className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					className: "mb-4 font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-					children: editingId ? "NFC-Aufgabe bearbeiten" : "Neue NFC-Aufgabe anlegen"
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+						children: editingId ? "NFC-Aufgabe bearbeiten" : "Neue NFC-Aufgabe anlegen"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "grid grid-cols-2 rounded-lg border border-slate-200 bg-slate-100 p-1 dark:border-[#3b2d5e] dark:bg-[#211936]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setTaskType("project"),
+							className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${taskType === "project" ? "ui-accent-active text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+							children: "Kundenauftrag"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setTaskType("internal"),
+							className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${taskType === "internal" ? "bg-amber-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+							children: "Interne Aufgabe"
+						})]
+					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 					onSubmit: handleSave,
 					className: "grid grid-cols-1 gap-4 md:grid-cols-2",
@@ -81106,7 +81908,7 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 							type: "text",
 							value: tagUid,
 							onChange: (e) => setTagUid(e.target.value),
-							placeholder: "z. B. NFC-WERKSTATT-01 oder 04:A1:2B:...",
+							placeholder: taskType === "internal" ? "z. B. NFC-STUDIO-REINIGUNG" : "z. B. NFC-WERKSTATT-01 oder 04:A1:2B:...",
 							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
 						})] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
@@ -81116,13 +81918,13 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 							type: "text",
 							value: title,
 							onChange: (e) => setTitle(e.target.value),
-							placeholder: "z. B. Serverraum Wartung vor Ort",
+							placeholder: taskType === "internal" ? "z. B. Studio reinigen oder Kundenakquise" : "z. B. Serverraum Wartung vor Ort",
 							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
 						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+						taskType === "project" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
 							children: "Kunde"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+						}), customers.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
 							value: customerId,
 							onChange: setCustomerId,
 							ariaLabel: "Kunde für NFC-Aufgabe",
@@ -81131,11 +81933,13 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 								label: c.companyName,
 								hint: c.city || void 0
 							}))
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200",
+							children: "Noch kein Kunde angelegt. Wechsle oben auf „Interne Aufgabe“ oder lege erst einen Kunden an."
+						})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
 							children: "Leistung / Stundensatz"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+						}), products.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
 							value: productId,
 							onChange: setProductId,
 							ariaLabel: "Leistung für NFC-Aufgabe",
@@ -81143,17 +81947,37 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 								value: p.id,
 								label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`
 							}))
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200",
+							children: "Noch keine Leistung angelegt."
+						})] })] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Interne Kategorie"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+							value: internalCategory,
+							onChange: setInternalCategory,
+							ariaLabel: "Interne Kategorie für NFC-Aufgabe",
+							options: Array.from(/* @__PURE__ */ new Set([...effectiveInternalCategories, ...internalCategory ? [internalCategory] : []])).map((cat) => ({
+								value: cat,
+								label: cat
+							}))
+						})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex items-end",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "w-full rounded-lg border border-amber-200/80 bg-amber-50/70 px-3 py-2 text-xs text-amber-900 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-200",
+								children: "Interne Aufgaben benötigen keinen Kunden und keine Rechnung. Sie werden per NFC gestartet/gestoppt und separat ausgewertet."
+							})
 						})] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "md:col-span-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Beschreibung / Standardnotiz für die Rechnung"
+								children: taskType === "internal" ? "Beschreibung / Standardnotiz (optional)" : "Beschreibung / Standardnotiz für die Rechnung"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 								type: "text",
 								value: description,
 								onChange: (e) => setDescription(e.target.value),
-								placeholder: "Optionaler Hinweis zum Arbeitsplatz oder Leistungsumfang...",
+								placeholder: taskType === "internal" ? "Optionaler Hinweis zur internen Aufgabe..." : "Optionaler Hinweis zum Arbeitsplatz oder Leistungsumfang...",
 								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
 							})]
 						}),
@@ -81190,7 +82014,7 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 								children: "Abbrechen"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 								type: "submit",
-								className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+								className: `rounded-lg px-4 py-2 text-sm font-semibold text-white cursor-pointer ${taskType === "internal" ? "bg-amber-600 hover:bg-amber-700" : "ui-accent-active"}`,
 								children: "NFC-Aufgabe speichern"
 							})]
 						})
@@ -81206,7 +82030,7 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 						children: "Noch keine NFC-Aufgaben eingerichtet."
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-						children: "Lege eine Aufgabe an, um einen NFC-Sticker mit einem Kunden und Stundensatz zu verknüpfen."
+						children: "Lege eine Aufgabe an, um einen NFC-Sticker mit einem Kundenauftrag oder einer internen Tätigkeit zu verknüpfen."
 					})]
 				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 					className: "overflow-x-auto",
@@ -81221,11 +82045,11 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
 									className: "px-4 py-3",
-									children: "Aufgabe & Kunde"
+									children: "Aufgabe & Zuordnung"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
 									className: "px-4 py-3",
-									children: "Verknüpfte Leistung"
+									children: "Leistung / Art"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
 									className: "px-4 py-3 text-right",
@@ -81239,8 +82063,9 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
 							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
 							children: nfcTasks.map((task) => {
-								const customer = customerMap.get(task.customerId);
-								const product = productMap.get(task.productId);
+								const isInternal = task.entryType === "internal" || !task.customerId;
+								const customer = isInternal ? void 0 : customerMap.get(task.customerId);
+								const product = isInternal ? void 0 : productMap.get(task.productId);
 								const isRunning = activeTimer?.nfcTaskId === task.id;
 								const isCopied = copiedId === task.id;
 								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
@@ -81252,20 +82077,29 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
 											className: "px-4 py-3",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "font-medium text-slate-900 dark:text-slate-100",
-												children: task.title
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex flex-wrap items-center gap-1.5 font-medium text-slate-900 dark:text-slate-100",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: task.title }), isInternal && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-950/70 dark:text-amber-300",
+													children: "Intern"
+												})]
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 												className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-												children: [customer?.companyName ?? "Unbekannter Kunde", task.lastTriggeredAt ? ` · Zuletzt ${formatDateTimeDE(task.lastTriggeredAt)}` : " · Noch nie ausgelöst"]
+												children: [isInternal ? `Interne Aufgabe · ${task.internalCategory || "Sonstiges"}` : customer?.companyName ?? "Unbekannter Kunde", task.lastTriggeredAt ? ` · Zuletzt ${formatDateTimeDE(task.lastTriggeredAt)}` : " · Noch nie ausgelöst"]
 											})]
 										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
 											className: "px-4 py-3 text-xs text-slate-600 dark:text-slate-300",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: product?.name ?? "Leistung" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											children: isInternal ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "font-medium text-amber-700 dark:text-amber-300",
+												children: task.internalCategory || "Interne Tätigkeit"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "text-slate-500 dark:text-slate-400",
+												children: "Ohne Rechnung / Auswertung"
+											})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: product?.name ?? "Leistung" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 												className: "font-mono text-slate-500 dark:text-slate-400 tabular-nums",
 												children: product ? `${formatCurrency(product.unitPriceNet)} / ${product.unit}` : "—"
-											})]
+											})] })
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
 											className: "px-4 py-3 text-right font-mono text-sm font-medium text-slate-800 dark:text-slate-200 tabular-nums",
@@ -81279,7 +82113,7 @@ function NfcTasksView({ customers, products, nfcTasks, activeTimer, incomingUnkn
 													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 														type: "button",
 														onClick: () => onTriggerTag(task.tagUid),
-														className: `inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${isRunning ? "bg-blue-700 text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500" : "bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:hover:bg-violet-600"}`,
+														className: `inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${isRunning ? "ui-accent-btn text-white" : "bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:hover:bg-violet-600"}`,
 														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3.5 w-3.5 fill-current" }), isRunning ? "Stoppen / Neu" : "Auslösen"]
 													}),
 													nfcSupported && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
@@ -81922,7 +82756,7 @@ function QuickStartMenu({ recentTasks, activeTimer, onStartTask, onOpenTracker, 
 	}, [open]);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		ref: containerRef,
-		className: "relative",
+		className: compactMobile ? "sm:relative" : "relative",
 		"data-no-swipe": "true",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 			type: "button",
@@ -81948,7 +82782,7 @@ function QuickStartMenu({ recentTasks, activeTimer, onStartTask, onOpenTracker, 
 		}), open && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			role: "menu",
 			"data-no-swipe": "true",
-			className: "absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-1.5rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]",
+			className: compactMobile ? "absolute inset-x-3 top-full z-50 mt-2 rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126] sm:inset-x-auto sm:right-0 sm:w-80" : "absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-1.5rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex items-center justify-between px-2.5 py-1.5",
@@ -82753,7 +83587,7 @@ function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, open
 					type: "button",
 					onClick: onStopTimer,
 					title: `Laufende Aufgabe "${activeTimer.title}" stoppen`,
-					className: "inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-700 px-2.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+					className: "inline-flex h-9 items-center gap-1.5 rounded-lg ui-accent-btn px-2.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3 w-3 shrink-0 fill-current" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 						className: "font-mono tabular-nums",
 						children: formatDuration(elapsedSeconds)
@@ -82769,7 +83603,7 @@ function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, open
 					type: "button",
 					onClick: () => handleNav("invoices"),
 					title: "Rechnung erstellen",
-					className: "inline-flex h-9 items-center gap-1.5 rounded-lg bg-slate-900 px-2.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+					className: "inline-flex h-9 items-center gap-1.5 rounded-lg ui-accent-active px-2.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5 shrink-0" }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
@@ -83532,7 +84366,7 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 									type: "button",
 									onClick: () => setStartMode("project"),
-									className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${startMode === "project" ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+									className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${startMode === "project" ? "ui-accent-active text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
 									children: "Kundenauftrag"
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 									type: "button",
@@ -83611,7 +84445,7 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 										type: "submit",
 										disabled: startMode === "project" && missingMasterData,
-										className: `inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer ${startMode === "internal" ? "bg-amber-600 hover:bg-amber-700" : "bg-slate-900 hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500"}`,
+										className: `inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer ${startMode === "internal" ? "bg-amber-600 hover:bg-amber-700" : "ui-accent-active"}`,
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-4 w-4 fill-current" }), "Timer starten"]
 									})
 								})
@@ -83625,14 +84459,17 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 									value: notes,
 									onChange: (e) => setNotes(e.target.value),
 									placeholder: "Startnotiz (optional — kann auch während der Aufgabe bearbeitet werden)...",
-									className: "flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 focus:border-blue-600 focus:bg-white focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-100"
+									className: "min-w-0 w-full flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 focus:border-blue-600 focus:bg-white focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-100"
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => void handleCaptureLocationForStart(),
 									disabled: locating,
-									className: `inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${draftLocation ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045]"}`,
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), locating ? "Ermittle Ort..." : draftLocation ? draftLocation.address || "Ort erfasst" : company.autoCaptureLocation ? "Auto-Ortung aktiv (manuell prüfen)" : "Standort beim Start erfassen"]
+									className: `inline-flex max-w-full items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors shrink-0 cursor-pointer ${draftLocation ? "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045]"}`,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "truncate",
+										children: locating ? "Ermittle Ort..." : draftLocation ? draftLocation.address || "Ort erfasst" : company.autoCaptureLocation ? "Auto-Ortung aktiv (manuell prüfen)" : "Standort beim Start erfassen"
+									})]
 								}),
 								onCheckGeoFenceNow && (company.autoLocationStartEnabled || geoFenceRuleCount > 0) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
@@ -84264,9 +85101,12 @@ function App() {
 		root.setAttribute("data-ui-accent", db.company.uiAccent ?? "violet");
 		root.setAttribute("data-ui-density", db.company.uiDensity ?? "comfortable");
 		root.setAttribute("data-ui-scale", db.company.uiFontScale ?? "normal");
+		const customUiHex = /^#[0-9a-fA-F]{6}$/.test((db.company.uiCustomAccentHex || "").trim()) ? db.company.uiCustomAccentHex.trim() : "#7c3aed";
+		root.style.setProperty("--tw-ui-custom-accent", customUiHex);
 		root.style.setProperty("--tw-invoice-accent", db.company.invoiceCustomAccentHex || "#1d4ed8");
 	}, [
 		db.company.uiAccent,
+		db.company.uiCustomAccentHex,
 		db.company.uiDensity,
 		db.company.uiFontScale,
 		db.company.invoiceCustomAccentHex
@@ -84349,6 +85189,7 @@ function App() {
 			triggerCount: t.triggerCount + 1,
 			lastTriggeredAt: nowIso
 		} : t);
+		const isInternalTask = task.entryType === "internal" || !task.customerId;
 		if (nextActiveTimer && nextActiveTimer.nfcTaskId === task.id && task.toggleOnRescan) {
 			finalizeActive(nextActiveTimer);
 			return {
@@ -84358,7 +85199,7 @@ function App() {
 					timeEntries: nextTimeEntries,
 					activeTimer: null
 				},
-				message: `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
+				message: isInternalTask ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert.` : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
 				haptic: "stop"
 			};
 		}
@@ -84366,20 +85207,23 @@ function App() {
 			finalizeActive(nextActiveTimer);
 			nextActiveTimer = null;
 		}
-		const product = sourceDb.products.find((p) => p.id === task.productId);
+		const product = isInternalTask ? void 0 : sourceDb.products.find((p) => p.id === task.productId);
+		const internalCategory = isInternalTask ? task.internalCategory?.trim() || "Sonstiges" : void 0;
 		const startedTimer = {
 			id: createId("timer"),
-			customerId: task.customerId,
-			productId: task.productId,
+			customerId: isInternalTask ? "" : task.customerId,
+			productId: isInternalTask ? "" : task.productId,
 			nfcTaskId: task.id,
 			title: task.title,
 			notes: task.description,
 			startTime: nowIso,
 			pausedAt: null,
 			accumulatedPausedMs: 0,
-			hourlyRateNet: product?.unitPriceNet ?? 0,
-			taxRate: product?.taxRate ?? 19,
+			hourlyRateNet: isInternalTask ? 0 : product?.unitPriceNet ?? 0,
+			taxRate: isInternalTask ? 0 : product?.taxRate ?? 19,
 			source: "nfc",
+			entryType: isInternalTask ? "internal" : "project",
+			internalCategory,
 			location: null
 		};
 		return {
@@ -84389,7 +85233,7 @@ function App() {
 				timeEntries: nextTimeEntries,
 				activeTimer: startedTimer
 			},
-			message: `NFC-Aufgabe "${task.title}" gestartet.`,
+			message: isInternalTask ? `Interne NFC-Aufgabe "${task.title}" (${internalCategory}) gestartet.` : `NFC-Aufgabe "${task.title}" gestartet.`,
 			haptic: "start"
 		};
 	}, []);
@@ -84676,6 +85520,7 @@ function App() {
 		const enabled = db.company.timerReminderEnabled !== false;
 		const reminderMinutes = Math.max(1, db.company.timerReminderMinutes ?? 60);
 		const soundPreset = db.company.timerReminderSound ?? "chime";
+		const systemSoundUri = db.company.timerReminderSystemSoundUri?.trim() || void 0;
 		if (!timer || timer.pausedAt || !enabled) {
 			cancelNativeTimerReminder();
 			return;
@@ -84687,12 +85532,14 @@ function App() {
 			delayMs: remainingMs,
 			title: `Laufende Aufgabe (${reminderMinutes} Min.): ${timer.title}`,
 			body: "Der Timer läuft noch — möchtest du pausieren oder stoppen?",
-			soundPreset
+			soundPreset,
+			systemSoundUri
 		});
 		const triggerReminder = () => {
 			if (reminderFiredKeyRef.current === fireKey) return;
 			reminderFiredKeyRef.current = fireKey;
-			playReminderSound(soundPreset);
+			if (isNativeCapacitor()) playNativeReminderTone(soundPreset, systemSoundUri);
+			else playReminderSound(soundPreset);
 			showWebReminderNotification(`TaktWerk Erinnerung (${reminderMinutes} Min.)`, `Aufgabe "${timer.title}" läuft noch.`);
 			notify(`Erinnerung: Aufgabe "${timer.title}" läuft bereits ${reminderMinutes} Minuten.`);
 		};
@@ -84709,6 +85556,7 @@ function App() {
 		db.company.timerReminderEnabled,
 		db.company.timerReminderMinutes,
 		db.company.timerReminderSound,
+		db.company.timerReminderSystemSoundUri,
 		loading,
 		notify
 	]);
@@ -85364,6 +86212,7 @@ function App() {
 			customerId: null,
 			billableToCustomer: false,
 			billedInvoiceId: null,
+			receiptImageDataUrl: rec.receiptImageDataUrl || void 0,
 			notes: rec.notes || "",
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
 		};
@@ -85406,6 +86255,7 @@ function App() {
 				customerId: null,
 				billableToCustomer: false,
 				billedInvoiceId: null,
+				receiptImageDataUrl: rec.receiptImageDataUrl || void 0,
 				notes: rec.notes || "",
 				createdAt: (/* @__PURE__ */ new Date()).toISOString()
 			});
@@ -85731,7 +86581,7 @@ function App() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		onTouchStart: handleTouchStart,
 		onTouchEnd: handleTouchEnd,
-		className: "min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0e0a18] dark:text-slate-100 flex flex-col",
+		className: "min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-[#0e0a18] dark:text-slate-100 flex flex-col",
 		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "flex-1 lg:flex",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sidebar, {
@@ -85791,7 +86641,7 @@ function App() {
 								db.activeTimer ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: handleStopTimer,
-									className: "inline-flex items-center gap-2 rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+									className: "inline-flex items-center gap-2 rounded-lg ui-accent-btn px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
 									children: [
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3.5 w-3.5 fill-current" }),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
@@ -85808,7 +86658,7 @@ function App() {
 								})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => navigateToSection("invoices"),
-									className: "inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+									className: "inline-flex items-center gap-1.5 rounded-lg ui-accent-active px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Rechnung erstellen" })]
 								})
 							]
@@ -85843,7 +86693,7 @@ function App() {
 						]
 					}, toast.id),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
-						className: "mx-auto w-full max-w-6xl flex-1 p-6",
+						className: "mx-auto w-full max-w-6xl flex-1 p-4 sm:p-6",
 						children: [
 							remoteNewerAt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "no-print mb-5 flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between",
@@ -85967,6 +86817,7 @@ function App() {
 								section === "nfc" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NfcTasksView, {
 									customers: db.customers,
 									products: db.products,
+									internalCategories: db.company.internalCategories ?? [],
 									nfcTasks: db.nfcTasks,
 									activeTimer: db.activeTimer,
 									incomingUnknownTag: pendingScannedUid,
@@ -86021,6 +86872,7 @@ function App() {
 									expenses: db.expenses ?? [],
 									recurringExpenses: db.recurringExpenses ?? [],
 									customers: db.customers,
+									expenseCategories: db.company.expenseCategories ?? [],
 									nextcloudConfigured: nextcloud.configured,
 									onAddExpense: handleAddExpense,
 									onUpdateExpense: handleUpdateExpense,

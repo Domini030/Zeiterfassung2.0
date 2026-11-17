@@ -56,7 +56,11 @@ export function QuickStartMenu({
   }, [open]);
 
   return (
-    <div ref={containerRef} className="relative" data-no-swipe="true">
+    <div
+      ref={containerRef}
+      className={compactMobile ? 'sm:relative' : 'relative'}
+      data-no-swipe="true"
+    >
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
@@ -95,7 +99,11 @@ export function QuickStartMenu({
         <div
           role="menu"
           data-no-swipe="true"
-          className="absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-1.5rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]"
+          className={
+            compactMobile
+              ? 'absolute inset-x-3 top-full z-50 mt-2 rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126] sm:inset-x-auto sm:right-0 sm:w-80'
+              : 'absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-1.5rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]'
+          }
         >
           <div className="flex items-center justify-between px-2.5 py-1.5">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">

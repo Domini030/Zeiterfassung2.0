@@ -16,11 +16,16 @@ export const DEFAULT_PRODUCT_CATEGORIES = [
 ];
 
 export const DEFAULT_EXPENSE_CATEGORIES = [
+  'Miete & Raumkosten',
   'Fahrtkosten & Kraftstoff',
   'Hardware & Material',
   'Software & Lizenzen',
   'Bürobedarf & Porto',
   'Reisekosten & Verpflegung',
+  'Strom & Energie',
+  'Versicherungen',
+  'Telefon & Internet',
+  'Werbung & Marketing',
   'Fremdleistungen',
   'Sonstiges',
 ];
@@ -72,9 +77,11 @@ export function createDefaultCompany(): CompanyProfile {
     skuFieldLabel: 'Artikel-Nr.',
     customerCategories: DEFAULT_CUSTOMER_CATEGORIES,
     productCategories: DEFAULT_PRODUCT_CATEGORIES,
+    expenseCategories: DEFAULT_EXPENSE_CATEGORIES,
     smallBusinessMode: false,
     smallBusinessNotice: 'Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.',
     uiAccent: 'violet',
+    uiCustomAccentHex: '#7c3aed',
     uiDensity: 'comfortable',
     uiFontScale: 'normal',
     defaultStartSection: 'tracker',
@@ -101,6 +108,8 @@ export function createDefaultCompany(): CompanyProfile {
     timerReminderEnabled: true,
     timerReminderMinutes: 60,
     timerReminderSound: 'chime',
+    timerReminderSystemSoundUri: '',
+    timerReminderSystemSoundTitle: '',
     autoBackup: {
       enabled: false,
       frequency: 'weekly',
@@ -586,6 +595,9 @@ export function normalizeDatabase(raw: AppDatabase): AppDatabase {
       Array.isArray(raw.company?.productCategories) && raw.company.productCategories.length > 0
         ? raw.company.productCategories
         : DEFAULT_PRODUCT_CATEGORIES,
+    expenseCategories: Array.isArray(raw.company?.expenseCategories)
+      ? raw.company.expenseCategories
+      : DEFAULT_EXPENSE_CATEGORIES,
     internalCategories:
       Array.isArray(raw.company?.internalCategories) && raw.company.internalCategories.length > 0
         ? raw.company.internalCategories
@@ -606,7 +618,12 @@ export function normalizeDatabase(raw: AppDatabase): AppDatabase {
     company,
     customers: Array.isArray(raw.customers) ? raw.customers : [],
     products: Array.isArray(raw.products) ? raw.products : [],
-    nfcTasks: Array.isArray(raw.nfcTasks) ? raw.nfcTasks : [],
+    nfcTasks: Array.isArray(raw.nfcTasks)
+      ? raw.nfcTasks.map((t) => ({
+          ...t,
+          entryType: t.entryType ?? (t.customerId ? 'project' : 'internal'),
+        }))
+      : [],
     geoFenceRules: Array.isArray(raw.geoFenceRules) ? raw.geoFenceRules : [],
     timeEntries: Array.isArray(raw.timeEntries)
       ? raw.timeEntries.map((e) => ({

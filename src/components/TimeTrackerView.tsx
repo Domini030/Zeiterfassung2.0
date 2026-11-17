@@ -967,7 +967,7 @@ export function TimeTrackerView({
                   onClick={() => setStartMode('project')}
                   className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
                     startMode === 'project'
-                      ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                      ? 'ui-accent-active text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
                   }`}
                 >
@@ -1068,7 +1068,7 @@ export function TimeTrackerView({
                   className={`inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer ${
                     startMode === 'internal'
                       ? 'bg-amber-600 hover:bg-amber-700'
-                      : 'bg-slate-900 hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500'
+                      : 'ui-accent-active'
                   }`}
                 >
                   <Play className="h-4 w-4 fill-current" />
@@ -1083,26 +1083,28 @@ export function TimeTrackerView({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Startnotiz (optional — kann auch während der Aufgabe bearbeitet werden)..."
-                className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 focus:border-blue-600 focus:bg-white focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-100"
+                className="min-w-0 w-full flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 focus:border-blue-600 focus:bg-white focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-100"
               />
               <button
                 type="button"
                 onClick={() => void handleCaptureLocationForStart()}
                 disabled={locating}
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                className={`inline-flex max-w-full items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                   draftLocation
                     ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200'
                     : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045]'
                 }`}
               >
-                <MapPin className="h-3.5 w-3.5" />
-                {locating
-                  ? 'Ermittle Ort...'
-                  : draftLocation
-                    ? draftLocation.address || 'Ort erfasst'
-                    : company.autoCaptureLocation
-                      ? 'Auto-Ortung aktiv (manuell prüfen)'
-                      : 'Standort beim Start erfassen'}
+                <MapPin className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">
+                  {locating
+                    ? 'Ermittle Ort...'
+                    : draftLocation
+                      ? draftLocation.address || 'Ort erfasst'
+                      : company.autoCaptureLocation
+                        ? 'Auto-Ortung aktiv (manuell prüfen)'
+                        : 'Standort beim Start erfassen'}
+                </span>
               </button>
               {onCheckGeoFenceNow &&
                 (company.autoLocationStartEnabled || geoFenceRuleCount > 0) && (

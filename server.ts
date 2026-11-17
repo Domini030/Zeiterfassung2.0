@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -1112,11 +1113,16 @@ Extrahiere möglichst exakt:
   });
 
 
+  const httpServer = http.createServer(app);
   const isProd = process.env.NODE_ENV === 'production';
   if (!isProd) {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
-      server: { middlewareMode: true, hmr: false },
+      server: {
+        middlewareMode: true,
+        hmr: false,
+        ws: { server: httpServer },
+      },
       appType: 'spa',
     });
     app.use(vite.middlewares);
@@ -1129,7 +1135,7 @@ Extrahiere möglichst exakt:
   }
 
   const port = Number(process.env.PORT) || 3000;
-  app.listen(port, '0.0.0.0', () => {
+  httpServer.listen(port, '0.0.0.0', () => {
     console.log(`TaktWerk server listening on http://0.0.0.0:${port}`);
   });
 }

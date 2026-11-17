@@ -1010,12 +1010,43 @@ export async function apiPushNextcloudCalendarEvent(
   }
 }
 
-export async function playNativeReminderTone(preset: ReminderSoundPreset): Promise<void> {
+export async function playNativeReminderTone(
+  preset: ReminderSoundPreset,
+  systemSoundUri?: string
+): Promise<void> {
   if (!isNativeCapacitor()) return;
   try {
-    await TaktWerkNative.playReminderTone({ preset });
+    await TaktWerkNative.playReminderTone({
+      preset,
+      systemSoundUri: systemSoundUri?.trim() || undefined,
+    });
   } catch {
     // Ignore native tone errors
+  }
+}
+
+export async function pickNativeSystemSound(options?: {
+  existingUri?: string;
+  ringtoneType?: 'notification' | 'alarm' | 'all';
+}): Promise<{ cancelled: boolean; uri?: string; title?: string }> {
+  if (!isNativeCapacitor()) {
+    throw new Error('Smartphone-Systemtöne sind direkt in der Android-App verfügbar.');
+  }
+  return await TaktWerkNative.pickSystemNotificationSound({
+    existingUri: options?.existingUri?.trim() || undefined,
+    ringtoneType: options?.ringtoneType ?? 'notification',
+  });
+}
+
+export async function listNativeSystemSounds(
+  ringtoneType: 'notification' | 'alarm' = 'notification'
+): Promise<Array<{ uri: string; title: string }>> {
+  if (!isNativeCapacitor()) return [];
+  try {
+    const res = await TaktWerkNative.listSystemNotificationSounds({ ringtoneType });
+    return Array.isArray(res?.sounds) ? res.sounds : [];
+  } catch {
+    return [];
   }
 }
 
@@ -1024,6 +1055,7 @@ export async function scheduleNativeTimerReminder(options: {
   title: string;
   body: string;
   soundPreset: ReminderSoundPreset;
+  systemSoundUri?: string;
 }): Promise<void> {
   if (!isNativeCapacitor()) return;
   try {
@@ -1051,7 +1083,9 @@ export async function syncNativeWidgetState(db: AppDatabase): Promise<void> {
       .reduce((acc, e) => acc + e.durationSeconds, 0);
     const todayHours = (todaySecs / 3600).toFixed(1).replace('.', ',');
     const custName = db.activeTimer
-      ? db.customers.find((c) => c.id === db.activeTimer?.customerId)?.companyName ?? ''
+      ? db.activeTimer.entryType === 'internal' || !db.activeTimer.customerId
+        ? `Intern · ${db.activeTimer.internalCategory || 'Sonstiges'}`
+        : db.customers.find((c) => c.id === db.activeTimer?.customerId)?.companyName ?? ''
       : '';
     const quickTasks = db.nfcTasks.slice(0, 2).map((t) => ({
       tagUid: t.tagUid,

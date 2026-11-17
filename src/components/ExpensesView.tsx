@@ -29,19 +29,6 @@ import { createId, formatCurrency, formatDateDE, toInputDate } from '../utils/fo
 import { DEFAULT_EXPENSE_CATEGORIES } from '../utils/sampleData';
 import { CategoryPicker, ThemedSelect } from './ThemedSelect';
 
-const OPERATING_EXPENSE_CATEGORIES = [
-  'Miete & Raumkosten',
-  'Strom & Energie',
-  'Versicherungen',
-  'Telefon & Internet',
-  'Software & Hosting',
-  'Steuerberater & Buchhaltung',
-  'Werbung & Marketing',
-  'Leasing & Fuhrpark',
-  'Reinigung & Studio',
-  'Bürobedarf',
-];
-
 const INTERVAL_LABELS: Record<RecurringInterval, string> = {
   monthly: 'Monatlich',
   quarterly: 'Quartalsweise',
@@ -52,6 +39,7 @@ interface ExpensesViewProps {
   expenses: Expense[];
   recurringExpenses?: RecurringExpense[];
   customers: Customer[];
+  expenseCategories?: string[];
   nextcloudConfigured: boolean;
   onAddExpense: (expense: Expense) => void;
   onUpdateExpense: (expense: Expense) => void;
@@ -103,6 +91,7 @@ export function ExpensesView({
   expenses,
   recurringExpenses = [],
   customers,
+  expenseCategories,
   nextcloudConfigured,
   onAddExpense,
   onUpdateExpense,
@@ -117,6 +106,32 @@ export function ExpensesView({
 }: ExpensesViewProps) {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
+  const recCameraInputRef = useRef<HTMLInputElement>(null);
+  const recGalleryInputRef = useRef<HTMLInputElement>(null);
+
+  const configuredCategories = useMemo(
+    () =>
+      expenseCategories && expenseCategories.length > 0
+        ? expenseCategories
+        : DEFAULT_EXPENSE_CATEGORIES,
+    [expenseCategories]
+  );
+
+  const defaultOperatingCategory = useMemo(
+    () =>
+      configuredCategories.find((c) => /miete|raum/i.test(c)) ??
+      configuredCategories[0] ??
+      'Sonstiges',
+    [configuredCategories]
+  );
+
+  const defaultProjectCategory = useMemo(
+    () =>
+      configuredCategories.find((c) => !/miete|raum/i.test(c)) ??
+      configuredCategories[0] ??
+      'Sonstiges',
+    [configuredCategories]
+  );
 
   const [activeSubTab, setActiveSubTab] = useState<'receipts' | 'recurring'>('receipts');
   const [typeFilter, setTypeFilter] = useState<'ALL' | 'operating' | 'project'>('ALL');
@@ -126,12 +141,16 @@ export function ExpensesView({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [scanningAi, setScanningAi] = useState(false);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
-  const [previewReceipt, setPreviewReceipt] = useState<Expense | null>(null);
+  const [previewReceipt, setPreviewReceipt] = useState<{
+    title: string;
+    subtitle: string;
+    imageDataUrl: string;
+  } | null>(null);
 
   const [date, setDate] = useState(toInputDate());
   const [vendor, setVendor] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState(DEFAULT_EXPENSE_CATEGORIES[0]);
+  const [category, setCategory] = useState(defaultOperatingCategory);
   const [expenseType, setExpenseType] = useState<'operating' | 'project'>('operating');
   const [taxRate, setTaxRate] = useState<TaxRate>(19);
   const [grossAmount, setGrossAmount] = useState<number>(0);
@@ -146,7 +165,7 @@ export function ExpensesView({
   const [editingRecId, setEditingRecId] = useState<string | null>(null);
   const [recVendor, setRecVendor] = useState('');
   const [recDescription, setRecDescription] = useState('');
-  const [recCategory, setRecCategory] = useState('Miete & Raumkosten');
+  const [recCategory, setRecCategory] = useState(defaultOperatingCategory);
   const [recTaxRate, setRecTaxRate] = useState<TaxRate>(19);
   const [recGross, setRecGross] = useState<number>(0);
   const [recNet, setRecNet] = useState<number>(0);
@@ -154,20 +173,24 @@ export function ExpensesView({
   const [recNextDueDate, setRecNextDueDate] = useState(toInputDate());
   const [recActive, setRecActive] = useState(true);
   const [recNotes, setRecNotes] = useState('');
+  const [recReceiptImageDataUrl, setRecReceiptImageDataUrl] = useState<string>('');
+  const [recScanningAi, setRecScanningAi] = useState(false);
 
   const availableCategories = useMemo(() => {
-    const set = new Set<string>([
-      ...DEFAULT_EXPENSE_CATEGORIES,
-      ...OPERATING_EXPENSE_CATEGORIES,
-    ]);
-    expenses.forEach((e) => {
-      if (e.category?.trim()) set.add(e.category.trim());
-    });
-    recurringExpenses.forEach((r) => {
-      if (r.category?.trim()) set.add(r.category.trim());
-    });
-    return Array.from(set).sort((a, b) => a.localeCompare(b, 'de'));
-  }, [expenses, recurringExpenses]);
+    const ordered: string[] = [];
+    const seen = new Set<string>();
+    const addUnique = (val?: string) => {
+      const clean = val?.trim();
+      if (clean && !seen.has(clean)) {
+        seen.add(clean);
+        ordered.push(clean);
+      }
+    };
+    configuredCategories.forEach(addUnique);
+    expenses.forEach((e) => addUnique(e.category));
+    recurringExpenses.forEach((r) => addUnique(r.category));
+    return ordered;
+  }, [configuredCategories, expenses, recurringExpenses]);
 
   const customerMap = useMemo(
     () => new Map(customers.map((c) => [c.id, c])),
@@ -227,7 +250,7 @@ export function ExpensesView({
     setDate(toInputDate());
     setVendor('');
     setDescription('');
-    setCategory(DEFAULT_EXPENSE_CATEGORIES[0]);
+    setCategory(defaultProjectCategory);
     setExpenseType('operating');
     setTaxRate(19);
     setGrossAmount(0);
@@ -241,9 +264,9 @@ export function ExpensesView({
   const openNewModal = (defaultType: 'operating' | 'project' = 'operating') => {
     resetForm();
     setExpenseType(defaultType);
-    if (defaultType === 'operating') {
-      setCategory('Miete & Raumkosten');
-    }
+    setCategory(
+      defaultType === 'operating' ? defaultOperatingCategory : defaultProjectCategory
+    );
     setFormOpen(true);
   };
 
@@ -252,7 +275,7 @@ export function ExpensesView({
     setDate(exp.date);
     setVendor(exp.vendor);
     setDescription(exp.description);
-    setCategory(exp.category || DEFAULT_EXPENSE_CATEGORIES[0]);
+    setCategory(exp.category || defaultOperatingCategory);
     setExpenseType(exp.expenseType ?? (exp.customerId ? 'project' : 'operating'));
     setTaxRate(exp.taxRate);
     setGrossAmount(exp.grossAmount);
@@ -268,7 +291,7 @@ export function ExpensesView({
     setEditingRecId(null);
     setRecVendor('');
     setRecDescription('');
-    setRecCategory('Miete & Raumkosten');
+    setRecCategory(defaultOperatingCategory);
     setRecTaxRate(19);
     setRecGross(0);
     setRecNet(0);
@@ -276,6 +299,7 @@ export function ExpensesView({
     setRecNextDueDate(toInputDate());
     setRecActive(true);
     setRecNotes('');
+    setRecReceiptImageDataUrl('');
     setRecFormOpen(true);
   };
 
@@ -283,7 +307,7 @@ export function ExpensesView({
     setEditingRecId(item.id);
     setRecVendor(item.vendor);
     setRecDescription(item.description);
-    setRecCategory(item.category || 'Miete & Raumkosten');
+    setRecCategory(item.category || defaultOperatingCategory);
     setRecTaxRate(item.taxRate);
     setRecGross(item.grossAmount);
     setRecNet(item.netAmount);
@@ -291,7 +315,54 @@ export function ExpensesView({
     setRecNextDueDate(item.nextDueDate);
     setRecActive(item.active);
     setRecNotes(item.notes || '');
+    setRecReceiptImageDataUrl(item.receiptImageDataUrl || '');
     setRecFormOpen(true);
+  };
+
+  const runRecurringReceiptAiScan = async (imageDataUrl: string) => {
+    setRecScanningAi(true);
+    try {
+      const parsed = await apiScanReceiptWithAi(imageDataUrl);
+      if (parsed.vendor) setRecVendor(parsed.vendor);
+      if (parsed.description) setRecDescription(parsed.description);
+      if (parsed.category) setRecCategory(parsed.category);
+      setRecTaxRate(parsed.taxRate);
+      if (parsed.grossAmount > 0) setRecGross(parsed.grossAmount);
+      if (parsed.netAmount > 0) setRecNet(parsed.netAmount);
+      if (parsed.notes) setRecNotes(parsed.notes);
+      onNotify('Belegdaten für Fixkosten übernommen.', 'success');
+    } catch (aiErr) {
+      onNotify(
+        aiErr instanceof Error
+          ? aiErr.message
+          : 'Beleg angehängt. Werte bitte bei Bedarf manuell ergänzen.',
+        'warning'
+      );
+    } finally {
+      setRecScanningAi(false);
+    }
+  };
+
+  const handleRecurringReceiptSelected = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      const dataUrl = await compressImageFileToJpeg(file);
+      setRecReceiptImageDataUrl(dataUrl);
+      if (!recVendor.trim() && recGross === 0) {
+        await runRecurringReceiptAiScan(dataUrl);
+      } else {
+        onNotify('Beleg / Vertrag an Fixkosten angehängt.', 'success');
+      }
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Bild konnte nicht verarbeitet werden.',
+        'warning'
+      );
+    }
   };
 
   const handleRecGrossChange = (val: number) => {
@@ -336,6 +407,7 @@ export function ExpensesView({
       active: recActive,
       nextDueDate: recNextDueDate || toInputDate(),
       lastBookedDate: existing?.lastBookedDate ?? null,
+      receiptImageDataUrl: recReceiptImageDataUrl || undefined,
       notes: recNotes.trim() || undefined,
       createdAt: existing?.createdAt || new Date().toISOString(),
     };
@@ -466,6 +538,21 @@ export function ExpensesView({
         type="file"
         accept="image/*"
         onChange={(e) => void handleReceiptSelected(e, true)}
+        className="hidden"
+      />
+      <input
+        ref={recCameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={(e) => void handleRecurringReceiptSelected(e)}
+        className="hidden"
+      />
+      <input
+        ref={recGalleryInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(e) => void handleRecurringReceiptSelected(e)}
         className="hidden"
       />
 
@@ -653,61 +740,102 @@ export function ExpensesView({
                         : 'border-slate-200 dark:border-[#342653]'
                     } ${!rec.active ? 'opacity-65' : ''}`}
                   >
-                    <div>
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-1.5">
-                            <h4 className="truncate text-sm font-bold text-slate-900 dark:text-white">
-                              {rec.vendor}
-                            </h4>
-                            <span className="rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
-                              {INTERVAL_LABELS[rec.interval]}
-                            </span>
-                            {!rec.active && (
-                              <span className="rounded-md bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2a2045] dark:text-slate-400">
-                                Pausiert
-                              </span>
-                            )}
-                          </div>
-                          <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">
-                            {rec.description}
-                          </p>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <div className="font-mono text-sm font-bold text-slate-900 dark:text-white tabular-nums">
-                            {formatCurrency(rec.grossAmount)}
-                          </div>
-                          <div className="font-mono text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
-                            Netto {formatCurrency(rec.netAmount)} ({rec.taxRate}%)
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[11px]">
-                        <span className="rounded-md bg-violet-50 px-2 py-0.5 font-medium text-violet-700 dark:bg-violet-500/15 dark:text-violet-300">
-                          {rec.category}
-                        </span>
-                        <span
-                          className={`rounded-md px-2 py-0.5 font-medium ${
-                            isDue
-                              ? 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300'
-                              : 'bg-slate-100 text-slate-700 dark:bg-[#2a2045] dark:text-slate-300'
-                          }`}
+                    <div className="flex items-start gap-3">
+                      {rec.receiptImageDataUrl && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPreviewReceipt({
+                              title: rec.vendor,
+                              subtitle: `${INTERVAL_LABELS[rec.interval]} · ${formatCurrency(rec.grossAmount)}`,
+                              imageDataUrl: rec.receiptImageDataUrl!,
+                            })
+                          }
+                          className="group relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-[#3b2d5e] cursor-pointer"
+                          title="Hinterlegten Beleg / Vertrag vergrößern"
                         >
-                          {isDue ? 'Fällig seit ' : 'Nächste Buchung: '}
-                          {formatDateDE(rec.nextDueDate)}
-                        </span>
-                        {rec.lastBookedDate && (
-                          <span className="text-slate-500 dark:text-slate-400">
-                            Zuletzt: {formatDateDE(rec.lastBookedDate)}
+                          <img
+                            src={rec.receiptImageDataUrl}
+                            alt={`Beleg ${rec.vendor}`}
+                            className="h-full w-full object-cover"
+                          />
+                          <span className="absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 transition-opacity group-hover:opacity-100">
+                            <Eye className="h-4 w-4 text-white" />
                           </span>
+                        </button>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <h4 className="truncate text-sm font-bold text-slate-900 dark:text-white">
+                                {rec.vendor}
+                              </h4>
+                              <span className="rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
+                                {INTERVAL_LABELS[rec.interval]}
+                              </span>
+                              {!rec.active && (
+                                <span className="rounded-md bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2a2045] dark:text-slate-400">
+                                  Pausiert
+                                </span>
+                              )}
+                            </div>
+                            <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">
+                              {rec.description}
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <div className="font-mono text-sm font-bold text-slate-900 dark:text-white tabular-nums">
+                              {formatCurrency(rec.grossAmount)}
+                            </div>
+                            <div className="font-mono text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
+                              Netto {formatCurrency(rec.netAmount)} ({rec.taxRate}%)
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mt-2.5 flex flex-wrap items-center gap-2 text-[11px]">
+                          <span className="rounded-md bg-violet-50 px-2 py-0.5 font-medium text-violet-700 dark:bg-violet-500/15 dark:text-violet-300">
+                            {rec.category}
+                          </span>
+                          <span
+                            className={`rounded-md px-2 py-0.5 font-medium ${
+                              isDue
+                                ? 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300'
+                                : 'bg-slate-100 text-slate-700 dark:bg-[#2a2045] dark:text-slate-300'
+                            }`}
+                          >
+                            {isDue ? 'Fällig seit ' : 'Nächste Buchung: '}
+                            {formatDateDE(rec.nextDueDate)}
+                          </span>
+                          {rec.receiptImageDataUrl && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setPreviewReceipt({
+                                  title: rec.vendor,
+                                  subtitle: `${INTERVAL_LABELS[rec.interval]} · ${formatCurrency(rec.grossAmount)}`,
+                                  imageDataUrl: rec.receiptImageDataUrl!,
+                                })
+                              }
+                              className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25 cursor-pointer"
+                            >
+                              <Eye className="h-3 w-3" />
+                              Beleg ansehen
+                            </button>
+                          )}
+                          {rec.lastBookedDate && (
+                            <span className="text-slate-500 dark:text-slate-400">
+                              Zuletzt: {formatDateDE(rec.lastBookedDate)}
+                            </span>
+                          )}
+                        </div>
+                        {rec.notes && (
+                          <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+                            {rec.notes}
+                          </p>
                         )}
                       </div>
-                      {rec.notes && (
-                        <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
-                          {rec.notes}
-                        </p>
-                      )}
                     </div>
 
                     <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2.5 dark:border-[#2e234a]">
@@ -845,7 +973,13 @@ export function ExpensesView({
                       {exp.receiptImageDataUrl ? (
                         <button
                           type="button"
-                          onClick={() => setPreviewReceipt(exp)}
+                          onClick={() =>
+                            setPreviewReceipt({
+                              title: exp.vendor,
+                              subtitle: `${formatDateDE(exp.date)} · ${formatCurrency(exp.grossAmount)}`,
+                              imageDataUrl: exp.receiptImageDataUrl!,
+                            })
+                          }
                           className="group relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-[#3b2d5e] cursor-pointer"
                           title="Belegfoto vergrößern"
                         >
@@ -1026,45 +1160,68 @@ export function ExpensesView({
               </div>
 
               {receiptImageDataUrl && (
-                <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]">
-                  <img
-                    src={receiptImageDataUrl}
-                    alt="Belegvorschau"
-                    className="h-16 w-14 rounded-lg object-cover border border-slate-200"
-                  />
+                <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPreviewReceipt({
+                        title: vendor.trim() || 'Belegvorschau',
+                        subtitle: `${formatDateDE(date)} · ${formatCurrency(grossAmount)}`,
+                        imageDataUrl: receiptImageDataUrl,
+                      })
+                    }
+                    className="h-16 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 cursor-pointer"
+                    title="Vorschau vergrößern"
+                  >
+                    <img
+                      src={receiptImageDataUrl}
+                      alt="Belegvorschau"
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
                   <div className="min-w-0 flex-1 text-xs text-slate-600 dark:text-slate-300">
                     Belegfoto angehängt.
                   </div>
-                  <button
-                    type="button"
-                    disabled={scanningAi}
-                    onClick={async () => {
-                      setScanningAi(true);
-                      try {
-                        const parsed = await apiScanReceiptWithAi(receiptImageDataUrl);
-                        if (parsed.vendor) setVendor(parsed.vendor);
-                        if (parsed.date) setDate(parsed.date);
-                        if (parsed.description) setDescription(parsed.description);
-                        if (parsed.category) setCategory(parsed.category);
-                        setTaxRate(parsed.taxRate);
-                        if (parsed.grossAmount > 0) setGrossAmount(parsed.grossAmount);
-                        if (parsed.netAmount > 0) setNetAmount(parsed.netAmount);
-                        if (parsed.notes) setNotes(parsed.notes);
-                        onNotify('Belegdaten aktualisiert.', 'success');
-                      } catch (err) {
-                        onNotify(
-                          err instanceof Error ? err.message : 'Scan fehlgeschlagen.',
-                          'warning'
-                        );
-                      } finally {
-                        setScanningAi(false);
-                      }
-                    }}
-                    className="inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer"
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />
-                    Erneut scannen
-                  </button>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={scanningAi}
+                      onClick={async () => {
+                        setScanningAi(true);
+                        try {
+                          const parsed = await apiScanReceiptWithAi(receiptImageDataUrl);
+                          if (parsed.vendor) setVendor(parsed.vendor);
+                          if (parsed.date) setDate(parsed.date);
+                          if (parsed.description) setDescription(parsed.description);
+                          if (parsed.category) setCategory(parsed.category);
+                          setTaxRate(parsed.taxRate);
+                          if (parsed.grossAmount > 0) setGrossAmount(parsed.grossAmount);
+                          if (parsed.netAmount > 0) setNetAmount(parsed.netAmount);
+                          if (parsed.notes) setNotes(parsed.notes);
+                          onNotify('Belegdaten aktualisiert.', 'success');
+                        } catch (err) {
+                          onNotify(
+                            err instanceof Error ? err.message : 'Scan fehlgeschlagen.',
+                            'warning'
+                          );
+                        } finally {
+                          setScanningAi(false);
+                        }
+                      }}
+                      className="inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      Erneut scannen
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setReceiptImageDataUrl('')}
+                      className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:bg-[#19122c] dark:text-rose-300 cursor-pointer"
+                      title="Beleg entfernen"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
               )}
 
@@ -1292,6 +1449,92 @@ export function ExpensesView({
             </div>
 
             <form onSubmit={handleSaveRecurring} className="overflow-y-auto p-5 space-y-4">
+              {/* Receipt / Contract attachment bar for recurring fixed costs */}
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-violet-200 bg-violet-50/70 p-3 dark:border-violet-500/30 dark:bg-violet-500/10">
+                <div className="flex items-center gap-2 text-xs text-violet-900 dark:text-violet-200">
+                  <Receipt className="h-4 w-4 shrink-0" />
+                  <span>
+                    {recScanningAi
+                      ? 'KI liest Belegdaten aus...'
+                      : 'Vertrag, Dauerrechnung oder Belegfoto hinterlegen (wird bei Verbuchung übernommen)'}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    disabled={recScanningAi}
+                    onClick={() => recCameraInputRef.current?.click()}
+                    className="inline-flex items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer"
+                  >
+                    {recScanningAi ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Camera className="h-3.5 w-3.5" />
+                    )}
+                    Kamera
+                  </button>
+                  <button
+                    type="button"
+                    disabled={recScanningAi}
+                    onClick={() => recGalleryInputRef.current?.click()}
+                    className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer"
+                  >
+                    <FileImage className="h-3.5 w-3.5" />
+                    Datei
+                  </button>
+                </div>
+              </div>
+
+              {recReceiptImageDataUrl && (
+                <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setPreviewReceipt({
+                        title: recVendor.trim() || 'Fixkosten-Beleg',
+                        subtitle: `${INTERVAL_LABELS[recInterval]} · ${formatCurrency(recGross)}`,
+                        imageDataUrl: recReceiptImageDataUrl,
+                      })
+                    }
+                    className="h-16 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 cursor-pointer"
+                    title="Beleg vergrößern"
+                  >
+                    <img
+                      src={recReceiptImageDataUrl}
+                      alt="Fixkosten-Belegvorschau"
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                  <div className="min-w-0 flex-1 text-xs text-slate-600 dark:text-slate-300">
+                    <p className="font-semibold text-slate-800 dark:text-slate-100">
+                      Beleg / Vertrag angehängt
+                    </p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Tippen zum Vergrößern — wird bei jeder Buchung mit übernommen.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      type="button"
+                      disabled={recScanningAi}
+                      onClick={() => void runRecurringReceiptAiScan(recReceiptImageDataUrl)}
+                      className="inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer"
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      KI auslesen
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRecReceiptImageDataUrl('')}
+                      className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:bg-[#19122c] dark:text-rose-300 cursor-pointer"
+                      title="Beleg entfernen"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
                   <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
@@ -1446,7 +1689,7 @@ export function ExpensesView({
       )}
 
       {/* Full Receipt Image Preview Modal */}
-      {previewReceipt && previewReceipt.receiptImageDataUrl && (
+      {previewReceipt && previewReceipt.imageDataUrl && (
         <div
           role="dialog"
           aria-modal="true"
@@ -1460,10 +1703,8 @@ export function ExpensesView({
           >
             <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3 text-white">
               <div className="min-w-0">
-                <p className="truncate text-sm font-bold">{previewReceipt.vendor}</p>
-                <p className="text-xs text-slate-400">
-                  {formatDateDE(previewReceipt.date)} · {formatCurrency(previewReceipt.grossAmount)}
-                </p>
+                <p className="truncate text-sm font-bold">{previewReceipt.title}</p>
+                <p className="text-xs text-slate-400">{previewReceipt.subtitle}</p>
               </div>
               <button
                 type="button"
@@ -1475,8 +1716,8 @@ export function ExpensesView({
             </div>
             <div className="p-3 bg-slate-950 flex items-center justify-center">
               <img
-                src={previewReceipt.receiptImageDataUrl}
-                alt={previewReceipt.vendor}
+                src={previewReceipt.imageDataUrl}
+                alt={previewReceipt.title}
                 className="max-h-[75vh] w-auto rounded-lg object-contain"
               />
             </div>

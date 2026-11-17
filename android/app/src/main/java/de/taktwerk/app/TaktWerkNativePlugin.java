@@ -12,13 +12,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.AudioManager;
+import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.media.ToneGenerator;
 import android.net.Uri;
 import android.nfc.FormatException;
 import android.nfc.NdefMessage;
@@ -42,6 +42,7 @@ import android.print.PrintManager;
 import android.provider.Settings;
 import android.util.Base64;
 import android.webkit.WebView;
+import androidx.activity.result.ActivityResult;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -52,6 +53,7 @@ import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
+import com.getcapacitor.annotation.ActivityCallback;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
 import com.getcapacitor.annotation.PermissionCallback;
@@ -62,7 +64,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -102,6 +106,8 @@ public class TaktWerkNativePlugin extends Plugin {
     private volatile String pendingWidgetAction = null;
     private volatile String pendingWidgetTagUid = null;
     private boolean foregroundDispatchActive = false;
+    private volatile Ringtone activePreviewRingtone = null;
+    private final Handler previewStopHandler = new Handler(Looper.getMainLooper());
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
@@ -1517,6 +1523,7 @@ public class TaktWerkNativePlugin extends Plugin {
         String title = call.getString("title", "TaktWerk Erinnerung");
         String body = call.getString("body", "Deine Aufgabe läuft bereits seit längerer Zeit.");
         String soundPreset = call.getString("soundPreset", "chime");
+        String systemSoundUri = call.getString("systemSoundUri", "");
 
         try {
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -1525,6 +1532,9 @@ public class TaktWerkNativePlugin extends Plugin {
                 intent.putExtra("title", title);
                 intent.putExtra("body", body);
                 intent.putExtra("soundPreset", soundPreset);
+                if (systemSoundUri != null && !systemSoundUri.trim().isEmpty()) {
+                    intent.putExtra("systemSoundUri", systemSoundUri.trim());
+                }
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     context,
                     REMINDER_ALARM_REQUEST_CODE,
@@ -1561,39 +1571,243 @@ public class TaktWerkNativePlugin extends Plugin {
         call.resolve();
     }
 
+    private void stopPreviewSound() {
+        previewStopHandler.removeCallbacksAndMessages(null);
+        Ringtone current = activePreviewRingtone;
+        activePreviewRingtone = null;
+        if (current != null) {
+            try {
+                if (current.isPlaying()) {
+                    current.stop();
+                }
+            } catch (Exception ignored) {}
+        }
+        ReminderToneSynth.stopCurrent();
+    }
+
     @PluginMethod
     public void playReminderTone(PluginCall call) {
         String preset = call.getString("preset", "chime");
+        String systemSoundUri = call.getString("systemSoundUri", "");
+        stopPreviewSound();
+
         if ("silent".equals(preset)) {
+            vibratePattern("start");
             call.resolve();
             return;
         }
+
+        Context context = getContext();
+        boolean useDeviceUri = "device".equals(preset)
+            || (systemSoundUri != null && !systemSoundUri.trim().isEmpty());
+
+        if (useDeviceUri) {
+            EXECUTOR.execute(() -> {
+                try {
+                    Uri targetUri = null;
+                    if (systemSoundUri != null && !systemSoundUri.trim().isEmpty()) {
+                        try {
+                            targetUri = Uri.parse(systemSoundUri.trim());
+                        } catch (Exception ignored) {}
+                    }
+                    if (targetUri == null) {
+                        targetUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    }
+                    Ringtone r = targetUri != null ? RingtoneManager.getRingtone(context, targetUri) : null;
+                    if (r != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            r.setAudioAttributes(
+                                new AudioAttributes.Builder()
+                                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                                    .build()
+                            );
+                        }
+                        activePreviewRingtone = r;
+                        r.play();
+                        previewStopHandler.postDelayed(() -> {
+                            if (activePreviewRingtone == r) {
+                                try {
+                                    if (r.isPlaying()) r.stop();
+                                } catch (Exception ignored) {}
+                                activePreviewRingtone = null;
+                            }
+                        }, 3600L);
+                    }
+                } catch (Exception ignored) {}
+            });
+            call.resolve();
+            return;
+        }
+
+        ReminderToneSynth.playPresetAsync(context, preset, false);
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void pickSystemNotificationSound(PluginCall call) {
+        Activity activity = getActivity();
+        if (activity == null) {
+            call.reject("Aktivität nicht verfügbar.");
+            return;
+        }
+
+        stopPreviewSound();
+
+        String ringtoneType = call.getString("ringtoneType", "notification");
+        String existingUriStr = call.getString("existingUri", "");
+
+        int managerType = RingtoneManager.TYPE_NOTIFICATION;
+        String pickerTitle = "Pixel- / Benachrichtigungston wählen";
+        if ("alarm".equals(ringtoneType)) {
+            managerType = RingtoneManager.TYPE_ALARM;
+            pickerTitle = "Pixel- / Weckerton wählen";
+        } else if ("all".equals(ringtoneType)) {
+            managerType = RingtoneManager.TYPE_ALL;
+            pickerTitle = "Smartphone-Ton wählen";
+        }
+
+        Uri defaultUri = RingtoneManager.getDefaultUri(
+            "alarm".equals(ringtoneType) ? RingtoneManager.TYPE_ALARM : RingtoneManager.TYPE_NOTIFICATION
+        );
+        Uri existingUri = defaultUri;
+        if (existingUriStr != null && !existingUriStr.trim().isEmpty()) {
+            try {
+                existingUri = Uri.parse(existingUriStr.trim());
+            } catch (Exception ignored) {}
+        }
+
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, managerType);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, pickerTitle);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false);
+        if (defaultUri != null) {
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, defaultUri);
+        }
+        if (existingUri != null) {
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, existingUri);
+        }
+
+        try {
+            startActivityForResult(call, intent, "ringtonePickerResult");
+        } catch (Exception e) {
+            call.reject("System-Tonauswahl konnte auf diesem Gerät nicht geöffnet werden.");
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @ActivityCallback
+    private void ringtonePickerResult(PluginCall call, ActivityResult result) {
+        if (call == null) {
+            return;
+        }
+        if (result == null || result.getResultCode() != Activity.RESULT_OK || result.getData() == null) {
+            JSObject cancelledRes = new JSObject();
+            cancelledRes.put("cancelled", true);
+            call.resolve(cancelledRes);
+            return;
+        }
+
+        Intent data = result.getData();
+        Uri pickedUri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri.class);
+        } else {
+            pickedUri = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        }
+
+        if (pickedUri == null) {
+            JSObject cancelledRes = new JSObject();
+            cancelledRes.put("cancelled", true);
+            call.resolve(cancelledRes);
+            return;
+        }
+
+        Context context = getContext();
+        String title = "Smartphone-Systemton";
+        try {
+            Ringtone r = RingtoneManager.getRingtone(context, pickedUri);
+            if (r != null) {
+                String resolvedTitle = r.getTitle(context);
+                if (resolvedTitle != null && !resolvedTitle.trim().isEmpty()) {
+                    title = resolvedTitle.trim();
+                }
+            }
+        } catch (Exception ignored) {}
+
+        JSObject res = new JSObject();
+        res.put("cancelled", false);
+        res.put("uri", pickedUri.toString());
+        res.put("title", title);
+        call.resolve(res);
+    }
+
+    @PluginMethod
+    public void listSystemNotificationSounds(PluginCall call) {
+        String ringtoneType = call.getString("ringtoneType", "notification");
+        int managerType = "alarm".equals(ringtoneType)
+            ? RingtoneManager.TYPE_ALARM
+            : RingtoneManager.TYPE_NOTIFICATION;
+
         Context context = getContext();
         EXECUTOR.execute(() -> {
+            JSArray sounds = new JSArray();
+            Set<String> seenUris = new HashSet<>();
+            Cursor cursor = null;
             try {
-                if ("alarm".equals(preset)) {
-                    Uri alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-                    if (alarmUri == null) {
-                        alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    }
-                    Ringtone r = alarmUri != null ? RingtoneManager.getRingtone(context, alarmUri) : null;
-                    if (r != null) {
-                        r.play();
-                        Thread.sleep(1600);
-                        r.stop();
-                    }
-                } else {
-                    int toneType = "bell".equals(preset)
-                        ? ToneGenerator.TONE_PROP_BEEP2
-                        : ("pulse".equals(preset) ? ToneGenerator.TONE_PROP_ACK : ToneGenerator.TONE_PROP_BEEP);
-                    ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 85);
-                    tg.startTone(toneType, 450);
-                    Thread.sleep(520);
-                    tg.release();
+                Uri defaultUri = RingtoneManager.getDefaultUri(managerType);
+                if (defaultUri != null) {
+                    String defTitle = "Standard-Benachrichtigungston";
+                    try {
+                        Ringtone defR = RingtoneManager.getRingtone(context, defaultUri);
+                        if (defR != null) {
+                            String resolved = defR.getTitle(context);
+                            if (resolved != null && !resolved.trim().isEmpty()) {
+                                defTitle = resolved.trim() + " (Standard)";
+                            }
+                        }
+                    } catch (Exception ignored) {}
+                    JSObject defItem = new JSObject();
+                    defItem.put("uri", defaultUri.toString());
+                    defItem.put("title", defTitle);
+                    sounds.put(defItem);
+                    seenUris.add(defaultUri.toString());
                 }
-            } catch (Exception ignored) {}
+
+                RingtoneManager rm = new RingtoneManager(context);
+                rm.setType(managerType);
+                cursor = rm.getCursor();
+                if (cursor != null) {
+                    int count = 0;
+                    while (cursor.moveToNext() && count < 120) {
+                        int pos = cursor.getPosition();
+                        String title = cursor.getString(RingtoneManager.TITLE_COLUMN_INDEX);
+                        Uri uri = rm.getRingtoneUri(pos);
+                        if (uri != null && title != null && !title.trim().isEmpty()) {
+                            String uriStr = uri.toString();
+                            if (seenUris.add(uriStr)) {
+                                JSObject item = new JSObject();
+                                item.put("uri", uriStr);
+                                item.put("title", title.trim());
+                                sounds.put(item);
+                                count++;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+                // Return whatever system sounds could be collected
+            } finally {
+                if (cursor != null) {
+                    try { cursor.close(); } catch (Exception ignored) {}
+                }
+            }
+
+            JSObject res = new JSObject();
+            res.put("sounds", sounds);
+            call.resolve(res);
         });
-        call.resolve();
     }
 
     @PluginMethod

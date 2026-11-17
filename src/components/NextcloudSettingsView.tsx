@@ -19,6 +19,7 @@ import {
   Loader2,
   Map as MapIcon,
   MapPin,
+  Music,
   Palette,
   Plus,
   Radar,
@@ -61,6 +62,8 @@ import {
   apiUploadNextcloudFile,
   getBackendServerUrl,
   isNativeCapacitor,
+  listNativeSystemSounds,
+  pickNativeSystemSound,
   playNativeReminderTone,
   setBackendServerUrl,
 } from '../utils/apiClient';
@@ -95,7 +98,11 @@ import {
   shareFilteredReportPdf,
   type FilteredReportOptions,
 } from '../utils/pdfInvoice';
-import { REMINDER_SOUND_OPTIONS, playReminderSound } from '../utils/soundReminder';
+import {
+  REMINDER_SOUND_OPTIONS,
+  REMINDER_SOUND_PRESET_ORDER,
+  playReminderSound,
+} from '../utils/soundReminder';
 import { GeoFenceMapPicker, type PickedMapLocation } from './GeoFenceMapPicker';
 import { ThemedSelect } from './ThemedSelect';
 
@@ -128,6 +135,16 @@ const UI_ACCENTS: { id: UiAccentPreset; label: string; dotClass: string }[] = [
   { id: 'emerald', label: 'Smaragd Grün', dotClass: 'bg-emerald-600' },
   { id: 'amber', label: 'Bernstein Gold', dotClass: 'bg-amber-600' },
   { id: 'rose', label: 'Rubin Rot', dotClass: 'bg-rose-600' },
+  { id: 'custom', label: 'Eigene Farbe', dotClass: 'ui-custom-swatch' },
+];
+
+const CUSTOM_UI_SWATCHES: { hex: string; label: string; dotClass: string }[] = [
+  { hex: '#0891b2', label: 'Petrol', dotClass: 'bg-cyan-600' },
+  { hex: '#4f46e5', label: 'Indigo', dotClass: 'bg-indigo-600' },
+  { hex: '#15803d', label: 'Waldgrün', dotClass: 'bg-green-700' },
+  { hex: '#ea580c', label: 'Terrakotta', dotClass: 'bg-orange-600' },
+  { hex: '#c026d3', label: 'Magenta', dotClass: 'bg-fuchsia-600' },
+  { hex: '#334155', label: 'Schiefer', dotClass: 'bg-slate-700' },
 ];
 
 const START_SECTION_OPTIONS: { id: NavSection; label: string }[] = [
@@ -181,13 +198,43 @@ export function NextcloudSettingsView({
     setCompanyForm(company);
   }, [company]);
 
+  // Live preview of selected App Accent Color while adjusting in Settings
+  useEffect(() => {
+    const root = document.documentElement;
+    root.setAttribute('data-ui-accent', companyForm.uiAccent ?? 'violet');
+    const candidate = (companyForm.uiCustomAccentHex || '').trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(candidate)) {
+      root.style.setProperty('--tw-ui-custom-accent', candidate);
+    }
+    return () => {
+      root.setAttribute('data-ui-accent', company.uiAccent ?? 'violet');
+      const savedHex = /^#[0-9a-fA-F]{6}$/.test((company.uiCustomAccentHex || '').trim())
+        ? company.uiCustomAccentHex!.trim()
+        : '#7c3aed';
+      root.style.setProperty('--tw-ui-custom-accent', savedHex);
+    };
+  }, [
+    companyForm.uiAccent,
+    companyForm.uiCustomAccentHex,
+    company.uiAccent,
+    company.uiCustomAccentHex,
+  ]);
+
   const [newCustomerCategory, setNewCustomerCategory] = useState('');
   const [newProductCategory, setNewProductCategory] = useState('');
+  const [newExpenseCategory, setNewExpenseCategory] = useState('');
   const [newInternalCategory, setNewInternalCategory] = useState('');
 
   const [discoveredCalendars, setDiscoveredCalendars] = useState<DiscoveredCalendar[]>([]);
   const [discoveringCalendars, setDiscoveringCalendars] = useState(false);
   const [runningBackup, setRunningBackup] = useState(false);
+
+  // Android Pixel / System notification sound browser state
+  const [deviceSounds, setDeviceSounds] = useState<Array<{ uri: string; title: string }>>([]);
+  const [deviceSoundsType, setDeviceSoundsType] = useState<'notification' | 'alarm'>('notification');
+  const [loadingDeviceSounds, setLoadingDeviceSounds] = useState(false);
+  const [pickingSystemSound, setPickingSystemSound] = useState(false);
+  const [deviceSoundFilter, setDeviceSoundFilter] = useState('');
 
   // Invoices ZIP package state
   const [zipIncludeQuotes, setZipIncludeQuotes] = useState(true);
@@ -576,12 +623,98 @@ export function NextcloudSettingsView({
     }
   };
 
+  const previewReminderTone = (preset: ReminderSoundPreset, customUri?: string) => {
+    const uriToPlay = customUri ?? companyForm.timerReminderSystemSoundUri;
+    if (nativeApp) {
+      void playNativeReminderTone(preset, preset === 'device' ? uriToPlay : undefined);
+    } else {
+      playReminderSound(preset);
+    }
+  };
+
   const handleTestSound = () => {
     const preset = companyForm.timerReminderSound ?? 'chime';
-    playReminderSound(preset);
-    if (nativeApp) {
-      void playNativeReminderTone(preset);
+    previewReminderTone(preset);
+  };
+
+  const handlePickPixelSystemSound = async (
+    ringtoneType: 'notification' | 'alarm' = 'notification'
+  ) => {
+    if (!nativeApp) {
+      onNotify(
+        'Direkter Zugriff auf Google Pixel- / Android-Systemtöne funktioniert in der installierten Android-App. Im Browser stehen dir alle 14 eingebauten TaktWerk-Töne zur Verfügung.',
+        false
+      );
+      return;
     }
+    setPickingSystemSound(true);
+    try {
+      const picked = await pickNativeSystemSound({
+        existingUri: companyForm.timerReminderSystemSoundUri,
+        ringtoneType,
+      });
+      if (picked.cancelled || !picked.uri) return;
+      const chosenTitle = picked.title?.trim() || 'Smartphone-Systemton';
+      const nextCompany: CompanyProfile = {
+        ...companyForm,
+        timerReminderSound: 'device',
+        timerReminderSystemSoundUri: picked.uri,
+        timerReminderSystemSoundTitle: chosenTitle,
+      };
+      setCompanyForm(nextCompany);
+      onSaveCompany(nextCompany);
+      void playNativeReminderTone('device', picked.uri);
+      onNotify(`Systemton „${chosenTitle}“ übernommen.`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error
+          ? err.message
+          : 'System-Tonauswahl konnte nicht geöffnet werden.',
+        true
+      );
+    } finally {
+      setPickingSystemSound(false);
+    }
+  };
+
+  const handleLoadDeviceSounds = async (
+    ringtoneType: 'notification' | 'alarm' = 'notification'
+  ) => {
+    if (!nativeApp) {
+      onNotify(
+        'Geräte-Systemtöne können nur innerhalb der Android-App ausgelesen werden.',
+        false
+      );
+      return;
+    }
+    setLoadingDeviceSounds(true);
+    setDeviceSoundsType(ringtoneType);
+    try {
+      const list = await listNativeSystemSounds(ringtoneType);
+      setDeviceSounds(list);
+      setDeviceSoundFilter('');
+      if (list.length === 0) {
+        onNotify(
+          'Keine direkte Liste geliefert — nutze „Pixel- / Systemtöne öffnen“ für die offizielle Android-Tonauswahl.',
+          false
+        );
+      }
+    } finally {
+      setLoadingDeviceSounds(false);
+    }
+  };
+
+  const handleSelectListedDeviceSound = (sound: { uri: string; title: string }) => {
+    const nextCompany: CompanyProfile = {
+      ...companyForm,
+      timerReminderSound: 'device',
+      timerReminderSystemSoundUri: sound.uri,
+      timerReminderSystemSoundTitle: sound.title,
+    };
+    setCompanyForm(nextCompany);
+    onSaveCompany(nextCompany);
+    void playNativeReminderTone('device', sound.uri);
+    onNotify(`Systemton „${sound.title}“ ausgewählt.`);
   };
 
   const handleCaptureHomeBaseGps = async () => {
@@ -1013,7 +1146,7 @@ export function NextcloudSettingsView({
     }
   };
 
-  const addCategory = (kind: 'customer' | 'product' | 'internal') => {
+  const addCategory = (kind: 'customer' | 'product' | 'expense' | 'internal') => {
     if (kind === 'customer') {
       const val = newCustomerCategory.trim();
       if (!val) return;
@@ -1030,6 +1163,14 @@ export function NextcloudSettingsView({
         setCompanyForm({ ...companyForm, productCategories: [...list, val] });
       }
       setNewProductCategory('');
+    } else if (kind === 'expense') {
+      const val = newExpenseCategory.trim();
+      if (!val) return;
+      const list = companyForm.expenseCategories ?? [];
+      if (!list.includes(val)) {
+        setCompanyForm({ ...companyForm, expenseCategories: [...list, val] });
+      }
+      setNewExpenseCategory('');
     } else {
       const val = newInternalCategory.trim();
       if (!val) return;
@@ -1041,7 +1182,10 @@ export function NextcloudSettingsView({
     }
   };
 
-  const removeCategory = (kind: 'customer' | 'product' | 'internal', item: string) => {
+  const removeCategory = (
+    kind: 'customer' | 'product' | 'expense' | 'internal',
+    item: string
+  ) => {
     if (kind === 'customer') {
       setCompanyForm({
         ...companyForm,
@@ -1052,6 +1196,11 @@ export function NextcloudSettingsView({
         ...companyForm,
         productCategories: (companyForm.productCategories ?? []).filter((c) => c !== item),
       });
+    } else if (kind === 'expense') {
+      setCompanyForm({
+        ...companyForm,
+        expenseCategories: (companyForm.expenseCategories ?? []).filter((c) => c !== item),
+      });
     } else {
       setCompanyForm({
         ...companyForm,
@@ -1061,7 +1210,7 @@ export function NextcloudSettingsView({
   };
 
   const inputClass =
-    'w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500';
+    'min-w-0 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500';
 
   const TABS: { id: SettingsTab; label: string; icon: typeof Palette }[] = [
     { id: 'general', label: 'Oberfläche & Kategorien', icon: Palette },
@@ -1118,11 +1267,11 @@ export function NextcloudSettingsView({
               </p>
             </div>
 
-            <div>
-              <label className="mb-2 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                App-Akzentfarbe
+            <div className="space-y-3">
+              <label className="block text-xs font-medium text-slate-600 dark:text-slate-400">
+                App-Akzentfarbe (Vorlagen oder eigene Wunschfarbe)
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {UI_ACCENTS.map((item) => {
                   const selected = (companyForm.uiAccent ?? 'violet') === item.id;
                   return (
@@ -1136,12 +1285,93 @@ export function NextcloudSettingsView({
                           : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-300'
                       }`}
                     >
-                      <span className={`h-3 w-3 rounded-full ${item.dotClass}`} />
+                      <span
+                        className={`h-3 w-3 shrink-0 rounded-full ring-1 ring-black/15 dark:ring-white/20 ${item.dotClass}`}
+                      />
                       {item.label}
                     </button>
                   );
                 })}
               </div>
+
+              {companyForm.uiAccent === 'custom' && (
+                <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-[#3b2d5e] dark:bg-[#211936]/70 space-y-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={
+                          /^#[0-9a-fA-F]{6}$/.test(
+                            (companyForm.uiCustomAccentHex || '').trim()
+                          )
+                            ? companyForm.uiCustomAccentHex!.trim()
+                            : '#7c3aed'
+                        }
+                        onChange={(e) =>
+                          setCompanyForm({
+                            ...companyForm,
+                            uiAccent: 'custom',
+                            uiCustomAccentHex: e.target.value,
+                          })
+                        }
+                        aria-label="Eigene App-Akzentfarbe wählen"
+                        className="h-9 w-12 cursor-pointer rounded-lg border border-slate-300 bg-white p-0.5 dark:border-[#4b3a73] dark:bg-[#171126]"
+                      />
+                      <input
+                        type="text"
+                        value={companyForm.uiCustomAccentHex ?? '#7c3aed'}
+                        onChange={(e) => {
+                          const raw = e.target.value;
+                          const normalized =
+                            raw && !raw.startsWith('#') ? `#${raw}` : raw;
+                          setCompanyForm({
+                            ...companyForm,
+                            uiAccent: 'custom',
+                            uiCustomAccentHex: normalized.slice(0, 7),
+                          });
+                        }}
+                        placeholder="#7c3aed"
+                        aria-label="Hex-Farbcode der App-Akzentfarbe"
+                        className="w-28 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-xs text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {CUSTOM_UI_SWATCHES.map((swatch) => (
+                        <button
+                          key={swatch.hex}
+                          type="button"
+                          onClick={() =>
+                            setCompanyForm({
+                              ...companyForm,
+                              uiAccent: 'custom',
+                              uiCustomAccentHex: swatch.hex,
+                            })
+                          }
+                          title={`${swatch.label} (${swatch.hex})`}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                        >
+                          <span className={`h-2.5 w-2.5 rounded-full ${swatch.dotClass}`} />
+                          {swatch.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                    <span>Live-Vorschau:</span>
+                    <span className="inline-flex items-center rounded-md ui-accent-btn px-2.5 py-1 font-semibold text-white">
+                      Aktiver Button
+                    </span>
+                    <span className="inline-flex items-center rounded-md ui-accent-selected px-2.5 py-1 font-semibold">
+                      Ausgewählter Eintrag
+                    </span>
+                    <span className="text-[11px] opacity-80">
+                      (Unten speichern, um dauerhaft zu übernehmen)
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -1246,14 +1476,14 @@ export function NextcloudSettingsView({
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
             <div className="border-b border-slate-200 pb-3 dark:border-[#2e2349]">
               <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                Kategorien für Kunden, Produkte &amp; interne Arbeiten
+                Kategorien für Kunden, Produkte, Kosten &amp; interne Arbeiten
               </h2>
               <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Stehen in der Kunden-, Produkt- und Zeiterfassung (inkl. nicht-ertragbringender interner Arbeiten) als Schnellauswahl &amp; Filter zur Verfügung.
+                Stehen in der Kunden-, Produkt-, Beleg-/Kosten-, NFC- und Zeiterfassung als Schnellauswahl &amp; Filter zur Verfügung.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div className="space-y-3">
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200">
                   Kunden-Kategorien
@@ -1281,6 +1511,12 @@ export function NextcloudSettingsView({
                     type="text"
                     value={newCustomerCategory}
                     onChange={(e) => setNewCustomerCategory(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCategory('customer');
+                      }
+                    }}
                     placeholder="Neue Kunden-Kategorie..."
                     className={inputClass}
                   />
@@ -1322,6 +1558,12 @@ export function NextcloudSettingsView({
                     type="text"
                     value={newProductCategory}
                     onChange={(e) => setNewProductCategory(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCategory('product');
+                      }
+                    }}
                     placeholder="Neue Produkt-Kategorie..."
                     className={inputClass}
                   />
@@ -1338,7 +1580,54 @@ export function NextcloudSettingsView({
 
               <div className="space-y-3">
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200">
-                  Interne Tätigkeiten (ohne Kunde)
+                  Kosten- &amp; Ausgaben-Kategorien (Belege &amp; Betriebskosten)
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {(companyForm.expenseCategories ?? []).map((cat) => (
+                    <span
+                      key={cat}
+                      className="inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50/70 px-2.5 py-1 text-xs font-medium text-rose-900 dark:border-rose-800/60 dark:bg-rose-950/40 dark:text-rose-200"
+                    >
+                      {cat}
+                      <button
+                        type="button"
+                        onClick={() => removeCategory('expense', cat)}
+                        aria-label={`${cat} entfernen`}
+                        className="text-rose-500/80 hover:text-red-600 cursor-pointer"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newExpenseCategory}
+                    onChange={(e) => setNewExpenseCategory(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCategory('expense');
+                      }
+                    }}
+                    placeholder="Neue Kosten-Kategorie (z. B. Miete, Material)..."
+                    className={inputClass}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => addCategory('expense')}
+                    className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Neu
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  Interne Tätigkeiten (Zeiterfassung &amp; NFC ohne Kunde)
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {(companyForm.internalCategories ?? []).map((cat) => (
@@ -1363,6 +1652,12 @@ export function NextcloudSettingsView({
                     type="text"
                     value={newInternalCategory}
                     onChange={(e) => setNewInternalCategory(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCategory('internal');
+                      }
+                    }}
                     placeholder="z. B. Kundenakquise, Reinigung..."
                     className={inputClass}
                   />
@@ -1381,7 +1676,7 @@ export function NextcloudSettingsView({
             <div className="flex justify-end pt-2">
               <button
                 type="submit"
-                className="rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                className="rounded-lg ui-accent-active px-5 py-2 text-sm font-semibold text-white cursor-pointer"
               >
                 Oberfläche &amp; Kategorien speichern
               </button>
@@ -3268,32 +3563,34 @@ export function NextcloudSettingsView({
                     <label className="mb-1 block text-xs text-slate-500">
                       Adresse suchen oder per GPS übernehmen
                     </label>
-                    <div className="flex gap-1.5">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:gap-1.5">
                       <input
                         type="text"
                         value={newRuleAddress}
                         onChange={(e) => setNewRuleAddress(e.target.value)}
                         placeholder="Straße Nr., PLZ Ort"
-                        className={inputClass}
+                        className={`${inputClass} flex-1`}
                       />
-                      <button
-                        type="button"
-                        onClick={() => void handleSearchRuleAddress()}
-                        disabled={searchingRuleLoc}
-                        className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100 cursor-pointer shrink-0"
-                      >
-                        {searchingRuleLoc ? '...' : 'Suchen'}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void handleCaptureRuleGps()}
-                        disabled={locatingRule}
-                        title="Aktuellen GPS-Standort übernehmen"
-                        className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 cursor-pointer shrink-0"
-                      >
-                        <MapPin className="h-3.5 w-3.5" />
-                        {locatingRule ? '...' : 'GPS'}
-                      </button>
+                      <div className="flex gap-1.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => void handleSearchRuleAddress()}
+                          disabled={searchingRuleLoc}
+                          className="flex-1 sm:flex-initial rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100 cursor-pointer shrink-0"
+                        >
+                          {searchingRuleLoc ? '...' : 'Suchen'}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void handleCaptureRuleGps()}
+                          disabled={locatingRule}
+                          title="Aktuellen GPS-Standort übernehmen"
+                          className="inline-flex flex-1 sm:flex-initial items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 cursor-pointer shrink-0"
+                        >
+                          <MapPin className="h-3.5 w-3.5" />
+                          {locatingRule ? '...' : 'GPS'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <div className="md:col-span-3">
@@ -3365,7 +3662,7 @@ export function NextcloudSettingsView({
                   value={homeAddressQuery}
                   onChange={(e) => setHomeAddressQuery(e.target.value)}
                   placeholder="z. B. Musterstraße 1, 80331 München"
-                  className={`${inputClass} flex-1 min-w-56`}
+                  className={`${inputClass} sm:flex-1 sm:min-w-56`}
                 />
                 <button
                   type="button"
@@ -3520,25 +3817,31 @@ export function NextcloudSettingsView({
 
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Klingelton / Signalpreset
+                  Benachrichtigungston / Signalpreset ({REMINDER_SOUND_PRESET_ORDER.length} Optionen)
                 </label>
                 <div className="flex gap-2">
-                  <div className="flex-1">
+                  <div className="min-w-0 flex-1">
                     <ThemedSelect
                       value={companyForm.timerReminderSound ?? 'chime'}
-                      onChange={(val) =>
+                      onChange={(val) => {
+                        const nextPreset = val as ReminderSoundPreset;
                         setCompanyForm({
                           ...companyForm,
-                          timerReminderSound: val as ReminderSoundPreset,
-                        })
-                      }
-                      ariaLabel="Klingelton auswählen"
-                      options={(Object.keys(REMINDER_SOUND_OPTIONS) as ReminderSoundPreset[]).map(
-                        (key) => ({
-                          value: key,
-                          label: REMINDER_SOUND_OPTIONS[key].label,
-                        })
-                      )}
+                          timerReminderSound: nextPreset,
+                        });
+                        if (nextPreset !== 'silent') {
+                          previewReminderTone(nextPreset);
+                        }
+                      }}
+                      ariaLabel="Benachrichtigungston auswählen"
+                      options={REMINDER_SOUND_PRESET_ORDER.map((key) => ({
+                        value: key,
+                        label:
+                          key === 'device' && companyForm.timerReminderSystemSoundTitle
+                            ? `Pixel- / Systemton: ${companyForm.timerReminderSystemSoundTitle}`
+                            : REMINDER_SOUND_OPTIONS[key].label,
+                        hint: REMINDER_SOUND_OPTIONS[key].description,
+                      }))}
                     />
                   </div>
                   <button
@@ -3547,10 +3850,125 @@ export function NextcloudSettingsView({
                     className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0"
                   >
                     <Volume2 className="h-4 w-4" />
-                    Ton testen
+                    Testen
                   </button>
                 </div>
+                <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                  {REMINDER_SOUND_OPTIONS[companyForm.timerReminderSound ?? 'chime']?.description}
+                </p>
               </div>
+            </div>
+
+            {/* Direct Google Pixel & Android System Sounds Card */}
+            <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 space-y-3 dark:border-[#342653] dark:bg-[#1e1633]/80">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="flex items-start gap-2.5 min-w-0">
+                  <Music className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" />
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                      Google Pixel &amp; Android Systemtöne direkt nutzen
+                    </p>
+                    <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                      {nativeApp
+                        ? 'Öffne die native Pixel-Sounds-Auswahl deines Smartphones (z. B. Popcorn, Eureka, Akkord, Vogelgezwitscher oder eigene Töne) oder liste installierte Gerätetöne direkt hier auf.'
+                        : 'In der installierten Android-App kannst du hier direkt die Google Pixel Sounds und alle Smartphone-Systemtöne auswählen. Im Webbrowser stehen dir bereits 14 integrierte Töne inkl. Pixel-Stil-Klängen zur Verfügung.'}
+                    </p>
+                  </div>
+                </div>
+                {companyForm.timerReminderSystemSoundTitle && (
+                  <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
+                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                    {companyForm.timerReminderSystemSoundTitle}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  disabled={pickingSystemSound}
+                  onClick={() => void handlePickPixelSystemSound('notification')}
+                  className="inline-flex items-center gap-1.5 rounded-lg ui-accent-btn px-3.5 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer disabled:opacity-60"
+                >
+                  {pickingSystemSound ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Smartphone className="h-3.5 w-3.5" />
+                  )}
+                  Pixel- / Systemtöne öffnen
+                </button>
+                <button
+                  type="button"
+                  disabled={pickingSystemSound}
+                  onClick={() => void handlePickPixelSystemSound('alarm')}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer disabled:opacity-60"
+                >
+                  <BellRing className="h-3.5 w-3.5" />
+                  Wecker-Töne
+                </button>
+                {nativeApp && (
+                  <button
+                    type="button"
+                    disabled={loadingDeviceSounds}
+                    onClick={() => void handleLoadDeviceSounds('notification')}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer disabled:opacity-60"
+                  >
+                    {loadingDeviceSounds ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3.5 w-3.5" />
+                    )}
+                    Gerätetöne hier laden
+                  </button>
+                )}
+              </div>
+
+              {deviceSounds.length > 0 && (
+                <div className="space-y-2 border-t border-slate-200 pt-3 dark:border-[#342653]">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                      Installierte {deviceSoundsType === 'alarm' ? 'Wecker-' : 'Benachrichtigungs-'}Töne ({deviceSounds.length}) — Tippen zum Vorhören &amp; Übernehmen:
+                    </span>
+                    <input
+                      type="text"
+                      value={deviceSoundFilter}
+                      onChange={(e) => setDeviceSoundFilter(e.target.value)}
+                      placeholder="Ton suchen..."
+                      className="w-full sm:w-48 rounded-lg border border-slate-300 bg-white px-2.5 py-1 text-xs text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+                    />
+                  </div>
+                  <div className="grid max-h-56 grid-cols-1 gap-1.5 overflow-y-auto pr-1 sm:grid-cols-2">
+                    {deviceSounds
+                      .filter((s) =>
+                        deviceSoundFilter.trim()
+                          ? s.title
+                              .toLowerCase()
+                              .includes(deviceSoundFilter.trim().toLowerCase())
+                          : true
+                      )
+                      .map((sound) => {
+                        const isSelected =
+                          companyForm.timerReminderSound === 'device' &&
+                          companyForm.timerReminderSystemSoundUri === sound.uri;
+                        return (
+                          <button
+                            key={sound.uri}
+                            type="button"
+                            onClick={() => handleSelectListedDeviceSound(sound)}
+                            className={`flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-left text-xs transition-colors cursor-pointer ${
+                              isSelected
+                                ? 'border-violet-500 bg-violet-50 font-semibold text-violet-900 dark:border-violet-400 dark:bg-violet-500/20 dark:text-violet-100'
+                                : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#342653] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#241b3d]'
+                            }`}
+                          >
+                            <span className="truncate">{sound.title}</span>
+                            <Volume2 className="h-3.5 w-3.5 shrink-0 opacity-70" />
+                          </button>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end pt-2">

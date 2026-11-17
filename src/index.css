@@ -64,20 +64,47 @@ html[data-ui-accent="rose"] {
   --tw-ui-accent-soft: #fff1f2;
 }
 
+html[data-ui-accent="custom"] {
+  --tw-ui-accent: var(--tw-ui-custom-accent, #7c3aed);
+  --tw-ui-accent-soft: color-mix(in srgb, var(--tw-ui-custom-accent, #7c3aed) 12%, #ffffff);
+}
+
+.ui-custom-swatch {
+  background-color: var(--tw-ui-custom-accent, #7c3aed);
+}
+
 .ui-accent-active {
   background-color: #0f172a;
+}
+
+.ui-accent-active:hover {
+  background-color: #1e293b;
 }
 
 html.dark .ui-accent-active,
 html[data-ui-accent="blue"] .ui-accent-active,
 html[data-ui-accent="emerald"] .ui-accent-active,
 html[data-ui-accent="amber"] .ui-accent-active,
-html[data-ui-accent="rose"] .ui-accent-active {
+html[data-ui-accent="rose"] .ui-accent-active,
+html[data-ui-accent="custom"] .ui-accent-active {
   background-color: var(--tw-ui-accent);
+}
+
+html.dark .ui-accent-active:hover,
+html[data-ui-accent="blue"] .ui-accent-active:hover,
+html[data-ui-accent="emerald"] .ui-accent-active:hover,
+html[data-ui-accent="amber"] .ui-accent-active:hover,
+html[data-ui-accent="rose"] .ui-accent-active:hover,
+html[data-ui-accent="custom"] .ui-accent-active:hover {
+  background-color: color-mix(in srgb, var(--tw-ui-accent) 88%, #000000);
 }
 
 .ui-accent-btn {
   background-color: var(--tw-ui-accent);
+}
+
+.ui-accent-btn:hover {
+  background-color: color-mix(in srgb, var(--tw-ui-accent) 88%, #000000);
 }
 
 .ui-accent-selected {

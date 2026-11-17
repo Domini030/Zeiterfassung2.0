@@ -63,6 +63,7 @@ import {
   getNativeNotificationStatus,
   isNativeCapacitor,
   openNativeNotificationSettings,
+  playNativeReminderTone,
   requestNativeNotificationPermission,
   scheduleNativeTimerReminder,
   syncActiveTimerNotification,
@@ -228,18 +229,25 @@ export default function App() {
     return false;
   }, [section]);
 
-  // Apply UI customization attributes & custom invoice color CSS variable
+  // Apply UI customization attributes & custom app/invoice color CSS variables
   useEffect(() => {
     const root = document.documentElement;
     root.setAttribute('data-ui-accent', db.company.uiAccent ?? 'violet');
     root.setAttribute('data-ui-density', db.company.uiDensity ?? 'comfortable');
     root.setAttribute('data-ui-scale', db.company.uiFontScale ?? 'normal');
+    const customUiHex = /^#[0-9a-fA-F]{6}$/.test(
+      (db.company.uiCustomAccentHex || '').trim()
+    )
+      ? db.company.uiCustomAccentHex!.trim()
+      : '#7c3aed';
+    root.style.setProperty('--tw-ui-custom-accent', customUiHex);
     root.style.setProperty(
       '--tw-invoice-accent',
       db.company.invoiceCustomAccentHex || '#1d4ed8'
     );
   }, [
     db.company.uiAccent,
+    db.company.uiCustomAccentHex,
     db.company.uiDensity,
     db.company.uiFontScale,
     db.company.invoiceCustomAccentHex,
@@ -357,6 +365,8 @@ export default function App() {
           : t
       );
 
+      const isInternalTask = task.entryType === 'internal' || !task.customerId;
+
       if (nextActiveTimer && nextActiveTimer.nfcTaskId === task.id && task.toggleOnRescan) {
         finalizeActive(nextActiveTimer);
         return {
@@ -366,7 +376,9 @@ export default function App() {
             timeEntries: nextTimeEntries,
             activeTimer: null,
           },
-          message: `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
+          message: isInternalTask
+            ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert.`
+            : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
           haptic: 'stop',
         };
       }
@@ -376,20 +388,27 @@ export default function App() {
         nextActiveTimer = null;
       }
 
-      const product = sourceDb.products.find((p) => p.id === task.productId);
+      const product = isInternalTask
+        ? undefined
+        : sourceDb.products.find((p) => p.id === task.productId);
+      const internalCategory = isInternalTask
+        ? task.internalCategory?.trim() || 'Sonstiges'
+        : undefined;
       const startedTimer: ActiveTimer = {
         id: createId('timer'),
-        customerId: task.customerId,
-        productId: task.productId,
+        customerId: isInternalTask ? '' : task.customerId,
+        productId: isInternalTask ? '' : task.productId,
         nfcTaskId: task.id,
         title: task.title,
         notes: task.description,
         startTime: nowIso,
         pausedAt: null,
         accumulatedPausedMs: 0,
-        hourlyRateNet: product?.unitPriceNet ?? 0,
-        taxRate: (product?.taxRate ?? 19) as TaxRate,
+        hourlyRateNet: isInternalTask ? 0 : product?.unitPriceNet ?? 0,
+        taxRate: (isInternalTask ? 0 : product?.taxRate ?? 19) as TaxRate,
         source: 'nfc',
+        entryType: isInternalTask ? 'internal' : 'project',
+        internalCategory,
         location: null,
       };
 
@@ -400,7 +419,9 @@ export default function App() {
           timeEntries: nextTimeEntries,
           activeTimer: startedTimer,
         },
-        message: `NFC-Aufgabe "${task.title}" gestartet.`,
+        message: isInternalTask
+          ? `Interne NFC-Aufgabe "${task.title}" (${internalCategory}) gestartet.`
+          : `NFC-Aufgabe "${task.title}" gestartet.`,
         haptic: 'start',
       };
     },
@@ -767,6 +788,7 @@ export default function App() {
     const enabled = db.company.timerReminderEnabled !== false;
     const reminderMinutes = Math.max(1, db.company.timerReminderMinutes ?? 60);
     const soundPreset = db.company.timerReminderSound ?? 'chime';
+    const systemSoundUri = db.company.timerReminderSystemSoundUri?.trim() || undefined;
 
     if (!timer || timer.pausedAt || !enabled) {
       void cancelNativeTimerReminder();
@@ -784,13 +806,18 @@ export default function App() {
         title: `Laufende Aufgabe (${reminderMinutes} Min.): ${timer.title}`,
         body: 'Der Timer läuft noch — möchtest du pausieren oder stoppen?',
         soundPreset,
+        systemSoundUri,
       });
     }
 
     const triggerReminder = () => {
       if (reminderFiredKeyRef.current === fireKey) return;
       reminderFiredKeyRef.current = fireKey;
-      playReminderSound(soundPreset);
+      if (isNativeCapacitor()) {
+        void playNativeReminderTone(soundPreset, systemSoundUri);
+      } else {
+        playReminderSound(soundPreset);
+      }
       void showWebReminderNotification(
         `TaktWerk Erinnerung (${reminderMinutes} Min.)`,
         `Aufgabe "${timer.title}" läuft noch.`
@@ -812,6 +839,7 @@ export default function App() {
     db.company.timerReminderEnabled,
     db.company.timerReminderMinutes,
     db.company.timerReminderSound,
+    db.company.timerReminderSystemSoundUri,
     loading,
     notify,
   ]);
@@ -1659,6 +1687,7 @@ export default function App() {
       customerId: null,
       billableToCustomer: false,
       billedInvoiceId: null,
+      receiptImageDataUrl: rec.receiptImageDataUrl || undefined,
       notes: rec.notes || '',
       createdAt: new Date().toISOString(),
     };
@@ -1704,6 +1733,7 @@ export default function App() {
         customerId: null,
         billableToCustomer: false,
         billedInvoiceId: null,
+        receiptImageDataUrl: rec.receiptImageDataUrl || undefined,
         notes: rec.notes || '',
         createdAt: new Date().toISOString(),
       });
@@ -2151,7 +2181,7 @@ export default function App() {
     <div
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#0e0a18] dark:text-slate-100 flex flex-col"
+      className="min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-[#0e0a18] dark:text-slate-100 flex flex-col"
     >
       <div className="flex-1 lg:flex">
         <Sidebar
@@ -2216,7 +2246,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={handleStopTimer}
-                    className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                    className="inline-flex items-center gap-2 rounded-lg ui-accent-btn px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer"
                   >
                     <Square className="h-3.5 w-3.5 fill-current" />
                     <span className="font-mono tabular-nums">{formatDuration(elapsedSeconds)}</span>
@@ -2235,7 +2265,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => navigateToSection('invoices')}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-lg ui-accent-active px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer"
                 >
                   <FilePlus2 className="h-3.5 w-3.5" />
                   <span>Rechnung erstellen</span>
@@ -2301,7 +2331,7 @@ export default function App() {
         )}
 
         {/* Main Viewport */}
-        <main className="mx-auto w-full max-w-6xl flex-1 p-6">
+        <main className="mx-auto w-full max-w-6xl flex-1 p-4 sm:p-6">
 
           {/* Multi-device Nextcloud Conflict Notice */}
           {remoteNewerAt && (
@@ -2445,6 +2475,7 @@ export default function App() {
                 <NfcTasksView
                   customers={db.customers}
                   products={db.products}
+                  internalCategories={db.company.internalCategories ?? []}
                   nfcTasks={db.nfcTasks}
                   activeTimer={db.activeTimer}
                   incomingUnknownTag={pendingScannedUid}
@@ -2508,6 +2539,7 @@ export default function App() {
                   expenses={db.expenses ?? []}
                   recurringExpenses={db.recurringExpenses ?? []}
                   customers={db.customers}
+                  expenseCategories={db.company.expenseCategories ?? []}
                   nextcloudConfigured={nextcloud.configured}
                   onAddExpense={handleAddExpense}
                   onUpdateExpense={handleUpdateExpense}

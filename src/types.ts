@@ -69,6 +69,8 @@ export interface NfcTask {
   tagUid: string;
   title: string;
   description: string;
+  entryType?: 'project' | 'internal';
+  internalCategory?: string;
   customerId: string;
   productId: string;
   autoStopPrevious: boolean;
@@ -271,6 +273,7 @@ export interface RecurringExpense {
   active: boolean;
   nextDueDate: string;
   lastBookedDate?: string | null;
+  receiptImageDataUrl?: string;
   notes?: string;
   createdAt: string;
 }
@@ -296,13 +299,29 @@ export type InvoiceFontFamily = 'sans' | 'serif' | 'mono';
 
 export type InvoiceLayoutStyle = 'classic' | 'modern' | 'minimal';
 
-export type UiAccentPreset = 'violet' | 'blue' | 'emerald' | 'amber' | 'rose';
+export type UiAccentPreset = 'violet' | 'blue' | 'emerald' | 'amber' | 'rose' | 'custom';
 
 export type UiDensity = 'comfortable' | 'compact';
 
 export type UiFontScale = 'normal' | 'large';
 
-export type ReminderSoundPreset = 'chime' | 'bell' | 'pulse' | 'alarm' | 'silent';
+export type ReminderSoundPreset =
+  | 'device'
+  | 'popcorn'
+  | 'eureka'
+  | 'chord'
+  | 'droplet'
+  | 'crystal'
+  | 'marimba'
+  | 'piano'
+  | 'chime'
+  | 'bell'
+  | 'woodblock'
+  | 'sonar'
+  | 'fanfare'
+  | 'pulse'
+  | 'alarm'
+  | 'silent';
 
 export type AutoBackupFrequency = 'daily' | 'weekly' | 'monthly';
 
@@ -382,9 +401,11 @@ export interface CompanyProfile {
   skuFieldLabel?: string;
   customerCategories?: string[];
   productCategories?: string[];
+  expenseCategories?: string[];
   smallBusinessMode?: boolean;
   smallBusinessNotice?: string;
   uiAccent?: UiAccentPreset;
+  uiCustomAccentHex?: string;
   uiDensity?: UiDensity;
   uiFontScale?: UiFontScale;
   defaultStartSection?: NavSection;
@@ -403,6 +424,8 @@ export interface CompanyProfile {
   timerReminderEnabled?: boolean;
   timerReminderMinutes?: number;
   timerReminderSound?: ReminderSoundPreset;
+  timerReminderSystemSoundUri?: string;
+  timerReminderSystemSoundTitle?: string;
   autoBackup?: AutoBackupConfig;
   calendarConfig?: NextcloudCalendarConfig;
 }

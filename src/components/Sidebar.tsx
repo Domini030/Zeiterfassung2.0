@@ -179,7 +179,7 @@ export function Sidebar({
                 type="button"
                 onClick={onStopTimer}
                 title={`Laufende Aufgabe "${activeTimer.title}" stoppen`}
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-blue-700 px-2.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg ui-accent-btn px-2.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <Square className="h-3 w-3 shrink-0 fill-current" />
                 <span className="font-mono tabular-nums">{formatDuration(elapsedSeconds)}</span>
@@ -199,7 +199,7 @@ export function Sidebar({
               type="button"
               onClick={() => handleNav('invoices')}
               title="Rechnung erstellen"
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-slate-900 px-2.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg ui-accent-active px-2.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer"
             >
               <FilePlus2 className="h-3.5 w-3.5 shrink-0" />
               <span className="sm:hidden">Rechnung</span>

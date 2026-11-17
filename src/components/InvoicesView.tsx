@@ -1990,7 +1990,7 @@ export function InvoicesView({
                   </button>
 
                   {showPreviewMenu && (
-                    <div className="absolute left-0 top-full z-30 mt-1.5 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-[#3b2d5e] dark:bg-[#1e1730]">
+                    <div className="absolute left-0 top-full z-30 mt-1.5 w-60 max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-[#3b2d5e] dark:bg-[#1e1730]">
                       <button
                         type="button"
                         onClick={() => {
