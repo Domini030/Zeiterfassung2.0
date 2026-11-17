@@ -66,8 +66,10 @@ interface TimeTrackerViewProps {
     title: string;
     notes: string;
     nfcTaskId?: string | null;
-    source?: 'timer' | 'nfc';
+    source?: 'timer' | 'nfc' | 'geo';
     location?: LocationSnapshot | null;
+    entryType?: 'project' | 'internal';
+    internalCategory?: string;
   }) => void;
   onUpdateActiveTimerNotes?: (notes: string) => void;
   onUpdateActiveTimerLocation?: (location: LocationSnapshot | null) => void;
@@ -142,8 +144,17 @@ export function TimeTrackerView({
     setLiveNotes(activeTimer?.notes ?? '');
   }, [activeTimer?.id, activeTimer?.notes]);
 
+  const [startMode, setStartMode] = useState<'project' | 'internal'>('project');
+  const [internalCategory, setInternalCategory] = useState<string>(
+    company.internalCategories?.[0] ?? 'Kundenakquise'
+  );
+
   const [showManualForm, setShowManualForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
+  const [manualEntryType, setManualEntryType] = useState<'project' | 'internal'>('project');
+  const [manualInternalCat, setManualInternalCat] = useState<string>(
+    company.internalCategories?.[0] ?? 'Kundenakquise'
+  );
   const [manualDate, setManualDate] = useState(toInputDate());
   const [manualStart, setManualStart] = useState('09:00');
   const [manualEnd, setManualEnd] = useState('11:00');
@@ -158,6 +169,7 @@ export function TimeTrackerView({
 
   const [filterCustomerId, setFilterCustomerId] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'open' | 'billed'>('all');
+  const [filterActivityType, setFilterActivityType] = useState<'all' | 'project' | 'internal'>('all');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const effectiveCustomerId = customers.some((c) => c.id === customerId)
@@ -195,10 +207,16 @@ export function TimeTrackerView({
         if (filterStatus === 'billed' && entry.billedInvoiceId === null) {
           return false;
         }
+        if (filterActivityType === 'project' && (entry.entryType === 'internal' || !entry.customerId)) {
+          return false;
+        }
+        if (filterActivityType === 'internal' && entry.entryType !== 'internal' && entry.customerId) {
+          return false;
+        }
         return true;
       })
       .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
-  }, [timeEntries, filterCustomerId, filterStatus]);
+  }, [timeEntries, filterCustomerId, filterStatus, filterActivityType]);
 
   const unbilledTotalSeconds = useMemo(
     () =>
@@ -283,6 +301,24 @@ export function TimeTrackerView({
 
   const handleStartClick = (e: React.FormEvent) => {
     e.preventDefault();
+    if (startMode === 'internal') {
+      const cat = internalCategory.trim() || 'Sonstiges';
+      onStartTimer({
+        customerId: '',
+        productId: '',
+        title: title.trim() || cat,
+        notes: notes.trim(),
+        source: 'timer',
+        location: draftLocation,
+        entryType: 'internal',
+        internalCategory: cat,
+      });
+      setTitle('');
+      setNotes('');
+      setDraftLocation(null);
+      return;
+    }
+
     if (!effectiveCustomerId || !effectiveProductId) return;
     const prod = productMap.get(effectiveProductId);
     onStartTimer({
@@ -292,6 +328,7 @@ export function TimeTrackerView({
       notes: notes.trim(),
       source: 'timer',
       location: draftLocation,
+      entryType: 'project',
     });
     setTitle('');
     setNotes('');
@@ -300,6 +337,8 @@ export function TimeTrackerView({
 
   const openCreateManualForm = () => {
     setEditingEntry(null);
+    setManualEntryType('project');
+    setManualInternalCat(company.internalCategories?.[0] ?? 'Kundenakquise');
     setManualDate(toInputDate());
     setManualStart('09:00');
     setManualEnd('11:00');
@@ -314,6 +353,9 @@ export function TimeTrackerView({
 
   const openEditEntryForm = (entry: TimeEntry) => {
     setEditingEntry(entry);
+    const isInt = entry.entryType === 'internal' || !entry.customerId;
+    setManualEntryType(isInt ? 'internal' : 'project');
+    setManualInternalCat(entry.internalCategory || company.internalCategories?.[0] || 'Kundenakquise');
     setManualDate(toInputDate(new Date(entry.startTime)));
     setManualStart(toInputTime(entry.startTime));
     setManualEnd(toInputTime(entry.endTime));
@@ -329,7 +371,9 @@ export function TimeTrackerView({
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setManualError('');
-    if (!effectiveManualCustomerId || !effectiveManualProductId) {
+
+    const isInt = manualEntryType === 'internal';
+    if (!isInt && (!effectiveManualCustomerId || !effectiveManualProductId)) {
       setManualError('Bitte Kunde und Leistung auswählen.');
       return;
     }
@@ -347,41 +391,50 @@ export function TimeTrackerView({
       return;
     }
 
-    const prod = productMap.get(effectiveManualProductId);
+    const prod = isInt ? undefined : productMap.get(effectiveManualProductId);
+
     if (editingEntry) {
-      const productChanged = editingEntry.productId !== effectiveManualProductId;
+      const productChanged = !isInt && editingEntry.productId !== effectiveManualProductId;
       const updated: TimeEntry = {
         ...editingEntry,
-        customerId: effectiveManualCustomerId,
-        productId: effectiveManualProductId,
-        title: manualTitle.trim() || prod?.name || 'Arbeitszeit',
+        entryType: isInt ? 'internal' : 'project',
+        internalCategory: isInt ? manualInternalCat : undefined,
+        customerId: isInt ? '' : effectiveManualCustomerId,
+        productId: isInt ? '' : effectiveManualProductId,
+        title: manualTitle.trim() || (isInt ? manualInternalCat : (prod?.name || 'Arbeitszeit')),
         notes: manualNotes.trim(),
         startTime: startIso.toISOString(),
         endTime: endIso.toISOString(),
         durationSeconds: diffSec,
-        hourlyRateNet: productChanged
-          ? prod?.unitPriceNet ?? editingEntry.hourlyRateNet
-          : editingEntry.hourlyRateNet,
-        taxRate: productChanged
-          ? ((prod?.taxRate ?? editingEntry.taxRate) as TaxRate)
-          : editingEntry.taxRate,
-        billable: manualBillable,
+        hourlyRateNet: isInt
+          ? 0
+          : productChanged
+            ? prod?.unitPriceNet ?? editingEntry.hourlyRateNet
+            : editingEntry.hourlyRateNet,
+        taxRate: isInt
+          ? 19
+          : productChanged
+            ? ((prod?.taxRate ?? editingEntry.taxRate) as TaxRate)
+            : editingEntry.taxRate,
+        billable: isInt ? false : manualBillable,
       };
       onUpdateEntry(updated);
     } else {
       const entry: TimeEntry = {
         id: createId('time'),
-        customerId: effectiveManualCustomerId,
-        productId: effectiveManualProductId,
+        entryType: isInt ? 'internal' : 'project',
+        internalCategory: isInt ? manualInternalCat : undefined,
+        customerId: isInt ? '' : effectiveManualCustomerId,
+        productId: isInt ? '' : effectiveManualProductId,
         nfcTaskId: null,
-        title: manualTitle.trim() || prod?.name || 'Manuelle Buchung',
+        title: manualTitle.trim() || (isInt ? manualInternalCat : (prod?.name || 'Manuelle Buchung')),
         notes: manualNotes.trim(),
         startTime: startIso.toISOString(),
         endTime: endIso.toISOString(),
         durationSeconds: diffSec,
-        hourlyRateNet: prod?.unitPriceNet ?? 0,
+        hourlyRateNet: isInt ? 0 : (prod?.unitPriceNet ?? 0),
         taxRate: (prod?.taxRate ?? 19) as TaxRate,
-        billable: manualBillable,
+        billable: isInt ? false : manualBillable,
         billedInvoiceId: null,
         source: 'manual',
         createdAt: new Date().toISOString(),
@@ -457,6 +510,20 @@ export function TimeTrackerView({
   };
 
   const missingMasterData = customers.length === 0 || products.length === 0;
+  const internalCategoryOptions =
+    company.internalCategories && company.internalCategories.length > 0
+      ? company.internalCategories
+      : [
+          'Kundenakquise',
+          'Studio-Reinigung & Pflege',
+          'Buchhaltung & Administration',
+          'Weiterbildung',
+          'Marketing & Social Media',
+          'Werkstatt & Materialpflege',
+          'Sonstiges',
+        ];
+  const isActiveInternal =
+    activeTimer?.entryType === 'internal' || (activeTimer ? !activeTimer.customerId : false);
 
   return (
     <div className="space-y-6">
@@ -467,7 +534,7 @@ export function TimeTrackerView({
             Zeiterfassung
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Laufende Aufgaben erfassen, Zeiten manuell nachtragen und direkt abrechnen.
+            Kundenaufträge und interne Tätigkeiten live erfassen, nachtragen und auswerten.
           </p>
         </div>
 
@@ -494,8 +561,7 @@ export function TimeTrackerView({
                 openCreateManualForm();
               }
             }}
-            disabled={missingMasterData}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#211936] whitespace-nowrap shrink-0 cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#211936] whitespace-nowrap shrink-0 cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             Zeit nachtragen
@@ -503,7 +569,639 @@ export function TimeTrackerView({
         </div>
       </div>
 
-      {/* Overview Widgets Bar */}
+      {/* Manual / Edit Time Entry Form (right beneath header button when toggled) */}
+      {showManualForm && (
+        <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                {editingEntry ? 'Zeiteintrag bearbeiten' : 'Arbeitszeit manuell nachtragen'}
+              </h2>
+              <div className="inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setManualEntryType('project');
+                    setManualBillable(true);
+                  }}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                    manualEntryType === 'project'
+                      ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
+                  }`}
+                >
+                  Kundenauftrag
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setManualEntryType('internal');
+                    setManualBillable(false);
+                  }}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+                    manualEntryType === 'internal'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
+                  }`}
+                >
+                  Interne Tätigkeit (ohne Kunde)
+                </button>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setShowManualForm(false);
+                setEditingEntry(null);
+              }}
+              className="text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer"
+            >
+              Schließen
+            </button>
+          </div>
+          <form onSubmit={handleManualSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-6">
+            {manualEntryType === 'internal' ? (
+              <div className="md:col-span-4">
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Interne Kategorie (ohne Kunden &amp; ohne Rechnung)
+                </label>
+                <ThemedSelect
+                  value={manualInternalCat}
+                  onChange={setManualInternalCat}
+                  ariaLabel="Interne Kategorie"
+                  options={internalCategoryOptions.map((cat) => ({
+                    value: cat,
+                    label: cat,
+                  }))}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="md:col-span-2">
+                  <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                    Kunde
+                  </label>
+                  <ThemedSelect
+                    value={effectiveManualCustomerId}
+                    onChange={setManualCustomerId}
+                    disabled={customers.length === 0}
+                    options={customers.map((c) => ({
+                      value: c.id,
+                      label: c.companyName,
+                      hint: c.customerNumber,
+                    }))}
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                    Leistung
+                  </label>
+                  <ThemedSelect
+                    value={effectiveManualProductId}
+                    onChange={setManualProductId}
+                    disabled={products.length === 0}
+                    options={products.map((p) => ({
+                      value: p.id,
+                      label: `${p.name} (${formatCurrency(p.unitPriceNet)})`,
+                    }))}
+                  />
+                </div>
+              </>
+            )}
+            <div>
+              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                Datum
+              </label>
+              <input
+                type="date"
+                value={manualDate}
+                onChange={(e) => setManualDate(e.target.value)}
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Von
+                </label>
+                <input
+                  type="time"
+                  value={manualStart}
+                  onChange={(e) => setManualStart(e.target.value)}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Bis
+                </label>
+                <input
+                  type="time"
+                  value={manualEnd}
+                  onChange={(e) => setManualEnd(e.target.value)}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                />
+              </div>
+            </div>
+            <div className="md:col-span-3">
+              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                Tätigkeitsbeschreibung
+              </label>
+              <input
+                type="text"
+                value={manualTitle}
+                onChange={(e) => setManualTitle(e.target.value)}
+                placeholder={
+                  manualEntryType === 'internal'
+                    ? 'z. B. Studio reinigen, Kaltakquise, Belege sortieren...'
+                    : 'z. B. Kundenworkshop & Dokumentation'
+                }
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+              />
+            </div>
+            <div className="md:col-span-3">
+              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                {manualEntryType === 'internal'
+                  ? 'Notiz zur internen Aufgabe (optional)'
+                  : 'Notiz für Auswertung / Rechnung (optional)'}
+              </label>
+              <input
+                type="text"
+                value={manualNotes}
+                onChange={(e) => setManualNotes(e.target.value)}
+                placeholder="Details zur erbrachten Leistung..."
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+              />
+            </div>
+            {manualError && (
+              <p className="text-xs font-medium text-red-600 dark:text-red-400 md:col-span-6">
+                {manualError}
+              </p>
+            )}
+            <div className="flex flex-wrap items-center justify-between gap-3 md:col-span-6">
+              {manualEntryType === 'internal' ? (
+                <span className="text-xs text-amber-700 dark:text-amber-300">
+                  Interne Aufgaben sind nicht abrechenbar und erscheinen in Auswertungen &amp; PDF-Berichten.
+                </span>
+              ) : (
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={manualBillable}
+                    onChange={(e) => setManualBillable(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+                  />
+                  Abrechenbar (für Rechnungen verfügbar)
+                </label>
+              )}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowManualForm(false);
+                    setEditingEntry(null);
+                  }}
+                  className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                >
+                  {editingEntry ? 'Änderungen speichern' : 'Eintrag speichern'}
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
+      )}
+
+      {/* Dominant Chronometer / Start-Aufgabe Section (directly under header / Zeit nachtragen) */}
+      <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
+        {activeTimer ? (
+          <div className="space-y-4">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-blue-700 dark:text-violet-400">
+                  <span>
+                    {activeTimer.pausedAt
+                      ? 'Timer pausiert'
+                      : isActiveInternal
+                        ? 'Interne Aufgabe läuft'
+                        : activeTimer.source === 'nfc'
+                          ? 'Gestartet per NFC-Tag'
+                          : activeTimer.source === 'geo'
+                            ? 'Gestartet per Ortsregel'
+                            : 'Timer läuft'}
+                  </span>
+                  <span aria-hidden="true">·</span>
+                  {isActiveInternal ? (
+                    <>
+                      <span className="font-semibold text-amber-700 dark:text-amber-300">
+                        {activeTimer.internalCategory || 'Interne Tätigkeit'}
+                      </span>
+                      <span aria-hidden="true">·</span>
+                      <span className="text-slate-500 dark:text-slate-400">
+                        Nicht verrechenbar
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-slate-600 dark:text-slate-300">
+                        {customerMap.get(activeTimer.customerId)?.companyName ?? 'Kunde'}
+                      </span>
+                      <span aria-hidden="true">·</span>
+                      <span className="text-slate-600 dark:text-slate-300">
+                        {productMap.get(activeTimer.productId)?.name ?? 'Leistung'}
+                      </span>
+                    </>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
+                    {activeTimer.title}
+                  </h2>
+                  {isActiveInternal && (
+                    <span className="rounded bg-amber-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-500/20 dark:text-amber-300">
+                      Intern
+                    </span>
+                  )}
+                  {notificationStatus?.enabled && (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 dark:border-violet-800 dark:bg-[#231b3b] dark:text-violet-300">
+                      <Bell className="h-3 w-3 text-violet-500" />
+                      Statusleiste aktiv
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+                  <span>
+                    Gestartet am {formatDateTimeDE(activeTimer.startTime)}
+                    {!isActiveInternal && (
+                      <>
+                        {' · '}
+                        <span className="font-mono tabular-nums">
+                          {formatCurrency(activeTimer.hourlyRateNet)}/Std.
+                        </span>
+                      </>
+                    )}
+                  </span>
+                  {activeTimer.location && (
+                    <span className="inline-flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {activeTimer.location.address ||
+                        `${activeTimer.location.lat.toFixed(4)}, ${activeTimer.location.lng.toFixed(4)}`}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <div
+                  className={`rounded-lg border px-5 py-3 font-mono text-3xl font-bold tracking-tight tabular-nums ${
+                    activeTimer.pausedAt
+                      ? 'border-amber-300 bg-amber-950/80 text-amber-200 dark:border-amber-700'
+                      : 'border-slate-200 bg-slate-900 text-white dark:border-[#3b2d5e] dark:bg-[#0e0a18]'
+                  }`}
+                >
+                  {formatDuration(elapsedSeconds)}
+                </div>
+                {activeTimer.pausedAt ? (
+                  <button
+                    type="button"
+                    onClick={onResumeTimer}
+                    className="inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200 dark:hover:bg-emerald-950 whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    <Play className="h-4 w-4 fill-current" />
+                    Fortsetzen
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={onPauseTimer}
+                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    <Pause className="h-4 w-4" />
+                    Pausieren
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={onStopTimer}
+                  className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <Square className="h-4 w-4 fill-current" />
+                  Stoppen &amp; Speichern
+                </button>
+                <button
+                  type="button"
+                  onClick={onDiscardTimer}
+                  className="rounded-lg border border-slate-200 px-3.5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-red-700 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] dark:hover:text-red-400 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  Verwerfen
+                </button>
+              </div>
+            </div>
+
+            {/* Live Notes & GPS Capture while timer is running */}
+            <div className="grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 dark:border-[#2e2349] lg:grid-cols-12">
+              <div className="lg:col-span-9">
+                <label className="mb-1 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400">
+                  <StickyNote className="h-3.5 w-3.5 text-violet-500" />
+                  {isActiveInternal
+                    ? 'Notizen während der laufenden internen Aufgabe'
+                    : 'Notizen während der laufenden Aufgabe (optional auf Rechnung ausgebbar)'}
+                </label>
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <textarea
+                    rows={2}
+                    value={liveNotes}
+                    onChange={(e) => setLiveNotes(e.target.value)}
+                    onBlur={() => {
+                      if (
+                        onUpdateActiveTimerNotes &&
+                        liveNotes.trim() !== (activeTimer.notes ?? '').trim()
+                      ) {
+                        onUpdateActiveTimerNotes(liveNotes.trim());
+                      }
+                    }}
+                    placeholder="Zwischenstand, verwendetes Material oder Hinweis festhalten..."
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                  />
+                  {onUpdateActiveTimerNotes &&
+                    liveNotes.trim() !== (activeTimer.notes ?? '').trim() && (
+                      <button
+                        type="button"
+                        onClick={() => onUpdateActiveTimerNotes(liveNotes.trim())}
+                        className="rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 self-end cursor-pointer"
+                      >
+                        Notiz sichern
+                      </button>
+                    )}
+                </div>
+              </div>
+              <div className="flex flex-col justify-end lg:col-span-3">
+                <button
+                  type="button"
+                  onClick={() => void handleCaptureLocationForActive()}
+                  disabled={locating}
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer"
+                >
+                  <LocateFixed className={`h-4 w-4 ${locating ? 'animate-spin' : ''}`} />
+                  {locating
+                    ? 'Ermittle GPS...'
+                    : activeTimer.location
+                      ? 'Standort aktualisieren'
+                      : 'Standort erfassen (GPS)'}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleStartClick} className="space-y-3.5">
+            {/* Mode Switcher: Kundenauftrag vs. Interne Tätigkeit */}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
+                <button
+                  type="button"
+                  onClick={() => setStartMode('project')}
+                  className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                    startMode === 'project'
+                      ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                  }`}
+                >
+                  Kundenauftrag
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStartMode('internal')}
+                  className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                    startMode === 'internal'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                  }`}
+                >
+                  Interne Tätigkeit (ohne Kunde)
+                </button>
+              </div>
+              {startMode === 'internal' && (
+                <span className="text-xs text-amber-700 dark:text-amber-300">
+                  Ohne Kunden &amp; ohne Rechnung · z. B. Kundenakquise oder Studio-Reinigung
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+              {startMode === 'internal' ? (
+                <div className="lg:col-span-5">
+                  <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                    Kategorie (Interne Arbeit)
+                  </label>
+                  <ThemedSelect
+                    value={internalCategory}
+                    onChange={setInternalCategory}
+                    ariaLabel="Interne Kategorie wählen"
+                    options={internalCategoryOptions.map((cat) => ({
+                      value: cat,
+                      label: cat,
+                    }))}
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="lg:col-span-3">
+                    <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                      Kunde
+                    </label>
+                    <ThemedSelect
+                      value={effectiveCustomerId}
+                      onChange={setCustomerId}
+                      disabled={customers.length === 0}
+                      options={customers.map((c) => ({
+                        value: c.id,
+                        label: c.companyName,
+                        hint: c.customerNumber,
+                      }))}
+                    />
+                  </div>
+
+                  <div className="lg:col-span-3">
+                    <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                      Leistung / Produkt
+                    </label>
+                    <ThemedSelect
+                      value={effectiveProductId}
+                      onChange={setProductId}
+                      disabled={products.length === 0}
+                      options={products.map((p) => ({
+                        value: p.id,
+                        label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`,
+                        hint: p.sku,
+                      }))}
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className={startMode === 'internal' ? 'lg:col-span-5' : 'lg:col-span-4'}>
+                <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Aufgabe / Tätigkeit
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder={
+                    startMode === 'internal'
+                      ? `z. B. ${internalCategory} — Details (optional)...`
+                      : 'z. B. Serverwartung oder API-Anbindung...'
+                  }
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-violet-500"
+                />
+              </div>
+
+              <div className="flex items-end lg:col-span-2">
+                <button
+                  type="submit"
+                  disabled={startMode === 'project' && missingMasterData}
+                  className={`inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer ${
+                    startMode === 'internal'
+                      ? 'bg-amber-600 hover:bg-amber-700'
+                      : 'bg-slate-900 hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500'
+                  }`}
+                >
+                  <Play className="h-4 w-4 fill-current" />
+                  Timer starten
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <input
+                type="text"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Startnotiz (optional — kann auch während der Aufgabe bearbeitet werden)..."
+                className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 focus:border-blue-600 focus:bg-white focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-100"
+              />
+              <button
+                type="button"
+                onClick={() => void handleCaptureLocationForStart()}
+                disabled={locating}
+                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                  draftLocation
+                    ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200'
+                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045]'
+                }`}
+              >
+                <MapPin className="h-3.5 w-3.5" />
+                {locating
+                  ? 'Ermittle Ort...'
+                  : draftLocation
+                    ? draftLocation.address || 'Ort erfasst'
+                    : company.autoCaptureLocation
+                      ? 'Auto-Ortung aktiv (manuell prüfen)'
+                      : 'Standort beim Start erfassen'}
+              </button>
+              {onCheckGeoFenceNow &&
+                (company.autoLocationStartEnabled || geoFenceRuleCount > 0) && (
+                  <button
+                    type="button"
+                    onClick={onCheckGeoFenceNow}
+                    disabled={checkingGeoFence}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700 hover:bg-violet-100 disabled:opacity-50 dark:border-violet-500/30 dark:bg-violet-500/15 dark:text-violet-300 whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    <Compass
+                      className={`h-3.5 w-3.5 ${checkingGeoFence ? 'animate-spin' : ''}`}
+                    />
+                    {checkingGeoFence ? 'Prüfe Ortsregeln...' : 'Ortsregeln prüfen'}
+                  </button>
+                )}
+            </div>
+          </form>
+        )}
+
+        {/* Quick-Start Widgets (NFC tasks + quick internal shortcuts) */}
+        {!activeTimer && (
+          <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 dark:border-[#2e2349]">
+            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+              <Nfc className="h-3.5 w-3.5 text-violet-400" />
+              Schnellstart:
+            </span>
+            {nfcTasks.length > 0
+              ? nfcTasks.slice(0, 3).map((task) => (
+                  <button
+                    key={task.id}
+                    type="button"
+                    onClick={() =>
+                      onStartTimer({
+                        customerId: task.customerId,
+                        productId: task.productId,
+                        title: task.title,
+                        notes: task.description,
+                        nfcTaskId: task.id,
+                        source: 'nfc',
+                        entryType: 'project',
+                      })
+                    }
+                    className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    ▶ {task.title}
+                  </button>
+                ))
+              : customers.length > 0 &&
+                serviceProducts.slice(0, 2).map((prod) => (
+                  <button
+                    key={prod.id}
+                    type="button"
+                    onClick={() =>
+                      onStartTimer({
+                        customerId: effectiveCustomerId,
+                        productId: prod.id,
+                        title: prod.name,
+                        notes: '',
+                        source: 'timer',
+                        entryType: 'project',
+                      })
+                    }
+                    className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    ▶ {prod.name}
+                  </button>
+                ))}
+            {internalCategoryOptions.slice(0, 2).map((cat) => (
+              <button
+                key={`quick-int-${cat}`}
+                type="button"
+                onClick={() =>
+                  onStartTimer({
+                    customerId: '',
+                    productId: '',
+                    title: cat,
+                    notes: '',
+                    source: 'timer',
+                    entryType: 'internal',
+                    internalCategory: cat,
+                  })
+                }
+                className="rounded-md border border-amber-200 bg-amber-50/70 px-2.5 py-1 text-xs font-medium text-amber-800 transition-colors hover:border-amber-300 hover:bg-amber-100 dark:border-amber-700/40 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20 whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                ▶ Intern: {cat}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => onNavigate('nfc')}
+              className="text-xs font-medium text-blue-700 hover:underline dark:text-violet-400 whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              NFC-Tags verwalten
+            </button>
+          </div>
+        )}
+      </section>
+
+      {/* Overview Widgets Bar (positioned beneath the task start box) */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {/* Widget 1: Tagesfortschritt */}
         {(() => {
@@ -590,7 +1288,7 @@ export function TimeTrackerView({
       {missingMasterData && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/40">
           <p className="text-sm font-medium text-amber-900 dark:text-amber-200">
-            Für die Zeiterfassung werden mindestens ein Kunde und eine Leistung benötigt.
+            Für Kundenaufträge werden mindestens ein Kunde und eine Leistung benötigt. Interne Tätigkeiten (z. B. Kundenakquise oder Studio-Reinigung) kannst du bereits sofort erfassen.
           </p>
           <div className="mt-3 flex flex-wrap gap-3">
             {customers.length === 0 && (
@@ -655,466 +1353,25 @@ export function TimeTrackerView({
         </div>
       )}
 
-      {/* Dominant Chronometer / Active Timer Section */}
-      <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
-        {activeTimer ? (
-          <div className="space-y-4">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-center gap-2 text-xs font-medium text-blue-700 dark:text-violet-400">
-                  <span>
-                    {activeTimer.pausedAt
-                      ? 'Timer pausiert'
-                      : activeTimer.source === 'nfc'
-                        ? 'Gestartet per NFC-Tag'
-                        : activeTimer.source === 'geo'
-                          ? 'Gestartet per Ortsregel'
-                          : 'Timer läuft'}
-                  </span>
-                  <span aria-hidden="true">·</span>
-                  <span className="text-slate-600 dark:text-slate-300">
-                    {customerMap.get(activeTimer.customerId)?.companyName ?? 'Kunde'}
-                  </span>
-                  <span aria-hidden="true">·</span>
-                  <span className="text-slate-600 dark:text-slate-300">
-                    {productMap.get(activeTimer.productId)?.name ?? 'Leistung'}
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <h2 className="font-display text-xl font-bold text-slate-900 dark:text-slate-100">
-                    {activeTimer.title}
-                  </h2>
-                  {notificationStatus?.enabled && (
-                    <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 dark:border-violet-800 dark:bg-[#231b3b] dark:text-violet-300">
-                      <Bell className="h-3 w-3 text-violet-500" />
-                      Statusleiste aktiv
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-                  <span>
-                    Gestartet am {formatDateTimeDE(activeTimer.startTime)} ·{' '}
-                    <span className="font-mono tabular-nums">
-                      {formatCurrency(activeTimer.hourlyRateNet)}/Std.
-                    </span>
-                  </span>
-                  {activeTimer.location && (
-                    <span className="inline-flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {activeTimer.location.address ||
-                        `${activeTimer.location.lat.toFixed(4)}, ${activeTimer.location.lng.toFixed(4)}`}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <div
-                  className={`rounded-lg border px-5 py-3 font-mono text-3xl font-bold tracking-tight tabular-nums ${
-                    activeTimer.pausedAt
-                      ? 'border-amber-300 bg-amber-950/80 text-amber-200 dark:border-amber-700'
-                      : 'border-slate-200 bg-slate-900 text-white dark:border-[#3b2d5e] dark:bg-[#0e0a18]'
-                  }`}
-                >
-                  {formatDuration(elapsedSeconds)}
-                </div>
-                {activeTimer.pausedAt ? (
-                  <button
-                    type="button"
-                    onClick={onResumeTimer}
-                    className="inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200 dark:hover:bg-emerald-950 whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    <Play className="h-4 w-4 fill-current" />
-                    Fortsetzen
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={onPauseTimer}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    <Pause className="h-4 w-4" />
-                    Pausieren
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={onStopTimer}
-                  className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
-                >
-                  <Square className="h-4 w-4 fill-current" />
-                  Stoppen &amp; Speichern
-                </button>
-                <button
-                  type="button"
-                  onClick={onDiscardTimer}
-                  className="rounded-lg border border-slate-200 px-3.5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-red-700 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] dark:hover:text-red-400 whitespace-nowrap shrink-0 cursor-pointer"
-                >
-                  Verwerfen
-                </button>
-              </div>
-            </div>
-
-            {/* Live Notes & GPS Capture while timer is running */}
-            <div className="grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 dark:border-[#2e2349] lg:grid-cols-12">
-              <div className="lg:col-span-9">
-                <label className="mb-1 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400">
-                  <StickyNote className="h-3.5 w-3.5 text-violet-500" />
-                  Notizen während der laufenden Aufgabe (fließen automatisch in Rechnung &amp; Statusleiste ein)
-                </label>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <textarea
-                    rows={2}
-                    value={liveNotes}
-                    onChange={(e) => setLiveNotes(e.target.value)}
-                    onBlur={() => {
-                      if (
-                        onUpdateActiveTimerNotes &&
-                        liveNotes.trim() !== (activeTimer.notes ?? '').trim()
-                      ) {
-                        onUpdateActiveTimerNotes(liveNotes.trim());
-                      }
-                    }}
-                    placeholder="Zwischenstand, verwendetes Material oder Abrechnungshinweis festhalten..."
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-                  />
-                  {onUpdateActiveTimerNotes &&
-                    liveNotes.trim() !== (activeTimer.notes ?? '').trim() && (
-                      <button
-                        type="button"
-                        onClick={() => onUpdateActiveTimerNotes(liveNotes.trim())}
-                        className="rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 self-end cursor-pointer"
-                      >
-                        Notiz sichern
-                      </button>
-                    )}
-                </div>
-              </div>
-              <div className="flex flex-col justify-end lg:col-span-3">
-                <button
-                  type="button"
-                  onClick={() => void handleCaptureLocationForActive()}
-                  disabled={locating}
-                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer"
-                >
-                  <LocateFixed className={`h-4 w-4 ${locating ? 'animate-spin' : ''}`} />
-                  {locating
-                    ? 'Ermittle GPS...'
-                    : activeTimer.location
-                      ? 'Standort aktualisieren'
-                      : 'Standort erfassen (GPS)'}
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <form onSubmit={handleStartClick} className="space-y-3">
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-              <div className="lg:col-span-3">
-                <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Kunde
-                </label>
-                <ThemedSelect
-                  value={effectiveCustomerId}
-                  onChange={setCustomerId}
-                  disabled={customers.length === 0}
-                  options={customers.map((c) => ({
-                    value: c.id,
-                    label: c.companyName,
-                    hint: c.customerNumber,
-                  }))}
-                />
-              </div>
-
-              <div className="lg:col-span-3">
-                <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Leistung / Produkt
-                </label>
-                <ThemedSelect
-                  value={effectiveProductId}
-                  onChange={setProductId}
-                  disabled={products.length === 0}
-                  options={products.map((p) => ({
-                    value: p.id,
-                    label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`,
-                    hint: p.sku,
-                  }))}
-                />
-              </div>
-
-              <div className="lg:col-span-4">
-                <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Aufgabe / Tätigkeit
-                </label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="z. B. Serverwartung oder API-Anbindung..."
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-violet-500"
-                />
-              </div>
-
-              <div className="flex items-end lg:col-span-2">
-                <button
-                  type="submit"
-                  disabled={missingMasterData}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
-                >
-                  <Play className="h-4 w-4 fill-current" />
-                  Timer starten
-                </button>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <input
-                type="text"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Startnotiz (optional — kann auch während der Aufgabe bearbeitet werden)..."
-                className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-800 focus:border-blue-600 focus:bg-white focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-100"
-              />
-              <button
-                type="button"
-                onClick={() => void handleCaptureLocationForStart()}
-                disabled={locating}
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                  draftLocation
-                    ? 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200'
-                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045]'
-                }`}
-              >
-                <MapPin className="h-3.5 w-3.5" />
-                {locating
-                  ? 'Ermittle Ort...'
-                  : draftLocation
-                    ? draftLocation.address || 'Ort erfasst'
-                    : company.autoCaptureLocation
-                      ? 'Auto-Ortung aktiv (manuell prüfen)'
-                      : 'Standort beim Start erfassen'}
-              </button>
-              {onCheckGeoFenceNow &&
-                (company.autoLocationStartEnabled || geoFenceRuleCount > 0) && (
-                  <button
-                    type="button"
-                    onClick={onCheckGeoFenceNow}
-                    disabled={checkingGeoFence}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700 hover:bg-violet-100 disabled:opacity-50 dark:border-violet-500/30 dark:bg-violet-500/15 dark:text-violet-300 whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    <Compass
-                      className={`h-3.5 w-3.5 ${checkingGeoFence ? 'animate-spin' : ''}`}
-                    />
-                    {checkingGeoFence ? 'Prüfe Ortsregeln...' : 'Ortsregeln prüfen'}
-                  </button>
-                )}
-            </div>
-          </form>
-        )}
-
-        {/* Quick-Start Widgets (NFC tasks + fallback quick product widgets) */}
-        {!activeTimer && (nfcTasks.length > 0 || (customers.length > 0 && serviceProducts.length > 0)) && (
-          <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 dark:border-[#2e2349]">
-            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <Nfc className="h-3.5 w-3.5 text-violet-400" />
-              Schnellstart-Widget:
-            </span>
-            {nfcTasks.length > 0
-              ? nfcTasks.slice(0, 4).map((task) => (
-                  <button
-                    key={task.id}
-                    type="button"
-                    onClick={() =>
-                      onStartTimer({
-                        customerId: task.customerId,
-                        productId: task.productId,
-                        title: task.title,
-                        notes: task.description,
-                        nfcTaskId: task.id,
-                        source: 'nfc',
-                      })
-                    }
-                    className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    ▶ {task.title}
-                  </button>
-                ))
-              : serviceProducts.slice(0, 3).map((prod) => (
-                  <button
-                    key={prod.id}
-                    type="button"
-                    onClick={() =>
-                      onStartTimer({
-                        customerId: effectiveCustomerId,
-                        productId: prod.id,
-                        title: prod.name,
-                        notes: '',
-                        source: 'timer',
-                      })
-                    }
-                    className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    ▶ {prod.name}
-                  </button>
-                ))}
-            <button
-              type="button"
-              onClick={() => onNavigate('nfc')}
-              className="text-xs font-medium text-blue-700 hover:underline dark:text-violet-400 whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              NFC-Tags verwalten
-            </button>
-          </div>
-        )}
-      </section>
-
-      {/* Manual / Edit Time Entry Form */}
-      {showManualForm && (
-        <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-              {editingEntry ? 'Zeiteintrag bearbeiten' : 'Arbeitszeit manuell nachtragen'}
-            </h2>
-            <button
-              type="button"
-              onClick={() => {
-                setShowManualForm(false);
-                setEditingEntry(null);
-              }}
-              className="text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer"
-            >
-              Schließen
-            </button>
-          </div>
-          <form onSubmit={handleManualSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-6">
-            <div className="md:col-span-2">
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Kunde
-              </label>
-              <ThemedSelect
-                value={effectiveManualCustomerId}
-                onChange={setManualCustomerId}
-                options={customers.map((c) => ({
-                  value: c.id,
-                  label: c.companyName,
-                  hint: c.customerNumber,
-                }))}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Leistung
-              </label>
-              <ThemedSelect
-                value={effectiveManualProductId}
-                onChange={setManualProductId}
-                options={products.map((p) => ({
-                  value: p.id,
-                  label: `${p.name} (${formatCurrency(p.unitPriceNet)})`,
-                }))}
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Datum
-              </label>
-              <input
-                type="date"
-                value={manualDate}
-                onChange={(e) => setManualDate(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Von
-                </label>
-                <input
-                  type="time"
-                  value={manualStart}
-                  onChange={(e) => setManualStart(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Bis
-                </label>
-                <input
-                  type="time"
-                  value={manualEnd}
-                  onChange={(e) => setManualEnd(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-                />
-              </div>
-            </div>
-            <div className="md:col-span-3">
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Tätigkeitsbeschreibung
-              </label>
-              <input
-                type="text"
-                value={manualTitle}
-                onChange={(e) => setManualTitle(e.target.value)}
-                placeholder="z. B. Kundenworkshop & Dokumentation"
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              />
-            </div>
-            <div className="md:col-span-3">
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Notiz für Rechnung (optional)
-              </label>
-              <input
-                type="text"
-                value={manualNotes}
-                onChange={(e) => setManualNotes(e.target.value)}
-                placeholder="Details zur erbrachten Leistung..."
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              />
-            </div>
-            {manualError && (
-              <p className="text-xs font-medium text-red-600 dark:text-red-400 md:col-span-6">
-                {manualError}
-              </p>
-            )}
-            <div className="flex flex-wrap items-center justify-between gap-3 md:col-span-6">
-              <label className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={manualBillable}
-                  onChange={(e) => setManualBillable(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-                />
-                Abrechenbar (für Rechnungen verfügbar)
-              </label>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowManualForm(false);
-                    setEditingEntry(null);
-                  }}
-                  className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer"
-                >
-                  Abbrechen
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
-                >
-                  {editingEntry ? 'Änderungen speichern' : 'Eintrag speichern'}
-                </button>
-              </div>
-            </div>
-          </form>
-        </section>
-      )}
-
       {/* Filter Bar + Batch Invoice Action */}
       <section className="rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]">
         <div className="flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-3">
+            <ThemedSelect
+              size="sm"
+              className="w-44"
+              value={filterActivityType}
+              onChange={(val) =>
+                setFilterActivityType(val as 'all' | 'project' | 'internal')
+              }
+              ariaLabel="Tätigkeitstyp filtern"
+              options={[
+                { value: 'all', label: 'Alle Tätigkeiten' },
+                { value: 'project', label: 'Kundenaufträge' },
+                { value: 'internal', label: 'Interne Arbeiten' },
+              ]}
+            />
+
             <ThemedSelect
               size="sm"
               className="w-52"
@@ -1212,7 +1469,7 @@ export function TimeTrackerView({
                   <th className="w-10 px-4 py-3">
                     <CheckSquare className="h-4 w-4 text-slate-400 dark:text-violet-400/60" />
                   </th>
-                  <th className="px-4 py-3">Aufgabe &amp; Kunde</th>
+                  <th className="px-4 py-3">Aufgabe &amp; Zuordnung</th>
                   <th className="px-4 py-3">Zeitraum</th>
                   <th className="px-4 py-3 text-right">Dauer</th>
                   <th className="px-4 py-3 text-right">Nettowert</th>
@@ -1222,10 +1479,13 @@ export function TimeTrackerView({
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-[#2e2349]">
                 {filteredEntries.map((entry) => {
-                  const customer = customerMap.get(entry.customerId);
-                  const product = productMap.get(entry.productId);
-                  const netValue = (entry.durationSeconds / 3600) * entry.hourlyRateNet;
-                  const canSelect = entry.billable && !entry.billedInvoiceId;
+                  const isInternal = entry.entryType === 'internal' || !entry.customerId;
+                  const customer = !isInternal ? customerMap.get(entry.customerId) : undefined;
+                  const product = !isInternal ? productMap.get(entry.productId) : undefined;
+                  const netValue = isInternal
+                    ? 0
+                    : (entry.durationSeconds / 3600) * entry.hourlyRateNet;
+                  const canSelect = !isInternal && entry.billable && !entry.billedInvoiceId;
                   const isSelected = selectedIds.includes(entry.id);
 
                   return (
@@ -1244,13 +1504,30 @@ export function TimeTrackerView({
                         />
                       </td>
                       <td className="px-4 py-3">
-                        <div className="font-medium text-slate-900 dark:text-slate-100">
-                          {entry.title}
+                        <div className="flex flex-wrap items-center gap-2 font-medium text-slate-900 dark:text-slate-100">
+                          <span>{entry.title}</span>
+                          {isInternal && (
+                            <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-500/20 dark:text-amber-300">
+                              Intern
+                            </span>
+                          )}
                         </div>
                         <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                          <span>{customer?.companyName ?? 'Unbekannter Kunde'}</span>
-                          <span aria-hidden="true">·</span>
-                          <span>{product?.name ?? 'Leistung'}</span>
+                          {isInternal ? (
+                            <>
+                              <span className="text-amber-700 dark:text-amber-300">
+                                {entry.internalCategory || 'Interne Tätigkeit'}
+                              </span>
+                              <span aria-hidden="true">·</span>
+                              <span>Kein Kunde / ohne Rechnung</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>{customer?.companyName ?? 'Unbekannter Kunde'}</span>
+                              <span aria-hidden="true">·</span>
+                              <span>{product?.name ?? 'Leistung'}</span>
+                            </>
+                          )}
                           {entry.source === 'nfc' && (
                             <>
                               <span aria-hidden="true">·</span>
@@ -1290,7 +1567,8 @@ export function TimeTrackerView({
                               )}
                             {company.homeBaseLocation &&
                               entry.travelDistanceKm === undefined &&
-                              !entry.billedInvoiceId && (
+                              !entry.billedInvoiceId &&
+                              !isInternal && (
                                 <button
                                   type="button"
                                   onClick={() => {
@@ -1326,10 +1604,14 @@ export function TimeTrackerView({
                         {formatDuration(entry.durationSeconds)}
                       </td>
                       <td className="px-4 py-3 text-right font-mono text-sm font-medium text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap">
-                        {entry.billable ? formatCurrency(netValue) : '—'}
+                        {!isInternal && entry.billable ? formatCurrency(netValue) : '—'}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
-                        {entry.billedInvoiceId ? (
+                        {isInternal ? (
+                          <span className="text-xs font-medium text-amber-700 dark:text-amber-300">
+                            Intern (ohne Ertrag)
+                          </span>
+                        ) : entry.billedInvoiceId ? (
                           <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
                             Abgerechnet
                           </span>

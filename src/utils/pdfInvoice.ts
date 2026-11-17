@@ -1168,3 +1168,434 @@ export async function printInvoiceView(invoiceNumber: string): Promise<void> {
   }
   window.print();
 }
+
+export interface FilteredReportOptions {
+  title?: string;
+  startDate?: string;
+  endDate?: string;
+  customerId?: string; // 'all' or specific id or 'internal_only'
+  productId?: string; // 'all' or specific id
+  taskTitle?: string; // 'all' or specific task title
+  entryType?: 'all' | 'project' | 'internal';
+  billableFilter?: 'all' | 'billable_only' | 'unbillable_only';
+}
+
+export function buildFilteredReportPdf(
+  db: AppDatabase,
+  options: FilteredReportOptions = {}
+): jsPDF {
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+  });
+
+  const pageWidth = 210;
+  const pageHeight = 297;
+  const marginLeft = 18;
+  const marginRight = 18;
+  const contentWidth = pageWidth - marginLeft - marginRight;
+  const company = db.company;
+  const font = getPdfFont(company);
+  const accentRgb = resolveInvoiceAccentRgb(company);
+  const [accentR, accentG, accentB] = accentRgb;
+
+  const customerMap = new Map(db.customers.map((c) => [c.id, c]));
+  const productMap = new Map(db.products.map((p) => [p.id, p]));
+
+  // 1. Filter entries
+  const filtered = db.timeEntries.filter((e) => {
+    const dateStr = e.startTime.slice(0, 10);
+    if (options.startDate && dateStr < options.startDate) return false;
+    if (options.endDate && dateStr > options.endDate) return false;
+
+    const isInternal = e.entryType === 'internal' || !e.customerId;
+    if (options.entryType === 'internal' && !isInternal) return false;
+    if (options.entryType === 'project' && isInternal) return false;
+
+    if (options.customerId === 'internal_only' && !isInternal) return false;
+    if (
+      options.customerId &&
+      options.customerId !== 'all' &&
+      options.customerId !== 'internal_only' &&
+      e.customerId !== options.customerId
+    ) {
+      return false;
+    }
+
+    if (options.productId && options.productId !== 'all' && e.productId !== options.productId) {
+      return false;
+    }
+
+    if (options.taskTitle && options.taskTitle !== 'all' && e.title !== options.taskTitle) {
+      return false;
+    }
+
+    if (options.billableFilter === 'billable_only' && !e.billable) return false;
+    if (options.billableFilter === 'unbillable_only' && e.billable) return false;
+
+    return true;
+  });
+
+  filtered.sort(
+    (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+  );
+
+  // 2. Metrics
+  const totalSec = filtered.reduce((acc, e) => acc + e.durationSeconds, 0);
+  const billableSec = filtered.reduce((acc, e) => acc + (e.billable ? e.durationSeconds : 0), 0);
+  const internalSec = filtered.reduce(
+    (acc, e) => acc + (e.entryType === 'internal' || !e.billable ? e.durationSeconds : 0),
+    0
+  );
+  const totalNet = filtered.reduce(
+    (acc, e) => acc + (e.billable ? (e.durationSeconds / 3600) * e.hourlyRateNet : 0),
+    0
+  );
+  const billablePct = totalSec > 0 ? (billableSec / totalSec) * 100 : 0;
+  const internalPct = totalSec > 0 ? (internalSec / totalSec) * 100 : 0;
+
+  // Header Bar
+  doc.setFillColor(accentR, accentG, accentB);
+  doc.rect(0, 0, pageWidth, 5.5, 'F');
+
+  let y = 16;
+  doc.setFont(font, 'bold');
+  doc.setFontSize(16);
+  doc.setTextColor(15, 23, 42);
+  doc.text(options.title || 'Grafischer Tätigkeits- & Auswertungsbericht', marginLeft, y);
+
+  doc.setFont(font, 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(100, 116, 139);
+  doc.text(company.companyName, pageWidth - marginRight, y, { align: 'right' });
+
+  y += 5.5;
+  const filterDescParts = [
+    options.startDate || options.endDate
+      ? `Zeitraum: ${options.startDate ? formatDateDE(options.startDate) : 'Beginn'} bis ${options.endDate ? formatDateDE(options.endDate) : 'Heute'}`
+      : 'Zeitraum: Gesamte Historie',
+    options.customerId && options.customerId !== 'all'
+      ? options.customerId === 'internal_only'
+        ? 'Filter: Nur interne Tätigkeiten'
+        : `Kunde: ${customerMap.get(options.customerId)?.companyName ?? options.customerId}`
+      : 'Kunden: Alle',
+    options.productId && options.productId !== 'all'
+      ? `Leistung: ${productMap.get(options.productId)?.name ?? options.productId}`
+      : null,
+    options.taskTitle && options.taskTitle !== 'all'
+      ? `Auftrag: ${options.taskTitle}`
+      : null,
+    options.billableFilter === 'billable_only'
+      ? 'Nur verrechenbar'
+      : options.billableFilter === 'unbillable_only'
+        ? 'Nur interne / nicht verrechenbare Zeiten'
+        : null,
+    `Erstellt am ${formatDateTimeDE(new Date().toISOString())}`,
+  ].filter(Boolean);
+
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 116, 139);
+  const filterDescLines = doc.splitTextToSize(filterDescParts.join('  ·  '), contentWidth);
+  doc.text(filterDescLines, marginLeft, y);
+  if (filterDescLines.length > 1) {
+    y += (filterDescLines.length - 1) * 3.5;
+  }
+
+  y += 6;
+  doc.setDrawColor(226, 232, 240);
+  doc.line(marginLeft, y, pageWidth - marginRight, y);
+  y += 5;
+
+  // 4 KPI Cards
+  const cardGap = 3.5;
+  const cardW = (contentWidth - cardGap * 3) / 4;
+  const cardH = 17;
+
+  const kpis = [
+    {
+      label: 'Gesamte Arbeitszeit',
+      value: `${formatNumber(totalSec / 3600, 2)} Std.`,
+      sub: `${filtered.length} Zeiteintrag(-e)`,
+      bg: [248, 250, 252],
+    },
+    {
+      label: 'Verrechenbare Projektzeit',
+      value: `${formatNumber(billableSec / 3600, 2)} Std.`,
+      sub: `${formatNumber(billablePct, 1)} % Quote`,
+      bg: [241, 245, 249],
+    },
+    {
+      label: 'Interne Tätigkeiten',
+      value: `${formatNumber(internalSec / 3600, 2)} Std.`,
+      sub: `${formatNumber(internalPct, 1)} % der Zeit`,
+      bg: [248, 250, 252],
+    },
+    {
+      label: 'Nettoumsatz (Erwirtschaftet)',
+      value: formatCurrency(totalNet),
+      sub: billableSec > 0 ? `Ø ${formatCurrency(totalNet / (billableSec / 3600))}/Std.` : '—',
+      bg: [241, 245, 249],
+    },
+  ];
+
+  kpis.forEach((kpi, idx) => {
+    const cx = marginLeft + idx * (cardW + cardGap);
+    doc.setFillColor(kpi.bg[0], kpi.bg[1], kpi.bg[2]);
+    doc.setDrawColor(226, 232, 240);
+    doc.roundedRect(cx, y, cardW, cardH, 1.5, 1.5, 'FD');
+
+    doc.setFont(font, 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(100, 116, 139);
+    doc.text(kpi.label, cx + 2.5, y + 4);
+
+    doc.setFont(font, 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(15, 23, 42);
+    doc.text(kpi.value, cx + 2.5, y + 10.5);
+
+    doc.setFont(font, 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(71, 85, 105);
+    doc.text(kpi.sub, cx + 2.5, y + 14.5);
+  });
+
+  y += cardH + 7;
+
+  // Visual Graphic: Distribution Bar
+  doc.setFont(font, 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(15, 23, 42);
+  doc.text('Grafische Auswertung: Zeitverteilung & Verhältnis', marginLeft, y);
+  y += 4;
+
+  const barHeight = 6.5;
+  doc.setFillColor(241, 245, 249);
+  doc.roundedRect(marginLeft, y, contentWidth, barHeight, 1.2, 1.2, 'F');
+
+  if (totalSec > 0) {
+    const billableW = Math.max(1, (billableSec / totalSec) * contentWidth);
+    doc.setFillColor(accentR, accentG, accentB);
+    doc.roundedRect(marginLeft, y, billableW, barHeight, 1.2, 1.2, 'F');
+  }
+
+  y += barHeight + 4;
+  doc.setFont(font, 'normal');
+  doc.setFontSize(7.5);
+
+  // Legend
+  doc.setFillColor(accentR, accentG, accentB);
+  doc.rect(marginLeft, y - 2.5, 3, 3, 'F');
+  doc.setTextColor(15, 23, 42);
+  doc.text(
+    `Verrechenbare Projektzeit: ${formatNumber(billableSec / 3600, 2)} Std. (${formatNumber(billablePct, 1)} %)`,
+    marginLeft + 4.5,
+    y
+  );
+
+  doc.setFillColor(148, 163, 184);
+  doc.rect(marginLeft + 75, y - 2.5, 3, 3, 'F');
+  doc.setTextColor(100, 116, 139);
+  doc.text(
+    `Interne / Nicht verrechenbare Zeit: ${formatNumber(internalSec / 3600, 2)} Std. (${formatNumber(internalPct, 1)} %)`,
+    marginLeft + 79.5,
+    y
+  );
+
+  y += 7;
+
+  // Breakdown by Customer & Internal Activities (Top 5 horizontal bars)
+  const groupHours = new Map<string, { label: string; hours: number; net: number; isInternal: boolean }>();
+  for (const e of filtered) {
+    const isInt = e.entryType === 'internal' || !e.customerId;
+    const key = isInt ? `int:${e.internalCategory || 'Interne Arbeit'}` : `cust:${e.customerId}`;
+    const cur = groupHours.get(key) || {
+      label: isInt
+        ? `[Intern] ${e.internalCategory || 'Interne Tätigkeit'}`
+        : (customerMap.get(e.customerId)?.companyName ?? 'Kunde'),
+      hours: 0,
+      net: 0,
+      isInternal: isInt,
+    };
+    cur.hours += e.durationSeconds / 3600;
+    if (e.billable) cur.net += (e.durationSeconds / 3600) * e.hourlyRateNet;
+    groupHours.set(key, cur);
+  }
+
+  const topGroups = Array.from(groupHours.values())
+    .sort((a, b) => b.hours - a.hours)
+    .slice(0, 5);
+
+  if (topGroups.length > 0) {
+    doc.setFont(font, 'bold');
+    doc.setFontSize(8.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text('Top Schwerpunkte nach Arbeitsstunden', marginLeft, y);
+    y += 4;
+
+    const maxH = Math.max(...topGroups.map((g) => g.hours), 0.1);
+    const chartBarMaxW = 85;
+
+    for (const grp of topGroups) {
+      doc.setFont(font, grp.isInternal ? 'normal' : 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(grp.isInternal ? 71 : 15, grp.isInternal ? 85 : 23, grp.isInternal ? 105 : 42);
+      doc.text(doc.splitTextToSize(grp.label, 50)[0], marginLeft, y + 2.8);
+
+      const bw = Math.max(2, (grp.hours / maxH) * chartBarMaxW);
+      if (grp.isInternal) {
+        doc.setFillColor(203, 213, 225);
+      } else {
+        doc.setFillColor(accentR, accentG, accentB);
+      }
+      doc.roundedRect(marginLeft + 52, y, bw, 3.8, 0.8, 0.8, 'F');
+
+      doc.setFont(font, 'bold');
+      doc.setFontSize(7);
+      doc.setTextColor(15, 23, 42);
+      const valStr = grp.net > 0
+        ? `${formatNumber(grp.hours, 2)} Std.  ·  ${formatCurrency(grp.net)}`
+        : `${formatNumber(grp.hours, 2)} Std.`;
+      doc.text(valStr, marginLeft + 54 + bw + 2, y + 2.8);
+
+      y += 5.2;
+    }
+    y += 4;
+  }
+
+  // Table of entries
+  const drawTableHeader = (startY: number): number => {
+    doc.setFillColor(241, 245, 249);
+    doc.roundedRect(marginLeft, startY, contentWidth, 6, 1, 1, 'F');
+    doc.setFont(font, 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(71, 85, 105);
+
+    doc.text('Datum / Zeit', marginLeft + 2, startY + 4.2);
+    doc.text('Typ / Kunde / Tätigkeit', marginLeft + 32, startY + 4.2);
+    doc.text('Dauer', marginLeft + 115, startY + 4.2, { align: 'right' });
+    doc.text('Status', marginLeft + 140, startY + 4.2);
+    doc.text('Netto (€)', pageWidth - marginRight - 2, startY + 4.2, { align: 'right' });
+    return startY + 8;
+  };
+
+  doc.setFont(font, 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(15, 23, 42);
+  doc.text(`Einzelaufstellung der Tätigkeiten (${filtered.length} Einträge)`, marginLeft, y);
+  y += 4;
+
+  y = drawTableHeader(y);
+
+  for (const entry of filtered) {
+    if (y > pageHeight - 22) {
+      doc.addPage();
+      // mini top bar on new pages
+      doc.setFillColor(accentR, accentG, accentB);
+      doc.rect(0, 0, pageWidth, 3, 'F');
+      y = drawTableHeader(14);
+    }
+
+    const isInt = entry.entryType === 'internal' || !entry.customerId;
+    const custName = isInt
+      ? `[Intern] ${entry.internalCategory || 'Tätigkeit'}`
+      : (customerMap.get(entry.customerId)?.companyName ?? 'Kunde');
+    const netVal = entry.billable
+      ? (entry.durationSeconds / 3600) * entry.hourlyRateNet
+      : 0;
+
+    doc.setFont(font, 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text(
+      `${formatDateDE(entry.startTime).slice(0, 5)} ${toInputTime(entry.startTime)}`,
+      marginLeft + 2,
+      y
+    );
+
+    doc.setFont(font, isInt ? 'normal' : 'bold');
+    const labelLine = `${custName} · ${entry.title}`;
+    doc.text(doc.splitTextToSize(labelLine, 76)[0], marginLeft + 32, y);
+
+    doc.setFont(font, 'bold');
+    doc.text(formatDuration(entry.durationSeconds), marginLeft + 115, y, { align: 'right' });
+
+    doc.setFont(font, 'normal');
+    doc.setFontSize(6.5);
+    if (isInt) {
+      doc.setTextColor(100, 116, 139);
+      doc.text('Nicht abrechenbar', marginLeft + 125, y);
+    } else if (entry.billedInvoiceId) {
+      doc.setTextColor(16, 185, 129);
+      doc.text('Abgerechnet', marginLeft + 125, y);
+    } else {
+      doc.setTextColor(accentR, accentG, accentB);
+      doc.text('Offen', marginLeft + 125, y);
+    }
+
+    doc.setFont(font, 'bold');
+    doc.setFontSize(7.5);
+    doc.setTextColor(15, 23, 42);
+    doc.text(entry.billable ? formatCurrency(netVal) : '—', pageWidth - marginRight - 2, y, {
+      align: 'right',
+    });
+
+    let extraHeight = 0;
+    if (entry.notes || entry.location?.address) {
+      doc.setFont(font, 'normal');
+      doc.setFontSize(6.5);
+      doc.setTextColor(100, 116, 139);
+      const noteLine = [entry.notes, entry.location?.address ? `Ort: ${entry.location.address}` : null]
+        .filter(Boolean)
+        .join(' · ');
+      doc.text(doc.splitTextToSize(noteLine, 80)[0], marginLeft + 32, y + 3.2);
+      extraHeight = 3.6;
+    }
+
+    y += 4.5 + extraHeight;
+    doc.setDrawColor(241, 245, 249);
+    doc.line(marginLeft, y - 1, pageWidth - marginRight, y - 1);
+  }
+
+  // Footer on all pages
+  const totalPages = doc.getNumberOfPages();
+  for (let i = 1; i <= totalPages; i++) {
+    doc.setPage(i);
+    doc.setFont(font, 'normal');
+    doc.setFontSize(6.5);
+    doc.setTextColor(148, 163, 184);
+    doc.text(
+      `TaktWerk Auswertung · ${company.companyName} · Seite ${i} von ${totalPages}`,
+      pageWidth / 2,
+      pageHeight - 8,
+      { align: 'center' }
+    );
+  }
+
+  return doc;
+}
+
+export function getFilteredReportPdfBase64(
+  db: AppDatabase,
+  options: FilteredReportOptions = {}
+): string {
+  const doc = buildFilteredReportPdf(db, options);
+  return docToBase64(doc);
+}
+
+export async function downloadFilteredReportPdf(
+  db: AppDatabase,
+  options: FilteredReportOptions = {}
+): Promise<void> {
+  const doc = buildFilteredReportPdf(db, options);
+  await openOrSavePdfDoc(doc, `TaktWerk-Auswertung-${toInputDate()}.pdf`);
+}
+
+export async function shareFilteredReportPdf(
+  db: AppDatabase,
+  options: FilteredReportOptions = {}
+): Promise<void> {
+  const doc = buildFilteredReportPdf(db, options);
+  await shareOrSavePdfDoc(doc, `TaktWerk-Auswertung-${toInputDate()}.pdf`);
+}

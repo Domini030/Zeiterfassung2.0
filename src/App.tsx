@@ -1,7 +1,10 @@
 import { App as CapacitorApp } from '@capacitor/app';
 import {
   AlertCircle,
+  ArrowRight,
   CheckCircle2,
+  ChevronDown,
+  Clock,
   Cloud,
   FilePlus2,
   Info,
@@ -42,6 +45,7 @@ import type {
   NextcloudConfigInfo,
   NfcTask,
   Product,
+  RecurringExpense,
   RecurringInterval,
   RecurringInvoiceTemplate,
   TaxRate,
@@ -187,17 +191,48 @@ export default function App() {
     void checkNotificationStatus();
   }, [checkNotificationStatus]);
 
+  const [quickStartOpen, setQuickStartOpen] = useState(false);
+  const quickStartRef = useRef<HTMLDivElement | null>(null);
   const deepLinkHandledRef = useRef(false);
   const autoBackupCheckedRef = useRef(false);
   const reminderFiredKeyRef = useRef<string | null>(null);
   const geoCooldownRef = useRef<Map<string, number>>(new Map());
   const sectionHistoryRef = useRef<NavSection[]>([]);
-  const touchStartRef = useRef<{ x: number; y: number; ignore: boolean } | null>(null);
+  const touchStartRef = useRef<{
+    x: number;
+    y: number;
+    edge: 'left' | 'right';
+    time: number;
+  } | null>(null);
   const lastNfcTriggerRef = useRef<{ code: string; at: number } | null>(null);
   const dbRef = useRef<AppDatabase>(db);
   useEffect(() => {
     dbRef.current = db;
   }, [db]);
+
+  useEffect(() => {
+    if (!quickStartOpen) return;
+    const handleOutside = (event: MouseEvent | TouchEvent) => {
+      if (
+        quickStartRef.current &&
+        event.target instanceof Node &&
+        !quickStartRef.current.contains(event.target)
+      ) {
+        setQuickStartOpen(false);
+      }
+    };
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setQuickStartOpen(false);
+    };
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('touchstart', handleOutside);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleOutside);
+      document.removeEventListener('touchstart', handleOutside);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [quickStartOpen]);
 
   const navigateToSection = useCallback((target: NavSection, pushHistory = true) => {
     setSection((prev) => {
@@ -316,25 +351,28 @@ export default function App() {
       let nextActiveTimer: ActiveTimer | null = sourceDb.activeTimer;
 
       const finalizeActive = (timer: ActiveTimer) => {
+        const isInternal = timer.entryType === 'internal' || !timer.customerId;
         const duration = Math.max(
           1,
           Math.floor(getActiveTimerElapsedMs(timer, now.getTime()) / 1000)
         );
         const finished: TimeEntry = {
           id: createId('time'),
-          customerId: timer.customerId,
-          productId: timer.productId,
+          customerId: isInternal ? '' : timer.customerId,
+          productId: isInternal ? '' : timer.productId,
           nfcTaskId: timer.nfcTaskId,
           title: timer.title,
           notes: timer.notes,
           startTime: timer.startTime,
           endTime: nowIso,
           durationSeconds: duration,
-          hourlyRateNet: timer.hourlyRateNet,
-          taxRate: timer.taxRate,
-          billable: true,
+          hourlyRateNet: isInternal ? 0 : timer.hourlyRateNet,
+          taxRate: (isInternal ? 0 : timer.taxRate) as TaxRate,
+          billable: !isInternal,
           billedInvoiceId: null,
           source: timer.source,
+          entryType: isInternal ? 'internal' : 'project',
+          internalCategory: isInternal ? timer.internalCategory : undefined,
           location: timer.location ?? null,
           createdAt: nowIso,
         };
@@ -696,7 +734,9 @@ export default function App() {
   useEffect(() => {
     if (loading) return;
     const customerName = db.activeTimer
-      ? db.customers.find((c) => c.id === db.activeTimer!.customerId)?.companyName ?? ''
+      ? db.activeTimer.entryType === 'internal' || !db.activeTimer.customerId
+        ? `Intern${db.activeTimer.internalCategory ? ` · ${db.activeTimer.internalCategory}` : ''}`
+        : db.customers.find((c) => c.id === db.activeTimer!.customerId)?.companyName ?? ''
       : '';
     void syncActiveTimerNotification(db.activeTimer, customerName).then((status) => {
       if (status) {
@@ -810,28 +850,76 @@ export default function App() {
     title: string;
     notes: string;
     nfcTaskId?: string | null;
-    source?: 'timer' | 'nfc';
+    source?: 'timer' | 'nfc' | 'geo';
     location?: LocationSnapshot | null;
+    entryType?: 'project' | 'internal';
+    internalCategory?: string;
   }) => {
-    const product = db.products.find((p) => p.id === payload.productId);
-    const nowIso = new Date().toISOString();
+    const currentDb = dbRef.current;
+    const isInternal = payload.entryType === 'internal' || !payload.customerId;
+    const product = isInternal
+      ? undefined
+      : currentDb.products.find((p) => p.id === payload.productId);
+    const now = new Date();
+    const nowIso = now.toISOString();
+
+    let nextTimeEntries = currentDb.timeEntries;
+    let stoppedPreviousTitle = '';
+    if (currentDb.activeTimer) {
+      const prev = currentDb.activeTimer;
+      const prevInternal = prev.entryType === 'internal' || !prev.customerId;
+      const prevDuration = Math.max(
+        1,
+        Math.floor(getActiveTimerElapsedMs(prev, now.getTime()) / 1000)
+      );
+      const finishedPrev: TimeEntry = {
+        id: createId('time'),
+        customerId: prevInternal ? '' : prev.customerId,
+        productId: prevInternal ? '' : prev.productId,
+        nfcTaskId: prev.nfcTaskId,
+        title: prev.title,
+        notes: prev.notes,
+        startTime: prev.startTime,
+        endTime: nowIso,
+        durationSeconds: prevDuration,
+        hourlyRateNet: prevInternal ? 0 : prev.hourlyRateNet,
+        taxRate: (prevInternal ? 0 : prev.taxRate) as TaxRate,
+        billable: !prevInternal,
+        billedInvoiceId: null,
+        source: prev.source,
+        entryType: prevInternal ? 'internal' : 'project',
+        internalCategory: prevInternal ? prev.internalCategory : undefined,
+        location: prev.location ?? null,
+        createdAt: nowIso,
+      };
+      nextTimeEntries = [finishedPrev, ...nextTimeEntries];
+      stoppedPreviousTitle = prev.title;
+      pushFinishedEntryToNextcloudCalendar(finishedPrev);
+    }
+
     const timer: ActiveTimer = {
       id: createId('timer'),
-      customerId: payload.customerId,
-      productId: payload.productId,
+      customerId: isInternal ? '' : payload.customerId,
+      productId: isInternal ? '' : payload.productId,
       nfcTaskId: payload.nfcTaskId ?? null,
       title: payload.title,
       notes: payload.notes,
       startTime: nowIso,
       pausedAt: null,
       accumulatedPausedMs: 0,
-      hourlyRateNet: product?.unitPriceNet ?? 0,
-      taxRate: (product?.taxRate ?? 19) as TaxRate,
+      hourlyRateNet: isInternal ? 0 : (product?.unitPriceNet ?? 0),
+      taxRate: (isInternal ? 0 : (product?.taxRate ?? 19)) as TaxRate,
       source: payload.source ?? 'timer',
+      entryType: isInternal ? 'internal' : 'project',
+      internalCategory: isInternal ? (payload.internalCategory || 'Sonstiges') : undefined,
       location: payload.location ?? null,
     };
-    void persistDb({ ...db, activeTimer: timer });
-    notify(`Timer gestartet: ${timer.title}`);
+    void persistDb({ ...currentDb, timeEntries: nextTimeEntries, activeTimer: timer });
+    notify(
+      stoppedPreviousTitle
+        ? `"${stoppedPreviousTitle}" gespeichert · Gestartet: ${timer.title}`
+        : `Timer gestartet: ${timer.title}`
+    );
     if (!payload.location) {
       attachAutoLocationToTimer(timer.id);
     }
@@ -880,9 +968,11 @@ export default function App() {
       Math.floor(getActiveTimerElapsedMs(active, now.getTime()) / 1000)
     );
 
+    const isInternal = active.entryType === 'internal' || !active.customerId;
     let travelDistanceKm: number | undefined;
     let travelCostNet: number | undefined;
     if (
+      !isInternal &&
       currentDb.company.autoCalculateTravelOnStop &&
       currentDb.company.homeBaseLocation &&
       active.location
@@ -899,19 +989,21 @@ export default function App() {
 
     const entry: TimeEntry = {
       id: createId('time'),
-      customerId: active.customerId,
-      productId: active.productId,
+      customerId: isInternal ? '' : active.customerId,
+      productId: isInternal ? '' : active.productId,
       nfcTaskId: active.nfcTaskId,
       title: active.title,
       notes: active.notes,
       startTime: active.startTime,
       endTime: now.toISOString(),
       durationSeconds,
-      hourlyRateNet: active.hourlyRateNet,
-      taxRate: active.taxRate,
-      billable: true,
+      hourlyRateNet: isInternal ? 0 : active.hourlyRateNet,
+      taxRate: (isInternal ? 0 : active.taxRate) as TaxRate,
+      billable: !isInternal,
       billedInvoiceId: null,
       source: active.source,
+      entryType: isInternal ? 'internal' : 'project',
+      internalCategory: isInternal ? active.internalCategory : undefined,
       location: active.location ?? null,
       travelDistanceKm,
       travelCostNet,
@@ -926,9 +1018,11 @@ export default function App() {
     });
     pushFinishedEntryToNextcloudCalendar(entry);
     notify(
-      travelCostNet && travelCostNet > 0
-        ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.`
-        : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`
+      isInternal
+        ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).`
+        : travelCostNet && travelCostNet > 0
+          ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.`
+          : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`
     );
   }, [notify, persistDb, pushFinishedEntryToNextcloudCalendar]);
 
@@ -1158,10 +1252,13 @@ export default function App() {
       setNotificationStatus(status);
       if (status.enabled) {
         notify('Benachrichtigungen aktiviert – Timer wird nun in der Statusleiste angezeigt.');
-        const customerName = dbRef.current.activeTimer
-          ? dbRef.current.customers.find((c) => c.id === dbRef.current.activeTimer!.customerId)?.companyName ?? ''
+        const activeT = dbRef.current.activeTimer;
+        const customerName = activeT
+          ? activeT.entryType === 'internal' || !activeT.customerId
+            ? `Intern${activeT.internalCategory ? ` · ${activeT.internalCategory}` : ''}`
+            : dbRef.current.customers.find((c) => c.id === activeT.customerId)?.companyName ?? ''
           : '';
-        void syncActiveTimerNotification(dbRef.current.activeTimer, customerName);
+        void syncActiveTimerNotification(activeT, customerName);
       }
     }
   }, [notify]);
@@ -1424,6 +1521,31 @@ export default function App() {
     notify('Unterschrift entfernt.');
   };
 
+  const handleToggleArchiveInvoice = (invoiceId: string) => {
+    const currentDb = dbRef.current;
+    const target = currentDb.invoices.find((inv) => inv.id === invoiceId);
+    if (!target) return;
+    const willArchive = !target.isArchived;
+    void persistDb({
+      ...currentDb,
+      invoices: currentDb.invoices.map((inv) =>
+        inv.id === invoiceId
+          ? {
+              ...inv,
+              isArchived: willArchive,
+              archivedAt: willArchive ? new Date().toISOString() : null,
+            }
+          : inv
+      ),
+    });
+    const docLabel = target.documentType === 'quote' ? 'Angebot' : 'Rechnung';
+    notify(
+      willArchive
+        ? `${docLabel} ${target.invoiceNumber} archiviert.`
+        : `${docLabel} ${target.invoiceNumber} aus dem Archiv wiederhergestellt.`
+    );
+  };
+
   const handleDeleteInvoice = (invoiceId: string) => {
     const currentDb = dbRef.current;
     const target = currentDb.invoices.find((inv) => inv.id === invoiceId);
@@ -1513,6 +1635,120 @@ export default function App() {
       ),
     });
     notify(`Beleg nach Nextcloud (${res.path}) hochgeladen.`);
+  };
+
+  const handleAddRecurringExpense = (item: RecurringExpense) => {
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      recurringExpenses: [item, ...(currentDb.recurringExpenses ?? [])],
+    });
+    notify(`Fixkosten-Eintrag "${item.vendor}" gespeichert.`);
+  };
+
+  const handleUpdateRecurringExpense = (item: RecurringExpense) => {
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      recurringExpenses: (currentDb.recurringExpenses ?? []).map((r) =>
+        r.id === item.id ? item : r
+      ),
+    });
+    notify(`Fixkosten-Eintrag "${item.vendor}" aktualisiert.`);
+  };
+
+  const handleDeleteRecurringExpense = (id: string) => {
+    const currentDb = dbRef.current;
+    void persistDb({
+      ...currentDb,
+      recurringExpenses: (currentDb.recurringExpenses ?? []).filter((r) => r.id !== id),
+    });
+    notify('Wiederkehrende Ausgabe gelöscht.');
+  };
+
+  const handleBookRecurringExpense = (id: string) => {
+    const currentDb = dbRef.current;
+    const rec = (currentDb.recurringExpenses ?? []).find((r) => r.id === id);
+    if (!rec) return;
+    const today = toInputDate();
+    const bookDate = rec.nextDueDate || today;
+    const newExpense: Expense = {
+      id: createId('exp'),
+      date: bookDate,
+      vendor: rec.vendor,
+      description: rec.description || `${rec.vendor} (${rec.category})`,
+      category: rec.category,
+      netAmount: rec.netAmount,
+      taxRate: rec.taxRate,
+      grossAmount: rec.grossAmount,
+      expenseType: 'operating',
+      isRecurring: true,
+      recurringExpenseId: rec.id,
+      customerId: null,
+      billableToCustomer: false,
+      billedInvoiceId: null,
+      notes: rec.notes || '',
+      createdAt: new Date().toISOString(),
+    };
+    const nextDue = advanceRecurringDate(bookDate, rec.interval);
+    void persistDb({
+      ...currentDb,
+      expenses: [newExpense, ...(currentDb.expenses ?? [])],
+      recurringExpenses: (currentDb.recurringExpenses ?? []).map((r) =>
+        r.id === rec.id
+          ? { ...r, lastBookedDate: today, nextDueDate: nextDue }
+          : r
+      ),
+    });
+    notify(`Fixkosten "${rec.vendor}" verbucht (nächste Fälligkeit: ${nextDue}).`);
+  };
+
+  const handleBookAllDueRecurringExpenses = () => {
+    const currentDb = dbRef.current;
+    const today = toInputDate();
+    const dueList = (currentDb.recurringExpenses ?? []).filter(
+      (r) => r.active && r.nextDueDate <= today
+    );
+    if (dueList.length === 0) {
+      notify('Aktuell sind keine wiederkehrenden Fixkosten fällig.');
+      return;
+    }
+    const created: Expense[] = [];
+    const updatedMap = new Map<string, RecurringExpense>();
+    for (const rec of dueList) {
+      const bookDate = rec.nextDueDate || today;
+      created.push({
+        id: createId('exp'),
+        date: bookDate,
+        vendor: rec.vendor,
+        description: rec.description || `${rec.vendor} (${rec.category})`,
+        category: rec.category,
+        netAmount: rec.netAmount,
+        taxRate: rec.taxRate,
+        grossAmount: rec.grossAmount,
+        expenseType: 'operating',
+        isRecurring: true,
+        recurringExpenseId: rec.id,
+        customerId: null,
+        billableToCustomer: false,
+        billedInvoiceId: null,
+        notes: rec.notes || '',
+        createdAt: new Date().toISOString(),
+      });
+      updatedMap.set(rec.id, {
+        ...rec,
+        lastBookedDate: today,
+        nextDueDate: advanceRecurringDate(bookDate, rec.interval),
+      });
+    }
+    void persistDb({
+      ...currentDb,
+      expenses: [...created, ...(currentDb.expenses ?? [])],
+      recurringExpenses: (currentDb.recurringExpenses ?? []).map(
+        (r) => updatedMap.get(r.id) ?? r
+      ),
+    });
+    notify(`${created.length} fällige Fixkosten-Buchung(en) eingetragen.`);
   };
 
   const handleSaveRecurringTemplate = (tpl: RecurringInvoiceTemplate) => {
@@ -1770,7 +2006,9 @@ export default function App() {
 
   const unpaidInvoiceCount = useMemo(
     () =>
-      db.invoices.filter((i) => i.status === 'Entwurf' || i.status === 'Gesendet').length,
+      db.invoices.filter(
+        (i) => !i.isArchived && (i.status === 'Entwurf' || i.status === 'Gesendet')
+      ).length,
     [db.invoices]
   );
 
@@ -1781,23 +2019,115 @@ export default function App() {
     ).length;
   }, [db.recurringInvoices]);
 
+  const recentQuickTasks = useMemo(() => {
+    const customerMap = new Map(db.customers.map((c) => [c.id, c.companyName]));
+    const productMap = new Map(db.products.map((p) => [p.id, p.name]));
+    const results: {
+      key: string;
+      entryType: 'project' | 'internal';
+      customerId: string;
+      productId: string;
+      internalCategory?: string;
+      title: string;
+      notes: string;
+      subtitle: string;
+    }[] = [];
+    const seen = new Set<string>();
+
+    const sortedEntries = [...db.timeEntries].sort(
+      (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()
+    );
+
+    for (const entry of sortedEntries) {
+      if (results.length >= 3) break;
+      const isInternal = entry.entryType === 'internal' || !entry.customerId;
+      const cleanTitle = entry.title.trim() || (isInternal ? 'Interne Arbeit' : 'Tätigkeit');
+      const key = isInternal
+        ? `internal|${(entry.internalCategory || '').toLowerCase()}|${cleanTitle.toLowerCase()}`
+        : `project|${entry.customerId}|${entry.productId}|${cleanTitle.toLowerCase()}`;
+      if (seen.has(key)) continue;
+      if (!isInternal && !customerMap.has(entry.customerId)) continue;
+      seen.add(key);
+      results.push({
+        key,
+        entryType: isInternal ? 'internal' : 'project',
+        customerId: isInternal ? '' : entry.customerId,
+        productId: isInternal ? '' : entry.productId,
+        internalCategory: isInternal ? entry.internalCategory || 'Sonstiges' : undefined,
+        title: cleanTitle,
+        notes: '',
+        subtitle: isInternal
+          ? `Intern · ${entry.internalCategory || 'Ohne Kunde'}`
+          : [customerMap.get(entry.customerId), productMap.get(entry.productId)]
+              .filter(Boolean)
+              .join(' · '),
+      });
+    }
+
+    // Fallback to NFC tasks if fewer than 3 recent time entries exist
+    if (results.length < 3) {
+      for (const task of db.nfcTasks) {
+        if (results.length >= 3) break;
+        const key = `project|${task.customerId}|${task.productId}|${task.title.trim().toLowerCase()}`;
+        if (seen.has(key) || !customerMap.has(task.customerId)) continue;
+        seen.add(key);
+        results.push({
+          key,
+          entryType: 'project',
+          customerId: task.customerId,
+          productId: task.productId,
+          title: task.title,
+          notes: task.description || '',
+          subtitle: [customerMap.get(task.customerId), productMap.get(task.productId)]
+            .filter(Boolean)
+            .join(' · '),
+        });
+      }
+    }
+
+    return results;
+  }, [db.timeEntries, db.nfcTasks, db.customers, db.products]);
+
   const isEmptyWorkspace =
     db.customers.length === 0 &&
     db.products.length === 0 &&
     db.timeEntries.length === 0 &&
     db.invoices.length === 0;
 
+  // Strict outer-edge swipe navigation (only arms within 28px of left/right viewport edge
+  // and never while a modal, signature canvas, or interactive element is active).
   const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = null;
     if (db.company.swipeNavigationEnabled === false) return;
     if (e.touches.length !== 1) return;
+    if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
+
     const target = e.target as HTMLElement | null;
-    const ignore = Boolean(
-      target?.closest('input, textarea, select, [data-no-swipe], .overflow-x-auto')
-    );
+    if (
+      target?.closest(
+        'canvas, [role="dialog"], [aria-modal="true"], [data-no-swipe], input, textarea, select, button, a, .overflow-x-auto'
+      )
+    ) {
+      return;
+    }
+
+    const startX = e.touches[0].clientX;
+    const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
+    const EDGE_PX = 28;
+    const edge: 'left' | 'right' | null =
+      startX <= EDGE_PX
+        ? 'left'
+        : viewportWidth > 0 && startX >= viewportWidth - EDGE_PX
+          ? 'right'
+          : null;
+
+    if (!edge) return;
+
     touchStartRef.current = {
-      x: e.touches[0].clientX,
+      x: startX,
       y: e.touches[0].clientY,
-      ignore,
+      edge,
+      time: Date.now(),
     };
   };
 
@@ -1805,22 +2135,27 @@ export default function App() {
     if (db.company.swipeNavigationEnabled === false) return;
     const start = touchStartRef.current;
     touchStartRef.current = null;
-    if (!start || start.ignore || e.changedTouches.length !== 1) return;
+    if (!start || e.changedTouches.length !== 1) return;
+    if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
 
+    const elapsed = Date.now() - start.time;
     const dx = e.changedTouches[0].clientX - start.x;
     const dy = e.changedTouches[0].clientY - start.y;
-    if (Math.abs(dx) < 80 || Math.abs(dy) > 55) return;
 
-    if (dx > 0) {
-      // Swipe Right = Back in history, or previous section
+    if (elapsed > 750) return;
+    if (Math.abs(dy) > 60) return;
+    if (Math.abs(dx) < Math.abs(dy) * 1.8) return;
+
+    if (start.edge === 'left' && dx >= 75) {
+      // Edge Swipe Right from left screen border = Back in history, or previous section
       if (sectionHistoryRef.current.length > 0) {
         goBackSection();
       } else {
         const idx = NAV_ORDER.indexOf(section);
         if (idx > 0) navigateToSection(NAV_ORDER[idx - 1], false);
       }
-    } else {
-      // Swipe Left = Next section
+    } else if (start.edge === 'right' && dx <= -75) {
+      // Edge Swipe Left from right screen border = Next section
       const idx = NAV_ORDER.indexOf(section);
       if (idx >= 0 && idx < NAV_ORDER.length - 1) {
         navigateToSection(NAV_ORDER[idx + 1]);
@@ -1848,17 +2183,118 @@ export default function App() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top Bar Contract */}
-        <header className="no-print flex h-16 items-center justify-between gap-8 border-b border-slate-200 bg-white px-6 dark:border-[#2e2349] dark:bg-[#171126]">
+        <header className="no-print flex h-16 items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 sm:px-6 dark:border-[#2e2349] dark:bg-[#171126]">
           <div className="flex items-center gap-2 text-sm min-w-0">
-            <span className="text-slate-400 dark:text-violet-300/60">TaktWerk</span>
-            <span className="text-slate-300 dark:text-violet-400/40">/</span>
+            <span className="hidden sm:inline text-slate-400 dark:text-violet-300/60">TaktWerk</span>
+            <span className="hidden sm:inline text-slate-300 dark:text-violet-400/40">/</span>
             <span className="truncate font-medium text-slate-900 dark:text-slate-100">
               {SECTION_TITLES[section]}
             </span>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <PWAInstallButton />
+
+            {/* Header Quick-Start Dropdown (Last 3 Tasks) */}
+            <div ref={quickStartRef} className="relative" data-no-swipe="true">
+              <button
+                type="button"
+                onClick={() => setQuickStartOpen((prev) => !prev)}
+                aria-expanded={quickStartOpen}
+                aria-haspopup="menu"
+                title="Auftrag schnell starten (letzte 3 Aufträge)"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Play className="h-3.5 w-3.5 fill-current text-blue-700 dark:text-violet-400" />
+                <span className="hidden sm:inline">Auftrag starten</span>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 text-slate-400 transition-transform ${
+                    quickStartOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              {quickStartOpen && (
+                <div
+                  role="menu"
+                  data-no-swipe="true"
+                  className="absolute right-0 top-full z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]"
+                >
+                  <div className="flex items-center justify-between px-2.5 py-1.5">
+                    <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                      Letzte 3 Aufträge
+                    </span>
+                    <Clock className="h-3.5 w-3.5 text-slate-400" />
+                  </div>
+
+                  {db.activeTimer && (
+                    <div className="mx-2 mb-2 rounded-lg border border-amber-200/80 bg-amber-50/80 px-2.5 py-1.5 text-[11px] text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200">
+                      Laufender Timer wird beim Wechsel automatisch gespeichert.
+                    </div>
+                  )}
+
+                  {recentQuickTasks.length === 0 ? (
+                    <div className="px-2.5 py-3 text-xs text-slate-500 dark:text-slate-400">
+                      Noch keine gestarteten Aufträge vorhanden. Starte deinen ersten Auftrag in der Zeiterfassung.
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      {recentQuickTasks.map((task) => (
+                        <button
+                          key={task.key}
+                          type="button"
+                          role="menuitem"
+                          onClick={() => {
+                            setQuickStartOpen(false);
+                            handleStartTimer({
+                              customerId: task.customerId,
+                              productId: task.productId,
+                              title: task.title,
+                              notes: task.notes,
+                              source: 'timer',
+                              entryType: task.entryType,
+                              internalCategory: task.internalCategory,
+                            });
+                          }}
+                          className="flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-slate-100 dark:hover:bg-[#241b3a] cursor-pointer"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="truncate text-xs font-semibold text-slate-900 dark:text-slate-100">
+                              {task.title}
+                            </div>
+                            <div className="mt-0.5 flex items-center gap-1.5 truncate text-[11px] text-slate-500 dark:text-slate-400">
+                              {task.entryType === 'internal' && (
+                                <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
+                                  Intern
+                                </span>
+                              )}
+                              <span className="truncate">{task.subtitle}</span>
+                            </div>
+                          </div>
+                          <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-50 text-blue-700 dark:bg-violet-950/70 dark:text-violet-300">
+                            <Play className="h-3.5 w-3.5 fill-current" />
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="mt-2 border-t border-slate-100 pt-1.5 dark:border-[#2e2349]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuickStartOpen(false);
+                        navigateToSection('tracker');
+                      }}
+                      className="flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#241b3a] cursor-pointer"
+                    >
+                      <span>Neuen Auftrag konfigurieren</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <button
               type="button"
@@ -1882,20 +2318,20 @@ export default function App() {
               <button
                 type="button"
                 onClick={handleStopTimer}
-                className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <Square className="h-3.5 w-3.5 fill-current" />
                 <span className="font-mono tabular-nums">{formatDuration(elapsedSeconds)}</span>
-                <span>Stoppen</span>
+                <span className="hidden sm:inline">Stoppen</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => navigateToSection('invoices')}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
               >
                 <FilePlus2 className="h-3.5 w-3.5" />
-                Rechnung erstellen
+                <span className="hidden sm:inline">Rechnung erstellen</span>
               </button>
             )}
           </div>
@@ -1917,7 +2353,7 @@ export default function App() {
               className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${
                 toast.isError
                   ? 'bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300'
-                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht/i.test(
+                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(
                         toast.text
                       )
                     ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'
@@ -1926,7 +2362,7 @@ export default function App() {
             >
               {toast.isError ? (
                 <AlertCircle className="h-4 w-4" />
-              ) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht/i.test(
+              ) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(
                   toast.text
                 ) ? (
                 <CheckCircle2 className="h-4 w-4" />
@@ -1938,7 +2374,7 @@ export default function App() {
               <div className="text-[11px] font-bold uppercase tracking-wider opacity-70">
                 {toast.isError
                   ? 'Achtung'
-                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht/i.test(
+                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(
                         toast.text
                       )
                     ? 'Gespeichert'
@@ -2091,6 +2527,10 @@ export default function App() {
                   customers={db.customers}
                   products={db.products}
                   timeEntries={db.timeEntries}
+                  expenses={db.expenses ?? []}
+                  recurringExpenses={db.recurringExpenses ?? []}
+                  db={db}
+                  onNotify={notify}
                 />
               )}
 
@@ -2150,6 +2590,7 @@ export default function App() {
                   onMarkInvoiceUploaded={handleMarkInvoiceUploaded}
                   onSaveSignature={handleSaveSignature}
                   onDeleteSignature={handleDeleteSignature}
+                  onToggleArchiveInvoice={handleToggleArchiveInvoice}
                   onDeleteInvoice={handleDeleteInvoice}
                   onNotify={notify}
                 />
@@ -2158,12 +2599,18 @@ export default function App() {
               {section === 'expenses' && (
                 <ExpensesView
                   expenses={db.expenses ?? []}
+                  recurringExpenses={db.recurringExpenses ?? []}
                   customers={db.customers}
                   nextcloudConfigured={nextcloud.configured}
                   onAddExpense={handleAddExpense}
                   onUpdateExpense={handleUpdateExpense}
                   onDeleteExpense={handleDeleteExpense}
                   onUploadExpenseReceipt={handleUploadExpenseReceipt}
+                  onAddRecurringExpense={handleAddRecurringExpense}
+                  onUpdateRecurringExpense={handleUpdateRecurringExpense}
+                  onDeleteRecurringExpense={handleDeleteRecurringExpense}
+                  onBookRecurringExpense={handleBookRecurringExpense}
+                  onBookAllDueRecurringExpenses={handleBookAllDueRecurringExpenses}
                   onNotify={(msg, tone) => notify(msg, tone === 'warning')}
                 />
               )}

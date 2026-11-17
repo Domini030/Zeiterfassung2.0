@@ -154,8 +154,19 @@ export function SignaturePadModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/65 p-3 backdrop-blur-sm sm:p-4">
-      <div className="flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#342653] dark:bg-[#19122c]">
+    <div
+      role="dialog"
+      aria-modal="true"
+      data-no-swipe="true"
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+      onTouchEnd={(e) => e.stopPropagation()}
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/65 p-3 backdrop-blur-sm sm:p-4"
+    >
+      <div
+        data-no-swipe="true"
+        className="flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#342653] dark:bg-[#19122c]"
+      >
         <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2e234a]">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300">
@@ -208,6 +219,10 @@ export function SignaturePadModal({
                 ref={canvasRef}
                 width={720}
                 height={240}
+                data-no-swipe="true"
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchMove={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => e.stopPropagation()}
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
                 onPointerUp={handlePointerUp}

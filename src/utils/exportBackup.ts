@@ -1,7 +1,9 @@
 import * as XLSX from 'xlsx';
+import JSZip from 'jszip';
 import type {
   AppDatabase,
   AutoBackupFormat,
+  CompanyProfile,
   Customer,
   Invoice,
   Product,
@@ -43,10 +45,15 @@ export function timeEntriesToCsv(
   const rows = [...entries]
     .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
     .map((e) => {
-      const cust = customerMap.get(e.customerId)?.companyName ?? '';
-      const prod = productMap.get(e.productId)?.name ?? '';
+      const isInternal = e.entryType === 'internal' || !e.customerId;
+      const cust = isInternal
+        ? 'Intern (nicht verrechenbar)'
+        : customerMap.get(e.customerId)?.companyName ?? '';
+      const prod = isInternal
+        ? e.internalCategory || 'Interne Tätigkeit'
+        : productMap.get(e.productId)?.name ?? '';
       const hours = e.durationSeconds / 3600;
-      const net = hours * e.hourlyRateNet;
+      const net = isInternal ? 0 : hours * e.hourlyRateNet;
       const locStr = e.location?.address
         ? e.location.address
         : e.location
@@ -62,10 +69,10 @@ export function timeEntriesToCsv(
         csvCell(e.notes),
         csvCell(locStr),
         csvCell(e.source),
-        csvCell(e.billable ? 'Ja' : 'Nein'),
-        csvCell(e.billedInvoiceId ? 'Abgerechnet' : 'Offen'),
-        csvCell(formatNumber(e.hourlyRateNet, 2)),
-        csvCell(formatNumber(e.billable ? net : 0, 2)),
+        csvCell(!isInternal && e.billable ? 'Ja' : 'Nein'),
+        csvCell(isInternal ? 'Intern' : e.billedInvoiceId ? 'Abgerechnet' : 'Offen'),
+        csvCell(formatNumber(isInternal ? 0 : e.hourlyRateNet, 2)),
+        csvCell(formatNumber(!isInternal && e.billable ? net : 0, 2)),
       ].join(';');
     });
 
@@ -87,6 +94,7 @@ export function invoicesToCsv(invoices: Invoice[]): string {
     'Netto (EUR)',
     'MwSt. (EUR)',
     'Brutto (EUR)',
+    'Archiviert',
     'Nextcloud-PDF gesichert',
   ];
 
@@ -106,6 +114,7 @@ export function invoicesToCsv(invoices: Invoice[]): string {
       csvCell(formatNumber(inv.netTotal, 2)),
       csvCell(formatNumber(inv.isSmallBusiness ? 0 : inv.taxTotal, 2)),
       csvCell(formatNumber(inv.isSmallBusiness ? inv.netTotal : inv.grossTotal, 2)),
+      csvCell(inv.isArchived ? 'Ja' : 'Nein'),
       csvCell(inv.nextcloudUploadedAt ? formatDateTimeDE(inv.nextcloudUploadedAt) : 'Nein'),
     ].join(';'));
 
@@ -119,21 +128,29 @@ export function buildExcelWorkbookBase64(db: AppDatabase): string {
 
   const timeRows = [...db.timeEntries]
     .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime())
-    .map((e) => ({
-      Start: formatDateTimeDE(e.startTime),
-      Ende: formatDateTimeDE(e.endTime),
-      Stunden: Number((e.durationSeconds / 3600).toFixed(2)),
-      Kunde: custMap.get(e.customerId) ?? '',
-      Leistung: prodMap.get(e.productId) ?? '',
-      Tätigkeit: e.title,
-      Notizen: e.notes,
-      Ort: e.location?.address ?? '',
-      Quelle: e.source,
-      Abrechenbar: e.billable ? 'Ja' : 'Nein',
-      Abgerechnet: e.billedInvoiceId ? 'Ja' : 'Nein',
-      Stundensatz_Netto_EUR: e.hourlyRateNet,
-      Nettowert_EUR: Number((((e.durationSeconds / 3600) * e.hourlyRateNet) || 0).toFixed(2)),
-    }));
+    .map((e) => {
+      const isInternal = e.entryType === 'internal' || !e.customerId;
+      return {
+        Typ: isInternal ? 'Intern' : 'Kundenauftrag',
+        Start: formatDateTimeDE(e.startTime),
+        Ende: formatDateTimeDE(e.endTime),
+        Stunden: Number((e.durationSeconds / 3600).toFixed(2)),
+        Kunde: isInternal ? 'Intern' : custMap.get(e.customerId) ?? '',
+        Leistung_Kategorie: isInternal
+          ? e.internalCategory || 'Interne Tätigkeit'
+          : prodMap.get(e.productId) ?? '',
+        Tätigkeit: e.title,
+        Notizen: e.notes,
+        Ort: e.location?.address ?? '',
+        Quelle: e.source,
+        Abrechenbar: !isInternal && e.billable ? 'Ja' : 'Nein',
+        Abgerechnet: e.billedInvoiceId ? 'Ja' : 'Nein',
+        Stundensatz_Netto_EUR: isInternal ? 0 : e.hourlyRateNet,
+        Nettowert_EUR: isInternal
+          ? 0
+          : Number((((e.durationSeconds / 3600) * e.hourlyRateNet) || 0).toFixed(2)),
+      };
+    });
   XLSX.utils.book_append_sheet(
     wb,
     XLSX.utils.json_to_sheet(
@@ -149,6 +166,7 @@ export function buildExcelWorkbookBase64(db: AppDatabase): string {
     Fällig_Gültig_Bis: formatDateDE(inv.quoteValidUntil || inv.dueDate),
     Kunde: inv.customerSnapshot.companyName,
     Status: inv.status,
+    Archiviert: inv.isArchived ? 'Ja' : 'Nein',
     Rabatt_Netto_EUR: inv.discountNetAmount ?? 0,
     Netto_EUR: inv.netTotal,
     MwSt_EUR: inv.isSmallBusiness ? 0 : inv.taxTotal,
@@ -202,6 +220,8 @@ export function buildExcelWorkbookBase64(db: AppDatabase): string {
 
   const expenseRows = (db.expenses ?? []).map((exp) => ({
     Datum: formatDateDE(exp.date),
+    Typ: exp.expenseType === 'operating' || !exp.customerId ? 'Betriebskosten' : 'Projekt',
+    Wiederkehrend: exp.isRecurring ? 'Ja' : 'Nein',
     Anbieter: exp.vendor,
     Beschreibung: exp.description,
     Kategorie: exp.category,
@@ -218,6 +238,33 @@ export function buildExcelWorkbookBase64(db: AppDatabase): string {
       expenseRows.length > 0 ? expenseRows : [{ Hinweis: 'Keine Belege vorhanden' }]
     ),
     'Belege & Ausgaben'
+  );
+
+  const recurringExpRows = (db.recurringExpenses ?? []).map((rec) => ({
+    Anbieter: rec.vendor,
+    Beschreibung: rec.description,
+    Kategorie: rec.category,
+    Intervall:
+      rec.interval === 'monthly'
+        ? 'Monatlich'
+        : rec.interval === 'quarterly'
+          ? 'Quartalsweise'
+          : 'Jährlich',
+    Aktiv: rec.active ? 'Ja' : 'Nein',
+    Nächste_Fälligkeit: formatDateDE(rec.nextDueDate),
+    Zuletzt_Verbucht: rec.lastBookedDate ? formatDateDE(rec.lastBookedDate) : '',
+    Netto_EUR: rec.netAmount,
+    MwSt_Prozent: rec.taxRate,
+    Brutto_EUR: rec.grossAmount,
+  }));
+  XLSX.utils.book_append_sheet(
+    wb,
+    XLSX.utils.json_to_sheet(
+      recurringExpRows.length > 0
+        ? recurringExpRows
+        : [{ Hinweis: 'Keine wiederkehrenden Fixkosten vorhanden' }]
+    ),
+    'Wiederkehrende Fixkosten'
   );
 
   return XLSX.write(wb, { type: 'base64', bookType: 'xlsx' }) as string;
@@ -312,6 +359,7 @@ export function validateImportedDatabase(rawText: string): AppDatabase {
     activeTimer: parsed.activeTimer ?? null,
     invoices: parsed.invoices,
     expenses: Array.isArray(parsed.expenses) ? parsed.expenses : [],
+    recurringExpenses: Array.isArray(parsed.recurringExpenses) ? parsed.recurringExpenses : [],
     recurringInvoices: Array.isArray(parsed.recurringInvoices) ? parsed.recurringInvoices : [],
     calendarEvents: Array.isArray(parsed.calendarEvents) ? parsed.calendarEvents : [],
   });
@@ -385,5 +433,68 @@ export async function generateBackupArtifacts(
       data: getFullBackupPdfBase64(db),
     });
   }
+  if (formats.includes('invoices_zip') && db.invoices.length > 0) {
+    const zipBase64 = await buildInvoicesZipBase64(db.invoices, db.company, {
+      includeQuotes: true,
+      includeArchived: true,
+    });
+    files.push({
+      filename: `taktwerk-rechnungen-${stamp}.zip`,
+      mimeType: 'application/zip',
+      isBinary: true,
+      data: zipBase64,
+    });
+  }
   return files;
+}
+
+export async function buildInvoicesZipBase64(
+  invoices: Invoice[],
+  company: CompanyProfile,
+  options: { includeQuotes?: boolean; includeArchived?: boolean } = {}
+): Promise<string> {
+  const zip = new JSZip();
+  const folder = zip.folder('Rechnungen') || zip;
+  const { getInvoicePdfBase64, getAcceptanceProtocolPdfBase64 } = await import('./pdfInvoice');
+
+  const targets = invoices.filter((inv) => {
+    if (inv.isArchived && !options.includeArchived) return false;
+    if (inv.documentType === 'quote' && !options.includeQuotes) return false;
+    return true;
+  });
+
+  for (const inv of targets) {
+    try {
+      const pdfBase64 = await getInvoicePdfBase64(inv, company);
+      folder.file(`${inv.invoiceNumber}.pdf`, pdfBase64, { base64: true });
+
+      if (inv.signature?.signatureDataUrl) {
+        const abnahmeBase64 = getAcceptanceProtocolPdfBase64(inv, company);
+        folder.file(`Abnahme-${inv.invoiceNumber}.pdf`, abnahmeBase64, { base64: true });
+      }
+    } catch {
+      // Continue with remaining invoices if one fails
+    }
+  }
+
+  folder.file('Rechnungsuebersicht.csv', invoicesToCsv(targets));
+
+  return await zip.generateAsync({
+    type: 'base64',
+    compression: 'DEFLATE',
+    compressionOptions: { level: 6 },
+  });
+}
+
+export async function downloadInvoicesZip(
+  invoices: Invoice[],
+  company: CompanyProfile,
+  options: { includeQuotes?: boolean; includeArchived?: boolean } = {}
+): Promise<void> {
+  const base64 = await buildInvoicesZipBase64(invoices, company, options);
+  await downloadOrShareBinaryFile(
+    `TaktWerk-Rechnungen-${toInputDate()}.zip`,
+    base64,
+    'application/zip'
+  );
 }

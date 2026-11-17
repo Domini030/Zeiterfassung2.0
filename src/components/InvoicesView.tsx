@@ -1,5 +1,7 @@
 import {
   AlertTriangle,
+  Archive,
+  ArchiveRestore,
   ArrowRightCircle,
   Car,
   CheckCircle2,
@@ -20,6 +22,7 @@ import {
   Printer,
   Receipt,
   Share2,
+  StickyNote,
   Trash2,
   X,
 } from 'lucide-react';
@@ -110,6 +113,7 @@ interface InvoicesViewProps {
   onMarkInvoiceUploaded: (invoiceId: string, uploadedAt: string) => void;
   onSaveSignature?: (invoiceId: string, signature: AcceptanceSignature) => void;
   onDeleteSignature?: (invoiceId: string) => void;
+  onToggleArchiveInvoice?: (invoiceId: string) => void;
   onDeleteInvoice: (invoiceId: string) => void;
   onNotify: (msg: string, isError?: boolean) => void;
 }
@@ -141,11 +145,13 @@ export function InvoicesView({
   onMarkInvoiceUploaded,
   onSaveSignature,
   onDeleteSignature,
+  onToggleArchiveInvoice,
   onDeleteInvoice,
   onNotify,
 }: InvoicesViewProps) {
   const [statusFilter, setStatusFilter] = useState<'all' | InvoiceStatus | 'Überfällig'>('all');
   const [docFilter, setDocFilter] = useState<'all' | 'invoice' | 'quote'>('all');
+  const [archiveFilter, setArchiveFilter] = useState<'active' | 'archived' | 'all'>('active');
   const [showBuilder, setShowBuilder] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const [previewInvoice, setPreviewInvoice] = useState<Invoice | null>(null);
@@ -161,6 +167,9 @@ export function InvoicesView({
   const [groupByProduct, setGroupByProduct] = useState(true);
   const [includeLocation, setIncludeLocation] = useState<boolean>(
     Boolean(company.invoiceIncludeLocationDefault)
+  );
+  const [includeTimeNotes, setIncludeTimeNotes] = useState<boolean>(
+    Boolean(company.invoiceIncludeTimeNotesDefault)
   );
   const [roundingMinutes, setRoundingMinutes] = useState<TimeRoundingMinutes>(
     company.defaultTimeRoundingMinutes ?? 0
@@ -290,6 +299,7 @@ export function InvoicesView({
     setBilledExpenseIds([]);
     setBilledTravelEntryIds([]);
     setIncludeLocation(Boolean(company.invoiceIncludeLocationDefault));
+    setIncludeTimeNotes(Boolean(company.invoiceIncludeTimeNotesDefault));
     const today = toInputDate();
     setIssueDate(today);
     const custTerm =
@@ -317,6 +327,7 @@ export function InvoicesView({
     defaultOutro,
     company.smallBusinessMode,
     company.invoiceIncludeLocationDefault,
+    company.invoiceIncludeTimeNotesDefault,
     company.defaultPaymentTermDays,
     company.defaultTimeRoundingMinutes,
     customerMap,
@@ -336,6 +347,7 @@ export function InvoicesView({
     setBilledExpenseIds([]);
     setBilledTravelEntryIds([]);
     setIncludeLocation(Boolean(company.invoiceIncludeLocationDefault));
+    setIncludeTimeNotes(Boolean(company.invoiceIncludeTimeNotesDefault));
     const today = toInputDate();
     setIssueDate(today);
     const custTerm =
@@ -390,8 +402,12 @@ export function InvoicesView({
       );
     }
     setIncludeLocation(
-      inv.lineItems.some((li) => li.detail?.includes('Ort:')) ||
-        Boolean(company.invoiceIncludeLocationDefault)
+      inv.includeLocation ??
+        (inv.lineItems.some((li) => li.detail?.includes('Ort:')) ||
+          Boolean(company.invoiceIncludeLocationDefault))
+    );
+    setIncludeTimeNotes(
+      inv.includeTimeNotes ?? Boolean(company.invoiceIncludeTimeNotesDefault)
     );
 
     const manualRows: ExtraProductDraft[] = inv.lineItems
@@ -645,6 +661,13 @@ export function InvoicesView({
         const effectiveTaxRate: TaxRate = isSmallBusiness ? 0 : first.taxRate;
         const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
         const taskTitles = Array.from(new Set(group.map((g) => g.title))).join(', ');
+        const notesList = includeTimeNotes
+          ? Array.from(
+              new Set(group.map((g) => (g.notes || '').trim()).filter(Boolean))
+            )
+          : [];
+        const notesSuffix =
+          notesList.length > 0 ? ` · Notizen: ${notesList.join('; ')}` : '';
         const locations = includeLocation
           ? Array.from(
               new Set(group.map((g) => formatEntryLocation(g)).filter(Boolean))
@@ -655,7 +678,7 @@ export function InvoicesView({
         items.push({
           id: createId('li'),
           description: prod?.name ?? first.title,
-          detail: `${group.length} Zeiteinträge: ${taskTitles}${locSuffix}`,
+          detail: `${group.length} Zeiteinträge: ${taskTitles}${notesSuffix}${locSuffix}`,
           quantity: hours,
           unit: 'Std.',
           unitPriceNet: first.hourlyRateNet,
@@ -676,10 +699,11 @@ export function InvoicesView({
         const effectiveTaxRate: TaxRate = isSmallBusiness ? 0 : e.taxRate;
         const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
         const locText = includeLocation ? formatEntryLocation(e) : '';
+        const noteText = includeTimeNotes ? (e.notes || '').trim() : '';
         items.push({
           id: createId('li'),
           description: `${prod?.name ?? 'Leistung'} — ${e.title}`,
-          detail: `${formatDateDE(e.startTime)}${e.notes ? ` · ${e.notes}` : ''}${
+          detail: `${formatDateDE(e.startTime)}${noteText ? ` · ${noteText}` : ''}${
             locText ? ` · Ort: ${locText}` : ''
           }`,
           quantity: hours,
@@ -723,6 +747,7 @@ export function InvoicesView({
     selectedEntryIds,
     groupByProduct,
     includeLocation,
+    includeTimeNotes,
     roundingMinutes,
     extraItems,
     productMap,
@@ -791,6 +816,10 @@ export function InvoicesView({
       dueDate: documentType === 'quote' ? quoteValidUntil || dueDate : dueDate,
       quoteValidUntil: documentType === 'quote' ? quoteValidUntil || dueDate : undefined,
       status: editingInvoice?.status ?? 'Entwurf',
+      includeLocation,
+      includeTimeNotes,
+      isArchived: editingInvoice?.isArchived ?? false,
+      archivedAt: editingInvoice?.archivedAt ?? null,
       lineItems: computedLineItems,
       subtotalNetBeforeDiscount: builderTotals.subtotalNetBeforeDiscount,
       discountType: discountValue > 0 ? discountType : undefined,
@@ -1054,22 +1083,33 @@ export function InvoicesView({
   };
 
   const overdueCount = useMemo(
-    () => invoices.filter((inv) => isInvoiceOverdue(inv)).length,
+    () => invoices.filter((inv) => !inv.isArchived && isInvoiceOverdue(inv)).length,
+    [invoices]
+  );
+
+  const activeCount = useMemo(
+    () => invoices.filter((inv) => !inv.isArchived).length,
+    [invoices]
+  );
+  const archivedCount = useMemo(
+    () => invoices.filter((inv) => Boolean(inv.isArchived)).length,
     [invoices]
   );
 
   const filteredInvoices = useMemo(() => {
     return [...invoices]
       .filter((inv) => {
+        if (archiveFilter === 'active' && inv.isArchived) return false;
+        if (archiveFilter === 'archived' && !inv.isArchived) return false;
         const isQuote = inv.documentType === 'quote';
         if (docFilter === 'invoice' && isQuote) return false;
         if (docFilter === 'quote' && !isQuote) return false;
         if (statusFilter === 'all') return true;
-        if (statusFilter === 'Überfällig') return isInvoiceOverdue(inv);
+        if (statusFilter === 'Überfällig') return !inv.isArchived && isInvoiceOverdue(inv);
         return inv.status === statusFilter;
       })
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  }, [invoices, statusFilter, docFilter]);
+  }, [invoices, statusFilter, docFilter, archiveFilter]);
 
   const handleExportCsv = async () => {
     try {
@@ -1276,6 +1316,16 @@ export function InvoicesView({
                     />
                     <MapPin className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
                     Einsatzort in Rechnung angeben
+                  </label>
+                  <label className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={includeTimeNotes}
+                      onChange={(e) => setIncludeTimeNotes(e.target.checked)}
+                      className="h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+                    />
+                    <StickyNote className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" />
+                    Auftragsnotizen auf Rechnung ausgeben
                   </label>
                 </div>
               </div>
@@ -1648,35 +1698,62 @@ export function InvoicesView({
             )}
           </div>
 
-          <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
-            {([
-              { id: 'all', label: 'Alle Typen' },
-              { id: 'invoice', label: 'Rechnungen' },
-              { id: 'quote', label: 'Angebote' },
-            ] as const).map((dt) => (
-              <button
-                key={dt.id}
-                type="button"
-                onClick={() => setDocFilter(dt.id)}
-                className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                  docFilter === dt.id
-                    ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
-                }`}
-              >
-                {dt.label}
-              </button>
-            ))}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
+              {([
+                { id: 'active', label: `Aktiv (${activeCount})` },
+                { id: 'archived', label: `Archiv (${archivedCount})` },
+                { id: 'all', label: 'Alle' },
+              ] as const).map((af) => (
+                <button
+                  key={af.id}
+                  type="button"
+                  onClick={() => setArchiveFilter(af.id)}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    archiveFilter === af.id
+                      ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                  }`}
+                >
+                  {af.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
+              {([
+                { id: 'all', label: 'Alle Typen' },
+                { id: 'invoice', label: 'Rechnungen' },
+                { id: 'quote', label: 'Angebote' },
+              ] as const).map((dt) => (
+                <button
+                  key={dt.id}
+                  type="button"
+                  onClick={() => setDocFilter(dt.id)}
+                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    docFilter === dt.id
+                      ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                  }`}
+                >
+                  {dt.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {filteredInvoices.length === 0 ? (
           <div className="p-10 text-center">
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-              Noch keine Dokumente in dieser Ansicht vorhanden.
+              {archiveFilter === 'archived'
+                ? 'Noch keine archivierten Dokumente vorhanden.'
+                : 'Noch keine Dokumente in dieser Ansicht vorhanden.'}
             </p>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Erfasse Arbeitszeiten für einen Kunden oder erstelle ein Angebot mit einem Klick.
+              {archiveFilter === 'archived'
+                ? 'Archiviere bezahlte oder abgeschlossene Rechnungen über das Archiv-Symbol in der Tabelle.'
+                : 'Erfasse Arbeitszeiten für einen Kunden oder erstelle ein Angebot mit einem Klick.'}
             </p>
           </div>
         ) : (
@@ -1697,17 +1774,26 @@ export function InvoicesView({
                   <tr
                     key={inv.id}
                     onClick={() => setPreviewInvoice(inv)}
-                    className="cursor-pointer transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50"
+                    className={`cursor-pointer transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50 ${
+                      inv.isArchived ? 'opacity-80' : ''
+                    }`}
                   >
                     <td className="px-4 py-3 whitespace-nowrap">
                       <div className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">
                         {inv.invoiceNumber}
                       </div>
-                      {inv.documentType === 'quote' && (
-                        <span className="mt-0.5 inline-block text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
-                          Angebot
-                        </span>
-                      )}
+                      <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                        {inv.documentType === 'quote' && (
+                          <span className="inline-block text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+                            Angebot
+                          </span>
+                        )}
+                        {inv.isArchived && (
+                          <span className="inline-block rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-[#2c2147] dark:text-slate-300">
+                            Archiviert
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-slate-900 dark:text-slate-100">
@@ -1811,6 +1897,24 @@ export function InvoicesView({
                         >
                           <CloudUpload className="h-4 w-4" />
                         </button>
+                        {onToggleArchiveInvoice && (
+                          <button
+                            type="button"
+                            onClick={() => onToggleArchiveInvoice(inv.id)}
+                            title={
+                              inv.isArchived
+                                ? 'Aus dem Archiv wiederherstellen'
+                                : 'Dokument archivieren'
+                            }
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer"
+                          >
+                            {inv.isArchived ? (
+                              <ArchiveRestore className="h-4 w-4" />
+                            ) : (
+                              <Archive className="h-4 w-4" />
+                            )}
+                          </button>
+                        )}
                         {confirmDeleteId === inv.id ? (
                           <div className="flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 dark:border-red-900/60 dark:bg-red-950/60">
                             <button
@@ -1856,11 +1960,21 @@ export function InvoicesView({
 
       {/* Invoice / Quote Document Preview Modal */}
       {previewInvoice && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#0e0a18]/75 p-4 sm:p-8">
+        <div
+          role="dialog"
+          aria-modal="true"
+          data-no-swipe="true"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#0e0a18]/75 p-4 sm:p-8"
+        >
           <div className="w-full max-w-3xl rounded-xl border border-slate-200 bg-white shadow-xl dark:border-[#3b2d5e]">
             <div className="no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-6 py-4 rounded-t-xl dark:border-[#2e2349] dark:bg-[#171126]">
               <div className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                 {previewInvoice.documentType === 'quote' ? 'Angebotsvorschau' : 'Rechnungsvorschau'} · {previewInvoice.invoiceNumber}
+                {previewInvoice.isArchived && (
+                  <span className="ml-2 rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2c2147] dark:text-slate-300">
+                    Archiviert
+                  </span>
+                )}
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -1888,6 +2002,30 @@ export function InvoicesView({
                         <Pencil className="h-3.5 w-3.5" />
                         Bearbeiten
                       </button>
+
+                      {onToggleArchiveInvoice && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const nextArchived = !previewInvoice.isArchived;
+                            onToggleArchiveInvoice(previewInvoice.id);
+                            setPreviewInvoice({
+                              ...previewInvoice,
+                              isArchived: nextArchived,
+                              archivedAt: nextArchived ? new Date().toISOString() : null,
+                            });
+                            setShowPreviewMenu(false);
+                          }}
+                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                        >
+                          {previewInvoice.isArchived ? (
+                            <ArchiveRestore className="h-3.5 w-3.5" />
+                          ) : (
+                            <Archive className="h-3.5 w-3.5" />
+                          )}
+                          {previewInvoice.isArchived ? 'Aus Archiv wiederherstellen' : 'Archivieren'}
+                        </button>
+                      )}
 
                       <button
                         type="button"

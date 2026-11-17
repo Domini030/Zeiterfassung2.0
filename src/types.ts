@@ -114,6 +114,8 @@ export interface TimeEntry {
   travelDistanceKm?: number;
   travelCostNet?: number;
   travelBilledInvoiceId?: string | null;
+  entryType?: 'project' | 'internal';
+  internalCategory?: string;
   createdAt: string;
 }
 
@@ -132,6 +134,8 @@ export interface ActiveTimer {
   taxRate: TaxRate;
   source: 'timer' | 'nfc' | 'geo';
   location?: LocationSnapshot | null;
+  entryType?: 'project' | 'internal';
+  internalCategory?: string;
 }
 
 export interface InvoiceLineItem {
@@ -180,6 +184,9 @@ export interface Invoice {
   quoteValidUntil?: string;
   status: InvoiceStatus;
   includeLocation?: boolean;
+  includeTimeNotes?: boolean;
+  isArchived?: boolean;
+  archivedAt?: string | null;
   lineItems: InvoiceLineItem[];
   subtotalNetBeforeDiscount?: number;
   discountType?: DiscountType;
@@ -204,6 +211,7 @@ export interface Expense {
   vendor: string;
   description: string;
   category: string;
+  expenseType?: 'project' | 'operating';
   netAmount: number;
   taxRate: TaxRate;
   grossAmount: number;
@@ -212,6 +220,8 @@ export interface Expense {
   billedInvoiceId?: string | null;
   receiptImageDataUrl?: string;
   notes?: string;
+  isRecurring?: boolean;
+  recurringExpenseId?: string | null;
   nextcloudUploadedAt?: string | null;
   createdAt: string;
 }
@@ -249,6 +259,22 @@ export interface RecurringInvoiceTemplate {
   createdAt: string;
 }
 
+export interface RecurringExpense {
+  id: string;
+  vendor: string;
+  description: string;
+  category: string;
+  netAmount: number;
+  taxRate: TaxRate;
+  grossAmount: number;
+  interval: RecurringInterval;
+  active: boolean;
+  nextDueDate: string;
+  lastBookedDate?: string | null;
+  notes?: string;
+  createdAt: string;
+}
+
 export interface HomeBaseLocation {
   address: string;
   lat: number;
@@ -280,7 +306,7 @@ export type ReminderSoundPreset = 'chime' | 'bell' | 'pulse' | 'alarm' | 'silent
 
 export type AutoBackupFrequency = 'daily' | 'weekly' | 'monthly';
 
-export type AutoBackupFormat = 'json' | 'csv' | 'excel' | 'pdf';
+export type AutoBackupFormat = 'json' | 'csv' | 'excel' | 'pdf' | 'invoices_zip';
 
 export interface AutoBackupConfig {
   enabled: boolean;
@@ -365,6 +391,8 @@ export interface CompanyProfile {
   swipeNavigationEnabled?: boolean;
   autoCaptureLocation?: boolean;
   invoiceIncludeLocationDefault?: boolean;
+  invoiceIncludeTimeNotesDefault?: boolean;
+  internalCategories?: string[];
   autoLocationStartEnabled?: boolean;
   geoFenceCheckIntervalSec?: number;
   homeBaseLocation?: HomeBaseLocation | null;
@@ -391,6 +419,7 @@ export interface AppDatabase {
   activeTimer: ActiveTimer | null;
   invoices: Invoice[];
   expenses?: Expense[];
+  recurringExpenses?: RecurringExpense[];
   recurringInvoices?: RecurringInvoiceTemplate[];
   calendarEvents?: CalendarAppointment[];
 }

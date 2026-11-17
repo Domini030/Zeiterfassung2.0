@@ -1,14 +1,29 @@
-import { BarChart3, Clock, Layers, Nfc, Users } from 'lucide-react';
+import { BarChart3, Clock, FileDown, Layers, Receipt, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import type { Customer, Product, TimeEntry } from '../types';
-import { formatCurrency, formatNumber } from '../utils/format';
+import type {
+  AppDatabase,
+  Customer,
+  Expense,
+  Product,
+  RecurringExpense,
+  TimeEntry,
+} from '../types';
+import { formatCurrency, formatNumber, toInputDate } from '../utils/format';
+import { downloadFilteredReportPdf } from '../utils/pdfInvoice';
 import { ThemedSelect } from './ThemedSelect';
 
 interface AnalyticsViewProps {
   customers: Customer[];
   products: Product[];
   timeEntries: TimeEntry[];
+  expenses?: Expense[];
+  recurringExpenses?: RecurringExpense[];
+  db?: AppDatabase;
+  onNotify?: (msg: string, isError?: boolean) => void;
 }
+
+const INTERNAL_KEY = '__internal__';
+const INTERNAL_COLOR = '#d97706';
 
 type RangePreset = '7d' | '30d' | 'all';
 
@@ -42,6 +57,10 @@ export function AnalyticsView({
   customers,
   products,
   timeEntries,
+  expenses = [],
+  recurringExpenses = [],
+  db,
+  onNotify,
 }: AnalyticsViewProps) {
   const [range, setRange] = useState<RangePreset>('30d');
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('all');
@@ -63,6 +82,7 @@ export function AnalyticsView({
     customers.forEach((c, idx) => {
       map.set(c.id, CHART_PALETTE[idx % CHART_PALETTE.length]);
     });
+    map.set(INTERNAL_KEY, INTERNAL_COLOR);
     return map;
   }, [customers]);
 
@@ -84,8 +104,11 @@ export function AnalyticsView({
           : 0;
 
     return timeEntries.filter((entry) => {
-      if (selectedCustomerId !== 'all' && entry.customerId !== selectedCustomerId) {
-        return false;
+      const isInternal = entry.entryType === 'internal' || !entry.customerId;
+      if (selectedCustomerId === 'internal_only') {
+        if (!isInternal) return false;
+      } else if (selectedCustomerId !== 'all') {
+        if (isInternal || entry.customerId !== selectedCustomerId) return false;
       }
       if (selectedProductId !== 'all' && entry.productId !== selectedProductId) {
         return false;
@@ -102,33 +125,113 @@ export function AnalyticsView({
 
   const kpis = useMemo(() => {
     let totalSeconds = 0;
+    let billableSeconds = 0;
+    let internalSeconds = 0;
     let totalRevenueNet = 0;
-    let nfcCount = 0;
     const activeCustIds = new Set<string>();
 
     for (const e of filteredEntries) {
+      const isInternal = e.entryType === 'internal' || !e.customerId;
       totalSeconds += e.durationSeconds;
       const hours = e.durationSeconds / 3600;
-      if (e.billable) {
+      if (!isInternal && e.billable) {
+        billableSeconds += e.durationSeconds;
         totalRevenueNet += hours * e.hourlyRateNet;
       }
-      if (e.source === 'nfc') nfcCount += 1;
-      activeCustIds.add(e.customerId);
+      if (isInternal) {
+        internalSeconds += e.durationSeconds;
+      } else if (e.customerId) {
+        activeCustIds.add(e.customerId);
+      }
     }
+
+    const billableRatioPct =
+      totalSeconds > 0 ? Math.round((billableSeconds / totalSeconds) * 100) : 0;
 
     return {
       totalHours: totalSeconds / 3600,
+      billableHours: billableSeconds / 3600,
+      internalHours: internalSeconds / 3600,
+      billableRatioPct,
       totalRevenueNet,
       activeCustomers: activeCustIds.size,
-      nfcSharePct:
-        filteredEntries.length > 0
-          ? Math.round((nfcCount / filteredEntries.length) * 100)
-          : 0,
       entryCount: filteredEntries.length,
     };
   }, [filteredEntries]);
 
-  // Aggregate by customer
+  const internalCategoryStats = useMemo(() => {
+    const map = new Map<string, { label: string; seconds: number; count: number }>();
+    for (const e of filteredEntries) {
+      const isInternal = e.entryType === 'internal' || !e.customerId;
+      if (!isInternal) continue;
+      const cat = e.internalCategory || 'Sonstige interne Arbeit';
+      const cur = map.get(cat) ?? { label: cat, seconds: 0, count: 0 };
+      cur.seconds += e.durationSeconds;
+      cur.count += 1;
+      map.set(cat, cur);
+    }
+    return Array.from(map.values()).sort((a, b) => b.seconds - a.seconds);
+  }, [filteredEntries]);
+
+  const expenseSummary = useMemo(() => {
+    const now = Date.now();
+    const cutoffMs =
+      range === '7d'
+        ? now - 7 * 86400 * 1000
+        : range === '30d'
+          ? now - 30 * 86400 * 1000
+          : 0;
+    const inRange = expenses.filter((exp) => {
+      if (cutoffMs === 0) return true;
+      const ms = new Date(`${exp.date}T12:00:00`).getTime();
+      return Number.isNaN(ms) || ms >= cutoffMs;
+    });
+    const operatingNet = inRange
+      .filter((e) => e.expenseType === 'operating' || !e.customerId)
+      .reduce((acc, e) => acc + (e.netAmount || 0), 0);
+    const totalExpenseNet = inRange.reduce((acc, e) => acc + (e.netAmount || 0), 0);
+    const monthlyFixedNet = recurringExpenses
+      .filter((r) => r.active)
+      .reduce((acc, r) => {
+        const factor =
+          r.interval === 'monthly' ? 1 : r.interval === 'quarterly' ? 1 / 3 : 1 / 12;
+        return acc + (r.netAmount || 0) * factor;
+      }, 0);
+    return {
+      operatingNet,
+      totalExpenseNet,
+      monthlyFixedNet,
+      count: inRange.length,
+    };
+  }, [expenses, recurringExpenses, range]);
+
+  const handleQuickPdfExport = async () => {
+    if (!db) return;
+    const now = new Date();
+    const startDate =
+      range === '7d'
+        ? toInputDate(new Date(now.getTime() - 7 * 86400 * 1000))
+        : range === '30d'
+          ? toInputDate(new Date(now.getTime() - 30 * 86400 * 1000))
+          : undefined;
+    try {
+      await downloadFilteredReportPdf(db, {
+        title: 'Grafischer Tätigkeits- & Auswertungsbericht',
+        startDate,
+        endDate: range === 'all' ? undefined : toInputDate(now),
+        customerId: selectedCustomerId,
+        productId: selectedProductId,
+      });
+      onNotify?.('Grafische PDF-Auswertung erstellt.');
+    } catch (err) {
+      onNotify?.(
+        err instanceof Error ? err.message : 'PDF-Auswertung fehlgeschlagen.',
+        true
+      );
+    }
+  };
+
+  // Aggregate by customer (and group internal activities cleanly)
   const customerStats = useMemo(() => {
     const acc = new Map<
       string,
@@ -143,27 +246,31 @@ export function AnalyticsView({
     >();
 
     for (const e of filteredEntries) {
-      const cust = customerMap.get(e.customerId);
-      const existing = acc.get(e.customerId) ?? {
-        customerId: e.customerId,
-        name: cust?.companyName ?? 'Unbekannter Kunde',
-        color: customerColorMap.get(e.customerId) ?? '#7c3aed',
+      const isInternal = e.entryType === 'internal' || !e.customerId;
+      const key = isInternal ? INTERNAL_KEY : e.customerId;
+      const cust = !isInternal ? customerMap.get(e.customerId) : undefined;
+      const existing = acc.get(key) ?? {
+        customerId: key,
+        name: isInternal
+          ? 'Intern (nicht verrechenbar)'
+          : cust?.companyName ?? 'Unbekannter Kunde',
+        color: customerColorMap.get(key) ?? '#7c3aed',
         seconds: 0,
         revenueNet: 0,
         entries: 0,
       };
       existing.seconds += e.durationSeconds;
-      if (e.billable) {
+      if (!isInternal && e.billable) {
         existing.revenueNet += (e.durationSeconds / 3600) * e.hourlyRateNet;
       }
       existing.entries += 1;
-      acc.set(e.customerId, existing);
+      acc.set(key, existing);
     }
 
     return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
   }, [filteredEntries, customerMap, customerColorMap]);
 
-  // Aggregate by product
+  // Aggregate by product / internal category
   const productStats = useMemo(() => {
     const acc = new Map<
       string,
@@ -178,27 +285,33 @@ export function AnalyticsView({
     >();
 
     for (const e of filteredEntries) {
-      const prod = productMap.get(e.productId);
-      const existing = acc.get(e.productId) ?? {
-        productId: e.productId,
-        name: prod?.name ?? 'Leistung',
-        color: productColorMap.get(e.productId) ?? '#2563eb',
+      const isInternal = e.entryType === 'internal' || !e.customerId;
+      const key = isInternal
+        ? `int::${e.internalCategory || 'Interne Tätigkeit'}`
+        : e.productId;
+      const prod = !isInternal ? productMap.get(e.productId) : undefined;
+      const existing = acc.get(key) ?? {
+        productId: key,
+        name: isInternal
+          ? `[Intern] ${e.internalCategory || 'Interne Tätigkeit'}`
+          : prod?.name ?? 'Leistung',
+        color: isInternal ? INTERNAL_COLOR : productColorMap.get(e.productId) ?? '#2563eb',
         seconds: 0,
         revenueNet: 0,
         entries: 0,
       };
       existing.seconds += e.durationSeconds;
-      if (e.billable) {
+      if (!isInternal && e.billable) {
         existing.revenueNet += (e.durationSeconds / 3600) * e.hourlyRateNet;
       }
       existing.entries += 1;
-      acc.set(e.productId, existing);
+      acc.set(key, existing);
     }
 
     return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
   }, [filteredEntries, productMap, productColorMap]);
 
-  // Aggregate daily stacked bars (Customer segments per day)
+  // Aggregate daily stacked bars (Customer & Internal segments per day)
   const dailySeries = useMemo(() => {
     const dayMap = new Map<
       string,
@@ -225,6 +338,8 @@ export function AnalyticsView({
     }
 
     for (const e of filteredEntries) {
+      const isInternal = e.entryType === 'internal' || !e.customerId;
+      const custKey = isInternal ? INTERNAL_KEY : e.customerId;
       const key = getLocalDateKey(e.startTime);
       const bucket = dayMap.get(key) ?? {
         dateKey: key,
@@ -233,12 +348,12 @@ export function AnalyticsView({
         byCustomer: new Map(),
       };
       bucket.totalSeconds += e.durationSeconds;
-      if (e.billable) {
+      if (!isInternal && e.billable) {
         bucket.revenueNet += (e.durationSeconds / 3600) * e.hourlyRateNet;
       }
       bucket.byCustomer.set(
-        e.customerId,
-        (bucket.byCustomer.get(e.customerId) ?? 0) + e.durationSeconds
+        custKey,
+        (bucket.byCustomer.get(custKey) ?? 0) + e.durationSeconds
       );
       dayMap.set(key, bucket);
     }
@@ -273,21 +388,28 @@ export function AnalyticsView({
     >();
 
     for (const e of filteredEntries) {
-      const key = `${e.customerId}::${e.productId}`;
-      const cust = customerMap.get(e.customerId);
-      const prod = productMap.get(e.productId);
+      const isInternal = e.entryType === 'internal' || !e.customerId;
+      const custKey = isInternal ? INTERNAL_KEY : e.customerId;
+      const prodKey = isInternal ? e.internalCategory || 'Intern' : e.productId;
+      const key = `${custKey}::${prodKey}`;
+      const cust = !isInternal ? customerMap.get(e.customerId) : undefined;
+      const prod = !isInternal ? productMap.get(e.productId) : undefined;
       const item = grouped.get(key) ?? {
         key,
-        customerName: cust?.companyName ?? 'Unbekannter Kunde',
-        customerColor: customerColorMap.get(e.customerId) ?? '#7c3aed',
-        productName: prod?.name ?? 'Leistung',
+        customerName: isInternal
+          ? 'Intern (ohne Ertrag)'
+          : cust?.companyName ?? 'Unbekannter Kunde',
+        customerColor: customerColorMap.get(custKey) ?? '#7c3aed',
+        productName: isInternal
+          ? e.internalCategory || 'Interne Tätigkeit'
+          : prod?.name ?? 'Leistung',
         hours: 0,
         revenueNet: 0,
         count: 0,
       };
       const hrs = e.durationSeconds / 3600;
       item.hours += hrs;
-      if (e.billable) {
+      if (!isInternal && e.billable) {
         item.revenueNet += hrs * e.hourlyRateNet;
       }
       item.count += 1;
@@ -375,7 +497,8 @@ export function AnalyticsView({
             ariaLabel="Nach Kunde filtern"
             className="min-w-44"
             options={[
-              { value: 'all', label: 'Alle Kunden' },
+              { value: 'all', label: 'Alle Kunden & Intern' },
+              { value: 'internal_only', label: 'Nur interne Tätigkeiten' },
               ...customers.map((c) => ({
                 value: c.id,
                 label: c.companyName,
@@ -397,6 +520,17 @@ export function AnalyticsView({
               })),
             ]}
           />
+
+          {db && (
+            <button
+              type="button"
+              onClick={() => void handleQuickPdfExport()}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer"
+            >
+              <FileDown className="h-3.5 w-3.5" />
+              Grafik-PDF
+            </button>
+          )}
         </div>
       </div>
 
@@ -411,7 +545,7 @@ export function AnalyticsView({
             {formatNumber(kpis.totalHours, 2)} Std.
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Aus {kpis.entryCount} Zeiteinträgen
+            {formatNumber(kpis.billableHours, 1)}h Projekt · {formatNumber(kpis.internalHours, 1)}h Intern
           </p>
         </div>
 
@@ -424,7 +558,7 @@ export function AnalyticsView({
             {formatCurrency(kpis.totalRevenueNet)}
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Bewertet mit hinterlegten Sätzen
+            Verrechenbare Quote: {kpis.billableRatioPct} %
           </p>
         </div>
 
@@ -437,23 +571,72 @@ export function AnalyticsView({
             {kpis.activeCustomers}
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Von {customers.length} Kunden gesamt
+            Aus {kpis.entryCount} Zeiteinträgen gesamt
           </p>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
           <div className="flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span>NFC-Erfassungsquote</span>
-            <Nfc className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+            <span>Ausgaben &amp; Fixkosten (Netto)</span>
+            <Receipt className="h-4 w-4 text-amber-600 dark:text-amber-400" />
           </div>
           <div className="mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">
-            {kpis.nfcSharePct} %
+            {formatCurrency(expenseSummary.totalExpenseNet)}
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Per NFC-Tag gestartete Zeiten
+            Ø Fixkosten: {formatCurrency(expenseSummary.monthlyFixedNet)}/Monat
           </p>
         </div>
       </section>
+
+      {/* Verrechenbar vs. Interne Tätigkeiten Breakdown */}
+      {(kpis.internalHours > 0 || kpis.billableHours > 0) && (
+        <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h2 className="font-display text-sm font-semibold text-slate-900 dark:text-slate-100">
+                Verhältnis: Verrechenbare Aufträge vs. Interne Arbeiten
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Übersicht über ertragbringende Projektzeit und interne Aufgaben (z. B. Kundenakquise, Studio-Reinigung).
+              </p>
+            </div>
+            <div className="font-mono text-xs font-semibold text-slate-700 dark:text-slate-200">
+              {kpis.billableRatioPct} % Verrechenbar · {100 - kpis.billableRatioPct} % Intern / Nicht verrechenbar
+            </div>
+          </div>
+          <svg
+            viewBox="0 0 400 14"
+            preserveAspectRatio="none"
+            className="mt-3 h-3.5 w-full overflow-hidden rounded-full"
+          >
+            <rect x="0" y="0" width="400" height="14" rx="7" fill="#d97706" />
+            <rect
+              x="0"
+              y="0"
+              width={Math.round((kpis.billableRatioPct / 100) * 400)}
+              height="14"
+              rx="7"
+              fill="#7c3aed"
+            />
+          </svg>
+          {internalCategoryStats.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {internalCategoryStats.map((cat) => (
+                <div
+                  key={cat.label}
+                  className="inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50/70 px-2.5 py-1 text-xs text-amber-900 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-200"
+                >
+                  <span className="font-medium">{cat.label}</span>
+                  <span className="font-mono font-semibold tabular-nums">
+                    {formatNumber(cat.seconds / 3600, 2)} Std.
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {filteredEntries.length === 0 ? (
         <section className="rounded-xl border border-slate-200 bg-white p-12 text-center dark:border-[#2e2349] dark:bg-[#171126]">

@@ -81,6 +81,16 @@ export function createDefaultCompany(): CompanyProfile {
     swipeNavigationEnabled: true,
     autoCaptureLocation: false,
     invoiceIncludeLocationDefault: false,
+    invoiceIncludeTimeNotesDefault: false,
+    internalCategories: [
+      'Kundenakquise',
+      'Studio-Reinigung & Pflege',
+      'Buchhaltung & Administration',
+      'Weiterbildung',
+      'Marketing & Social Media',
+      'Werkstatt & Materialpflege',
+      'Sonstiges',
+    ],
     autoLocationStartEnabled: false,
     geoFenceCheckIntervalSec: 60,
     homeBaseLocation: null,
@@ -515,6 +525,38 @@ export function createSampleDatabase(): AppDatabase {
         createdAt: hoursAgo(200),
       },
     ],
+    recurringExpenses: [
+      {
+        id: 'rec-exp-1',
+        vendor: 'Immobilienverwaltung Sendling',
+        description: 'Miete Studio & Büroräume Sendling',
+        category: 'Miete & Raumkosten',
+        netAmount: 850,
+        taxRate: 19,
+        grossAmount: 1011.5,
+        interval: 'monthly',
+        active: true,
+        nextDueDate: now.toISOString().slice(0, 10),
+        lastBookedDate: null,
+        notes: 'Monatliche Warmmiete inkl. Nebenkostenvorauszahlung',
+        createdAt: hoursAgo(300),
+      },
+      {
+        id: 'rec-exp-2',
+        vendor: 'Hetzner Cloud & Nextcloud Hosting',
+        description: 'Cloud Server Infrastruktur & Storage',
+        category: 'Software & Lizenzen',
+        netAmount: 49,
+        taxRate: 19,
+        grossAmount: 58.31,
+        interval: 'monthly',
+        active: true,
+        nextDueDate: now.toISOString().slice(0, 10),
+        lastBookedDate: null,
+        notes: 'Produktiver Applet- & WebDAV-Server',
+        createdAt: hoursAgo(300),
+      },
+    ],
     calendarEvents: [
       {
         id: 'cal-1',
@@ -544,6 +586,10 @@ export function normalizeDatabase(raw: AppDatabase): AppDatabase {
       Array.isArray(raw.company?.productCategories) && raw.company.productCategories.length > 0
         ? raw.company.productCategories
         : DEFAULT_PRODUCT_CATEGORIES,
+    internalCategories:
+      Array.isArray(raw.company?.internalCategories) && raw.company.internalCategories.length > 0
+        ? raw.company.internalCategories
+        : defaults.internalCategories,
     autoBackup: {
       ...defaults.autoBackup!,
       ...(raw.company?.autoBackup ?? {}),
@@ -562,10 +608,26 @@ export function normalizeDatabase(raw: AppDatabase): AppDatabase {
     products: Array.isArray(raw.products) ? raw.products : [],
     nfcTasks: Array.isArray(raw.nfcTasks) ? raw.nfcTasks : [],
     geoFenceRules: Array.isArray(raw.geoFenceRules) ? raw.geoFenceRules : [],
-    timeEntries: Array.isArray(raw.timeEntries) ? raw.timeEntries : [],
+    timeEntries: Array.isArray(raw.timeEntries)
+      ? raw.timeEntries.map((e) => ({
+          ...e,
+          entryType: e.entryType ?? (e.customerId ? 'project' : 'internal'),
+        }))
+      : [],
     activeTimer: raw.activeTimer ?? null,
-    invoices: Array.isArray(raw.invoices) ? raw.invoices : [],
-    expenses: Array.isArray(raw.expenses) ? raw.expenses : [],
+    invoices: Array.isArray(raw.invoices)
+      ? raw.invoices.map((inv) => ({
+          ...inv,
+          isArchived: inv.isArchived ?? false,
+        }))
+      : [],
+    expenses: Array.isArray(raw.expenses)
+      ? raw.expenses.map((exp) => ({
+          ...exp,
+          expenseType: exp.expenseType ?? (exp.customerId ? 'project' : 'operating'),
+        }))
+      : [],
+    recurringExpenses: Array.isArray(raw.recurringExpenses) ? raw.recurringExpenses : [],
     recurringInvoices: Array.isArray(raw.recurringInvoices) ? raw.recurringInvoices : [],
     calendarEvents: Array.isArray(raw.calendarEvents) ? raw.calendarEvents : [],
   };

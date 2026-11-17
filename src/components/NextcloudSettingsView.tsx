@@ -1,6 +1,7 @@
 import {
   AlertTriangle,
   Archive,
+  BarChart3,
   BellRing,
   Building2,
   Calendar,
@@ -11,6 +12,7 @@ import {
   Database,
   Download,
   DownloadCloud,
+  FileArchive,
   FileSpreadsheet,
   FileText,
   ImagePlus,
@@ -22,6 +24,7 @@ import {
   RefreshCw,
   RotateCcw,
   Server,
+  Share2,
   Smartphone,
   Trash2,
   Upload,
@@ -54,6 +57,7 @@ import {
   apiRunMultiFormatBackup,
   apiSaveNextcloudConfig,
   apiTestNextcloud,
+  apiUploadNextcloudFile,
   getBackendServerUrl,
   isNativeCapacitor,
   playNativeReminderTone,
@@ -68,19 +72,28 @@ import {
   formatCurrency,
   formatDateTimeDE,
   formatInvoiceNumber,
+  formatNumber,
   formatProductSku,
   formatQuoteNumber,
   toInputDate,
 } from '../utils/format';
 import { captureCurrentLocation, geocodeAddress } from '../utils/geolocation';
 import {
+  buildInvoicesZipBase64,
   downloadExcelBackup,
+  downloadInvoicesZip,
   downloadOrShareTextFile,
   invoicesToCsv,
   timeEntriesToCsv,
   validateImportedDatabase,
 } from '../utils/exportBackup';
-import { downloadFullBackupPdf } from '../utils/pdfInvoice';
+import {
+  downloadFilteredReportPdf,
+  downloadFullBackupPdf,
+  getFilteredReportPdfBase64,
+  shareFilteredReportPdf,
+  type FilteredReportOptions,
+} from '../utils/pdfInvoice';
 import { REMINDER_SOUND_OPTIONS, playReminderSound } from '../utils/soundReminder';
 import { ThemedSelect } from './ThemedSelect';
 
@@ -166,10 +179,31 @@ export function NextcloudSettingsView({
 
   const [newCustomerCategory, setNewCustomerCategory] = useState('');
   const [newProductCategory, setNewProductCategory] = useState('');
+  const [newInternalCategory, setNewInternalCategory] = useState('');
 
   const [discoveredCalendars, setDiscoveredCalendars] = useState<DiscoveredCalendar[]>([]);
   const [discoveringCalendars, setDiscoveringCalendars] = useState(false);
   const [runningBackup, setRunningBackup] = useState(false);
+
+  // Invoices ZIP package state
+  const [zipIncludeQuotes, setZipIncludeQuotes] = useState(true);
+  const [zipIncludeArchived, setZipIncludeArchived] = useState(true);
+  const [exportingZip, setExportingZip] = useState(false);
+
+  // Graphical PDF Report Builder state
+  const [reportTitle, setReportTitle] = useState('Grafischer Tätigkeits- & Auswertungsbericht');
+  const [reportStartDate, setReportStartDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 29);
+    return toInputDate(d);
+  });
+  const [reportEndDate, setReportEndDate] = useState(() => toInputDate());
+  const [reportCustomerId, setReportCustomerId] = useState<string>('all');
+  const [reportProductId, setReportProductId] = useState<string>('all');
+  const [reportTaskTitle, setReportTaskTitle] = useState<string>('all');
+  const [reportEntryType, setReportEntryType] = useState<'all' | 'project' | 'internal'>('all');
+  const [reportBillable, setReportBillable] = useState<'all' | 'billable_only' | 'unbillable_only'>('all');
+  const [exportingReport, setExportingReport] = useState(false);
 
   const nativeApp = isNativeCapacitor();
   const [serverUrl, setServerUrl] = useState(() => getBackendServerUrl());
@@ -211,6 +245,83 @@ export function NextcloudSettingsView({
     () => formatProductSku(companyForm),
     [companyForm]
   );
+
+  const distinctTaskTitles = useMemo(() => {
+    const set = new Set<string>();
+    for (const entry of db.timeEntries) {
+      const clean = entry.title.trim();
+      if (clean) set.add(clean);
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'de'));
+  }, [db.timeEntries]);
+
+  const reportOptions: FilteredReportOptions = useMemo(
+    () => ({
+      title: reportTitle.trim() || 'Grafischer Tätigkeits- & Auswertungsbericht',
+      startDate: reportStartDate || undefined,
+      endDate: reportEndDate || undefined,
+      customerId: reportCustomerId,
+      productId: reportProductId,
+      taskTitle: reportTaskTitle,
+      entryType: reportEntryType,
+      billableFilter: reportBillable,
+    }),
+    [
+      reportTitle,
+      reportStartDate,
+      reportEndDate,
+      reportCustomerId,
+      reportProductId,
+      reportTaskTitle,
+      reportEntryType,
+      reportBillable,
+    ]
+  );
+
+  const matchingReportSummary = useMemo(() => {
+    let count = 0;
+    let totalSec = 0;
+    for (const e of db.timeEntries) {
+      const dateStr = e.startTime.slice(0, 10);
+      if (reportStartDate && dateStr < reportStartDate) continue;
+      if (reportEndDate && dateStr > reportEndDate) continue;
+      const isInternal = e.entryType === 'internal' || !e.customerId;
+      if (reportEntryType === 'internal' && !isInternal) continue;
+      if (reportEntryType === 'project' && isInternal) continue;
+      if (reportCustomerId === 'internal_only' && !isInternal) continue;
+      if (
+        reportCustomerId !== 'all' &&
+        reportCustomerId !== 'internal_only' &&
+        e.customerId !== reportCustomerId
+      ) {
+        continue;
+      }
+      if (reportProductId !== 'all' && e.productId !== reportProductId) continue;
+      if (reportTaskTitle !== 'all' && e.title !== reportTaskTitle) continue;
+      if (reportBillable === 'billable_only' && !e.billable) continue;
+      if (reportBillable === 'unbillable_only' && e.billable) continue;
+      count += 1;
+      totalSec += e.durationSeconds;
+    }
+    return { count, hours: totalSec / 3600 };
+  }, [
+    db.timeEntries,
+    reportStartDate,
+    reportEndDate,
+    reportEntryType,
+    reportCustomerId,
+    reportProductId,
+    reportTaskTitle,
+    reportBillable,
+  ]);
+
+  const zipTargetCount = useMemo(() => {
+    return db.invoices.filter((inv) => {
+      if (inv.isArchived && !zipIncludeArchived) return false;
+      if (inv.documentType === 'quote' && !zipIncludeQuotes) return false;
+      return true;
+    }).length;
+  }, [db.invoices, zipIncludeArchived, zipIncludeQuotes]);
 
   const autoBackup = companyForm.autoBackup ?? {
     enabled: false,
@@ -714,7 +825,155 @@ export function NextcloudSettingsView({
     e.target.value = '';
   };
 
-  const addCategory = (kind: 'customer' | 'product') => {
+  const applyReportDatePreset = (preset: '7d' | '30d' | 'month' | 'year' | 'all') => {
+    const today = new Date();
+    const end = toInputDate(today);
+    if (preset === 'all') {
+      setReportStartDate('');
+      setReportEndDate('');
+      return;
+    }
+    if (preset === '7d') {
+      const start = new Date(today);
+      start.setDate(start.getDate() - 6);
+      setReportStartDate(toInputDate(start));
+      setReportEndDate(end);
+      return;
+    }
+    if (preset === '30d') {
+      const start = new Date(today);
+      start.setDate(start.getDate() - 29);
+      setReportStartDate(toInputDate(start));
+      setReportEndDate(end);
+      return;
+    }
+    if (preset === 'month') {
+      setReportStartDate(
+        `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-01`
+      );
+      setReportEndDate(end);
+      return;
+    }
+    setReportStartDate(`${today.getFullYear()}-01-01`);
+    setReportEndDate(end);
+  };
+
+  const handleDownloadFilteredReport = async () => {
+    setExportingReport(true);
+    try {
+      await downloadFilteredReportPdf(db, reportOptions);
+      onNotify(
+        `Grafische PDF-Auswertung (${matchingReportSummary.count} Einträge) erstellt.`
+      );
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'PDF-Auswertung konnte nicht erstellt werden.',
+        true
+      );
+    } finally {
+      setExportingReport(false);
+    }
+  };
+
+  const handleShareFilteredReport = async () => {
+    setExportingReport(true);
+    try {
+      await shareFilteredReportPdf(db, reportOptions);
+      onNotify('Grafische PDF-Auswertung zum Teilen vorbereitet.');
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'PDF-Auswertung konnte nicht geteilt werden.',
+        true
+      );
+    } finally {
+      setExportingReport(false);
+    }
+  };
+
+  const handleUploadFilteredReportNextcloud = async () => {
+    if (!nextcloud.configured) {
+      onNotify('Bitte verbinde zuerst Nextcloud unter dem Reiter "Nextcloud & Kalender".', true);
+      return;
+    }
+    setExportingReport(true);
+    try {
+      const base64 = getFilteredReportPdfBase64(db, reportOptions);
+      const filename = `TaktWerk-Auswertung-${toInputDate()}.pdf`;
+      const res = await apiUploadNextcloudFile({
+        subFolder: 'Berichte',
+        filename,
+        contentOrBase64: base64,
+        isBinary: true,
+        contentType: 'application/pdf',
+      });
+      onNotify(`Grafische PDF-Auswertung in Nextcloud gespeichert (${res.path}).`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Nextcloud-Upload der PDF-Auswertung fehlgeschlagen.',
+        true
+      );
+    } finally {
+      setExportingReport(false);
+    }
+  };
+
+  const handleDownloadInvoicesZip = async () => {
+    if (zipTargetCount === 0) {
+      onNotify('Keine passenden Rechnungen oder Angebote für das ZIP-Paket vorhanden.', true);
+      return;
+    }
+    setExportingZip(true);
+    try {
+      await downloadInvoicesZip(db.invoices, companyForm, {
+        includeQuotes: zipIncludeQuotes,
+        includeArchived: zipIncludeArchived,
+      });
+      onNotify(`Rechnungen-ZIP-Paket (${zipTargetCount} Dokument(e)) erstellt.`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'ZIP-Paket konnte nicht erstellt werden.',
+        true
+      );
+    } finally {
+      setExportingZip(false);
+    }
+  };
+
+  const handleUploadInvoicesZipNextcloud = async () => {
+    if (!nextcloud.configured) {
+      onNotify('Bitte verbinde zuerst Nextcloud unter dem Reiter "Nextcloud & Kalender".', true);
+      return;
+    }
+    if (zipTargetCount === 0) {
+      onNotify('Keine passenden Rechnungen oder Angebote für das ZIP-Paket vorhanden.', true);
+      return;
+    }
+    setExportingZip(true);
+    try {
+      const base64 = await buildInvoicesZipBase64(db.invoices, companyForm, {
+        includeQuotes: zipIncludeQuotes,
+        includeArchived: zipIncludeArchived,
+      });
+      const filename = `TaktWerk-Rechnungen-${toInputDate()}.zip`;
+      const res = await apiUploadNextcloudFile({
+        subFolder: 'Backups',
+        filename,
+        contentOrBase64: base64,
+        isBinary: true,
+        contentType: 'application/zip',
+      });
+      onNotify(`Rechnungen-ZIP (${zipTargetCount} Dokument(e)) in Nextcloud gesichert (${res.path}).`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Nextcloud-Upload des ZIP-Pakets fehlgeschlagen.',
+        true
+      );
+    } finally {
+      setExportingZip(false);
+    }
+  };
+
+  const addCategory = (kind: 'customer' | 'product' | 'internal') => {
     if (kind === 'customer') {
       const val = newCustomerCategory.trim();
       if (!val) return;
@@ -723,7 +982,7 @@ export function NextcloudSettingsView({
         setCompanyForm({ ...companyForm, customerCategories: [...list, val] });
       }
       setNewCustomerCategory('');
-    } else {
+    } else if (kind === 'product') {
       const val = newProductCategory.trim();
       if (!val) return;
       const list = companyForm.productCategories ?? [];
@@ -731,19 +990,32 @@ export function NextcloudSettingsView({
         setCompanyForm({ ...companyForm, productCategories: [...list, val] });
       }
       setNewProductCategory('');
+    } else {
+      const val = newInternalCategory.trim();
+      if (!val) return;
+      const list = companyForm.internalCategories ?? [];
+      if (!list.includes(val)) {
+        setCompanyForm({ ...companyForm, internalCategories: [...list, val] });
+      }
+      setNewInternalCategory('');
     }
   };
 
-  const removeCategory = (kind: 'customer' | 'product', item: string) => {
+  const removeCategory = (kind: 'customer' | 'product' | 'internal', item: string) => {
     if (kind === 'customer') {
       setCompanyForm({
         ...companyForm,
         customerCategories: (companyForm.customerCategories ?? []).filter((c) => c !== item),
       });
-    } else {
+    } else if (kind === 'product') {
       setCompanyForm({
         ...companyForm,
         productCategories: (companyForm.productCategories ?? []).filter((c) => c !== item),
+      });
+    } else {
+      setCompanyForm({
+        ...companyForm,
+        internalCategories: (companyForm.internalCategories ?? []).filter((c) => c !== item),
       });
     }
   };
@@ -926,7 +1198,7 @@ export function NextcloudSettingsView({
                 }
                 className="h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
               />
-              Wischgesten aktivieren (nach rechts wischen für Zurück / nach links für nächsten Bereich)
+              Wischgesten am äußeren Bildschirmrand aktivieren (vom linken/rechten Rand wischen für Zurück / Vor; schützt Unterschriften &amp; Formulare)
             </label>
           </section>
 
@@ -934,14 +1206,14 @@ export function NextcloudSettingsView({
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
             <div className="border-b border-slate-200 pb-3 dark:border-[#2e2349]">
               <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                Kategorien für Kunden &amp; Produkte/Tätigkeiten
+                Kategorien für Kunden, Produkte &amp; interne Arbeiten
               </h2>
               <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Stehen in der Kunden- und Produktverwaltung als Schnellauswahl &amp; Filter zur Verfügung.
+                Stehen in der Kunden-, Produkt- und Zeiterfassung (inkl. nicht-ertragbringender interner Arbeiten) als Schnellauswahl &amp; Filter zur Verfügung.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div className="space-y-3">
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200">
                   Kunden-Kategorien
@@ -978,7 +1250,7 @@ export function NextcloudSettingsView({
                     className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    Hinzufügen
+                    Neu
                   </button>
                 </div>
               </div>
@@ -1010,7 +1282,7 @@ export function NextcloudSettingsView({
                     type="text"
                     value={newProductCategory}
                     onChange={(e) => setNewProductCategory(e.target.value)}
-                    placeholder="Neue Produkt-/Tätigkeits-Kategorie..."
+                    placeholder="Neue Produkt-Kategorie..."
                     className={inputClass}
                   />
                   <button
@@ -1019,7 +1291,48 @@ export function NextcloudSettingsView({
                     className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    Hinzufügen
+                    Neu
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  Interne Tätigkeiten (ohne Kunde)
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {(companyForm.internalCategories ?? []).map((cat) => (
+                    <span
+                      key={cat}
+                      className="inline-flex items-center gap-1 rounded-md border border-amber-200 bg-amber-50/70 px-2.5 py-1 text-xs font-medium text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200"
+                    >
+                      {cat}
+                      <button
+                        type="button"
+                        onClick={() => removeCategory('internal', cat)}
+                        aria-label={`${cat} entfernen`}
+                        className="text-amber-600/70 hover:text-red-600 cursor-pointer"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newInternalCategory}
+                    onChange={(e) => setNewInternalCategory(e.target.value)}
+                    placeholder="z. B. Kundenakquise, Reinigung..."
+                    className={inputClass}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => addCategory('internal')}
+                    className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Neu
                   </button>
                 </div>
               </div>
@@ -1740,20 +2053,37 @@ export function NextcloudSettingsView({
               </div>
             </div>
 
-            <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={Boolean(companyForm.invoiceIncludeLocationDefault)}
-                onChange={(e) =>
-                  setCompanyForm({
-                    ...companyForm,
-                    invoiceIncludeLocationDefault: e.target.checked,
-                  })
-                }
-                className="h-4 w-4 rounded border-slate-300 accent-violet-600"
-              />
-              Aufgezeichneten Einsatzort standardmäßig auf Rechnungen &amp; Angeboten angeben
-            </label>
+            <div className="space-y-2.5">
+              <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={Boolean(companyForm.invoiceIncludeLocationDefault)}
+                  onChange={(e) =>
+                    setCompanyForm({
+                      ...companyForm,
+                      invoiceIncludeLocationDefault: e.target.checked,
+                    })
+                  }
+                  className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                />
+                Aufgezeichneten Einsatzort standardmäßig auf Rechnungen &amp; Angeboten angeben
+              </label>
+
+              <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={Boolean(companyForm.invoiceIncludeTimeNotesDefault)}
+                  onChange={(e) =>
+                    setCompanyForm({
+                      ...companyForm,
+                      invoiceIncludeTimeNotesDefault: e.target.checked,
+                    })
+                  }
+                  className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                />
+                Auftragsnotizen standardmäßig auf Rechnungen &amp; Angeboten ausgeben
+              </label>
+            </div>
 
             <div className="flex justify-end">
               <button
@@ -2137,7 +2467,7 @@ export function NextcloudSettingsView({
                   Automatisierte Multi-Format-Backups
                 </h2>
                 <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                  Sichert automatisch alle Daten als JSON, CSV, Excel (.xlsx) und Gesamtbericht-PDF nach Zeitplan.
+                  Sichert automatisch alle Daten als JSON, CSV, Excel (.xlsx), Gesamtbericht-PDF und Rechnungen-ZIP nach Zeitplan.
                 </p>
               </div>
               <button
@@ -2184,12 +2514,13 @@ export function NextcloudSettingsView({
                 <span className="block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Enthaltene Formate
                 </span>
-                <div className="grid grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-200">
+                <div className="grid grid-cols-1 gap-2 text-xs text-slate-700 dark:text-slate-200 sm:grid-cols-2">
                   {([
                     { id: 'json', label: 'JSON (Vollbackup)' },
                     { id: 'excel', label: 'Excel (.xlsx)' },
                     { id: 'pdf', label: 'Gesamtbericht (.pdf)' },
                     { id: 'csv', label: 'CSV-Tabellen' },
+                    { id: 'invoices_zip', label: 'Rechnungen als ZIP (.zip)' },
                   ] as const).map((fmt) => (
                     <label key={fmt.id} className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -2244,6 +2575,270 @@ export function NextcloudSettingsView({
               >
                 Backup-Konfiguration speichern
               </button>
+            </div>
+          </section>
+
+          {/* Grafische PDF-Auswertung mit Filtern */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
+            <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-2.5">
+                <BarChart3 className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
+                <div>
+                  <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                    Grafische Auswertung als PDF (mit Filtern)
+                  </h2>
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    Erstellt einen visuellen PDF-Bericht mit Kennzahlen, Verteilungsdiagramm, Schwerpunkt-Balken und Einzelaufstellung nach Wunschfilter.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {([
+                  { id: '7d', label: '7 Tage' },
+                  { id: '30d', label: '30 Tage' },
+                  { id: 'month', label: 'Dieser Monat' },
+                  { id: 'year', label: 'Dieses Jahr' },
+                  { id: 'all', label: 'Gesamt' },
+                ] as const).map((preset) => (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => applyReportDatePreset(preset.id)}
+                    className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Berichtstitel
+                </label>
+                <input
+                  type="text"
+                  value={reportTitle}
+                  onChange={(e) => setReportTitle(e.target.value)}
+                  placeholder="Grafischer Tätigkeits- & Auswertungsbericht"
+                  className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Zeitraum von
+                </label>
+                <input
+                  type="date"
+                  value={reportStartDate}
+                  onChange={(e) => setReportStartDate(e.target.value)}
+                  className={`${inputClass} font-mono`}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Zeitraum bis
+                </label>
+                <input
+                  type="date"
+                  value={reportEndDate}
+                  onChange={(e) => setReportEndDate(e.target.value)}
+                  className={`${inputClass} font-mono`}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Kunde
+                </label>
+                <ThemedSelect
+                  value={reportCustomerId}
+                  onChange={setReportCustomerId}
+                  ariaLabel="Kunde für PDF-Bericht"
+                  options={[
+                    { value: 'all', label: 'Alle Kunden & Intern' },
+                    { value: 'internal_only', label: 'Nur interne Arbeiten' },
+                    ...db.customers.map((c) => ({
+                      value: c.id,
+                      label: c.companyName,
+                    })),
+                  ]}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Leistung / Produkt
+                </label>
+                <ThemedSelect
+                  value={reportProductId}
+                  onChange={setReportProductId}
+                  ariaLabel="Leistung für PDF-Bericht"
+                  options={[
+                    { value: 'all', label: 'Alle Leistungen' },
+                    ...db.products.map((p) => ({
+                      value: p.id,
+                      label: p.name,
+                    })),
+                  ]}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Auftrag / Tätigkeit
+                </label>
+                <ThemedSelect
+                  value={reportTaskTitle}
+                  onChange={setReportTaskTitle}
+                  ariaLabel="Auftrag für PDF-Bericht"
+                  options={[
+                    { value: 'all', label: 'Alle Aufträge' },
+                    ...distinctTaskTitles.map((title) => ({
+                      value: title,
+                      label: title,
+                    })),
+                  ]}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Tätigkeitsart
+                </label>
+                <ThemedSelect
+                  value={reportEntryType}
+                  onChange={(val) => setReportEntryType(val as 'all' | 'project' | 'internal')}
+                  ariaLabel="Tätigkeitsart für PDF-Bericht"
+                  options={[
+                    { value: 'all', label: 'Alle Arten' },
+                    { value: 'project', label: 'Kundenaufträge' },
+                    { value: 'internal', label: 'Interne Arbeiten' },
+                  ]}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Abrechnung
+                </label>
+                <ThemedSelect
+                  value={reportBillable}
+                  onChange={(val) =>
+                    setReportBillable(val as 'all' | 'billable_only' | 'unbillable_only')
+                  }
+                  ariaLabel="Verrechenbarkeit für PDF-Bericht"
+                  options={[
+                    { value: 'all', label: 'Alle Zeiten' },
+                    { value: 'billable_only', label: 'Nur verrechenbar' },
+                    { value: 'unbillable_only', label: 'Nur nicht verrechenbar' },
+                  ]}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-slate-50/80 px-4 py-3 dark:border-[#2e2349] dark:bg-[#211936]/50 sm:flex-row sm:items-center sm:justify-between">
+              <div className="text-xs text-slate-700 dark:text-slate-200">
+                Ausgewählter Umfang:{' '}
+                <span className="font-mono font-semibold">
+                  {matchingReportSummary.count} Zeiteinträge
+                </span>{' '}
+                ·{' '}
+                <span className="font-mono font-semibold">
+                  {formatNumber(matchingReportSummary.hours, 2)} Std.
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => void handleDownloadFilteredReport()}
+                  disabled={exportingReport}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                >
+                  <FileText className="h-3.5 w-3.5" />
+                  {exportingReport ? 'Erstelle...' : 'Grafik-PDF herunterladen'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleShareFilteredReport()}
+                  disabled={exportingReport}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 cursor-pointer"
+                >
+                  <Share2 className="h-3.5 w-3.5" />
+                  Teilen
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleUploadFilteredReportNextcloud()}
+                  disabled={exportingReport || !nextcloud.configured}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 cursor-pointer"
+                >
+                  <UploadCloud className="h-3.5 w-3.5" />
+                  In Nextcloud sichern
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* Rechnungen als ZIP-Paket */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-4">
+            <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-2.5">
+                <FileArchive className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
+                <div>
+                  <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                    Rechnungen als ZIP-Paket sichern
+                  </h2>
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    Bündelt alle PDF-Rechnungen (inkl. unterschriebener Abnahmeprotokolle und einer CSV-Übersicht) in einem einzigen ZIP-Archiv für Buchhaltung oder Steuerberater.
+                  </p>
+                </div>
+              </div>
+              <span className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs font-semibold text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 shrink-0">
+                {zipTargetCount} Dokument(e) im Paket
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap gap-5 text-xs text-slate-700 dark:text-slate-200">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={zipIncludeQuotes}
+                    onChange={(e) => setZipIncludeQuotes(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                  />
+                  Angebote einschließen
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={zipIncludeArchived}
+                    onChange={(e) => setZipIncludeArchived(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                  />
+                  Archivierte Rechnungen einschließen
+                </label>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => void handleDownloadInvoicesZip()}
+                  disabled={exportingZip || zipTargetCount === 0}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                >
+                  <FileArchive className="h-3.5 w-3.5" />
+                  {exportingZip ? 'Packe ZIP...' : 'Rechnungen-ZIP herunterladen'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleUploadInvoicesZipNextcloud()}
+                  disabled={exportingZip || zipTargetCount === 0 || !nextcloud.configured}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 cursor-pointer"
+                >
+                  <UploadCloud className="h-3.5 w-3.5" />
+                  ZIP in Nextcloud sichern
+                </button>
+              </div>
             </div>
           </section>
 
