@@ -93,6 +93,7 @@ import {
 } from './utils/appUpdater';
 import { createBackupVersion } from './utils/backupVersions';
 import { computeCustomerBudgetStatus } from './utils/budgetHelpers';
+import { getDesktopBridge, isDesktopElectron } from './utils/desktopBridge';
 import { isBackupDue } from './utils/exportBackup';
 import {
   addDaysISO,
@@ -1680,6 +1681,36 @@ export default function App() {
     };
   }, [handlePauseTimer, handleResumeTimer, handleStopTimer]);
 
+  // Windows Desktop System Tray live timer sync & quick actions (Pause / Resume / Stop / Search)
+  useEffect(() => {
+    const desktop = getDesktopBridge();
+    if (!desktop) return;
+    desktop.updateTrayState({
+      running: Boolean(db.activeTimer),
+      paused: Boolean(db.activeTimer?.pausedAt),
+      title: db.activeTimer?.title ?? '',
+      durationText: db.activeTimer ? formatDuration(elapsedSeconds) : '',
+    });
+  }, [db.activeTimer, elapsedSeconds]);
+
+  useEffect(() => {
+    const desktop = getDesktopBridge();
+    if (!desktop) return;
+    return desktop.onTrayAction((action) => {
+      if (action === 'pause') {
+        handlePauseTimer();
+      } else if (action === 'resume') {
+        handleResumeTimer();
+      } else if (action === 'stop') {
+        handleStopTimer();
+      } else if (action === 'search') {
+        if (!isAppLocked) {
+          setSearchOpen(true);
+        }
+      }
+    });
+  }, [handlePauseTimer, handleResumeTimer, handleStopTimer, isAppLocked]);
+
   const handleRequestNotificationPermission = useCallback(async () => {
     const status = await requestNativeNotificationPermission();
     if (status) {
@@ -3103,7 +3134,9 @@ export default function App() {
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-2 shrink-0">
-                {availableUpdate.apkDownloadUrl && (
+                {(isDesktopElectron()
+                  ? availableUpdate.windowsInstallerUrl
+                  : availableUpdate.apkDownloadUrl || availableUpdate.windowsInstallerUrl) && (
                   <button
                     type="button"
                     disabled={installingBannerUpdate}
@@ -3115,7 +3148,11 @@ export default function App() {
                     ) : (
                       <Download className="h-3.5 w-3.5" />
                     )}
-                    {isNativeCapacitor() ? 'Jetzt installieren' : 'APK laden'}
+                    {isNativeCapacitor() || isDesktopElectron()
+                      ? 'Jetzt installieren'
+                      : availableUpdate.windowsInstallerUrl && !availableUpdate.apkDownloadUrl
+                        ? 'Windows-App laden'
+                        : 'Update laden'}
                   </button>
                 )}
                 <button

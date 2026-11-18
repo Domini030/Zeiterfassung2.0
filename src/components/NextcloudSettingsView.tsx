@@ -18,6 +18,7 @@ import {
   FileSpreadsheet,
   FileText,
   Fingerprint,
+  FolderOpen,
   History,
   ImagePlus,
   Loader2,
@@ -25,6 +26,7 @@ import {
   Mail,
   Map as MapIcon,
   MapPin,
+  Monitor,
   Music,
   Palette,
   Pencil,
@@ -88,6 +90,7 @@ import {
   type GithubReleaseUpdateInfo,
 } from '../utils/appUpdater';
 import type { DiscoveredCalendar } from '../utils/caldavClient';
+import { getDesktopBridge, isDesktopElectron } from '../utils/desktopBridge';
 import {
   DEFAULT_EMAIL_TEMPLATES,
   EMAIL_TEMPLATE_PLACEHOLDERS,
@@ -302,7 +305,56 @@ export function NextcloudSettingsView({
   const [exportingReport, setExportingReport] = useState(false);
 
   const nativeApp = isNativeCapacitor();
+  const desktopApp = isDesktopElectron();
   const [serverUrl, setServerUrl] = useState(() => getBackendServerUrl());
+
+  // Windows Desktop Auto-Launch state
+  const [desktopAutoLaunch, setDesktopAutoLaunch] = useState(false);
+  const [savingAutoLaunch, setSavingAutoLaunch] = useState(false);
+
+  useEffect(() => {
+    const bridge = getDesktopBridge();
+    if (!bridge) return;
+    let active = true;
+    void bridge
+      .getAutoLaunch()
+      .then((enabled) => {
+        if (active) setDesktopAutoLaunch(Boolean(enabled));
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const handleToggleDesktopAutoLaunch = async (enabled: boolean) => {
+    const bridge = getDesktopBridge();
+    if (!bridge) return;
+    setSavingAutoLaunch(true);
+    try {
+      const actual = await bridge.setAutoLaunch(enabled);
+      setDesktopAutoLaunch(actual);
+      onNotify(
+        actual
+          ? 'TaktWerk startet nun automatisch mit Windows.'
+          : 'Windows-Autostart deaktiviert.'
+      );
+    } catch {
+      onNotify('Windows-Autostart konnte nicht geändert werden.', true);
+    } finally {
+      setSavingAutoLaunch(false);
+    }
+  };
+
+  const handleOpenDesktopDataFolder = async () => {
+    const bridge = getDesktopBridge();
+    if (!bridge) return;
+    try {
+      await bridge.openDataFolder();
+    } catch {
+      onNotify('Lokaler Datenordner konnte nicht geöffnet werden.', true);
+    }
+  };
 
   // App Updater (GitHub Releases) state
   const [appVersionInfo, setAppVersionInfo] = useState<AppVersionInfo | null>(null);
@@ -402,11 +454,11 @@ export function NextcloudSettingsView({
     }
   };
 
-  const handleInstallUpdate = async () => {
+  const handleInstallUpdate = async (target: 'auto' | 'android' | 'windows' = 'auto') => {
     if (!releaseInfo) return;
     setInstallingUpdate(true);
     try {
-      const res = await downloadAndInstallReleaseUpdate(releaseInfo);
+      const res = await downloadAndInstallReleaseUpdate(releaseInfo, target);
       onNotify(res.message, Boolean(res.needsPermission));
     } catch (err) {
       onNotify(
@@ -2128,7 +2180,46 @@ export function NextcloudSettingsView({
             </div>
           </section>
 
-          {/* App-Updates (GitHub Releases & Android APK) */}
+          {/* Windows Desktop-App Einstellungen (nur in der Electron Desktop-App sichtbar) */}
+          {desktopApp && (
+            <section className="rounded-xl border border-slate-200 bg-white p-6 space-y-4 dark:border-[#2e2349] dark:bg-[#171126]">
+              <div className="flex items-center gap-2">
+                <Monitor className="h-5 w-5 text-blue-700 dark:text-violet-400" />
+                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                  Windows Desktop-App
+                </h2>
+                <InfoHintPopup
+                  size="sm"
+                  title="Windows Desktop-Integration"
+                  text="Deine lokalen Daten liegen sicher in deinem Windows AppData-Ordner und bleiben bei jedem App-Update erhalten. Läuft ein Timer, minimiert sich TaktWerk beim Schließen in das System-Tray (Taskleiste unten rechts), damit die Zeiterfassung nicht unterbrochen wird."
+                />
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={desktopAutoLaunch}
+                    disabled={savingAutoLaunch}
+                    onChange={(e) => void handleToggleDesktopAutoLaunch(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                  />
+                  TaktWerk automatisch mit Windows starten
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => void handleOpenDesktopDataFolder()}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0"
+                >
+                  <FolderOpen className="h-3.5 w-3.5" />
+                  Datenordner im Explorer öffnen
+                </button>
+              </div>
+            </section>
+          )}
+
+          {/* App-Updates (GitHub Releases – Windows EXE & Android APK) */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 space-y-5 dark:border-[#2e2349] dark:bg-[#171126]">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -2139,12 +2230,16 @@ export function NextcloudSettingsView({
                 <InfoHintPopup
                   size="sm"
                   title="In-App-Update-Prüfung"
-                  text="Trage dein GitHub-Repository ein, in dem dein Android-APK-Workflow Releases veröffentlicht. TaktWerk prüft dort automatisch auf neuere Versionen und startet auf Android direkt das nahtlose In-Place-Update ohne Datenverlust."
+                  text="Trage dein GitHub-Repository ein, in dem dein TaktWerk-Workflow Releases veröffentlicht. TaktWerk prüft dort automatisch auf neuere Versionen und startet auf Windows (.exe) und Android (.apk) direkt das nahtlose Update ohne Datenverlust."
                 />
               </div>
               <span className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs font-semibold text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200">
                 Installiert: v{appVersionInfo?.versionName ?? '1.1.0'}
-                {appVersionInfo?.isNative ? ` (Build ${appVersionInfo.versionCode})` : ' (Web)'}
+                {appVersionInfo?.isDesktop
+                  ? ' (Windows Desktop)'
+                  : appVersionInfo?.isNative
+                    ? ` (Android Build ${appVersionInfo.versionCode})`
+                    : ' (Web)'}
               </span>
             </div>
 
@@ -2223,25 +2318,47 @@ export function NextcloudSettingsView({
                     </div>
                     <div className="text-xs text-slate-600 dark:text-slate-400">
                       Aktuell: v{releaseInfo.currentVersion} → Release: v{releaseInfo.latestVersion}
+                      {releaseInfo.windowsInstallerSizeBytes
+                        ? ` · Windows ${(releaseInfo.windowsInstallerSizeBytes / (1024 * 1024)).toFixed(1)} MB`
+                        : ''}
                       {releaseInfo.apkSizeBytes
-                        ? ` · APK ${(releaseInfo.apkSizeBytes / (1024 * 1024)).toFixed(1)} MB`
+                        ? ` · Android ${(releaseInfo.apkSizeBytes / (1024 * 1024)).toFixed(1)} MB`
                         : ''}
                     </div>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
-                    {releaseInfo.apkDownloadUrl && (
+                    {releaseInfo.windowsInstallerUrl && (desktopApp || !nativeApp) && (
                       <button
                         type="button"
                         disabled={installingUpdate}
-                        onClick={() => void handleInstallUpdate()}
+                        onClick={() => void handleInstallUpdate('windows')}
                         className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 cursor-pointer"
+                      >
+                        {installingUpdate ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Monitor className="h-3.5 w-3.5" />
+                        )}
+                        {desktopApp ? 'Windows-Update installieren' : 'Windows-App (.exe)'}
+                      </button>
+                    )}
+                    {releaseInfo.apkDownloadUrl && (nativeApp || !desktopApp) && (
+                      <button
+                        type="button"
+                        disabled={installingUpdate}
+                        onClick={() => void handleInstallUpdate('android')}
+                        className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold disabled:opacity-60 cursor-pointer ${
+                          nativeApp || !releaseInfo.windowsInstallerUrl
+                            ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                            : 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200'
+                        }`}
                       >
                         {installingUpdate ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         ) : (
                           <Download className="h-3.5 w-3.5" />
                         )}
-                        {nativeApp ? 'Jetzt herunterladen & installieren' : 'APK herunterladen'}
+                        {nativeApp ? 'Jetzt herunterladen & installieren' : 'Android APK'}
                       </button>
                     )}
                     <a

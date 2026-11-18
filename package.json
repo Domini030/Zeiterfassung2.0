@@ -1,15 +1,20 @@
 {
-  "name": "react-example",
+  "name": "taktwerk",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.1.0",
+  "description": "TaktWerk — Zeiterfassung, NFC-Automatisierung, Kunden & Rechnungen",
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "tsx server.ts",
     "start": "node server.ts",
     "build": "vite build",
     "preview": "vite preview",
     "cap:sync": "npm run build && npx cap sync android",
-    "clean": "rm -rf dist server.js",
+    "desktop:prepare": "node scripts/build-electron.mjs",
+    "desktop:dev": "node scripts/build-electron.mjs && npx electron .",
+    "desktop:build:win": "node scripts/build-electron.mjs && npx electron-builder --win --x64 --config electron-builder.yml",
+    "clean": "rm -rf dist dist-electron release-desktop server.js",
     "lint": "tsc --noEmit"
   },
   "dependencies": {

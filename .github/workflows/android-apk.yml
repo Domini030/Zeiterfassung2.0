@@ -1,7 +1,16 @@
-name: Android APK Build
+name: TaktWerk Build & Release (Android & Windows)
 
 on:
   workflow_dispatch:
+    inputs:
+      build_android:
+        description: 'Android APK bauen'
+        type: boolean
+        default: true
+      build_windows:
+        description: 'Windows Desktop-App (.exe Setup & Portable) bauen'
+        type: boolean
+        default: true
   push:
     branches: [ main, master ]
 
@@ -10,6 +19,7 @@ permissions:
 
 jobs:
   build-apk:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.build_android }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -65,21 +75,92 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
+      - name: Prepare versioned Android APK
+        shell: bash
+        run: |
+          mkdir -p release-android
+          cp android/app/build/outputs/apk/debug/app-debug.apk "release-android/TaktWerk-v${TAKTWERK_VERSION_NAME}.apk"
+
       - name: Upload TaktWerk APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: TaktWerk-Android-APK-v${{ env.TAKTWERK_VERSION_NAME }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: release-android/TaktWerk-v${{ env.TAKTWERK_VERSION_NAME }}.apk
 
-      - name: Publish GitHub Release for In-App Updates
+  build-windows:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.build_windows }}
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Install Electron desktop build tools
+        run: npm install --no-save --legacy-peer-deps electron@^35.0.0 electron-builder@^25.1.8
+
+      - name: Sync Windows version with GitHub run number
+        shell: pwsh
+        run: |
+          $version = "1.1.${{ github.run_number }}"
+          echo "TAKTWERK_VERSION_NAME=$version" >> $env:GITHUB_ENV
+          node -e "const fs=require('fs'); const p=JSON.parse(fs.readFileSync('package.json','utf8')); p.version='$version'; fs.writeFileSync('package.json', JSON.stringify(p, null, 2) + '\n');"
+          Write-Host "Building TaktWerk Windows Desktop v$version"
+
+      - name: Build web frontend and embedded desktop server
+        run: npm run desktop:prepare
+
+      - name: Package Windows Installer (.exe) & Portable (.exe)
+        run: npx electron-builder --win --x64 --config electron-builder.yml --publish never
+
+      - name: Upload TaktWerk Windows Desktop artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: TaktWerk-Windows-Desktop-v${{ env.TAKTWERK_VERSION_NAME }}
+          path: |
+            release-desktop/*.exe
+
+  publish-release:
+    needs: [build-apk, build-windows]
+    if: ${{ always() && (needs.build-apk.result == 'success' || needs.build-windows.result == 'success') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download built platform artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-bundle
+          merge-multiple: true
+
+      - name: Publish unified GitHub Release (Android & Windows)
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="v${{ env.TAKTWERK_VERSION_NAME }}"
-          APK_OUT="TaktWerk-${TAG}.apk"
-          cp android/app/build/outputs/apk/debug/app-debug.apk "${APK_OUT}"
-          gh release create "${TAG}" "${APK_OUT}" \
-            --title "TaktWerk ${TAG}" \
-            --notes "Automatischer Android-APK-Build (${TAG}, versionCode ${{ env.TAKTWERK_VERSION_CODE }}). Kann direkt über bestehende TaktWerk-Installationen ab v1.1 aktualisiert werden." \
-            --latest || gh release upload "${TAG}" "${APK_OUT}" --clobber
+          VERSION_NAME="1.1.${{ github.run_number }}"
+          TAG="v${VERSION_NAME}"
+          VERSION_CODE=$((100 + ${{ github.run_number }}))
+
+          shopt -s nullglob
+          ASSETS=(release-bundle/*.apk release-bundle/*.exe)
+          if [ ${#ASSETS[@]} -eq 0 ]; then
+            echo "No release assets found to publish."
+            exit 0
+          fi
+
+          NOTES="Automatischer TaktWerk-Build (${TAG}):
+          - **Windows Desktop**: \`TaktWerk-Setup-${TAG}.exe\` (Installer, behält alle Daten in AppData) & \`TaktWerk-Portable-${TAG}.exe\` (ohne Installation)
+          - **Android**: \`TaktWerk-${TAG}.apk\` (versionCode ${VERSION_CODE}, nahtloses In-Place-Update über bestehende TaktWerk-Installationen ab v1.1)"
+
+          gh release create "${TAG}" "${ASSETS[@]}" \
+            --title "TaktWerk ${TAG} (Windows & Android)" \
+            --notes "${NOTES}" \
+            --latest || gh release upload "${TAG}" "${ASSETS[@]}" --clobber

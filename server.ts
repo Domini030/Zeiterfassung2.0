@@ -8,10 +8,47 @@ import { GoogleGenAI, Type } from '@google/genai';
 import type { AppDatabase, NextcloudConfigInfo } from './src/types.ts';
 import { createEmptyDatabase, normalizeDatabase } from './src/utils/sampleData.ts';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.resolve(__dirname, 'data');
-const DB_FILE = path.join(DATA_DIR, 'db.json');
-const NC_CONFIG_FILE = path.join(DATA_DIR, 'nextcloud-config.json');
+const SERVER_ROOT_DIR = (() => {
+  if (process.env.TAKTWERK_APP_ROOT) {
+    return path.resolve(process.env.TAKTWERK_APP_ROOT);
+  }
+  try {
+    if (import.meta && typeof import.meta.url === 'string' && import.meta.url) {
+      return path.dirname(fileURLToPath(import.meta.url));
+    }
+  } catch {
+    // Fallback for CJS desktop bundle
+  }
+  return process.cwd();
+})();
+
+let activeDataDir = process.env.TAKTWERK_DATA_DIR
+  ? path.resolve(process.env.TAKTWERK_DATA_DIR)
+  : path.resolve(SERVER_ROOT_DIR, 'data');
+
+function getDbFilePath(): string {
+  return path.join(activeDataDir, 'db.json');
+}
+
+function getNcConfigFilePath(): string {
+  return path.join(activeDataDir, 'nextcloud-config.json');
+}
+
+export interface TaktWerkServerOptions {
+  port?: number;
+  host?: string;
+  dataDir?: string;
+  distDir?: string;
+  forceProd?: boolean;
+}
+
+export interface TaktWerkServerInstance {
+  server: http.Server;
+  port: number;
+  host: string;
+  dataDir: string;
+  close: () => Promise<void>;
+}
 
 interface StoredNextcloudConfig {
   url: string;
@@ -25,24 +62,25 @@ interface StoredNextcloudConfig {
 }
 
 async function ensureDataDir(): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+  await fs.mkdir(activeDataDir, { recursive: true });
 }
 
 async function readLocalDb(): Promise<AppDatabase> {
   await ensureDataDir();
+  const dbFile = getDbFilePath();
   try {
-    const raw = await fs.readFile(DB_FILE, 'utf-8');
+    const raw = await fs.readFile(dbFile, 'utf-8');
     return JSON.parse(raw) as AppDatabase;
   } catch {
     const initial = createEmptyDatabase();
-    await fs.writeFile(DB_FILE, JSON.stringify(initial, null, 2), 'utf-8');
+    await fs.writeFile(dbFile, JSON.stringify(initial, null, 2), 'utf-8');
     return initial;
   }
 }
 
 async function writeLocalDb(db: AppDatabase): Promise<void> {
   await ensureDataDir();
-  await fs.writeFile(DB_FILE, JSON.stringify(db, null, 2), 'utf-8');
+  await fs.writeFile(getDbFilePath(), JSON.stringify(db, null, 2), 'utf-8');
 }
 
 async function readStoredNcConfig(): Promise<StoredNextcloudConfig & { fromEnv: boolean }> {
@@ -53,7 +91,7 @@ async function readStoredNcConfig(): Promise<StoredNextcloudConfig & { fromEnv: 
 
   let fileCfg: Partial<StoredNextcloudConfig> = {};
   try {
-    const raw = await fs.readFile(NC_CONFIG_FILE, 'utf-8');
+    const raw = await fs.readFile(getNcConfigFilePath(), 'utf-8');
     fileCfg = JSON.parse(raw) as Partial<StoredNextcloudConfig>;
   } catch {
     // No saved file config yet
@@ -76,7 +114,7 @@ async function readStoredNcConfig(): Promise<StoredNextcloudConfig & { fromEnv: 
 
 async function writeStoredNcConfig(cfg: StoredNextcloudConfig): Promise<void> {
   await ensureDataDir();
-  await fs.writeFile(NC_CONFIG_FILE, JSON.stringify(cfg, null, 2), 'utf-8');
+  await fs.writeFile(getNcConfigFilePath(), JSON.stringify(cfg, null, 2), 'utf-8');
 }
 
 function normalizeFolder(folder: string): string {
@@ -218,9 +256,14 @@ function toPublicNcInfo(cfg: StoredNextcloudConfig & { fromEnv: boolean }): Next
   };
 }
 
-async function startServer() {
+export async function startTaktWerkServer(
+  options: TaktWerkServerOptions = {}
+): Promise<TaktWerkServerInstance> {
+  if (options.dataDir) {
+    activeDataDir = path.resolve(options.dataDir);
+  }
   const app = express();
-  app.use(express.json({ limit: '15mb' }));
+  app.use(express.json({ limit: '25mb' }));
 
   // Allow Capacitor native Android/iOS apps to talk to a deployed TaktWerk server
   app.use('/api', (req, res, next) => {
@@ -1114,7 +1157,7 @@ Extrahiere möglichst exakt:
 
 
   const httpServer = http.createServer(app);
-  const isProd = process.env.NODE_ENV === 'production';
+  const isProd = Boolean(options.forceProd) || process.env.NODE_ENV === 'production';
   if (!isProd) {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
@@ -1127,20 +1170,48 @@ Extrahiere möglichst exakt:
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.resolve(__dirname, 'dist');
+    const distPath = options.distDir
+      ? path.resolve(options.distDir)
+      : process.env.TAKTWERK_DIST_DIR
+        ? path.resolve(process.env.TAKTWERK_DIST_DIR)
+        : path.resolve(SERVER_ROOT_DIR, 'dist');
     app.use(express.static(distPath));
     app.get('*', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
 
-  const port = Number(process.env.PORT) || 3000;
-  httpServer.listen(port, '0.0.0.0', () => {
-    console.log(`TaktWerk server listening on http://0.0.0.0:${port}`);
+  const targetPort =
+    typeof options.port === 'number' ? options.port : Number(process.env.PORT) || 3000;
+  const targetHost = options.host || process.env.TAKTWERK_HOST || '0.0.0.0';
+
+  await new Promise<void>((resolve, reject) => {
+    httpServer.once('error', reject);
+    httpServer.listen(targetPort, targetHost, () => {
+      httpServer.off('error', reject);
+      resolve();
+    });
   });
+
+  const addr = httpServer.address();
+  const actualPort = typeof addr === 'object' && addr ? addr.port : targetPort;
+  console.log(`TaktWerk server listening on http://${targetHost}:${actualPort}`);
+
+  return {
+    server: httpServer,
+    port: actualPort,
+    host: targetHost,
+    dataDir: activeDataDir,
+    close: () =>
+      new Promise<void>((resolve) => {
+        httpServer.close(() => resolve());
+      }),
+  };
 }
 
-startServer().catch((err) => {
-  console.error('Failed to start server:', err);
-  process.exit(1);
-});
+if (process.env.TAKTWERK_EMBEDDED !== '1') {
+  startTaktWerkServer().catch((err) => {
+    console.error('Failed to start server:', err);
+    process.exit(1);
+  });
+}

@@ -1,0 +1,39 @@
+appId: de.taktwerk.desktop
+productName: TaktWerk
+copyright: Copyright © TaktWerk
+asar: true
+directories:
+  output: release-desktop
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - electron/**/*
+  - package.json
+  - "!**/*.map"
+  - "!**/android/**"
+  - "!**/.github/**"
+  - "!**/data/**"
+win:
+  icon: electron/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: TaktWerk
+  installerIcon: electron/icon.ico
+  uninstallerIcon: electron/icon.ico
+  installerHeaderIcon: electron/icon.ico
+  language: "1031"
+  deleteAppDataOnUninstall: false
+  artifactName: "TaktWerk-Setup-v${version}.exe"
+portable:
+  artifactName: "TaktWerk-Portable-v${version}.exe"

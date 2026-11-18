@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-USuqRtdl.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-XjJlHASV.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-HJg4IYQl.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-P57aQPcz.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -13242,6 +13242,16 @@ var Fingerprint = createLucideIcon("fingerprint", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var FolderOpen = createLucideIcon("folder-open", [["path", {
+	d: "m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2",
+	key: "usdka0"
+}]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Gauge = createLucideIcon("gauge", [["path", {
 	d: "m12 14 4-4",
 	key: "9kzdfg"
@@ -13543,6 +13553,36 @@ var Menu = createLucideIcon("menu", [
 	["path", {
 		d: "M4 19h16",
 		key: "1djgab"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Monitor = createLucideIcon("monitor", [
+	["rect", {
+		width: "20",
+		height: "14",
+		x: "2",
+		y: "3",
+		rx: "2",
+		key: "48i651"
+	}],
+	["line", {
+		x1: "8",
+		x2: "16",
+		y1: "21",
+		y2: "21",
+		key: "1svkeh"
+	}],
+	["line", {
+		x1: "12",
+		x2: "12",
+		y1: "17",
+		y2: "21",
+		key: "vw1qmm"
 	}]
 ]);
 /**
@@ -35501,7 +35541,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-USuqRtdl.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-XjJlHASV.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -81036,6 +81076,15 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 		]
 	});
 }
+// src/utils/desktopBridge.ts
+function getDesktopBridge() {
+	if (typeof window === "undefined") return null;
+	const bridge = window.taktwerkDesktop;
+	return bridge && bridge.isDesktop ? bridge : null;
+}
+function isDesktopElectron() {
+	return getDesktopBridge() !== null;
+}
 // src/utils/appUpdater.ts
 var WEB_APP_VERSION = "1.1.0";
 function normalizeVersionParts(version) {
@@ -81067,19 +81116,37 @@ function sanitizeGithubRepo(input) {
 	return `${parts[0]}/${parts[1]}`;
 }
 async function getCurrentAppVersion() {
+	const desktop = getDesktopBridge();
+	if (desktop) try {
+		return {
+			versionName: (await desktop.getAppVersion()).versionName || "1.1.0",
+			versionCode: 100,
+			isNative: false,
+			isDesktop: true
+		};
+	} catch {
+		return {
+			versionName: WEB_APP_VERSION,
+			versionCode: 100,
+			isNative: false,
+			isDesktop: true
+		};
+	}
 	const isNative = Capacitor.isNativePlatform();
 	if (isNative) try {
 		const info = await TaktWerkNative.getAppVersion();
 		return {
 			versionName: info.versionName || "1.1.0",
 			versionCode: info.versionCode || 100,
-			isNative: true
+			isNative: true,
+			isDesktop: false
 		};
 	} catch {}
 	return {
 		versionName: WEB_APP_VERSION,
 		versionCode: 100,
-		isNative
+		isNative,
+		isDesktop: false
 	};
 }
 async function checkGithubReleaseUpdate(repoInput) {
@@ -81089,13 +81156,17 @@ async function checkGithubReleaseUpdate(repoInput) {
 		update(25, repo);
 		const current = await getCurrentAppVersion();
 		const res = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, { headers: { Accept: "application/vnd.github+json" } });
-		if (res.status === 404) throw new Error(`Kein veröffentlichtes GitHub-Release unter „${repo}“ gefunden. Starte zuerst einen Android-Build oder erstelle ein Release mit APK.`);
+		if (res.status === 404) throw new Error(`Kein veröffentlichtes GitHub-Release unter „${repo}“ gefunden. Starte zuerst einen Build oder erstelle ein Release.`);
 		if (!res.ok) throw new Error(`GitHub API antwortet mit HTTP ${res.status}.`);
 		update(70, "Release-Daten werden ausgewertet…");
 		const data = await res.json();
+		const assets = data.assets || [];
 		const tagName = (data.tag_name || "").trim();
 		const latestVersion = tagName.replace(/^v/i, "") || "0.0.0";
-		const apkAsset = (data.assets || []).find((a) => (a.name || "").toLowerCase().endsWith(".apk"));
+		const apkAsset = assets.find((a) => (a.name || "").toLowerCase().endsWith(".apk"));
+		const exeAssets = assets.filter((a) => (a.name || "").toLowerCase().endsWith(".exe"));
+		const setupExeAsset = exeAssets.find((a) => /setup|installer/i.test(a.name || "")) || exeAssets.find((a) => !/portable/i.test(a.name || "")) || exeAssets[0];
+		const portableExeAsset = exeAssets.find((a) => /portable/i.test(a.name || ""));
 		const isNewer = compareVersions(latestVersion, current.versionName) > 0;
 		update(100, isNewer ? `Version ${latestVersion} verfügbar` : "Aktuell");
 		return {
@@ -81109,17 +81180,55 @@ async function checkGithubReleaseUpdate(repoInput) {
 			htmlUrl: data.html_url || `https://github.com/${repo}/releases`,
 			apkDownloadUrl: apkAsset?.browser_download_url || null,
 			apkFileName: apkAsset?.name || `TaktWerk-${latestVersion}.apk`,
-			apkSizeBytes: typeof apkAsset?.size === "number" ? apkAsset.size : null
+			apkSizeBytes: typeof apkAsset?.size === "number" ? apkAsset.size : null,
+			windowsInstallerUrl: setupExeAsset?.browser_download_url || null,
+			windowsInstallerFileName: setupExeAsset?.name || `TaktWerk-Setup-v${latestVersion}.exe`,
+			windowsInstallerSizeBytes: typeof setupExeAsset?.size === "number" ? setupExeAsset.size : null,
+			windowsPortableUrl: portableExeAsset?.browser_download_url || null,
+			windowsPortableFileName: portableExeAsset?.name || `TaktWerk-Portable-v${latestVersion}.exe`
 		};
 	}, 10, repo);
 }
-async function downloadAndInstallReleaseUpdate(release) {
-	if (!release.apkDownloadUrl) throw new Error("Dieses GitHub-Release enthält keine APK-Datei. Öffne die Release-Seite im Browser.");
-	if (Capacitor.isNativePlatform()) return trackActivity(`Lade Update ${release.tagName} herunter…`, async (update) => {
-		update(35, release.apkFileName || "TaktWerk.apk");
+function triggerBrowserDownload(url, filename) {
+	const link = document.createElement("a");
+	link.href = url;
+	link.download = filename;
+	link.rel = "noopener noreferrer";
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+}
+async function downloadAndInstallReleaseUpdate(release, target = "auto") {
+	const desktop = getDesktopBridge();
+	const isAndroid = Capacitor.isNativePlatform();
+	if ((target === "auto" ? desktop ? "windows" : isAndroid ? "android" : release.windowsInstallerUrl && !release.apkDownloadUrl ? "windows" : "android" : target) === "windows") {
+		if (!release.windowsInstallerUrl) throw new Error("Dieses GitHub-Release enthält noch keine Windows-EXE-Datei. Öffne die Release-Seite im Browser.");
+		const exeName = release.windowsInstallerFileName || `TaktWerk-Setup-v${release.latestVersion}.exe`;
+		if (desktop) return trackActivity(`Lade Windows-Update ${release.tagName} herunter…`, async (update) => {
+			update(35, exeName);
+			const result = await desktop.downloadAndRunInstaller({
+				url: release.windowsInstallerUrl,
+				filename: exeName
+			});
+			update(100, "Installer gestartet");
+			return {
+				startedInstall: Boolean(result.ok),
+				message: result.message || `Windows-Installer für ${release.tagName} wurde gestartet. Alle Daten bleiben erhalten.`
+			};
+		}, 15, exeName);
+		triggerBrowserDownload(release.windowsInstallerUrl, exeName);
+		return {
+			startedInstall: true,
+			message: `Windows-Installer (${exeName}) wird heruntergeladen.`
+		};
+	}
+	if (!release.apkDownloadUrl) throw new Error("Dieses GitHub-Release enthält keine Android-APK-Datei. Öffne die Release-Seite im Browser.");
+	const apkName = release.apkFileName || `TaktWerk-${release.latestVersion}.apk`;
+	if (isAndroid) return trackActivity(`Lade Update ${release.tagName} herunter…`, async (update) => {
+		update(35, apkName);
 		const result = await TaktWerkNative.downloadAndInstallApk({
 			url: release.apkDownloadUrl,
-			filename: release.apkFileName || `TaktWerk-${release.latestVersion}.apk`
+			filename: apkName
 		});
 		update(100, "Installationsdialog geöffnet");
 		if (result.needsPermission) return {
@@ -81131,17 +81240,11 @@ async function downloadAndInstallReleaseUpdate(release) {
 			startedInstall: true,
 			message: result.message || `Android-Update-Installer für ${release.tagName} wurde gestartet. Alle Daten bleiben erhalten.`
 		};
-	}, 15, release.apkFileName || "APK");
-	const link = document.createElement("a");
-	link.href = release.apkDownloadUrl;
-	link.download = release.apkFileName || `TaktWerk-${release.latestVersion}.apk`;
-	link.rel = "noopener noreferrer";
-	document.body.appendChild(link);
-	link.click();
-	document.body.removeChild(link);
+	}, 15, apkName);
+	triggerBrowserDownload(release.apkDownloadUrl, apkName);
 	return {
 		startedInstall: true,
-		message: `APK-Download (${release.apkFileName}) gestartet. Übertrage und installiere die Datei auf deinem Android-Gerät.`
+		message: `APK-Download (${apkName}) gestartet. Übertrage und installiere die Datei auf deinem Android-Gerät.`
 	};
 }
 // src/utils/soundReminder.ts
@@ -81681,7 +81784,44 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 	const [reportBillable, setReportBillable] = (0, import_react.useState)("all");
 	const [exportingReport, setExportingReport] = (0, import_react.useState)(false);
 	const nativeApp = isNativeCapacitor();
+	const desktopApp = isDesktopElectron();
 	const [serverUrl, setServerUrl] = (0, import_react.useState)(() => getBackendServerUrl());
+	const [desktopAutoLaunch, setDesktopAutoLaunch] = (0, import_react.useState)(false);
+	const [savingAutoLaunch, setSavingAutoLaunch] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		const bridge = getDesktopBridge();
+		if (!bridge) return;
+		let active = true;
+		bridge.getAutoLaunch().then((enabled) => {
+			if (active) setDesktopAutoLaunch(Boolean(enabled));
+		}).catch(() => {});
+		return () => {
+			active = false;
+		};
+	}, []);
+	const handleToggleDesktopAutoLaunch = async (enabled) => {
+		const bridge = getDesktopBridge();
+		if (!bridge) return;
+		setSavingAutoLaunch(true);
+		try {
+			const actual = await bridge.setAutoLaunch(enabled);
+			setDesktopAutoLaunch(actual);
+			onNotify(actual ? "TaktWerk startet nun automatisch mit Windows." : "Windows-Autostart deaktiviert.");
+		} catch {
+			onNotify("Windows-Autostart konnte nicht geändert werden.", true);
+		} finally {
+			setSavingAutoLaunch(false);
+		}
+	};
+	const handleOpenDesktopDataFolder = async () => {
+		const bridge = getDesktopBridge();
+		if (!bridge) return;
+		try {
+			await bridge.openDataFolder();
+		} catch {
+			onNotify("Lokaler Datenordner konnte nicht geöffnet werden.", true);
+		}
+	};
 	const [appVersionInfo, setAppVersionInfo] = (0, import_react.useState)(null);
 	const [checkingUpdate, setCheckingUpdate] = (0, import_react.useState)(false);
 	const [installingUpdate, setInstallingUpdate] = (0, import_react.useState)(false);
@@ -81762,11 +81902,11 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 			setCheckingUpdate(false);
 		}
 	};
-	const handleInstallUpdate = async () => {
+	const handleInstallUpdate = async (target = "auto") => {
 		if (!releaseInfo) return;
 		setInstallingUpdate(true);
 		try {
-			const res = await downloadAndInstallReleaseUpdate(releaseInfo);
+			const res = await downloadAndInstallReleaseUpdate(releaseInfo, target);
 			onNotify(res.message, Boolean(res.needsPermission));
 		} catch (err) {
 			onNotify(err instanceof Error ? err.message : "Update-Installation fehlgeschlagen.", true);
@@ -83238,6 +83378,41 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 							})
 						]
 					}),
+					desktopApp && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 space-y-4 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-2",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Monitor, { className: "h-5 w-5 text-blue-700 dark:text-violet-400" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+									children: "Windows Desktop-App"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+									size: "sm",
+									title: "Windows Desktop-Integration",
+									text: "Deine lokalen Daten liegen sicher in deinem Windows AppData-Ordner und bleiben bei jedem App-Update erhalten. Läuft ein Timer, minimiert sich TaktWerk beim Schließen in das System-Tray (Taskleiste unten rechts), damit die Zeiterfassung nicht unterbrochen wird."
+								})
+							]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: desktopAutoLaunch,
+									disabled: savingAutoLaunch,
+									onChange: (e) => void handleToggleDesktopAutoLaunch(e.target.checked),
+									className: "h-4 w-4 rounded border-slate-300 accent-violet-600"
+								}), "TaktWerk automatisch mit Windows starten"]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => void handleOpenDesktopDataFolder(),
+								className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FolderOpen, { className: "h-3.5 w-3.5" }), "Datenordner im Explorer öffnen"]
+							})]
+						})]
+					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 						className: "rounded-xl border border-slate-200 bg-white p-6 space-y-5 dark:border-[#2e2349] dark:bg-[#171126]",
 						children: [
@@ -83254,7 +83429,7 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
 											size: "sm",
 											title: "In-App-Update-Prüfung",
-											text: "Trage dein GitHub-Repository ein, in dem dein Android-APK-Workflow Releases veröffentlicht. TaktWerk prüft dort automatisch auf neuere Versionen und startet auf Android direkt das nahtlose In-Place-Update ohne Datenverlust."
+											text: "Trage dein GitHub-Repository ein, in dem dein TaktWerk-Workflow Releases veröffentlicht. TaktWerk prüft dort automatisch auf neuere Versionen und startet auf Windows (.exe) und Android (.apk) direkt das nahtlose Update ohne Datenverlust."
 										})
 									]
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
@@ -83262,7 +83437,7 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 									children: [
 										"Installiert: v",
 										appVersionInfo?.versionName ?? "1.1.0",
-										appVersionInfo?.isNative ? ` (Build ${appVersionInfo.versionCode})` : " (Web)"
+										appVersionInfo?.isDesktop ? " (Windows Desktop)" : appVersionInfo?.isNative ? ` (Android Build ${appVersionInfo.versionCode})` : " (Web)"
 									]
 								})]
 							}),
@@ -83328,23 +83503,34 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 											releaseInfo.currentVersion,
 											" → Release: v",
 											releaseInfo.latestVersion,
-											releaseInfo.apkSizeBytes ? ` · APK ${(releaseInfo.apkSizeBytes / 1048576).toFixed(1)} MB` : ""
+											releaseInfo.windowsInstallerSizeBytes ? ` · Windows ${(releaseInfo.windowsInstallerSizeBytes / 1048576).toFixed(1)} MB` : "",
+											releaseInfo.apkSizeBytes ? ` · Android ${(releaseInfo.apkSizeBytes / 1048576).toFixed(1)} MB` : ""
 										]
 									})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 										className: "flex flex-wrap items-center gap-2",
-										children: [releaseInfo.apkDownloadUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											disabled: installingUpdate,
-											onClick: () => void handleInstallUpdate(),
-											className: "inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 cursor-pointer",
-											children: [installingUpdate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), nativeApp ? "Jetzt herunterladen & installieren" : "APK herunterladen"]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-											href: releaseInfo.htmlUrl,
-											target: "_blank",
-											rel: "noopener noreferrer",
-											className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExternalLink, { className: "h-3.5 w-3.5" }), "GitHub Release"]
-										})]
+										children: [
+											releaseInfo.windowsInstallerUrl && (desktopApp || !nativeApp) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												disabled: installingUpdate,
+												onClick: () => void handleInstallUpdate("windows"),
+												className: "inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 cursor-pointer",
+												children: [installingUpdate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Monitor, { className: "h-3.5 w-3.5" }), desktopApp ? "Windows-Update installieren" : "Windows-App (.exe)"]
+											}),
+											releaseInfo.apkDownloadUrl && (nativeApp || !desktopApp) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												disabled: installingUpdate,
+												onClick: () => void handleInstallUpdate("android"),
+												className: `inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold disabled:opacity-60 cursor-pointer ${nativeApp || !releaseInfo.windowsInstallerUrl ? "bg-emerald-600 text-white hover:bg-emerald-700" : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200"}`,
+												children: [installingUpdate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), nativeApp ? "Jetzt herunterladen & installieren" : "Android APK"]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+												href: releaseInfo.htmlUrl,
+												target: "_blank",
+												rel: "noopener noreferrer",
+												className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExternalLink, { className: "h-3.5 w-3.5" }), "GitHub Release"]
+											})
+										]
 									})]
 								}), releaseInfo.body && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("pre", {
 									className: "max-h-36 overflow-y-auto whitespace-pre-wrap rounded-lg border border-slate-200/80 bg-white/80 p-3 font-sans text-xs text-slate-700 dark:border-[#3b2d5e] dark:bg-[#171126]/80 dark:text-slate-300",
@@ -91704,6 +91890,33 @@ function App() {
 		handleResumeTimer,
 		handleStopTimer
 	]);
+	(0, import_react.useEffect)(() => {
+		const desktop = getDesktopBridge();
+		if (!desktop) return;
+		desktop.updateTrayState({
+			running: Boolean(db.activeTimer),
+			paused: Boolean(db.activeTimer?.pausedAt),
+			title: db.activeTimer?.title ?? "",
+			durationText: db.activeTimer ? formatDuration(elapsedSeconds) : ""
+		});
+	}, [db.activeTimer, elapsedSeconds]);
+	(0, import_react.useEffect)(() => {
+		const desktop = getDesktopBridge();
+		if (!desktop) return;
+		return desktop.onTrayAction((action) => {
+			if (action === "pause") handlePauseTimer();
+			else if (action === "resume") handleResumeTimer();
+			else if (action === "stop") handleStopTimer();
+			else if (action === "search") {
+				if (!isAppLocked) setSearchOpen(true);
+			}
+		});
+	}, [
+		handlePauseTimer,
+		handleResumeTimer,
+		handleStopTimer,
+		isAppLocked
+	]);
 	const handleRequestNotificationPermission = (0, import_react.useCallback)(async () => {
 		const status = await requestNativeNotificationPermission();
 		if (status) {
@@ -92804,12 +93017,12 @@ function App() {
 										})] })]
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 										className: "flex flex-wrap items-center gap-2 shrink-0",
-										children: [availableUpdate.apkDownloadUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										children: [(isDesktopElectron() ? availableUpdate.windowsInstallerUrl : availableUpdate.apkDownloadUrl || availableUpdate.windowsInstallerUrl) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 											type: "button",
 											disabled: installingBannerUpdate,
 											onClick: () => void handleInstallBannerUpdate(),
 											className: "inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 cursor-pointer",
-											children: [installingBannerUpdate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), isNativeCapacitor() ? "Jetzt installieren" : "APK laden"]
+											children: [installingBannerUpdate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), isNativeCapacitor() || isDesktopElectron() ? "Jetzt installieren" : availableUpdate.windowsInstallerUrl && !availableUpdate.apkDownloadUrl ? "Windows-App laden" : "Update laden"]
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 											type: "button",
 											onClick: () => setAvailableUpdate(null),

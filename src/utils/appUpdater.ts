@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { trackActivity } from './activityProgress';
+import { getDesktopBridge } from './desktopBridge';
 import { TaktWerkNative } from './taktwerkNative';
 
 export const WEB_APP_VERSION = '1.1.0';
@@ -9,6 +10,7 @@ export interface AppVersionInfo {
   versionName: string;
   versionCode: number;
   isNative: boolean;
+  isDesktop: boolean;
 }
 
 export interface GithubReleaseUpdateInfo {
@@ -23,16 +25,19 @@ export interface GithubReleaseUpdateInfo {
   apkDownloadUrl: string | null;
   apkFileName: string | null;
   apkSizeBytes: number | null;
+  windowsInstallerUrl: string | null;
+  windowsInstallerFileName: string | null;
+  windowsInstallerSizeBytes: number | null;
+  windowsPortableUrl: string | null;
+  windowsPortableFileName: string | null;
 }
 
 export function normalizeVersionParts(version: string): number[] {
   const cleaned = version.trim().replace(/^v/i, '').split('-')[0];
-  return cleaned
-    .split('.')
-    .map((p) => {
-      const n = parseInt(p, 10);
-      return Number.isFinite(n) ? n : 0;
-    });
+  return cleaned.split('.').map((p) => {
+    const n = parseInt(p, 10);
+    return Number.isFinite(n) ? n : 0;
+  });
 }
 
 export function compareVersions(a: string, b: string): number {
@@ -60,6 +65,26 @@ export function sanitizeGithubRepo(input: string | undefined | null): string {
 }
 
 export async function getCurrentAppVersion(): Promise<AppVersionInfo> {
+  const desktop = getDesktopBridge();
+  if (desktop) {
+    try {
+      const info = await desktop.getAppVersion();
+      return {
+        versionName: info.versionName || WEB_APP_VERSION,
+        versionCode: WEB_APP_VERSION_CODE,
+        isNative: false,
+        isDesktop: true,
+      };
+    } catch {
+      return {
+        versionName: WEB_APP_VERSION,
+        versionCode: WEB_APP_VERSION_CODE,
+        isNative: false,
+        isDesktop: true,
+      };
+    }
+  }
+
   const isNative = Capacitor.isNativePlatform();
   if (isNative) {
     try {
@@ -68,6 +93,7 @@ export async function getCurrentAppVersion(): Promise<AppVersionInfo> {
         versionName: info.versionName || WEB_APP_VERSION,
         versionCode: info.versionCode || WEB_APP_VERSION_CODE,
         isNative: true,
+        isDesktop: false,
       };
     } catch {
       // Fallback
@@ -77,6 +103,7 @@ export async function getCurrentAppVersion(): Promise<AppVersionInfo> {
     versionName: WEB_APP_VERSION,
     versionCode: WEB_APP_VERSION_CODE,
     isNative,
+    isDesktop: false,
   };
 }
 
@@ -85,7 +112,9 @@ export async function checkGithubReleaseUpdate(
 ): Promise<GithubReleaseUpdateInfo> {
   const repo = sanitizeGithubRepo(repoInput);
   if (!repo) {
-    throw new Error('Bitte ein gültiges GitHub-Repository im Format „Benutzer/Repository“ angeben.');
+    throw new Error(
+      'Bitte ein gültiges GitHub-Repository im Format „Benutzer/Repository“ angeben.'
+    );
   }
 
   return trackActivity(
@@ -100,7 +129,7 @@ export async function checkGithubReleaseUpdate(
       });
       if (res.status === 404) {
         throw new Error(
-          `Kein veröffentlichtes GitHub-Release unter „${repo}“ gefunden. Starte zuerst einen Android-Build oder erstelle ein Release mit APK.`
+          `Kein veröffentlichtes GitHub-Release unter „${repo}“ gefunden. Starte zuerst einen Build oder erstelle ein Release.`
         );
       }
       if (!res.ok) {
@@ -121,11 +150,17 @@ export async function checkGithubReleaseUpdate(
         }[];
       };
 
+      const assets = data.assets || [];
       const tagName = (data.tag_name || '').trim();
       const latestVersion = tagName.replace(/^v/i, '') || '0.0.0';
-      const apkAsset = (data.assets || []).find((a) =>
-        (a.name || '').toLowerCase().endsWith('.apk')
-      );
+
+      const apkAsset = assets.find((a) => (a.name || '').toLowerCase().endsWith('.apk'));
+      const exeAssets = assets.filter((a) => (a.name || '').toLowerCase().endsWith('.exe'));
+      const setupExeAsset =
+        exeAssets.find((a) => /setup|installer/i.test(a.name || '')) ||
+        exeAssets.find((a) => !/portable/i.test(a.name || '')) ||
+        exeAssets[0];
+      const portableExeAsset = exeAssets.find((a) => /portable/i.test(a.name || ''));
 
       const isNewer = compareVersions(latestVersion, current.versionName) > 0;
       update(100, isNewer ? `Version ${latestVersion} verfügbar` : 'Aktuell');
@@ -142,6 +177,14 @@ export async function checkGithubReleaseUpdate(
         apkDownloadUrl: apkAsset?.browser_download_url || null,
         apkFileName: apkAsset?.name || `TaktWerk-${latestVersion}.apk`,
         apkSizeBytes: typeof apkAsset?.size === 'number' ? apkAsset.size : null,
+        windowsInstallerUrl: setupExeAsset?.browser_download_url || null,
+        windowsInstallerFileName:
+          setupExeAsset?.name || `TaktWerk-Setup-v${latestVersion}.exe`,
+        windowsInstallerSizeBytes:
+          typeof setupExeAsset?.size === 'number' ? setupExeAsset.size : null,
+        windowsPortableUrl: portableExeAsset?.browser_download_url || null,
+        windowsPortableFileName:
+          portableExeAsset?.name || `TaktWerk-Portable-v${latestVersion}.exe`,
       };
     },
     10,
@@ -149,23 +192,87 @@ export async function checkGithubReleaseUpdate(
   );
 }
 
+function triggerBrowserDownload(url: string, filename: string): void {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.rel = 'noopener noreferrer';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 export async function downloadAndInstallReleaseUpdate(
-  release: GithubReleaseUpdateInfo
+  release: GithubReleaseUpdateInfo,
+  target: 'auto' | 'android' | 'windows' = 'auto'
 ): Promise<{ startedInstall: boolean; needsPermission?: boolean; message: string }> {
+  const desktop = getDesktopBridge();
+  const isAndroid = Capacitor.isNativePlatform();
+  const resolvedTarget: 'android' | 'windows' =
+    target === 'auto'
+      ? desktop
+        ? 'windows'
+        : isAndroid
+          ? 'android'
+          : release.windowsInstallerUrl && !release.apkDownloadUrl
+            ? 'windows'
+            : 'android'
+      : target;
+
+  if (resolvedTarget === 'windows') {
+    if (!release.windowsInstallerUrl) {
+      throw new Error(
+        'Dieses GitHub-Release enthält noch keine Windows-EXE-Datei. Öffne die Release-Seite im Browser.'
+      );
+    }
+    const exeName =
+      release.windowsInstallerFileName || `TaktWerk-Setup-v${release.latestVersion}.exe`;
+
+    if (desktop) {
+      return trackActivity(
+        `Lade Windows-Update ${release.tagName} herunter…`,
+        async (update) => {
+          update(35, exeName);
+          const result = await desktop.downloadAndRunInstaller({
+            url: release.windowsInstallerUrl!,
+            filename: exeName,
+          });
+          update(100, 'Installer gestartet');
+          return {
+            startedInstall: Boolean(result.ok),
+            message:
+              result.message ||
+              `Windows-Installer für ${release.tagName} wurde gestartet. Alle Daten bleiben erhalten.`,
+          };
+        },
+        15,
+        exeName
+      );
+    }
+
+    triggerBrowserDownload(release.windowsInstallerUrl, exeName);
+    return {
+      startedInstall: true,
+      message: `Windows-Installer (${exeName}) wird heruntergeladen.`,
+    };
+  }
+
   if (!release.apkDownloadUrl) {
     throw new Error(
-      'Dieses GitHub-Release enthält keine APK-Datei. Öffne die Release-Seite im Browser.'
+      'Dieses GitHub-Release enthält keine Android-APK-Datei. Öffne die Release-Seite im Browser.'
     );
   }
 
-  if (Capacitor.isNativePlatform()) {
+  const apkName = release.apkFileName || `TaktWerk-${release.latestVersion}.apk`;
+
+  if (isAndroid) {
     return trackActivity(
       `Lade Update ${release.tagName} herunter…`,
       async (update) => {
-        update(35, release.apkFileName || 'TaktWerk.apk');
+        update(35, apkName);
         const result = await TaktWerkNative.downloadAndInstallApk({
           url: release.apkDownloadUrl!,
-          filename: release.apkFileName || `TaktWerk-${release.latestVersion}.apk`,
+          filename: apkName,
         });
         update(100, 'Installationsdialog geöffnet');
         if (result.needsPermission) {
@@ -185,21 +292,13 @@ export async function downloadAndInstallReleaseUpdate(
         };
       },
       15,
-      release.apkFileName || 'APK'
+      apkName
     );
   }
 
-  // Web fallback: trigger direct APK download via anchor
-  const link = document.createElement('a');
-  link.href = release.apkDownloadUrl;
-  link.download = release.apkFileName || `TaktWerk-${release.latestVersion}.apk`;
-  link.rel = 'noopener noreferrer';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
+  triggerBrowserDownload(release.apkDownloadUrl, apkName);
   return {
     startedInstall: true,
-    message: `APK-Download (${release.apkFileName}) gestartet. Übertrage und installiere die Datei auf deinem Android-Gerät.`,
+    message: `APK-Download (${apkName}) gestartet. Übertrage und installiere die Datei auf deinem Android-Gerät.`,
   };
 }
