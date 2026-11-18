@@ -1247,6 +1247,14 @@ svg.leaflet-image-layer.leaflet-interactive path {
     z-index: 80;
   }
 
+  .z-\[120\] {
+    z-index: 120;
+  }
+
+  .z-\[140\] {
+    z-index: 140;
+  }
+
   .z-\[450\] {
     z-index: 450;
   }
@@ -1299,6 +1307,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
     .container {
       max-width: 96rem;
     }
+  }
+
+  .mx-1\.5 {
+    margin-inline: calc(var(--spacing) * 1.5);
   }
 
   .mx-2 {
@@ -1553,6 +1565,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
     max-height: 75vh;
   }
 
+  .max-h-\[92vh\] {
+    max-height: 92vh;
+  }
+
   .max-h-\[94vh\] {
     max-height: 94vh;
   }
@@ -1691,6 +1707,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
   .max-w-\[180px\] {
     max-width: 180px;
+  }
+
+  .max-w-\[220px\] {
+    max-width: 220px;
   }
 
   .max-w-\[calc\(100vw-1\.5rem\)\] {
@@ -1929,6 +1949,14 @@ svg.leaflet-image-layer.leaflet-interactive path {
     --tw-space-y-reverse: 0;
     margin-block-start: calc(calc(var(--spacing) * 6) * var(--tw-space-y-reverse));
     margin-block-end: calc(calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse)));
+  }
+
+  .gap-x-2 {
+    column-gap: calc(var(--spacing) * 2);
+  }
+
+  .gap-y-0\.5 {
+    row-gap: calc(var(--spacing) * .5);
   }
 
   :where(.divide-y > :not(:last-child)) {
@@ -2518,6 +2546,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
   @supports (color: color-mix(in lab, red, red)) {
     .bg-slate-950\/40 {
       background-color: color-mix(in oklab, var(--color-slate-950) 40%, transparent);
+    }
+  }
+
+  .bg-slate-950\/45 {
+    background-color: #02061873;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-slate-950\/45 {
+      background-color: color-mix(in oklab, var(--color-slate-950) 45%, transparent);
     }
   }
 
@@ -3507,6 +3545,20 @@ svg.leaflet-image-layer.leaflet-interactive path {
     outline-style: none;
   }
 
+  .focus-visible\:ring-2:focus-visible {
+    --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  .focus-visible\:ring-violet-500:focus-visible {
+    --tw-ring-color: var(--color-violet-500);
+  }
+
+  .focus-visible\:outline-none:focus-visible {
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+
   .disabled\:cursor-not-allowed:disabled {
     cursor: not-allowed;
   }
@@ -3620,6 +3672,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
       flex-direction: row;
     }
 
+    .sm\:flex-wrap {
+      flex-wrap: wrap;
+    }
+
     .sm\:items-center {
       align-items: center;
     }
@@ -3642,6 +3698,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
     .sm\:gap-1\.5 {
       gap: calc(var(--spacing) * 1.5);
+    }
+
+    .sm\:gap-6 {
+      gap: calc(var(--spacing) * 6);
     }
 
     .sm\:self-auto {
@@ -4264,16 +4324,6 @@ svg.leaflet-image-layer.leaflet-interactive path {
     }
   }
 
-  .dark\:bg-amber-950\/60:where(.dark, .dark *) {
-    background-color: #46190199;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .dark\:bg-amber-950\/60:where(.dark, .dark *) {
-      background-color: color-mix(in oklab, var(--color-amber-950) 60%, transparent);
-    }
-  }
-
   .dark\:bg-amber-950\/70:where(.dark, .dark *) {
     background-color: #461901b3;
   }
@@ -4351,6 +4401,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
   @supports (color: color-mix(in lab, red, red)) {
     .dark\:bg-red-900\/60:where(.dark, .dark *) {
       background-color: color-mix(in oklab, var(--color-red-900) 60%, transparent);
+    }
+  }
+
+  .dark\:bg-red-950\/40:where(.dark, .dark *) {
+    background-color: #46080966;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:bg-red-950\/40:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-red-950) 40%, transparent);
     }
   }
 
@@ -4923,6 +4983,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
     .dark\:hover\:text-slate-200:where(.dark, .dark *):hover {
       color: var(--color-slate-200);
+    }
+
+    .dark\:hover\:text-violet-300:where(.dark, .dark *):hover {
+      color: var(--color-violet-300);
     }
 
     .dark\:hover\:text-white:where(.dark, .dark *):hover {

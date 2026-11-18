@@ -30,6 +30,7 @@ import {
   formatDateDE,
   toInputDate,
 } from '../utils/format';
+import { InfoHintPopup } from './InfoHintPopup';
 import { ThemedSelect } from './ThemedSelect';
 
 interface RecurringInvoicesViewProps {
@@ -192,6 +193,16 @@ export function RecurringInvoicesView({
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center gap-2">
+        <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+          Wartungsverträge &amp; Abos
+        </h1>
+        <InfoHintPopup
+          title="Wartungsverträge & Abos"
+          text="Verwalte wiederkehrende Kundenverträge, Wartungspauschalen und Abo-Rechnungen mit automatischer Fälligkeitsprüfung und 1-Klick-Rechnungserstellung."
+        />
+      </div>
+
       {/* Due Alert Banner */}
       {dueTemplates.length > 0 && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-300 bg-amber-50/90 px-5 py-4 dark:border-amber-500/40 dark:bg-amber-500/15">

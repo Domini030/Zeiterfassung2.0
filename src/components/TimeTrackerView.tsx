@@ -48,6 +48,7 @@ import {
   toInputTime,
 } from '../utils/format';
 import { downloadTimesheetPdf } from '../utils/pdfInvoice';
+import { InfoHintPopup } from './InfoHintPopup';
 import { ThemedSelect } from './ThemedSelect';
 
 interface TimeTrackerViewProps {
@@ -529,13 +530,14 @@ export function TimeTrackerView({
     <div className="space-y-6">
       {/* Page Header + KPI Summary */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Zeiterfassung
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Kundenaufträge und interne Tätigkeiten live erfassen, nachtragen und auswerten.
-          </p>
+          <InfoHintPopup
+            title="Zeiterfassung"
+            text="Kundenaufträge und interne Tätigkeiten live erfassen, nachtragen, mit Standort oder NFC starten und direkt abrechnen."
+          />
         </div>
 
         <div className="flex flex-wrap items-center gap-6 border-t border-slate-200 pt-3 dark:border-[#2e2349] sm:border-t-0 sm:pt-0">

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-BLqOsIes.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-Dr4rzMpl.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-Db7VpIOG.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-ClwVaONP.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -12155,7 +12155,7 @@ var defaultAttributes = {
 	strokeLinejoin: "round"
 };
 // node_modules/lucide-react/dist/esm/Icon.js
-var import_react = require_react();
+var import_react = /* @__PURE__ */ __toESM(require_react());
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -12601,6 +12601,28 @@ var CirclePlay = createLucideIcon("circle-play", [["path", {
 	r: "10",
 	key: "1mglay"
 }]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var CircleQuestionMark = createLucideIcon("circle-question-mark", [
+	["circle", {
+		cx: "12",
+		cy: "12",
+		r: "10",
+		key: "1mglay"
+	}],
+	["path", {
+		d: "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3",
+		key: "1u773s"
+	}],
+	["path", {
+		d: "M12 17h.01",
+		key: "p32p05"
+	}]
+]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -13665,6 +13687,26 @@ var RotateCcw = createLucideIcon("rotate-ccw", [["path", {
 	d: "M3 3v5h5",
 	key: "1xhq8a"
 }]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Save = createLucideIcon("save", [
+	["path", {
+		d: "M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z",
+		key: "1c8476"
+	}],
+	["path", {
+		d: "M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7",
+		key: "1ydtos"
+	}],
+	["path", {
+		d: "M7 3v4a1 1 0 0 0 1 1h7",
+		key: "t51u73"
+	}]
+]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -34929,7 +34971,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-BLqOsIes.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-Dr4rzMpl.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -41717,10 +41759,68 @@ var require_react_jsx_runtime_production = /* @__PURE__ */ __commonJSMin(((expor
 	exports.jsx = jsxProd;
 	exports.jsxs = jsxProd;
 }));
-// src/components/ThemedSelect.tsx
-var import_jsx_runtime = (/* @__PURE__ */ __commonJSMin(((exports, module) => {
+// node_modules/react/jsx-runtime.js
+var require_jsx_runtime = /* @__PURE__ */ __commonJSMin(((exports, module) => {
 	module.exports = require_react_jsx_runtime_production();
-})))();
+}));
+// src/components/InfoHintPopup.tsx
+var import_react_dom = require_react_dom();
+var import_jsx_runtime = require_jsx_runtime();
+var InfoHintPopup = ({ text, title, size = "md", className = "" }) => {
+	const [open, setOpen] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		const handleKeyDown = (e) => {
+			if (e.key === "Escape") setOpen(false);
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [open]);
+	const btnSizeClass = size === "sm" ? "h-5 w-5" : "h-6 w-6";
+	const iconSizeClass = size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4";
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+		type: "button",
+		onClick: (e) => {
+			e.stopPropagation();
+			setOpen(true);
+		},
+		"aria-label": title ? `Info zu ${title}` : "Beschreibung anzeigen",
+		"aria-expanded": open,
+		title: "Beschreibung anzeigen",
+		className: `inline-flex ${btnSizeClass} shrink-0 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 dark:text-slate-500 dark:hover:bg-[#2a2045] dark:hover:text-violet-300 cursor-pointer ${open ? "bg-slate-100 text-slate-900 dark:bg-[#2a2045] dark:text-violet-300" : ""} ${className}`,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleQuestionMark, { className: iconSizeClass })
+	}), open && typeof document !== "undefined" && (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		role: "dialog",
+		"aria-modal": "true",
+		"aria-label": title || "Hinweis",
+		onClick: () => setOpen(false),
+		className: "fixed inset-0 z-[140] flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-[1px]",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			onClick: (e) => e.stopPropagation(),
+			className: "w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-start justify-between gap-3",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2 min-w-0",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleQuestionMark, { className: "h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+						className: "font-display text-sm font-semibold text-slate-900 dark:text-slate-100 truncate",
+						children: title || "Hinweis"
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					type: "button",
+					onClick: () => setOpen(false),
+					"aria-label": "Popup schließen",
+					className: "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300",
+				children: text
+			})]
+		})
+	}), document.body)] });
+};
+// src/components/ThemedSelect.tsx
 function ThemedSelect({ value, onChange, options, placeholder = "Bitte wählen...", disabled = false, className = "", size = "md", ariaLabel }) {
 	const [open, setOpen] = (0, import_react.useState)(false);
 	const rootRef = (0, import_react.useRef)(null);
@@ -42196,13 +42296,16 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-					children: "Grafische Zeit- & Umsatzauswertung"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Verteilung deiner erfassten Arbeitszeiten nach Tagen, Kunden und verknüpften Leistungen."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "Grafische Zeit- & Umsatzauswertung"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "Grafische Zeit- & Umsatzauswertung",
+						text: "Verteilung deiner erfassten Arbeitszeiten nach Tagen, Kunden und verknüpften Leistungen."
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex flex-wrap items-center gap-2",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -42366,13 +42469,17 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex flex-wrap items-center justify-between gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-							className: "font-display text-sm font-semibold text-slate-900 dark:text-slate-100",
-							children: "Verhältnis: Verrechenbare Aufträge vs. Interne Arbeiten"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-xs text-slate-500 dark:text-slate-400",
-							children: "Übersicht über ertragbringende Projektzeit und interne Aufgaben (z. B. Kundenakquise, Studio-Reinigung)."
-						})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-sm font-semibold text-slate-900 dark:text-slate-100",
+								children: "Verhältnis: Verrechenbare Aufträge vs. Interne Arbeiten"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Verrechenbare vs. Interne Arbeiten",
+								text: "Übersicht über ertragbringende Projektzeit und interne Aufgaben (z. B. Kundenakquise, Studio-Reinigung)."
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "font-mono text-xs font-semibold text-slate-700 dark:text-slate-200",
 							children: [
 								kpis.billableRatioPct,
@@ -42431,13 +42538,17 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 					className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-							className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-							children: "Zeitverlauf nach Tagen & Kunden"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-xs text-slate-500 dark:text-slate-400",
-							children: "Gestapelte Stunden pro Tag, farblich nach Kunde aufgeschlüsselt (Tippen/Hover für Tagesdetails)."
-						})] }), activeDayDetail && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: "Zeitverlauf nach Tagen & Kunden"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Zeitverlauf nach Tagen & Kunden",
+								text: "Gestapelte Stunden pro Tag, farblich nach Kunde aufgeschlüsselt (Tippen/Hover für Tagesdetails)."
+							})]
+						}), activeDayDetail && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs dark:border-[#3b2d5e] dark:bg-[#211936]",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
@@ -42541,176 +42652,180 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 					className: "grid grid-cols-1 gap-6 lg:grid-cols-12",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 								children: "Arbeitszeit & Umsatz nach Kunden"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-								children: "Anteilige Zeitverteilung über alle aktiven Kunden."
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "mt-5 flex flex-col items-center gap-6 sm:flex-row",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "relative h-44 w-44 shrink-0",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
-										viewBox: "0 0 180 180",
-										className: "h-full w-full -rotate-90",
-										role: "img",
-										"aria-label": "Kreisdiagramm Arbeitszeit pro Kunde",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Arbeitszeit & Umsatz nach Kunden",
+								text: "Anteilige Zeitverteilung über alle aktiven Kunden."
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mt-5 flex flex-col items-center gap-6 sm:flex-row",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "relative h-44 w-44 shrink-0",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+									viewBox: "0 0 180 180",
+									className: "h-full w-full -rotate-90",
+									role: "img",
+									"aria-label": "Kreisdiagramm Arbeitszeit pro Kunde",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+										cx: "90",
+										cy: "90",
+										r: "64",
+										fill: "transparent",
+										className: "stroke-slate-100 dark:stroke-[#211936]",
+										strokeWidth: "22"
+									}), donutSegments.map((seg) => {
+										const dimmed = hoveredCustomerId !== null && hoveredCustomerId !== seg.customerId;
+										return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
 											cx: "90",
 											cy: "90",
 											r: "64",
 											fill: "transparent",
-											className: "stroke-slate-100 dark:stroke-[#211936]",
-											strokeWidth: "22"
-										}), donutSegments.map((seg) => {
-											const dimmed = hoveredCustomerId !== null && hoveredCustomerId !== seg.customerId;
-											return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-												cx: "90",
-												cy: "90",
-												r: "64",
-												fill: "transparent",
-												stroke: seg.color,
-												strokeWidth: "22",
-												strokeDasharray: seg.dashArray,
-												strokeDashoffset: seg.dashOffset,
-												opacity: dimmed ? .35 : 1,
-												onMouseEnter: () => setHoveredCustomerId(seg.customerId),
-												onMouseLeave: () => setHoveredCustomerId(null),
-												className: "transition-opacity cursor-pointer"
-											}, seg.customerId);
+											stroke: seg.color,
+											strokeWidth: "22",
+											strokeDasharray: seg.dashArray,
+											strokeDashoffset: seg.dashOffset,
+											opacity: dimmed ? .35 : 1,
+											onMouseEnter: () => setHoveredCustomerId(seg.customerId),
+											onMouseLeave: () => setHoveredCustomerId(null),
+											className: "transition-opacity cursor-pointer"
+										}, seg.customerId);
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "font-mono text-lg font-bold text-slate-900 dark:text-slate-100 tabular-nums",
+										children: [formatNumber(kpis.totalHours, 1), "h"]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[11px] text-slate-500 dark:text-slate-400",
+										children: "Gesamt"
+									})]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "w-full flex-1 space-y-2.5",
+								children: donutSegments.map((seg) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									onMouseEnter: () => setHoveredCustomerId(seg.customerId),
+									onMouseLeave: () => setHoveredCustomerId(null),
+									className: "flex items-center justify-between gap-3 rounded-lg border border-slate-100 px-3 py-2 text-xs transition-colors hover:bg-slate-50 dark:border-[#2e2349] dark:hover:bg-[#211936]/70",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-2 min-w-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+											viewBox: "0 0 12 12",
+											className: "h-3 w-3 shrink-0",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+												cx: "6",
+												cy: "6",
+												r: "5",
+												fill: seg.color
+											})
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "truncate font-medium text-slate-800 dark:text-slate-100",
+											children: seg.name
 										})]
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: "font-mono text-lg font-bold text-slate-900 dark:text-slate-100 tabular-nums",
-											children: [formatNumber(kpis.totalHours, 1), "h"]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "text-[11px] text-slate-500 dark:text-slate-400",
-											children: "Gesamt"
-										})]
+										className: "text-right font-mono tabular-nums shrink-0",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "font-semibold text-slate-900 dark:text-slate-100",
+												children: [formatNumber(seg.seconds / 3600, 2), "h"]
+											}),
+											" ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "text-slate-400 dark:text-slate-500",
+												children: [
+													"(",
+													Math.round(seg.fraction * 100),
+													"%)"
+												]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "text-[11px] text-slate-500 dark:text-violet-300/80",
+												children: formatCurrency(seg.revenueNet)
+											})
+										]
 									})]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: "w-full flex-1 space-y-2.5",
-									children: donutSegments.map((seg) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										onMouseEnter: () => setHoveredCustomerId(seg.customerId),
-										onMouseLeave: () => setHoveredCustomerId(null),
-										className: "flex items-center justify-between gap-3 rounded-lg border border-slate-100 px-3 py-2 text-xs transition-colors hover:bg-slate-50 dark:border-[#2e2349] dark:hover:bg-[#211936]/70",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center gap-2 min-w-0",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
-												viewBox: "0 0 12 12",
-												className: "h-3 w-3 shrink-0",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-													cx: "6",
-													cy: "6",
-													r: "5",
-													fill: seg.color
-												})
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "truncate font-medium text-slate-800 dark:text-slate-100",
-												children: seg.name
-											})]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "text-right font-mono tabular-nums shrink-0",
+								}, seg.customerId))
+							})]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: "Arbeitszeit nach Produkten & Leistungen"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Arbeitszeit nach Produkten & Leistungen",
+								text: "Welche Leistungen die meiste Arbeitszeit und den höchsten Umsatz erzeugen."
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "mt-5 space-y-4",
+							children: productStats.map((prod) => {
+								const barWidth = Math.max(4, Math.round(prod.seconds / maxProductSeconds * 100)) / 100 * 240;
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "space-y-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-baseline justify-between gap-3 text-xs",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "truncate font-medium text-slate-800 dark:text-slate-100",
+											children: prod.name
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "font-mono tabular-nums text-slate-600 dark:text-slate-300 shrink-0",
 											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-													className: "font-semibold text-slate-900 dark:text-slate-100",
-													children: [formatNumber(seg.seconds / 3600, 2), "h"]
-												}),
+												formatNumber(prod.seconds / 3600, 2),
+												" Std. ·",
 												" ",
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-													className: "text-slate-400 dark:text-slate-500",
-													children: [
-														"(",
-														Math.round(seg.fraction * 100),
-														"%)"
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-													className: "text-[11px] text-slate-500 dark:text-violet-300/80",
-													children: formatCurrency(seg.revenueNet)
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+													className: "text-slate-900 dark:text-violet-300",
+													children: formatCurrency(prod.revenueNet)
 												})
 											]
 										})]
-									}, seg.customerId))
-								})]
-							})
-						]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "Arbeitszeit nach Produkten & Leistungen"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-								children: "Welche Leistungen die meiste Arbeitszeit und den höchsten Umsatz erzeugen."
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "mt-5 space-y-4",
-								children: productStats.map((prod) => {
-									const barWidth = Math.max(4, Math.round(prod.seconds / maxProductSeconds * 100)) / 100 * 240;
-									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "space-y-1.5",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-baseline justify-between gap-3 text-xs",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "truncate font-medium text-slate-800 dark:text-slate-100",
-												children: prod.name
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-												className: "font-mono tabular-nums text-slate-600 dark:text-slate-300 shrink-0",
-												children: [
-													formatNumber(prod.seconds / 3600, 2),
-													" Std. ·",
-													" ",
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-														className: "text-slate-900 dark:text-violet-300",
-														children: formatCurrency(prod.revenueNet)
-													})
-												]
-											})]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
-											viewBox: "0 0 240 10",
-											preserveAspectRatio: "none",
-											className: "h-2.5 w-full overflow-hidden rounded-full",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-												x: "0",
-												y: "0",
-												width: "240",
-												height: "10",
-												rx: "5",
-												className: "fill-slate-100 dark:fill-[#211936]"
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-												x: "0",
-												y: "0",
-												width: barWidth,
-												height: "10",
-												rx: "5",
-												fill: prod.color
-											})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+										viewBox: "0 0 240 10",
+										preserveAspectRatio: "none",
+										className: "h-2.5 w-full overflow-hidden rounded-full",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+											x: "0",
+											y: "0",
+											width: "240",
+											height: "10",
+											rx: "5",
+											className: "fill-slate-100 dark:fill-[#211936]"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+											x: "0",
+											y: "0",
+											width: barWidth,
+											height: "10",
+											rx: "5",
+											fill: prod.color
 										})]
-									}, prod.productId);
-								})
+									})]
+								}, prod.productId);
 							})
-						]
+						})]
 					})]
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 					className: "rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex items-center gap-2 border-b border-slate-200 px-6 py-4 dark:border-[#2e2349]",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-							className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-							children: "Kunde × Produkt Verknüpfung"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-xs text-slate-500 dark:text-slate-400",
-							children: "Aufschlüsselung, welcher Kunde welche Leistung in welchem Umfang genutzt hat."
-						})] })]
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: "Kunde × Produkt Verknüpfung"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Kunde × Produkt Verknüpfung",
+								text: "Aufschlüsselung, welcher Kunde welche Leistung in welchem Umfang genutzt hat."
+							})]
+						})]
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 						className: "overflow-x-auto",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
@@ -65158,13 +65273,16 @@ function CalendarView({ company, customers, products, timeEntries, invoices, cal
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-					children: "Kalender & Terminplanung"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Verbinde deinen Nextcloud-Kalender (CalDAV), behalte Fälligkeiten im Blick und starte Aufgaben direkt aus Terminen."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "Kalender & Terminplanung"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "Kalender & Terminplanung",
+						text: "Verbinde deinen Nextcloud-Kalender (CalDAV), behalte Fälligkeiten im Blick und starte Aufgaben direkt aus Terminen."
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex flex-wrap items-center gap-2 shrink-0",
 					children: [nextcloud.configured && company.calendarConfig?.selectedCalendarUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 						type: "button",
@@ -65578,1934 +65696,6 @@ function CalendarView({ company, customers, products, timeEntries, invoices, cal
 		]
 	});
 }
-// src/components/CustomersView.tsx
-function CustomersView({ customers, timeEntries, invoices, categories = [], onSaveCustomer, onDeleteCustomer, onCreateInvoiceForCustomer }) {
-	const [search, setSearch] = (0, import_react.useState)("");
-	const [categoryFilter, setCategoryFilter] = (0, import_react.useState)("all");
-	const [showForm, setShowForm] = (0, import_react.useState)(false);
-	const [editing, setEditing] = (0, import_react.useState)(null);
-	const [customerNumber, setCustomerNumber] = (0, import_react.useState)("");
-	const [companyName, setCompanyName] = (0, import_react.useState)("");
-	const [contactName, setContactName] = (0, import_react.useState)("");
-	const [email, setEmail] = (0, import_react.useState)("");
-	const [phone, setPhone] = (0, import_react.useState)("");
-	const [street, setStreet] = (0, import_react.useState)("");
-	const [postalCode, setPostalCode] = (0, import_react.useState)("");
-	const [city, setCity] = (0, import_react.useState)("");
-	const [country, setCountry] = (0, import_react.useState)("Deutschland");
-	const [vatId, setVatId] = (0, import_react.useState)("");
-	const [paymentTermDays, setPaymentTermDays] = (0, import_react.useState)(14);
-	const [timeRoundingInput, setTimeRoundingInput] = (0, import_react.useState)("");
-	const [category, setCategory] = (0, import_react.useState)("");
-	const [notes, setNotes] = (0, import_react.useState)("");
-	const [error, setError] = (0, import_react.useState)("");
-	const availableCategories = (0, import_react.useMemo)(() => {
-		const seed = categories.length > 0 ? categories : DEFAULT_CUSTOMER_CATEGORIES;
-		const set = new Set(seed);
-		for (const c of customers) if (c.category?.trim()) set.add(c.category.trim());
-		return Array.from(set).sort((a, b) => a.localeCompare(b, "de"));
-	}, [categories, customers]);
-	const openNew = () => {
-		setEditing(null);
-		const nextNum = 1001 + customers.length;
-		setCustomerNumber(`KD-${nextNum}`);
-		setCompanyName("");
-		setContactName("");
-		setEmail("");
-		setPhone("");
-		setStreet("");
-		setPostalCode("");
-		setCity("");
-		setCountry("Deutschland");
-		setVatId("");
-		setPaymentTermDays(14);
-		setTimeRoundingInput("");
-		setCategory("");
-		setNotes("");
-		setError("");
-		setShowForm(true);
-	};
-	const openEdit = (c) => {
-		setEditing(c);
-		setCustomerNumber(c.customerNumber);
-		setCompanyName(c.companyName);
-		setContactName(c.contactName);
-		setEmail(c.email);
-		setPhone(c.phone);
-		setStreet(c.street);
-		setPostalCode(c.postalCode);
-		setCity(c.city);
-		setCountry(c.country);
-		setVatId(c.vatId);
-		setPaymentTermDays(c.paymentTermDays);
-		setTimeRoundingInput(c.timeRoundingMinutes !== void 0 && c.timeRoundingMinutes !== null ? String(c.timeRoundingMinutes) : "");
-		setCategory(c.category ?? "");
-		setNotes(c.notes);
-		setError("");
-		setShowForm(true);
-	};
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		setError("");
-		if (!companyName.trim()) {
-			setError("Bitte einen Firmen- oder Kundennamen angeben.");
-			return;
-		}
-		onSaveCustomer({
-			id: editing?.id ?? createId("cust"),
-			customerNumber: customerNumber.trim() || `KD-${1001 + customers.length}`,
-			companyName: companyName.trim(),
-			contactName: contactName.trim(),
-			email: email.trim(),
-			phone: phone.trim(),
-			street: street.trim(),
-			postalCode: postalCode.trim(),
-			city: city.trim(),
-			country: country.trim() || "Deutschland",
-			vatId: vatId.trim(),
-			paymentTermDays: Math.max(0, Number(paymentTermDays) || 14),
-			timeRoundingMinutes: timeRoundingInput === "" ? null : Number(timeRoundingInput),
-			category: category.trim() || void 0,
-			notes: notes.trim(),
-			createdAt: editing?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
-		});
-		setShowForm(false);
-	};
-	const statsByCustomer = (0, import_react.useMemo)(() => {
-		const map = /* @__PURE__ */ new Map();
-		for (const c of customers) map.set(c.id, {
-			openSeconds: 0,
-			openNet: 0,
-			openIds: [],
-			invoiceCount: 0
-		});
-		for (const entry of timeEntries) if (entry.billable && !entry.billedInvoiceId) {
-			const cur = map.get(entry.customerId);
-			if (cur) {
-				cur.openSeconds += entry.durationSeconds;
-				cur.openNet += entry.durationSeconds / 3600 * entry.hourlyRateNet;
-				cur.openIds.push(entry.id);
-			}
-		}
-		for (const inv of invoices) {
-			const cur = map.get(inv.customerId);
-			if (cur) cur.invoiceCount += 1;
-		}
-		return map;
-	}, [
-		customers,
-		timeEntries,
-		invoices
-	]);
-	const filtered = (0, import_react.useMemo)(() => {
-		const q = search.trim().toLowerCase();
-		return customers.filter((c) => {
-			if (categoryFilter !== "all" && (c.category ?? "") !== categoryFilter) return false;
-			if (!q) return true;
-			return c.companyName.toLowerCase().includes(q) || c.contactName.toLowerCase().includes(q) || c.customerNumber.toLowerCase().includes(q) || c.city.toLowerCase().includes(q) || (c.category ?? "").toLowerCase().includes(q);
-		});
-	}, [
-		customers,
-		search,
-		categoryFilter
-	]);
-	const inputClass = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500";
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: "space-y-6",
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-					children: "Kundendatenbank"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Stammdaten, Rechnungsanschriften, Zahlungsziele und offene Stunden pro Kunde."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					type: "button",
-					onClick: openNew,
-					className: "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neuer Kunde"]
-				})]
-			}),
-			showForm && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-					className: "mb-4 font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-					children: editing ? "Kunde bearbeiten" : "Neuen Kunden anlegen"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-					onSubmit: handleSubmit,
-					className: "grid grid-cols-1 gap-4 md:grid-cols-3",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Kundennummer"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: customerNumber,
-							onChange: (e) => setCustomerNumber(e.target.value),
-							className: `${inputClass} font-mono`
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "md:col-span-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Firmenname / Kunde *"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: companyName,
-								onChange: (e) => setCompanyName(e.target.value),
-								placeholder: "z. B. Musterwerk GmbH",
-								className: inputClass
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Ansprechpartner"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: contactName,
-							onChange: (e) => setContactName(e.target.value),
-							className: inputClass
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "E-Mail"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "email",
-							value: email,
-							onChange: (e) => setEmail(e.target.value),
-							className: inputClass
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Telefon"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: phone,
-							onChange: (e) => setPhone(e.target.value),
-							className: inputClass
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Straße & Hausnummer"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: street,
-							onChange: (e) => setStreet(e.target.value),
-							className: inputClass
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "grid grid-cols-3 gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "PLZ"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: postalCode,
-								onChange: (e) => setPostalCode(e.target.value),
-								className: `${inputClass} font-mono`
-							})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "col-span-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Ort"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "text",
-									value: city,
-									onChange: (e) => setCity(e.target.value),
-									className: inputClass
-								})]
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Land"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: country,
-							onChange: (e) => setCountry(e.target.value),
-							className: inputClass
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "USt-IdNr."
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: vatId,
-							onChange: (e) => setVatId(e.target.value),
-							placeholder: "DE...",
-							className: `${inputClass} font-mono`
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Zahlungsziel (Tage)"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "number",
-							min: 0,
-							value: paymentTermDays,
-							onChange: (e) => setPaymentTermDays(Number(e.target.value)),
-							className: `${inputClass} font-mono`
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Zeitrundung (Takt für Rechnungen)"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-							value: timeRoundingInput,
-							onChange: setTimeRoundingInput,
-							options: [
-								{
-									value: "",
-									label: "Firmen-Standard verwenden"
-								},
-								{
-									value: "0",
-									label: "Exakt (keine Aufrundung)"
-								},
-								{
-									value: "5",
-									label: "Aufrunden auf 5 Minuten"
-								},
-								{
-									value: "10",
-									label: "Aufrunden auf 10 Minuten"
-								},
-								{
-									value: "15",
-									label: "Aufrunden auf 15 Minuten"
-								},
-								{
-									value: "30",
-									label: "Aufrunden auf 30 Minuten"
-								}
-							]
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Kategorie"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CategoryPicker, {
-							value: category,
-							onChange: setCategory,
-							categories: availableCategories,
-							placeholder: "z. B. Stammkunde oder Wartungsvertrag"
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "md:col-span-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Notizen"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: notes,
-								onChange: (e) => setNotes(e.target.value),
-								className: inputClass
-							})]
-						}),
-						error && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-xs font-medium text-red-600 dark:text-red-400 md:col-span-3",
-							children: error
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex justify-end gap-2 md:col-span-3",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => setShowForm(false),
-								className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
-								children: "Abbrechen"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "submit",
-								className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-								children: "Kunde speichern"
-							})]
-						})
-					]
-				})]
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "relative max-w-sm flex-1",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-violet-300/60" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: search,
-							onChange: (e) => setSearch(e.target.value),
-							placeholder: "Kunden suchen...",
-							className: "w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-						})]
-					}), availableCategories.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-						size: "sm",
-						className: "w-52",
-						value: categoryFilter,
-						onChange: setCategoryFilter,
-						options: [{
-							value: "all",
-							label: "Alle Kategorien"
-						}, ...availableCategories.map((cat) => ({
-							value: cat,
-							label: cat
-						}))]
-					})]
-				}), filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "p-10 text-center",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "text-sm font-medium text-slate-700 dark:text-slate-300",
-						children: "Keine Kunden gefunden."
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-						children: "Lege deinen ersten Kunden an oder lade Beispieldaten unter „Nextcloud & Setup“."
-					})]
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "overflow-x-auto",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
-						className: "w-full text-left text-sm",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-							className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Nr."
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Firma & Kontakt"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Adresse"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Offene Zeiten"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Offener Betrag"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Aktionen"
-								})
-							]
-						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
-							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
-							children: filtered.map((c) => {
-								const st = statsByCustomer.get(c.id);
-								const hasOpen = (st?.openIds.length ?? 0) > 0;
-								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-									className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-											className: "px-4 py-3 font-mono text-xs text-slate-600 dark:text-violet-200/80 whitespace-nowrap",
-											children: c.customerNumber
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-											className: "px-4 py-3",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "flex flex-wrap items-center gap-2",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "font-medium text-slate-900 dark:text-slate-100",
-													children: c.companyName
-												}), c.category && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-[#231b38] dark:text-violet-300",
-													children: c.category
-												})]
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-												children: [c.contactName, c.email].filter(Boolean).join(" · ") || "—"
-											})]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-											className: "px-4 py-3 text-xs text-slate-600 dark:text-slate-400",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: c.street || "—" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: [c.postalCode, c.city].filter(Boolean).join(" ") || "—" })]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-											className: "px-4 py-3 text-right font-mono text-sm text-slate-700 dark:text-slate-300 tabular-nums whitespace-nowrap",
-											children: st ? formatHoursShort(st.openSeconds) : "0,00 Std."
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-											className: "px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap",
-											children: st ? formatCurrency(st.openNet) : "0,00 €"
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-											className: "px-4 py-3",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "flex items-center justify-end gap-2",
-												children: [
-													hasOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														onClick: () => onCreateInvoiceForCustomer(c.id),
-														className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), "Abrechnen"]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => openEdit(c),
-														title: "Bearbeiten",
-														className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer",
-														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-4 w-4" })
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => onDeleteCustomer(c.id),
-														title: "Löschen",
-														className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
-														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
-													})
-												]
-											})
-										})
-									]
-								}, c.id);
-							})
-						})]
-					})
-				})]
-			})
-		]
-	});
-}
-// src/components/ExpensesView.tsx
-var INTERVAL_LABELS$1 = {
-	monthly: "Monatlich",
-	quarterly: "Quartalsweise",
-	yearly: "Jährlich"
-};
-async function compressImageFileToJpeg(file) {
-	return new Promise((resolve, reject) => {
-		const reader = new FileReader();
-		reader.onerror = () => reject(/* @__PURE__ */ new Error("Datei konnte nicht gelesen werden."));
-		reader.onload = () => {
-			const src = typeof reader.result === "string" ? reader.result : "";
-			if (!src) {
-				reject(/* @__PURE__ */ new Error("Leeres Bild."));
-				return;
-			}
-			const img = new Image();
-			img.onerror = () => reject(/* @__PURE__ */ new Error("Bildformat wird nicht unterstützt."));
-			img.onload = () => {
-				const scale = Math.min(1, 1400 / Math.max(img.width, img.height, 1));
-				const w = Math.max(1, Math.round(img.width * scale));
-				const h = Math.max(1, Math.round(img.height * scale));
-				const canvas = document.createElement("canvas");
-				canvas.width = w;
-				canvas.height = h;
-				const ctx = canvas.getContext("2d");
-				if (!ctx) {
-					resolve(src);
-					return;
-				}
-				ctx.drawImage(img, 0, 0, w, h);
-				resolve(canvas.toDataURL("image/jpeg", .82));
-			};
-			img.src = src;
-		};
-		reader.readAsDataURL(file);
-	});
-}
-function ExpensesView({ expenses, recurringExpenses = [], customers, expenseCategories, nextcloudConfigured, onAddExpense, onUpdateExpense, onDeleteExpense, onUploadExpenseReceipt, onAddRecurringExpense, onUpdateRecurringExpense, onDeleteRecurringExpense, onBookRecurringExpense, onBookAllDueRecurringExpenses, onNotify }) {
-	const cameraInputRef = (0, import_react.useRef)(null);
-	const galleryInputRef = (0, import_react.useRef)(null);
-	const recCameraInputRef = (0, import_react.useRef)(null);
-	const recGalleryInputRef = (0, import_react.useRef)(null);
-	const configuredCategories = (0, import_react.useMemo)(() => expenseCategories && expenseCategories.length > 0 ? expenseCategories : DEFAULT_EXPENSE_CATEGORIES, [expenseCategories]);
-	const defaultOperatingCategory = (0, import_react.useMemo)(() => configuredCategories.find((c) => /miete|raum/i.test(c)) ?? configuredCategories[0] ?? "Sonstiges", [configuredCategories]);
-	const defaultProjectCategory = (0, import_react.useMemo)(() => configuredCategories.find((c) => !/miete|raum/i.test(c)) ?? configuredCategories[0] ?? "Sonstiges", [configuredCategories]);
-	const [activeSubTab, setActiveSubTab] = (0, import_react.useState)("receipts");
-	const [typeFilter, setTypeFilter] = (0, import_react.useState)("ALL");
-	const [categoryFilter, setCategoryFilter] = (0, import_react.useState)("ALL");
-	const [showBillableOnly, setShowBillableOnly] = (0, import_react.useState)(false);
-	const [formOpen, setFormOpen] = (0, import_react.useState)(false);
-	const [editingId, setEditingId] = (0, import_react.useState)(null);
-	const [scanningAi, setScanningAi] = (0, import_react.useState)(false);
-	const [uploadingId, setUploadingId] = (0, import_react.useState)(null);
-	const [previewReceipt, setPreviewReceipt] = (0, import_react.useState)(null);
-	const [date, setDate] = (0, import_react.useState)(toInputDate());
-	const [vendor, setVendor] = (0, import_react.useState)("");
-	const [description, setDescription] = (0, import_react.useState)("");
-	const [category, setCategory] = (0, import_react.useState)(defaultOperatingCategory);
-	const [expenseType, setExpenseType] = (0, import_react.useState)("operating");
-	const [taxRate, setTaxRate] = (0, import_react.useState)(19);
-	const [grossAmount, setGrossAmount] = (0, import_react.useState)(0);
-	const [netAmount, setNetAmount] = (0, import_react.useState)(0);
-	const [customerId, setCustomerId] = (0, import_react.useState)("");
-	const [billableToCustomer, setBillableToCustomer] = (0, import_react.useState)(false);
-	const [notes, setNotes] = (0, import_react.useState)("");
-	const [receiptImageDataUrl, setReceiptImageDataUrl] = (0, import_react.useState)("");
-	const [recFormOpen, setRecFormOpen] = (0, import_react.useState)(false);
-	const [editingRecId, setEditingRecId] = (0, import_react.useState)(null);
-	const [recVendor, setRecVendor] = (0, import_react.useState)("");
-	const [recDescription, setRecDescription] = (0, import_react.useState)("");
-	const [recCategory, setRecCategory] = (0, import_react.useState)(defaultOperatingCategory);
-	const [recTaxRate, setRecTaxRate] = (0, import_react.useState)(19);
-	const [recGross, setRecGross] = (0, import_react.useState)(0);
-	const [recNet, setRecNet] = (0, import_react.useState)(0);
-	const [recInterval, setRecInterval] = (0, import_react.useState)("monthly");
-	const [recNextDueDate, setRecNextDueDate] = (0, import_react.useState)(toInputDate());
-	const [recActive, setRecActive] = (0, import_react.useState)(true);
-	const [recNotes, setRecNotes] = (0, import_react.useState)("");
-	const [recReceiptImageDataUrl, setRecReceiptImageDataUrl] = (0, import_react.useState)("");
-	const [recScanningAi, setRecScanningAi] = (0, import_react.useState)(false);
-	const availableCategories = (0, import_react.useMemo)(() => {
-		const ordered = [];
-		const seen = /* @__PURE__ */ new Set();
-		const addUnique = (val) => {
-			const clean = val?.trim();
-			if (clean && !seen.has(clean)) {
-				seen.add(clean);
-				ordered.push(clean);
-			}
-		};
-		configuredCategories.forEach(addUnique);
-		expenses.forEach((e) => addUnique(e.category));
-		recurringExpenses.forEach((r) => addUnique(r.category));
-		return ordered;
-	}, [
-		configuredCategories,
-		expenses,
-		recurringExpenses
-	]);
-	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
-	const todayStr = toInputDate();
-	const dueRecurringList = (0, import_react.useMemo)(() => recurringExpenses.filter((r) => r.active && r.nextDueDate <= todayStr), [recurringExpenses, todayStr]);
-	const monthlyFixedCosts = (0, import_react.useMemo)(() => {
-		let net = 0;
-		let gross = 0;
-		for (const r of recurringExpenses) {
-			if (!r.active) continue;
-			const factor = r.interval === "monthly" ? 1 : r.interval === "quarterly" ? 1 / 3 : 1 / 12;
-			net += (r.netAmount || 0) * factor;
-			gross += (r.grossAmount || 0) * factor;
-		}
-		return {
-			net: Math.round(net * 100) / 100,
-			gross: Math.round(gross * 100) / 100
-		};
-	}, [recurringExpenses]);
-	const filtered = (0, import_react.useMemo)(() => {
-		return [...expenses].filter((e) => {
-			const isOperating = e.expenseType === "operating" || !e.customerId;
-			if (typeFilter === "operating" && !isOperating) return false;
-			if (typeFilter === "project" && isOperating) return false;
-			return true;
-		}).filter((e) => categoryFilter === "ALL" ? true : e.category === categoryFilter).filter((e) => showBillableOnly ? Boolean(e.billableToCustomer) : true).sort((a, b) => b.date.localeCompare(a.date));
-	}, [
-		expenses,
-		typeFilter,
-		categoryFilter,
-		showBillableOnly
-	]);
-	const stats = (0, import_react.useMemo)(() => {
-		const totalGross = expenses.reduce((acc, e) => acc + (e.grossAmount || 0), 0);
-		const totalNet = expenses.reduce((acc, e) => acc + (e.netAmount || 0), 0);
-		const openBillable = expenses.filter((e) => e.billableToCustomer && !e.billedInvoiceId);
-		const openBillableNet = openBillable.reduce((acc, e) => acc + (e.netAmount || 0), 0);
-		return {
-			totalGross,
-			totalNet,
-			openBillableCount: openBillable.length,
-			openBillableNet
-		};
-	}, [expenses]);
-	const resetForm = () => {
-		setEditingId(null);
-		setDate(toInputDate());
-		setVendor("");
-		setDescription("");
-		setCategory(defaultProjectCategory);
-		setExpenseType("operating");
-		setTaxRate(19);
-		setGrossAmount(0);
-		setNetAmount(0);
-		setCustomerId("");
-		setBillableToCustomer(false);
-		setNotes("");
-		setReceiptImageDataUrl("");
-	};
-	const openNewModal = (defaultType = "operating") => {
-		resetForm();
-		setExpenseType(defaultType);
-		setCategory(defaultType === "operating" ? defaultOperatingCategory : defaultProjectCategory);
-		setFormOpen(true);
-	};
-	const openEditModal = (exp) => {
-		setEditingId(exp.id);
-		setDate(exp.date);
-		setVendor(exp.vendor);
-		setDescription(exp.description);
-		setCategory(exp.category || defaultOperatingCategory);
-		setExpenseType(exp.expenseType ?? (exp.customerId ? "project" : "operating"));
-		setTaxRate(exp.taxRate);
-		setGrossAmount(exp.grossAmount);
-		setNetAmount(exp.netAmount);
-		setCustomerId(exp.customerId || "");
-		setBillableToCustomer(Boolean(exp.billableToCustomer));
-		setNotes(exp.notes || "");
-		setReceiptImageDataUrl(exp.receiptImageDataUrl || "");
-		setFormOpen(true);
-	};
-	const openNewRecurringModal = () => {
-		setEditingRecId(null);
-		setRecVendor("");
-		setRecDescription("");
-		setRecCategory(defaultOperatingCategory);
-		setRecTaxRate(19);
-		setRecGross(0);
-		setRecNet(0);
-		setRecInterval("monthly");
-		setRecNextDueDate(toInputDate());
-		setRecActive(true);
-		setRecNotes("");
-		setRecReceiptImageDataUrl("");
-		setRecFormOpen(true);
-	};
-	const openEditRecurringModal = (item) => {
-		setEditingRecId(item.id);
-		setRecVendor(item.vendor);
-		setRecDescription(item.description);
-		setRecCategory(item.category || defaultOperatingCategory);
-		setRecTaxRate(item.taxRate);
-		setRecGross(item.grossAmount);
-		setRecNet(item.netAmount);
-		setRecInterval(item.interval);
-		setRecNextDueDate(item.nextDueDate);
-		setRecActive(item.active);
-		setRecNotes(item.notes || "");
-		setRecReceiptImageDataUrl(item.receiptImageDataUrl || "");
-		setRecFormOpen(true);
-	};
-	const runRecurringReceiptAiScan = async (imageDataUrl) => {
-		setRecScanningAi(true);
-		try {
-			const parsed = await apiScanReceiptWithAi(imageDataUrl);
-			if (parsed.vendor) setRecVendor(parsed.vendor);
-			if (parsed.description) setRecDescription(parsed.description);
-			if (parsed.category) setRecCategory(parsed.category);
-			setRecTaxRate(parsed.taxRate);
-			if (parsed.grossAmount > 0) setRecGross(parsed.grossAmount);
-			if (parsed.netAmount > 0) setRecNet(parsed.netAmount);
-			if (parsed.notes) setRecNotes(parsed.notes);
-			onNotify("Belegdaten für Fixkosten übernommen.", "success");
-		} catch (aiErr) {
-			onNotify(aiErr instanceof Error ? aiErr.message : "Beleg angehängt. Werte bitte bei Bedarf manuell ergänzen.", "warning");
-		} finally {
-			setRecScanningAi(false);
-		}
-	};
-	const handleRecurringReceiptSelected = async (e) => {
-		const file = e.target.files?.[0];
-		e.target.value = "";
-		if (!file) return;
-		try {
-			const dataUrl = await compressImageFileToJpeg(file);
-			setRecReceiptImageDataUrl(dataUrl);
-			if (!recVendor.trim() && recGross === 0) await runRecurringReceiptAiScan(dataUrl);
-			else onNotify("Beleg / Vertrag an Fixkosten angehängt.", "success");
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Bild konnte nicht verarbeitet werden.", "warning");
-		}
-	};
-	const handleRecGrossChange = (val) => {
-		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
-		setRecGross(safe);
-		setRecNet(Math.round(safe / (1 + recTaxRate / 100) * 100) / 100);
-	};
-	const handleRecNetChange = (val) => {
-		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
-		setRecNet(safe);
-		setRecGross(Math.round(safe * (1 + recTaxRate / 100) * 100) / 100);
-	};
-	const handleRecTaxChange = (nextTax) => {
-		setRecTaxRate(nextTax);
-		if (recGross > 0) setRecNet(Math.round(recGross / (1 + nextTax / 100) * 100) / 100);
-		else if (recNet > 0) setRecGross(Math.round(recNet * (1 + nextTax / 100) * 100) / 100);
-	};
-	const handleSaveRecurring = (e) => {
-		e.preventDefault();
-		if (!recVendor.trim() && !recDescription.trim()) {
-			onNotify("Bitte Anbieter oder Beschreibung für die Fixkosten angeben.", "warning");
-			return;
-		}
-		const existing = editingRecId ? recurringExpenses.find((r) => r.id === editingRecId) : void 0;
-		const payload = {
-			id: editingRecId || createId("recexp"),
-			vendor: recVendor.trim() || "Unbekannter Anbieter",
-			description: recDescription.trim() || recVendor.trim(),
-			category: recCategory.trim() || "Miete & Raumkosten",
-			netAmount: Math.round(recNet * 100) / 100,
-			taxRate: recTaxRate,
-			grossAmount: Math.round(recGross * 100) / 100,
-			interval: recInterval,
-			active: recActive,
-			nextDueDate: recNextDueDate || toInputDate(),
-			lastBookedDate: existing?.lastBookedDate ?? null,
-			receiptImageDataUrl: recReceiptImageDataUrl || void 0,
-			notes: recNotes.trim() || void 0,
-			createdAt: existing?.createdAt || (/* @__PURE__ */ new Date()).toISOString()
-		};
-		if (editingRecId) onUpdateRecurringExpense?.(payload);
-		else onAddRecurringExpense?.(payload);
-		setRecFormOpen(false);
-	};
-	const handleGrossChange = (val) => {
-		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
-		setGrossAmount(safe);
-		setNetAmount(Math.round(safe / (1 + taxRate / 100) * 100) / 100);
-	};
-	const handleNetChange = (val) => {
-		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
-		setNetAmount(safe);
-		setGrossAmount(Math.round(safe * (1 + taxRate / 100) * 100) / 100);
-	};
-	const handleTaxChange = (nextTax) => {
-		setTaxRate(nextTax);
-		if (grossAmount > 0) setNetAmount(Math.round(grossAmount / (1 + nextTax / 100) * 100) / 100);
-		else if (netAmount > 0) setGrossAmount(Math.round(netAmount * (1 + nextTax / 100) * 100) / 100);
-	};
-	const handleReceiptSelected = async (e, autoScan = true) => {
-		const file = e.target.files?.[0];
-		e.target.value = "";
-		if (!file) return;
-		try {
-			const dataUrl = await compressImageFileToJpeg(file);
-			setReceiptImageDataUrl(dataUrl);
-			if (!formOpen) setFormOpen(true);
-			if (autoScan) {
-				setScanningAi(true);
-				try {
-					const parsed = await apiScanReceiptWithAi(dataUrl);
-					if (parsed.vendor) setVendor(parsed.vendor);
-					if (parsed.date) setDate(parsed.date);
-					if (parsed.description) setDescription(parsed.description);
-					if (parsed.category) setCategory(parsed.category);
-					setTaxRate(parsed.taxRate);
-					if (parsed.grossAmount > 0) setGrossAmount(parsed.grossAmount);
-					if (parsed.netAmount > 0) setNetAmount(parsed.netAmount);
-					if (parsed.notes) setNotes(parsed.notes);
-					onNotify("Beleg erfolgreich per KI analysiert!", "success");
-				} catch (aiErr) {
-					onNotify(aiErr instanceof Error ? aiErr.message : "Belegfoto angehängt. Werte bitte manuell ergänzen.", "warning");
-				} finally {
-					setScanningAi(false);
-				}
-			}
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Bild konnte nicht verarbeitet werden.", "warning");
-		}
-	};
-	const handleSave = (e) => {
-		e.preventDefault();
-		if (!vendor.trim() && !description.trim()) {
-			onNotify("Bitte mindestens Händler/Anbieter oder Beschreibung angeben.", "warning");
-			return;
-		}
-		const existing = editingId ? expenses.find((item) => item.id === editingId) : void 0;
-		const payload = {
-			id: editingId || createId("exp"),
-			date: date || toInputDate(),
-			vendor: vendor.trim() || "Unbekannter Anbieter",
-			description: description.trim() || vendor.trim(),
-			category: category.trim() || "Sonstiges",
-			expenseType,
-			netAmount: Math.round(netAmount * 100) / 100,
-			taxRate,
-			grossAmount: Math.round(grossAmount * 100) / 100,
-			customerId: expenseType === "project" ? customerId || null : null,
-			billableToCustomer: Boolean(expenseType === "project" && billableToCustomer && customerId),
-			billedInvoiceId: existing?.billedInvoiceId ?? null,
-			receiptImageDataUrl: receiptImageDataUrl || void 0,
-			notes: notes.trim() || void 0,
-			isRecurring: existing?.isRecurring,
-			recurringExpenseId: existing?.recurringExpenseId ?? null,
-			nextcloudUploadedAt: existing?.nextcloudUploadedAt ?? null,
-			createdAt: existing?.createdAt || (/* @__PURE__ */ new Date()).toISOString()
-		};
-		if (editingId) onUpdateExpense(payload);
-		else onAddExpense(payload);
-		setFormOpen(false);
-		resetForm();
-	};
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: "space-y-6",
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				ref: cameraInputRef,
-				type: "file",
-				accept: "image/*",
-				capture: "environment",
-				onChange: (e) => void handleReceiptSelected(e, true),
-				className: "hidden"
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				ref: galleryInputRef,
-				type: "file",
-				accept: "image/*",
-				onChange: (e) => void handleReceiptSelected(e, true),
-				className: "hidden"
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				ref: recCameraInputRef,
-				type: "file",
-				accept: "image/*",
-				capture: "environment",
-				onChange: (e) => void handleRecurringReceiptSelected(e),
-				className: "hidden"
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				ref: recGalleryInputRef,
-				type: "file",
-				accept: "image/*",
-				onChange: (e) => void handleRecurringReceiptSelected(e),
-				className: "hidden"
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-					children: "Belege & Betriebskosten"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Einzelbelege scannen, allgemeine Betriebskosten erfassen und wiederkehrende Fixkosten wie Miete oder Abos verwalten."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 dark:border-[#342653] dark:bg-[#19122c] self-start sm:self-auto",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-						type: "button",
-						onClick: () => setActiveSubTab("receipts"),
-						className: `inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors cursor-pointer ${activeSubTab === "receipts" ? "ui-accent-active text-white" : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-[#241b3d]"}`,
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-3.5 w-3.5" }),
-							"Belege & Ausgaben (",
-							expenses.length,
-							")"
-						]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-						type: "button",
-						onClick: () => setActiveSubTab("recurring"),
-						className: `inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors cursor-pointer ${activeSubTab === "recurring" ? "ui-accent-active text-white" : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-[#241b3d]"}`,
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Repeat, { className: "h-3.5 w-3.5" }),
-							"Wiederkehrende Fixkosten (",
-							recurringExpenses.length,
-							")",
-							dueRecurringList.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white",
-								children: dueRecurringList.length
-							})
-						]
-					})]
-				})]
-			}),
-			dueRecurringList.length > 0 && onBookAllDueRecurringExpenses && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50/90 p-4 dark:border-amber-800/60 dark:bg-amber-950/40 sm:flex-row sm:items-center sm:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex items-start gap-2.5 text-sm text-amber-950 dark:text-amber-100",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-						className: "font-semibold",
-						children: [dueRecurringList.length, " wiederkehrende Ausgabe(n) sind fällig"]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "text-xs text-amber-800 dark:text-amber-200/80",
-						children: dueRecurringList.map((r) => `${r.vendor} (${formatCurrency(r.grossAmount)})`).join(" · ")
-					})] })]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					type: "button",
-					onClick: onBookAllDueRecurringExpenses,
-					className: "inline-flex items-center gap-1.5 rounded-xl bg-amber-600 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-700 whitespace-nowrap shrink-0 cursor-pointer",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3.5 w-3.5 fill-current" }), "Alle fälligen verbuchen"]
-				})]
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-xs font-medium text-slate-500 dark:text-slate-400",
-								children: "Ausgaben gesamt (Brutto)"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 font-mono text-xl font-bold text-slate-900 dark:text-white tabular-nums",
-								children: formatCurrency(stats.totalGross)
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								className: "mt-0.5 text-[11px] text-slate-500 dark:text-slate-400",
-								children: [
-									"Netto: ",
-									formatCurrency(stats.totalNet),
-									" (",
-									expenses.length,
-									" Buchungen)"
-								]
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-xs font-medium text-slate-500 dark:text-slate-400",
-								children: "Fixkosten pro Monat (Ø)"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 font-mono text-xl font-bold text-amber-700 dark:text-amber-400 tabular-nums",
-								children: formatCurrency(monthlyFixedCosts.gross)
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								className: "mt-0.5 text-[11px] text-slate-500 dark:text-slate-400",
-								children: [
-									"Netto ",
-									formatCurrency(monthlyFixedCosts.net),
-									"/Monat ·",
-									" ",
-									recurringExpenses.filter((r) => r.active).length,
-									" aktiv"
-								]
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-xs font-medium text-slate-500 dark:text-slate-400",
-								children: "Weiterberechenbar (offen)"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 font-mono text-xl font-bold text-emerald-700 dark:text-emerald-400 tabular-nums",
-								children: formatCurrency(stats.openBillableNet)
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								className: "mt-0.5 text-[11px] text-slate-500 dark:text-slate-400",
-								children: [stats.openBillableCount, " offene Kundenauslage(n)"]
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "flex flex-col justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
-						children: activeSubTab === "recurring" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: openNewRecurringModal,
-							className: "inline-flex w-full items-center justify-center gap-1.5 rounded-xl ui-accent-btn px-3 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neue Fixkosten (z. B. Miete)"]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-[11px] text-slate-500 dark:text-slate-400",
-							children: "Monatliche, quartalsweise oder jährliche Betriebskosten automatisieren."
-						})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex flex-wrap gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-								type: "button",
-								onClick: () => cameraInputRef.current?.click(),
-								className: "flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl ui-accent-btn px-3 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-4 w-4" }), "Beleg scannen"]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-								type: "button",
-								onClick: () => openNewModal("operating"),
-								className: "inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neu"]
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-[11px] text-slate-500 dark:text-slate-400",
-							children: "Beleg scannen oder sonstige Betriebskosten manuell eintragen."
-						})] })
-					})
-				]
-			}),
-			activeSubTab === "recurring" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "space-y-4",
-				children: recurringExpenses.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-[#3b2d5e] dark:bg-[#19122c]",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Building2, { className: "mx-auto mb-2 h-8 w-8 text-slate-400" }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-sm font-semibold text-slate-700 dark:text-slate-200",
-							children: "Noch keine wiederkehrenden Betriebskosten hinterlegt"
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-							children: "Lege hier laufende Fixkosten wie Studio-Miete, Strom, Internet, Versicherungen oder Software-Abos an."
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: openNewRecurringModal,
-							className: "mt-4 inline-flex items-center gap-1.5 rounded-xl ui-accent-btn px-4 py-2 text-xs font-semibold text-white cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Erste Fixkosten anlegen"]
-						})
-					]
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "grid grid-cols-1 gap-3 md:grid-cols-2",
-					children: recurringExpenses.map((rec) => {
-						const isDue = rec.active && rec.nextDueDate <= todayStr;
-						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: `flex flex-col justify-between gap-3 rounded-2xl border bg-white p-4 shadow-sm dark:bg-[#19122c] ${isDue ? "border-amber-300 dark:border-amber-700/70" : "border-slate-200 dark:border-[#342653]"} ${!rec.active ? "opacity-65" : ""}`,
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-start gap-3",
-								children: [rec.receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: () => setPreviewReceipt({
-										title: rec.vendor,
-										subtitle: `${INTERVAL_LABELS$1[rec.interval]} · ${formatCurrency(rec.grossAmount)}`,
-										imageDataUrl: rec.receiptImageDataUrl
-									}),
-									className: "group relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-[#3b2d5e] cursor-pointer",
-									title: "Hinterlegten Beleg / Vertrag vergrößern",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-										src: rec.receiptImageDataUrl,
-										alt: `Beleg ${rec.vendor}`,
-										className: "h-full w-full object-cover"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 transition-opacity group-hover:opacity-100",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-4 w-4 text-white" })
-									})]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "min-w-0 flex-1",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-start justify-between gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "min-w-0",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex flex-wrap items-center gap-1.5",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
-															className: "truncate text-sm font-bold text-slate-900 dark:text-white",
-															children: rec.vendor
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
-															children: INTERVAL_LABELS$1[rec.interval]
-														}),
-														!rec.active && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "rounded-md bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2a2045] dark:text-slate-400",
-															children: "Pausiert"
-														})
-													]
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-													className: "mt-0.5 text-xs text-slate-600 dark:text-slate-300",
-													children: rec.description
-												})]
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "text-right shrink-0",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-													className: "font-mono text-sm font-bold text-slate-900 dark:text-white tabular-nums",
-													children: formatCurrency(rec.grossAmount)
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "font-mono text-[11px] text-slate-500 dark:text-slate-400 tabular-nums",
-													children: [
-														"Netto ",
-														formatCurrency(rec.netAmount),
-														" (",
-														rec.taxRate,
-														"%)"
-													]
-												})]
-											})]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "mt-2.5 flex flex-wrap items-center gap-2 text-[11px]",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "rounded-md bg-violet-50 px-2 py-0.5 font-medium text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
-													children: rec.category
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-													className: `rounded-md px-2 py-0.5 font-medium ${isDue ? "bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300" : "bg-slate-100 text-slate-700 dark:bg-[#2a2045] dark:text-slate-300"}`,
-													children: [isDue ? "Fällig seit " : "Nächste Buchung: ", formatDateDE(rec.nextDueDate)]
-												}),
-												rec.receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => setPreviewReceipt({
-														title: rec.vendor,
-														subtitle: `${INTERVAL_LABELS$1[rec.interval]} · ${formatCurrency(rec.grossAmount)}`,
-														imageDataUrl: rec.receiptImageDataUrl
-													}),
-													className: "inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25 cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-3 w-3" }), "Beleg ansehen"]
-												}),
-												rec.lastBookedDate && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-													className: "text-slate-500 dark:text-slate-400",
-													children: ["Zuletzt: ", formatDateDE(rec.lastBookedDate)]
-												})
-											]
-										}),
-										rec.notes && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-											className: "mt-1.5 text-xs text-slate-500 dark:text-slate-400",
-											children: rec.notes
-										})
-									]
-								})]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2.5 dark:border-[#2e234a]",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-									className: "inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "checkbox",
-										checked: rec.active,
-										onChange: (e) => onUpdateRecurringExpense?.({
-											...rec,
-											active: e.target.checked
-										}),
-										className: "h-3.5 w-3.5 rounded accent-violet-600"
-									}), "Aktiv"]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-1.5",
-									children: [
-										onBookRecurringExpense && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											onClick: () => onBookRecurringExpense(rec.id),
-											className: `inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold cursor-pointer ${isDue ? "bg-amber-600 text-white hover:bg-amber-700" : "border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#2a2045]"}`,
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3 w-3 fill-current" }), "Jetzt verbuchen"]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											onClick: () => openEditRecurringModal(rec),
-											className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenLine, { className: "h-3.5 w-3.5" }), "Bearbeiten"]
-										}),
-										onDeleteRecurringExpense && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-											type: "button",
-											onClick: () => onDeleteRecurringExpense(rec.id),
-											className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 px-2.5 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:text-rose-300 dark:hover:bg-rose-500/15 cursor-pointer",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
-										})
-									]
-								})]
-							})]
-						}, rec.id);
-					})
-				})
-			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex flex-wrap items-center gap-2.5",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
-							children: [
-								{
-									id: "ALL",
-									label: "Alle"
-								},
-								{
-									id: "operating",
-									label: "Betriebskosten"
-								},
-								{
-									id: "project",
-									label: "Projekt / Kunde"
-								}
-							].map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => setTypeFilter(t.id),
-								className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${typeFilter === t.id ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300"}`,
-								children: t.label
-							}, t.id))
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-							size: "sm",
-							className: "w-56",
-							value: categoryFilter,
-							onChange: setCategoryFilter,
-							options: [{
-								value: "ALL",
-								label: "Alle Ausgabenkategorien"
-							}, ...availableCategories.map((c) => ({
-								value: c,
-								label: c
-							}))]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: () => setShowBillableOnly((prev) => !prev),
-							className: `rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${showBillableOnly ? "ui-accent-selected border-violet-300" : "border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300"}`,
-							children: "Nur weiterberechenbare"
-						})
-					]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					type: "button",
-					onClick: () => galleryInputRef.current?.click(),
-					className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 cursor-pointer",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileImage, { className: "h-3.5 w-3.5" }), "Foto aus Galerie scannen"]
-				})]
-			}), filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-[#3b2d5e] dark:bg-[#19122c]",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "mx-auto mb-2 h-8 w-8 text-slate-400" }),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "text-sm font-semibold text-slate-700 dark:text-slate-200",
-						children: "Noch keine Belege oder Ausgaben erfasst"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-						children: "Scanne Kassenbons per Kamera oder erfasse eine Betriebsausgabe manuell."
-					})
-				]
-			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "grid grid-cols-1 gap-3 md:grid-cols-2",
-				children: filtered.map((exp) => {
-					const cust = exp.customerId ? customerMap.get(exp.customerId) : void 0;
-					const isOperating = exp.expenseType === "operating" || !exp.customerId;
-					return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-start gap-3",
-							children: [exp.receiptImageDataUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-								type: "button",
-								onClick: () => setPreviewReceipt({
-									title: exp.vendor,
-									subtitle: `${formatDateDE(exp.date)} · ${formatCurrency(exp.grossAmount)}`,
-									imageDataUrl: exp.receiptImageDataUrl
-								}),
-								className: "group relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-[#3b2d5e] cursor-pointer",
-								title: "Belegfoto vergrößern",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-									src: exp.receiptImageDataUrl,
-									alt: exp.vendor,
-									className: "h-full w-full object-cover"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 transition-opacity group-hover:opacity-100",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-4 w-4 text-white" })
-								})]
-							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-[#241b3d] dark:text-slate-400",
-								children: exp.isRecurring ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Repeat, { className: "h-5 w-5 text-amber-600 dark:text-amber-400" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-5 w-5" })
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "min-w-0 flex-1",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex flex-wrap items-center justify-between gap-2",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
-											className: "truncate text-sm font-bold text-slate-900 dark:text-white",
-											children: exp.vendor
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "font-mono text-sm font-bold text-slate-900 dark:text-white tabular-nums",
-											children: formatCurrency(exp.grossAmount)
-										})]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "mt-0.5 truncate text-xs text-slate-600 dark:text-slate-300",
-										children: exp.description
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "mt-2 flex flex-wrap items-center gap-1.5 text-[11px]",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "rounded-md bg-slate-100 px-2 py-0.5 font-medium text-slate-700 dark:bg-[#2a2045] dark:text-slate-300",
-												children: formatDateDE(exp.date)
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "rounded-md bg-violet-50 px-2 py-0.5 font-medium text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
-												children: exp.category
-											}),
-											isOperating && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "rounded-md bg-amber-50 px-2 py-0.5 font-medium text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
-												children: exp.isRecurring ? "Fixkosten" : "Betriebskosten"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-												className: "text-slate-500 dark:text-slate-400",
-												children: [
-													"Netto ",
-													formatCurrency(exp.netAmount),
-													" (",
-													exp.taxRate,
-													" %)"
-												]
-											})
-										]
-									}),
-									cust && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "mt-2 flex flex-wrap items-center gap-1.5 text-[11px]",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: "rounded-md bg-sky-50 px-2 py-0.5 font-medium text-sky-700 dark:bg-sky-500/15 dark:text-sky-300",
-											children: ["Kunde: ", cust.companyName]
-										}), exp.billableToCustomer && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: `inline-flex items-center gap-1 rounded-md px-2 py-0.5 font-semibold ${exp.billedInvoiceId ? "bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300" : "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"}`,
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-3 w-3" }), exp.billedInvoiceId ? "Bereits berechnet" : "Weiterberechenbar"]
-										})]
-									})
-								]
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex flex-wrap items-center justify-end gap-1.5 border-t border-slate-100 pt-2.5 dark:border-[#2e234a]",
-							children: [
-								exp.receiptImageDataUrl && nextcloudConfigured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									disabled: uploadingId === exp.id,
-									onClick: async () => {
-										setUploadingId(exp.id);
-										try {
-											await onUploadExpenseReceipt(exp);
-										} finally {
-											setUploadingId(null);
-										}
-									},
-									className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-									children: [uploadingId === exp.id ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5 text-violet-600 dark:text-violet-300" }), exp.nextcloudUploadedAt ? "Erneut sichern" : "Nach Nextcloud"]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: () => openEditModal(exp),
-									className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenLine, { className: "h-3.5 w-3.5" }), "Bearbeiten"]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									onClick: () => onDeleteExpense(exp.id),
-									className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 px-2.5 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:text-rose-300 dark:hover:bg-rose-500/15 cursor-pointer",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
-								})
-							]
-						})]
-					}, exp.id);
-				})
-			})] }),
-			formOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				role: "dialog",
-				"aria-modal": "true",
-				"data-no-swipe": "true",
-				className: "fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 backdrop-blur-sm sm:p-4",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#342653] dark:bg-[#19122c]",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2e234a]",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-							className: "text-base font-bold text-slate-900 dark:text-white",
-							children: editingId ? "Ausgabe bearbeiten" : "Beleg / Betriebskosten erfassen"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: () => setFormOpen(false),
-							className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-5 w-5" })
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-						onSubmit: handleSave,
-						className: "overflow-y-auto p-5 space-y-4",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center justify-between gap-2 rounded-xl border border-violet-200 bg-violet-50/70 p-3 dark:border-violet-500/30 dark:bg-violet-500/10",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex items-center gap-2 text-xs text-violet-900 dark:text-violet-200",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: scanningAi ? "KI liest Belegdaten aus..." : "Foto aufnehmen / auswählen für automatische Beleg-Erkennung" })]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap gap-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										disabled: scanningAi,
-										onClick: () => cameraInputRef.current?.click(),
-										className: "inline-flex items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer",
-										children: [scanningAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5" }), "Kamera"]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										disabled: scanningAi,
-										onClick: () => galleryInputRef.current?.click(),
-										className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileImage, { className: "h-3.5 w-3.5" }), "Datei"]
-									})]
-								})]
-							}),
-							receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-										type: "button",
-										onClick: () => setPreviewReceipt({
-											title: vendor.trim() || "Belegvorschau",
-											subtitle: `${formatDateDE(date)} · ${formatCurrency(grossAmount)}`,
-											imageDataUrl: receiptImageDataUrl
-										}),
-										className: "h-16 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 cursor-pointer",
-										title: "Vorschau vergrößern",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-											src: receiptImageDataUrl,
-											alt: "Belegvorschau",
-											className: "h-full w-full object-cover"
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "min-w-0 flex-1 text-xs text-slate-600 dark:text-slate-300",
-										children: "Belegfoto angehängt."
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex flex-wrap items-center gap-1.5",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											disabled: scanningAi,
-											onClick: async () => {
-												setScanningAi(true);
-												try {
-													const parsed = await apiScanReceiptWithAi(receiptImageDataUrl);
-													if (parsed.vendor) setVendor(parsed.vendor);
-													if (parsed.date) setDate(parsed.date);
-													if (parsed.description) setDescription(parsed.description);
-													if (parsed.category) setCategory(parsed.category);
-													setTaxRate(parsed.taxRate);
-													if (parsed.grossAmount > 0) setGrossAmount(parsed.grossAmount);
-													if (parsed.netAmount > 0) setNetAmount(parsed.netAmount);
-													if (parsed.notes) setNotes(parsed.notes);
-													onNotify("Belegdaten aktualisiert.", "success");
-												} catch (err) {
-													onNotify(err instanceof Error ? err.message : "Scan fehlgeschlagen.", "warning");
-												} finally {
-													setScanningAi(false);
-												}
-											},
-											className: "inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-3.5 w-3.5" }), "Erneut scannen"]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-											type: "button",
-											onClick: () => setReceiptImageDataUrl(""),
-											className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:bg-[#19122c] dark:text-rose-300 cursor-pointer",
-											title: "Beleg entfernen",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
-										})]
-									})
-								]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Anbieter / Händler *"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "text",
-									required: true,
-									value: vendor,
-									onChange: (e) => setVendor(e.target.value),
-									placeholder: "z. B. Aral, Conrad, Obi...",
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Belegdatum"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "date",
-									value: date,
-									onChange: (e) => setDate(e.target.value),
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-								})] })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Beschreibung / Positionen"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "text",
-									value: description,
-									onChange: (e) => setDescription(e.target.value),
-									placeholder: "z. B. Materialeinsatz oder Kraftstoff",
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Kategorie"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CategoryPicker, {
-									value: category,
-									onChange: setCategory,
-									categories: availableCategories
-								})] })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "grid grid-cols-1 gap-3 sm:grid-cols-3",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Bruttobetrag (€)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "number",
-										step: "0.01",
-										min: "0",
-										value: grossAmount,
-										onChange: (e) => handleGrossChange(Number(e.target.value)),
-										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "MwSt.-Satz"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-										value: String(taxRate),
-										onChange: (v) => handleTaxChange(Number(v)),
-										options: [
-											{
-												value: "19",
-												label: "19 % USt."
-											},
-											{
-												value: "7",
-												label: "7 % USt."
-											},
-											{
-												value: "0",
-												label: "0 % (Steuerfrei)"
-											}
-										]
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Nettobetrag (€)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "number",
-										step: "0.01",
-										min: "0",
-										value: netAmount,
-										onChange: (e) => handleNetChange(Number(e.target.value)),
-										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-									})] })
-								]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 space-y-3 dark:border-[#342653] dark:bg-[#211936]/70",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center justify-between gap-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Kostenart"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "inline-flex items-center gap-1 rounded-lg bg-slate-200/70 p-1 dark:bg-[#19122c]",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-											type: "button",
-											onClick: () => {
-												setExpenseType("operating");
-												setCustomerId("");
-												setBillableToCustomer(false);
-											},
-											className: `rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer ${expenseType === "operating" ? "bg-amber-600 text-white" : "text-slate-600 dark:text-slate-300"}`,
-											children: "Betriebskosten (allgemein)"
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-											type: "button",
-											onClick: () => setExpenseType("project"),
-											className: `rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer ${expenseType === "project" ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 dark:text-slate-300"}`,
-											children: "Projekt / Kunde"
-										})]
-									})]
-								}), expenseType === "project" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Kunde zuordnen"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-									value: customerId,
-									onChange: (v) => {
-										setCustomerId(v);
-										if (!v) setBillableToCustomer(false);
-									},
-									options: [{
-										value: "",
-										label: "Kein Kunde"
-									}, ...customers.map((c) => ({
-										value: c.id,
-										label: c.companyName,
-										hint: c.customerNumber
-									}))]
-								})] }), customerId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-									className: "flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "checkbox",
-										checked: billableToCustomer,
-										onChange: (e) => setBillableToCustomer(e.target.checked),
-										className: "rounded border-slate-300 text-violet-600 focus:ring-violet-500"
-									}), "Auf nächster Kundenrechnung weiterberechnen (Auslage)"]
-								})] })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Notizen / Belegnummer"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: notes,
-								onChange: (e) => setNotes(e.target.value),
-								placeholder: "Optional...",
-								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-							})] }),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center justify-end gap-2.5 border-t border-slate-200 pt-4 dark:border-[#2e234a]",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									onClick: () => setFormOpen(false),
-									className: "rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 cursor-pointer",
-									children: "Abbrechen"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "submit",
-									className: "rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
-									children: editingId ? "Änderungen speichern" : "Beleg speichern"
-								})]
-							})
-						]
-					})]
-				})
-			}),
-			recFormOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				role: "dialog",
-				"aria-modal": "true",
-				"data-no-swipe": "true",
-				className: "fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 backdrop-blur-sm sm:p-4",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#342653] dark:bg-[#19122c]",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2e234a]",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-							className: "text-base font-bold text-slate-900 dark:text-white",
-							children: editingRecId ? "Wiederkehrende Fixkosten bearbeiten" : "Neue wiederkehrende Ausgabe (z. B. Miete)"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: () => setRecFormOpen(false),
-							className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-5 w-5" })
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-						onSubmit: handleSaveRecurring,
-						className: "overflow-y-auto p-5 space-y-4",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center justify-between gap-2 rounded-xl border border-violet-200 bg-violet-50/70 p-3 dark:border-violet-500/30 dark:bg-violet-500/10",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex items-center gap-2 text-xs text-violet-900 dark:text-violet-200",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: recScanningAi ? "KI liest Belegdaten aus..." : "Vertrag, Dauerrechnung oder Belegfoto hinterlegen (wird bei Verbuchung übernommen)" })]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap gap-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										disabled: recScanningAi,
-										onClick: () => recCameraInputRef.current?.click(),
-										className: "inline-flex items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer",
-										children: [recScanningAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5" }), "Kamera"]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										disabled: recScanningAi,
-										onClick: () => recGalleryInputRef.current?.click(),
-										className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileImage, { className: "h-3.5 w-3.5" }), "Datei"]
-									})]
-								})]
-							}),
-							recReceiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-										type: "button",
-										onClick: () => setPreviewReceipt({
-											title: recVendor.trim() || "Fixkosten-Beleg",
-											subtitle: `${INTERVAL_LABELS$1[recInterval]} · ${formatCurrency(recGross)}`,
-											imageDataUrl: recReceiptImageDataUrl
-										}),
-										className: "h-16 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 cursor-pointer",
-										title: "Beleg vergrößern",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-											src: recReceiptImageDataUrl,
-											alt: "Fixkosten-Belegvorschau",
-											className: "h-full w-full object-cover"
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "min-w-0 flex-1 text-xs text-slate-600 dark:text-slate-300",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-											className: "font-semibold text-slate-800 dark:text-slate-100",
-											children: "Beleg / Vertrag angehängt"
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-											className: "text-[11px] text-slate-500 dark:text-slate-400",
-											children: "Tippen zum Vergrößern — wird bei jeder Buchung mit übernommen."
-										})]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex flex-wrap items-center gap-1.5",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											disabled: recScanningAi,
-											onClick: () => void runRecurringReceiptAiScan(recReceiptImageDataUrl),
-											className: "inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-3.5 w-3.5" }), "KI auslesen"]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-											type: "button",
-											onClick: () => setRecReceiptImageDataUrl(""),
-											className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:bg-[#19122c] dark:text-rose-300 cursor-pointer",
-											title: "Beleg entfernen",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
-										})]
-									})
-								]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Anbieter / Vermieter *"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "text",
-									required: true,
-									value: recVendor,
-									onChange: (e) => setRecVendor(e.target.value),
-									placeholder: "z. B. Immobilienverwaltung, Telekom, Stromanbieter...",
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Kategorie"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CategoryPicker, {
-									value: recCategory,
-									onChange: setRecCategory,
-									categories: availableCategories
-								})] })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Beschreibung"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: recDescription,
-								onChange: (e) => setRecDescription(e.target.value),
-								placeholder: "z. B. Studio-Miete inkl. Nebenkosten",
-								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-							})] }),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "grid grid-cols-1 gap-3 sm:grid-cols-3",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Bruttobetrag (€)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "number",
-										step: "0.01",
-										min: "0",
-										value: recGross,
-										onChange: (e) => handleRecGrossChange(Number(e.target.value)),
-										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "MwSt.-Satz"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-										value: String(recTaxRate),
-										onChange: (v) => handleRecTaxChange(Number(v)),
-										options: [
-											{
-												value: "19",
-												label: "19 % USt."
-											},
-											{
-												value: "7",
-												label: "7 % USt."
-											},
-											{
-												value: "0",
-												label: "0 % (z. B. Miete / Versicherung)"
-											}
-										]
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Nettobetrag (€)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "number",
-										step: "0.01",
-										min: "0",
-										value: recNet,
-										onChange: (e) => handleRecNetChange(Number(e.target.value)),
-										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-									})] })
-								]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Zahlungsintervall"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-									value: recInterval,
-									onChange: (v) => setRecInterval(v),
-									options: [
-										{
-											value: "monthly",
-											label: "Monatlich"
-										},
-										{
-											value: "quarterly",
-											label: "Quartalsweise (alle 3 Monate)"
-										},
-										{
-											value: "yearly",
-											label: "Jährlich"
-										}
-									]
-								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Nächste Fälligkeit"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "date",
-									value: recNextDueDate,
-									onChange: (e) => setRecNextDueDate(e.target.value),
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-								})] })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Notizen / Vertragsnummer (optional)"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: recNotes,
-								onChange: (e) => setRecNotes(e.target.value),
-								placeholder: "Optional...",
-								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-							})] }),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-								className: "flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "checkbox",
-									checked: recActive,
-									onChange: (e) => setRecActive(e.target.checked),
-									className: "h-4 w-4 rounded accent-violet-600"
-								}), "Aktiv (wird bei Fälligkeit zur Verbuchung vorgeschlagen)"]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center justify-end gap-2.5 border-t border-slate-200 pt-4 dark:border-[#2e234a]",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									onClick: () => setRecFormOpen(false),
-									className: "rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 cursor-pointer",
-									children: "Abbrechen"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "submit",
-									className: "rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
-									children: editingRecId ? "Änderungen speichern" : "Fixkosten speichern"
-								})]
-							})
-						]
-					})]
-				})
-			}),
-			previewReceipt && previewReceipt.imageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				role: "dialog",
-				"aria-modal": "true",
-				"data-no-swipe": "true",
-				onClick: () => setPreviewReceipt(null),
-				className: "fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					onClick: (e) => e.stopPropagation(),
-					className: "max-w-xl w-full overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center justify-between border-b border-slate-800 px-4 py-3 text-white",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "min-w-0",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "truncate text-sm font-bold",
-								children: previewReceipt.title
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-xs text-slate-400",
-								children: previewReceipt.subtitle
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: () => setPreviewReceipt(null),
-							className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white cursor-pointer",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-5 w-5" })
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "p-3 bg-slate-950 flex items-center justify-center",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-							src: previewReceipt.imageDataUrl,
-							alt: previewReceipt.title,
-							className: "max-h-[75vh] w-auto rounded-lg object-contain"
-						})
-					})]
-				})
-			})
-		]
-	});
-}
 // src/utils/geolocation.ts
 function buildOsmApiUrl(path) {
 	return `${Capacitor.isNativePlatform() ? getBackendServerUrl() : ""}${path}`;
@@ -67680,2738 +65870,6 @@ function computeTravelFromBase(base, target, ratePerKm = .3, roundTrip = true) {
 		distanceKm: totalKm,
 		costNet: Math.round(totalKm * Math.max(0, ratePerKm) * 100) / 100
 	};
-}
-// src/utils/eInvoiceXml.ts
-function escapeXml(value) {
-	return (value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
-}
-function mapUnitCode(unit) {
-	switch (unit) {
-		case "Std.": return "HUR";
-		case "Tag": return "DAY";
-		case "Pauschal": return "LS";
-		default: return "C62";
-	}
-}
-function cleanSpaces(value) {
-	return (value || "").replace(/\s+/g, "").toUpperCase();
-}
-function buildXRechnungXml(invoice, company) {
-	const isSmallBiz = invoice.isSmallBusiness ?? Boolean(company.smallBusinessMode);
-	const totals = calculateDocumentTotals(invoice.lineItems, isSmallBiz, invoice.discountType ?? "percent", invoice.discountValue ?? 0);
-	const totalPayable = isSmallBiz ? invoice.netTotal : invoice.grossTotal;
-	const taxTotal = isSmallBiz ? 0 : invoice.taxTotal;
-	const iban = cleanSpaces(company.iban);
-	const bic = cleanSpaces(company.bic);
-	const taxSubtotalsXml = totals.taxBreakdown.map((grp) => {
-		const rate = grp.rate;
-		const catId = isSmallBiz || rate === 0 ? "E" : "S";
-		const exemptionReason = isSmallBiz ? `<cbc:TaxExemptionReason>${escapeXml(invoice.smallBusinessNotice || company.smallBusinessNotice || "Kein Ausweis von Umsatzsteuer, da Kleinunternehmer gemäß § 19 UStG.")}</cbc:TaxExemptionReason>` : rate === 0 ? "<cbc:TaxExemptionReason>Steuerfreie Leistung (0 %)</cbc:TaxExemptionReason>" : "";
-		return `    <cac:TaxSubtotal>
-      <cbc:TaxableAmount currencyID="EUR">${grp.taxable.toFixed(2)}</cbc:TaxableAmount>
-      <cbc:TaxAmount currencyID="EUR">${grp.tax.toFixed(2)}</cbc:TaxAmount>
-      <cac:TaxCategory>
-        <cbc:ID>${catId}</cbc:ID>
-        <cbc:Percent>${rate.toFixed(2)}</cbc:Percent>
-        ${exemptionReason}
-        <cac:TaxScheme>
-          <cbc:ID>VAT</cbc:ID>
-        </cac:TaxScheme>
-      </cac:TaxCategory>
-    </cac:TaxSubtotal>`;
-	}).join("\n");
-	const discountAmount = invoice.discountNetAmount ?? totals.discountNetAmount;
-	const lineExtensionSum = invoice.subtotalNetBeforeDiscount ?? totals.subtotalNetBeforeDiscount;
-	const allowanceChargeXml = discountAmount > 0 ? `  <cac:AllowanceCharge>
-    <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
-    <cbc:AllowanceChargeReason>${escapeXml(invoice.discountLabel || "Rabatt")}</cbc:AllowanceChargeReason>
-    <cbc:Amount currencyID="EUR">${discountAmount.toFixed(2)}</cbc:Amount>
-    <cac:TaxCategory>
-      <cbc:ID>${isSmallBiz ? "E" : "S"}</cbc:ID>
-      <cbc:Percent>${(isSmallBiz ? 0 : totals.taxBreakdown[0]?.rate ?? 19).toFixed(2)}</cbc:Percent>
-      <cac:TaxScheme>
-        <cbc:ID>VAT</cbc:ID>
-      </cac:TaxScheme>
-    </cac:TaxCategory>
-  </cac:AllowanceCharge>` : "";
-	const linesXml = invoice.lineItems.map((item, idx) => {
-		const rate = isSmallBiz ? 0 : item.taxRate;
-		const catId = isSmallBiz || rate === 0 ? "E" : "S";
-		return `  <cac:InvoiceLine>
-    <cbc:ID>${idx + 1}</cbc:ID>
-    <cbc:InvoicedQuantity unitCode="${mapUnitCode(item.unit)}">${item.quantity.toFixed(2)}</cbc:InvoicedQuantity>
-    <cbc:LineExtensionAmount currencyID="EUR">${item.netTotal.toFixed(2)}</cbc:LineExtensionAmount>
-    <cac:Item>
-      <cbc:Description>${escapeXml(item.detail || item.description)}</cbc:Description>
-      <cbc:Name>${escapeXml(item.description)}</cbc:Name>
-      <cac:ClassifiedTaxCategory>
-        <cbc:ID>${catId}</cbc:ID>
-        <cbc:Percent>${rate.toFixed(2)}</cbc:Percent>
-        <cac:TaxScheme>
-          <cbc:ID>VAT</cbc:ID>
-        </cac:TaxScheme>
-      </cac:ClassifiedTaxCategory>
-    </cac:Item>
-    <cac:Price>
-      <cbc:PriceAmount currencyID="EUR">${item.unitPriceNet.toFixed(2)}</cbc:PriceAmount>
-    </cac:Price>
-  </cac:InvoiceLine>`;
-	}).join("\n");
-	const supplierTaxId = company.vatId?.trim() || company.taxNumber?.trim() || "";
-	const supplierScheme = company.vatId?.trim() ? "VAT" : "FC";
-	return `<?xml version="1.0" encoding="UTF-8"?>
-<ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
-             xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
-             xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
-  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
-  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
-  <cbc:ID>${escapeXml(invoice.invoiceNumber)}</cbc:ID>
-  <cbc:IssueDate>${escapeXml(invoice.issueDate)}</cbc:IssueDate>
-  <cbc:DueDate>${escapeXml(invoice.dueDate)}</cbc:DueDate>
-  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
-  ${invoice.introText ? `<cbc:Note>${escapeXml(invoice.introText)}</cbc:Note>` : ""}
-  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
-  <cbc:BuyerReference>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:BuyerReference>
-  <cac:InvoicePeriod>
-    <cbc:StartDate>${escapeXml(invoice.servicePeriodStart)}</cbc:StartDate>
-    <cbc:EndDate>${escapeXml(invoice.servicePeriodEnd)}</cbc:EndDate>
-  </cac:InvoicePeriod>
-  <cac:AccountingSupplierParty>
-    <cac:Party>
-      <cbc:EndpointID schemeID="EM">${escapeXml(company.email || "info@taktwerk.local")}</cbc:EndpointID>
-      <cac:PartyName>
-        <cbc:Name>${escapeXml(company.companyName || "TaktWerk")}</cbc:Name>
-      </cac:PartyName>
-      <cac:PostalAddress>
-        <cbc:StreetName>${escapeXml(company.street)}</cbc:StreetName>
-        <cbc:CityName>${escapeXml(company.city)}</cbc:CityName>
-        <cbc:PostalZone>${escapeXml(company.postalCode)}</cbc:PostalZone>
-        <cac:Country>
-          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
-        </cac:Country>
-      </cac:PostalAddress>
-      ${supplierTaxId ? `<cac:PartyTaxScheme>
-        <cbc:CompanyID>${escapeXml(supplierTaxId)}</cbc:CompanyID>
-        <cac:TaxScheme>
-          <cbc:ID>${supplierScheme}</cbc:ID>
-        </cac:TaxScheme>
-      </cac:PartyTaxScheme>` : ""}
-      <cac:PartyLegalEntity>
-        <cbc:RegistrationName>${escapeXml(company.companyName || company.ownerName)}</cbc:RegistrationName>
-      </cac:PartyLegalEntity>
-      <cac:Contact>
-        <cbc:Name>${escapeXml(company.ownerName || company.companyName)}</cbc:Name>
-        ${company.phone ? `<cbc:Telephone>${escapeXml(company.phone)}</cbc:Telephone>` : ""}
-        ${company.email ? `<cbc:ElectronicMail>${escapeXml(company.email)}</cbc:ElectronicMail>` : ""}
-      </cac:Contact>
-    </cac:Party>
-  </cac:AccountingSupplierParty>
-  <cac:AccountingCustomerParty>
-    <cac:Party>
-      <cbc:EndpointID schemeID="EM">${escapeXml(invoice.customerSnapshot.email || "kunde@local")}</cbc:EndpointID>
-      <cac:PartyName>
-        <cbc:Name>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:Name>
-      </cac:PartyName>
-      <cac:PostalAddress>
-        <cbc:StreetName>${escapeXml(invoice.customerSnapshot.street)}</cbc:StreetName>
-        <cbc:CityName>${escapeXml(invoice.customerSnapshot.city)}</cbc:CityName>
-        <cbc:PostalZone>${escapeXml(invoice.customerSnapshot.postalCode)}</cbc:PostalZone>
-        <cac:Country>
-          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
-        </cac:Country>
-      </cac:PostalAddress>
-      ${invoice.customerSnapshot.vatId ? `<cac:PartyTaxScheme>
-        <cbc:CompanyID>${escapeXml(invoice.customerSnapshot.vatId)}</cbc:CompanyID>
-        <cac:TaxScheme>
-          <cbc:ID>VAT</cbc:ID>
-        </cac:TaxScheme>
-      </cac:PartyTaxScheme>` : ""}
-      <cac:PartyLegalEntity>
-        <cbc:RegistrationName>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:RegistrationName>
-      </cac:PartyLegalEntity>
-    </cac:Party>
-  </cac:AccountingCustomerParty>
-  ${iban ? `<cac:PaymentMeans>
-    <cbc:PaymentMeansCode>58</cbc:PaymentMeansCode>
-    <cbc:PaymentID>${escapeXml(invoice.invoiceNumber)}</cbc:PaymentID>
-    <cac:PayeeFinancialAccount>
-      <cbc:ID>${escapeXml(iban)}</cbc:ID>
-      <cbc:Name>${escapeXml(company.companyName || company.ownerName)}</cbc:Name>
-      ${bic ? `<cac:FinancialInstitutionBranch>
-        <cbc:ID>${escapeXml(bic)}</cbc:ID>
-      </cac:FinancialInstitutionBranch>` : ""}
-    </cac:PayeeFinancialAccount>
-  </cac:PaymentMeans>` : ""}
-  <cac:PaymentTerms>
-    <cbc:Note>${escapeXml(invoice.outroText || `Zahlbar bis ${invoice.dueDate}`)}</cbc:Note>
-  </cac:PaymentTerms>
-${allowanceChargeXml}
-  <cac:TaxTotal>
-    <cbc:TaxAmount currencyID="EUR">${taxTotal.toFixed(2)}</cbc:TaxAmount>
-${taxSubtotalsXml}
-  </cac:TaxTotal>
-  <cac:LegalMonetaryTotal>
-    <cbc:LineExtensionAmount currencyID="EUR">${lineExtensionSum.toFixed(2)}</cbc:LineExtensionAmount>
-    <cbc:TaxExclusiveAmount currencyID="EUR">${invoice.netTotal.toFixed(2)}</cbc:TaxExclusiveAmount>
-    <cbc:TaxInclusiveAmount currencyID="EUR">${totalPayable.toFixed(2)}</cbc:TaxInclusiveAmount>
-    ${discountAmount > 0 ? `<cbc:AllowanceTotalAmount currencyID="EUR">${discountAmount.toFixed(2)}</cbc:AllowanceTotalAmount>` : ""}
-    <cbc:PayableAmount currencyID="EUR">${totalPayable.toFixed(2)}</cbc:PayableAmount>
-  </cac:LegalMonetaryTotal>
-${linesXml}
-</ubl:Invoice>
-`;
-}
-// src/components/SignaturePadModal.tsx
-function SignaturePadModal({ open, title, subtitle, initialSignature, defaultSignerName = "", onClose, onSave }) {
-	const canvasRef = (0, import_react.useRef)(null);
-	const drawingRef = (0, import_react.useRef)(false);
-	const [hasStroke, setHasStroke] = (0, import_react.useState)(false);
-	const [signedBy, setSignedBy] = (0, import_react.useState)(defaultSignerName);
-	const [signedRole, setSignedRole] = (0, import_react.useState)("");
-	const [locationAddress, setLocationAddress] = (0, import_react.useState)("");
-	const [notes, setNotes] = (0, import_react.useState)("");
-	const [locating, setLocating] = (0, import_react.useState)(false);
-	const [error, setError] = (0, import_react.useState)(null);
-	(0, import_react.useEffect)(() => {
-		if (!open) return;
-		setSignedBy(initialSignature?.signedBy || defaultSignerName || "");
-		setSignedRole(initialSignature?.signedRole || "");
-		setLocationAddress(initialSignature?.locationAddress || "");
-		setNotes(initialSignature?.notes || "");
-		setError(null);
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		if (initialSignature?.signatureDataUrl) {
-			const img = new Image();
-			img.onload = () => {
-				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-				setHasStroke(true);
-			};
-			img.src = initialSignature.signatureDataUrl;
-		} else setHasStroke(false);
-	}, [
-		open,
-		initialSignature,
-		defaultSignerName
-	]);
-	if (!open) return null;
-	const getCoords = (e) => {
-		const canvas = canvasRef.current;
-		if (!canvas) return {
-			x: 0,
-			y: 0
-		};
-		const rect = canvas.getBoundingClientRect();
-		const scaleX = canvas.width / Math.max(1, rect.width);
-		const scaleY = canvas.height / Math.max(1, rect.height);
-		return {
-			x: (e.clientX - rect.left) * scaleX,
-			y: (e.clientY - rect.top) * scaleY
-		};
-	};
-	const handlePointerDown = (e) => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-		canvas.setPointerCapture(e.pointerId);
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
-		const { x, y } = getCoords(e);
-		drawingRef.current = true;
-		ctx.strokeStyle = "#0f172a";
-		ctx.lineWidth = 3.2;
-		ctx.lineCap = "round";
-		ctx.lineJoin = "round";
-		ctx.beginPath();
-		ctx.moveTo(x, y);
-		ctx.lineTo(x + .1, y + .1);
-		ctx.stroke();
-		setHasStroke(true);
-		setError(null);
-	};
-	const handlePointerMove = (e) => {
-		if (!drawingRef.current) return;
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
-		const { x, y } = getCoords(e);
-		ctx.lineTo(x, y);
-		ctx.stroke();
-	};
-	const handlePointerUp = () => {
-		drawingRef.current = false;
-	};
-	const handleClear = () => {
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		setHasStroke(false);
-	};
-	const handleCaptureGps = async () => {
-		setLocating(true);
-		try {
-			const snap = await captureCurrentLocation();
-			setLocationAddress(formatLocationLabel(snap));
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Standort konnte nicht ermittelt werden.");
-		} finally {
-			setLocating(false);
-		}
-	};
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		if (!hasStroke) {
-			setError("Bitte direkt im Unterschriftsfeld unterzeichnen.");
-			return;
-		}
-		if (!signedBy.trim()) {
-			setError("Bitte den Namen des Unterzeichners angeben.");
-			return;
-		}
-		const canvas = canvasRef.current;
-		if (!canvas) return;
-		const signatureDataUrl = canvas.toDataURL("image/png");
-		onSave({
-			signedBy: signedBy.trim(),
-			signedRole: signedRole.trim() || void 0,
-			signedAt: (/* @__PURE__ */ new Date()).toISOString(),
-			locationAddress: locationAddress.trim() || void 0,
-			notes: notes.trim() || void 0,
-			signatureDataUrl
-		});
-	};
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-		role: "dialog",
-		"aria-modal": "true",
-		"data-no-swipe": "true",
-		onTouchStart: (e) => e.stopPropagation(),
-		onTouchMove: (e) => e.stopPropagation(),
-		onTouchEnd: (e) => e.stopPropagation(),
-		className: "fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/65 p-3 backdrop-blur-sm sm:p-4",
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			"data-no-swipe": "true",
-			className: "flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#342653] dark:bg-[#19122c]",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2e234a]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex items-center gap-2.5 min-w-0",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenTool, { className: "h-4.5 w-4.5" })
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "min-w-0",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-							className: "truncate text-base font-bold text-slate-900 dark:text-white",
-							children: title
-						}), subtitle && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "truncate text-xs text-slate-500 dark:text-slate-400",
-							children: subtitle
-						})]
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-					type: "button",
-					onClick: onClose,
-					"aria-label": "Schließen",
-					className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] cursor-pointer",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-5 w-5" })
-				})]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-				onSubmit: handleSubmit,
-				className: "overflow-y-auto p-5 space-y-4",
-				children: [
-					error && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/15 dark:text-rose-200",
-						children: error
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "mb-1.5 flex items-center justify-between",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "text-xs font-semibold text-slate-700 dark:text-slate-300",
-							children: "Unterschrift auf dem Display (Finger oder Stift)"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: handleClear,
-							className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#2a2045] cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eraser, { className: "h-3.5 w-3.5" }), "Leeren"]
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "relative overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-white dark:border-violet-500/40",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("canvas", {
-							ref: canvasRef,
-							width: 720,
-							height: 240,
-							"data-no-swipe": "true",
-							onTouchStart: (e) => e.stopPropagation(),
-							onTouchMove: (e) => e.stopPropagation(),
-							onTouchEnd: (e) => e.stopPropagation(),
-							onPointerDown: handlePointerDown,
-							onPointerMove: handlePointerMove,
-							onPointerUp: handlePointerUp,
-							onPointerCancel: handlePointerUp,
-							onPointerLeave: handlePointerUp,
-							className: "block h-44 w-full touch-none cursor-crosshair sm:h-48"
-						}), !hasStroke && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "pointer-events-none absolute inset-0 flex items-center justify-center",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "text-xs font-medium text-slate-400",
-								children: "Hier direkt unterschreiben..."
-							})
-						})]
-					})] }),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Name des Unterzeichners *"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							required: true,
-							value: signedBy,
-							onChange: (e) => setSignedBy(e.target.value),
-							placeholder: "Vor- und Nachname",
-							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-						})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Funktion / Rolle (optional)"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: signedRole,
-							onChange: (e) => setSignedRole(e.target.value),
-							placeholder: "z. B. Geschäftsführung, Bauleitung",
-							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-						})] })]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-						className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-						children: "Abnahmeort (optional)"
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "text",
-							value: locationAddress,
-							onChange: (e) => setLocationAddress(e.target.value),
-							placeholder: "Adresse oder Standort...",
-							className: "min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							disabled: locating,
-							onClick: handleCaptureGps,
-							className: "inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
-							children: [locating ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), "GPS"]
-						})]
-					})] }),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-						className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-						children: "Abnahmehinweis / Mängelfrei-Vermerk (optional)"
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-						type: "text",
-						value: notes,
-						onChange: (e) => setNotes(e.target.value),
-						placeholder: "z. B. Anlage vollständig geprüft & übergeben",
-						className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-					})] }),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center justify-end gap-2.5 border-t border-slate-200 pt-4 dark:border-[#2e234a]",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: onClose,
-							className: "rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#2a2045] cursor-pointer",
-							children: "Abbrechen"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "submit",
-							className: "inline-flex items-center gap-1.5 rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }), "Abnahme speichern"]
-						})]
-					})
-				]
-			})]
-		})
-	});
-}
-// src/components/InvoicesView.tsx
-function InvoicesView({ company, customers, products, timeEntries, expenses = [], invoices, nextcloud, preselectedDraft, onClearPreselectedDraft, onCreateInvoice, onUpdateInvoice, onUpdateInvoiceStatus, onMarkInvoiceUploaded, onSaveSignature, onDeleteSignature, onToggleArchiveInvoice, onDeleteInvoice, onNotify }) {
-	const [statusFilter, setStatusFilter] = (0, import_react.useState)("all");
-	const [docFilter, setDocFilter] = (0, import_react.useState)("all");
-	const [archiveFilter, setArchiveFilter] = (0, import_react.useState)("active");
-	const [showBuilder, setShowBuilder] = (0, import_react.useState)(false);
-	const [editingInvoice, setEditingInvoice] = (0, import_react.useState)(null);
-	const [previewInvoice, setPreviewInvoice] = (0, import_react.useState)(null);
-	const [showPreviewMenu, setShowPreviewMenu] = (0, import_react.useState)(false);
-	const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = (0, import_react.useState)(null);
-	const [uploadingId, setUploadingId] = (0, import_react.useState)(null);
-	const [confirmDeleteId, setConfirmDeleteId] = (0, import_react.useState)(null);
-	const [signatureModalOpen, setSignatureModalOpen] = (0, import_react.useState)(false);
-	const [documentType, setDocumentType] = (0, import_react.useState)("invoice");
-	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
-	const [selectedEntryIds, setSelectedEntryIds] = (0, import_react.useState)([]);
-	const [groupByProduct, setGroupByProduct] = (0, import_react.useState)(true);
-	const [includeLocation, setIncludeLocation] = (0, import_react.useState)(Boolean(company.invoiceIncludeLocationDefault));
-	const [includeTimeNotes, setIncludeTimeNotes] = (0, import_react.useState)(Boolean(company.invoiceIncludeTimeNotesDefault));
-	const [roundingMinutes, setRoundingMinutes] = (0, import_react.useState)(company.defaultTimeRoundingMinutes ?? 0);
-	const [extraItems, setExtraItems] = (0, import_react.useState)([]);
-	const [billedExpenseIds, setBilledExpenseIds] = (0, import_react.useState)([]);
-	const [billedTravelEntryIds, setBilledTravelEntryIds] = (0, import_react.useState)([]);
-	const [issueDate, setIssueDate] = (0, import_react.useState)(toInputDate());
-	const [dueDateInput, setDueDateInput] = (0, import_react.useState)(() => addDaysISO(toInputDate(), company.defaultPaymentTermDays || 14));
-	const [quoteValidUntil, setQuoteValidUntil] = (0, import_react.useState)(() => addDaysISO(toInputDate(), 30));
-	const [invoiceNumber, setInvoiceNumber] = (0, import_react.useState)("");
-	const [discountType, setDiscountType] = (0, import_react.useState)("percent");
-	const [discountValue, setDiscountValue] = (0, import_react.useState)(0);
-	const [discountLabel, setDiscountLabel] = (0, import_react.useState)("Rabatt");
-	const defaultIntro = company.invoiceDefaultIntroText ?? "Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihren Auftrag. Vereinbarungsgemäß berechnen wir Ihnen folgende erbrachte Leistungen:";
-	const defaultOutro = company.invoiceDefaultOutroText ?? "Bitte überweisen Sie den Rechnungsbetrag innerhalb der Zahlungsfrist unter Angabe der Rechnungsnummer auf das unten genannte Konto.";
-	const defaultQuoteIntro = company.quoteDefaultIntroText ?? "Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot:";
-	const defaultQuoteOutro = company.quoteDefaultOutroText ?? "Dieses Angebot ist freibleibend. Bei Fragen oder zur Beauftragung freuen wir uns auf Ihre Rückmeldung.";
-	const [introText, setIntroText] = (0, import_react.useState)(defaultIntro);
-	const [outroText, setOutroText] = (0, import_react.useState)(defaultOutro);
-	const [isSmallBusiness, setIsSmallBusiness] = (0, import_react.useState)(Boolean(company.smallBusinessMode));
-	const [builderError, setBuilderError] = (0, import_react.useState)("");
-	const defaultSmallBusinessNotice = company.smallBusinessNotice || "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.";
-	const nextInvoiceSeqNumber = (0, import_react.useMemo)(() => formatInvoiceNumber(company, company.nextInvoiceSequence || invoices.filter((i) => i.documentType !== "quote").length + 1), [company, invoices]);
-	const nextQuoteSeqNumber = (0, import_react.useMemo)(() => formatQuoteNumber(company, company.nextQuoteSequence || invoices.filter((i) => i.documentType === "quote").length + 1), [company, invoices]);
-	const accentStyle = INVOICE_ACCENT_STYLES[company.invoiceAccentColor ?? "slate"] ?? INVOICE_ACCENT_STYLES.slate;
-	const fontOption = INVOICE_FONT_OPTIONS[company.invoiceFontFamily ?? "sans"] ?? INVOICE_FONT_OPTIONS.sans;
-	const layoutStyle = company.invoiceLayoutStyle ?? "classic";
-	const headerTitle = (company.invoiceHeaderTitle || "Rechnung").trim();
-	const quoteTitle = (company.quoteHeaderTitle || "Angebot").trim();
-	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
-	const productMap = (0, import_react.useMemo)(() => new Map(products.map((p) => [p.id, p])), [products]);
-	const getEffectiveRounding = (custId) => {
-		const cust = customerMap.get(custId);
-		if (cust?.timeRoundingMinutes != null) return cust.timeRoundingMinutes;
-		return company.defaultTimeRoundingMinutes ?? 0;
-	};
-	(0, import_react.useEffect)(() => {
-		setShowPreviewMenu(false);
-		let cancelled = false;
-		if (!previewInvoice || previewInvoice.documentType === "quote") {
-			setPreviewGiroCodeUrl(null);
-			return;
-		}
-		generateGiroCodeDataUrl(previewInvoice, company).then((url) => {
-			if (!cancelled) setPreviewGiroCodeUrl(url);
-		});
-		return () => {
-			cancelled = true;
-		};
-	}, [previewInvoice, company]);
-	(0, import_react.useEffect)(() => {
-		if (!preselectedDraft) return;
-		setDocumentType("invoice");
-		setCustomerId(preselectedDraft.customerId);
-		if (preselectedDraft.entryIds.length > 0) setSelectedEntryIds(preselectedDraft.entryIds);
-		else {
-			const openIds = timeEntries.filter((t) => t.customerId === preselectedDraft.customerId && t.billable && !t.billedInvoiceId).map((t) => t.id);
-			setSelectedEntryIds(openIds);
-		}
-		setEditingInvoice(null);
-		setExtraItems([]);
-		setBilledExpenseIds([]);
-		setBilledTravelEntryIds([]);
-		setIncludeLocation(Boolean(company.invoiceIncludeLocationDefault));
-		setIncludeTimeNotes(Boolean(company.invoiceIncludeTimeNotesDefault));
-		const today = toInputDate();
-		setIssueDate(today);
-		const custTerm = customerMap.get(preselectedDraft.customerId)?.paymentTermDays || company.defaultPaymentTermDays || 14;
-		setDueDateInput(addDaysISO(today, custTerm));
-		setQuoteValidUntil(addDaysISO(today, 30));
-		setInvoiceNumber(nextInvoiceSeqNumber);
-		setDiscountType("percent");
-		setDiscountValue(0);
-		setDiscountLabel("Rabatt");
-		setIntroText(defaultIntro);
-		setOutroText(defaultOutro);
-		setIsSmallBusiness(Boolean(company.smallBusinessMode));
-		setRoundingMinutes(getEffectiveRounding(preselectedDraft.customerId));
-		setBuilderError("");
-		setShowBuilder(true);
-		onClearPreselectedDraft();
-	}, [
-		preselectedDraft,
-		timeEntries,
-		nextInvoiceSeqNumber,
-		defaultIntro,
-		defaultOutro,
-		company.smallBusinessMode,
-		company.invoiceIncludeLocationDefault,
-		company.invoiceIncludeTimeNotesDefault,
-		company.defaultPaymentTermDays,
-		company.defaultTimeRoundingMinutes,
-		customerMap,
-		onClearPreselectedDraft
-	]);
-	const openBuilderFresh = (type = "invoice") => {
-		const firstCust = customers[0]?.id ?? "";
-		setEditingInvoice(null);
-		setDocumentType(type);
-		setCustomerId(firstCust);
-		const openIds = timeEntries.filter((t) => t.customerId === firstCust && t.billable && !t.billedInvoiceId).map((t) => t.id);
-		setSelectedEntryIds(openIds);
-		setExtraItems([]);
-		setBilledExpenseIds([]);
-		setBilledTravelEntryIds([]);
-		setIncludeLocation(Boolean(company.invoiceIncludeLocationDefault));
-		setIncludeTimeNotes(Boolean(company.invoiceIncludeTimeNotesDefault));
-		const today = toInputDate();
-		setIssueDate(today);
-		const custTerm = customerMap.get(firstCust)?.paymentTermDays || company.defaultPaymentTermDays || 14;
-		setDueDateInput(addDaysISO(today, custTerm));
-		setQuoteValidUntil(addDaysISO(today, 30));
-		setInvoiceNumber(type === "quote" ? nextQuoteSeqNumber : nextInvoiceSeqNumber);
-		setDiscountType("percent");
-		setDiscountValue(0);
-		setDiscountLabel("Rabatt");
-		setIntroText(type === "quote" ? defaultQuoteIntro : defaultIntro);
-		setOutroText(type === "quote" ? defaultQuoteOutro : defaultOutro);
-		setIsSmallBusiness(Boolean(company.smallBusinessMode));
-		setRoundingMinutes(getEffectiveRounding(firstCust));
-		setBuilderError("");
-		setShowBuilder(true);
-	};
-	const handleBuilderDocTypeChange = (nextType) => {
-		setDocumentType(nextType);
-		if (!editingInvoice) {
-			setInvoiceNumber(nextType === "quote" ? nextQuoteSeqNumber : nextInvoiceSeqNumber);
-			setIntroText(nextType === "quote" ? defaultQuoteIntro : defaultIntro);
-			setOutroText(nextType === "quote" ? defaultQuoteOutro : defaultOutro);
-		}
-	};
-	const openEditBuilder = (inv) => {
-		setPreviewInvoice(null);
-		setEditingInvoice(inv);
-		setDocumentType(inv.documentType ?? "invoice");
-		setCustomerId(inv.customerId);
-		const linkedIds = timeEntries.filter((t) => t.billedInvoiceId === inv.id).map((t) => t.id);
-		const fallbackIds = inv.lineItems.flatMap((li) => li.timeEntryIds || []).filter((id) => timeEntries.some((t) => t.id === id));
-		const entryIds = Array.from(/* @__PURE__ */ new Set([...linkedIds, ...fallbackIds]));
-		setSelectedEntryIds(entryIds);
-		const timeBasedLineItems = inv.lineItems.filter((li) => (li.timeEntryIds?.length ?? 0) > 0);
-		if (timeBasedLineItems.length > 0) setGroupByProduct(timeBasedLineItems.some((li) => (li.timeEntryIds?.length ?? 0) > 1) || entryIds.length === timeBasedLineItems.length);
-		setIncludeLocation(inv.includeLocation ?? (inv.lineItems.some((li) => li.detail?.includes("Ort:")) || Boolean(company.invoiceIncludeLocationDefault)));
-		setIncludeTimeNotes(inv.includeTimeNotes ?? Boolean(company.invoiceIncludeTimeNotesDefault));
-		const manualRows = inv.lineItems.filter((li) => (li.timeEntryIds?.length ?? 0) === 0).map((li) => ({
-			id: createId("ext"),
-			productId: li.productId || products[0]?.id || "",
-			description: li.description,
-			detail: li.detail,
-			unit: li.unit,
-			quantity: li.quantity,
-			unitPriceNet: li.unitPriceNet,
-			taxRate: li.taxRate
-		}));
-		setExtraItems(manualRows);
-		setBilledExpenseIds(expenses.filter((ex) => ex.billedInvoiceId === inv.id).map((ex) => ex.id));
-		setBilledTravelEntryIds(timeEntries.filter((t) => t.travelBilledInvoiceId === inv.id).map((t) => t.id));
-		setIssueDate(inv.issueDate);
-		setDueDateInput(inv.dueDate);
-		setQuoteValidUntil(inv.quoteValidUntil || inv.dueDate);
-		setInvoiceNumber(inv.invoiceNumber);
-		setDiscountType(inv.discountType ?? "percent");
-		setDiscountValue(inv.discountValue ?? 0);
-		setDiscountLabel(inv.discountLabel ?? "Rabatt");
-		setIntroText(inv.introText ?? "");
-		setOutroText(inv.outroText ?? "");
-		setIsSmallBusiness(inv.isSmallBusiness ?? Boolean(company.smallBusinessMode));
-		setRoundingMinutes(getEffectiveRounding(inv.customerId));
-		setBuilderError("");
-		setShowBuilder(true);
-	};
-	const handleBuilderCustomerChange = (newCustId) => {
-		setCustomerId(newCustId);
-		const openIds = timeEntries.filter((t) => t.customerId === newCustId && t.billable && (!t.billedInvoiceId || editingInvoice !== null && t.billedInvoiceId === editingInvoice.id)).map((t) => t.id);
-		setSelectedEntryIds(openIds);
-		setBilledExpenseIds([]);
-		setBilledTravelEntryIds([]);
-		setRoundingMinutes(getEffectiveRounding(newCustId));
-		if (!editingInvoice) {
-			const custTerm = customerMap.get(newCustId)?.paymentTermDays || company.defaultPaymentTermDays || 14;
-			setDueDateInput(addDaysISO(issueDate, custTerm));
-		}
-	};
-	const unbilledForCustomer = (0, import_react.useMemo)(() => timeEntries.filter((t) => t.customerId === customerId && t.billable && (!t.billedInvoiceId || editingInvoice !== null && t.billedInvoiceId === editingInvoice.id)), [
-		timeEntries,
-		customerId,
-		editingInvoice
-	]);
-	const openBillableExpensesForCustomer = (0, import_react.useMemo)(() => expenses.filter((exp) => exp.customerId === customerId && exp.billableToCustomer && !exp.billedInvoiceId && !billedExpenseIds.includes(exp.id)), [
-		expenses,
-		customerId,
-		billedExpenseIds
-	]);
-	const openTravelEntriesForCustomer = (0, import_react.useMemo)(() => unbilledForCustomer.filter((entry) => {
-		if (billedTravelEntryIds.includes(entry.id) || entry.travelBilledInvoiceId) return false;
-		if ((entry.travelCostNet ?? 0) > 0) return true;
-		return Boolean(company.homeBaseLocation && entry.location);
-	}), [
-		unbilledForCustomer,
-		billedTravelEntryIds,
-		company.homeBaseLocation
-	]);
-	const toggleEntry = (id) => {
-		setSelectedEntryIds((prev) => prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]);
-	};
-	const addExtraProductRow = () => {
-		const defaultProd = products.find((p) => p.type === "product") ?? products[0];
-		if (!defaultProd) return;
-		setExtraItems((prev) => [...prev, {
-			id: createId("ext"),
-			productId: defaultProd.id,
-			description: defaultProd.name,
-			quantity: 1,
-			unitPriceNet: defaultProd.unitPriceNet,
-			taxRate: defaultProd.taxRate
-		}]);
-	};
-	const updateExtraRow = (id, patch) => {
-		setExtraItems((prev) => prev.map((row) => {
-			if (row.id !== id) return row;
-			const next = {
-				...row,
-				...patch
-			};
-			if (patch.productId) {
-				const p = productMap.get(patch.productId);
-				if (p) {
-					next.description = p.name;
-					next.unitPriceNet = p.unitPriceNet;
-					next.taxRate = p.taxRate;
-				}
-			}
-			return next;
-		}));
-	};
-	const handleImportBillableExpenses = () => {
-		if (openBillableExpensesForCustomer.length === 0) return;
-		const newRows = openBillableExpensesForCustomer.map((exp) => ({
-			id: createId("ext"),
-			productId: products[0]?.id ?? "",
-			description: `${exp.vendor} — ${exp.description}`,
-			detail: `Beleg vom ${formatDateDE(exp.date)} (${exp.category})`,
-			unit: "Stk.",
-			quantity: 1,
-			unitPriceNet: exp.netAmount,
-			taxRate: exp.taxRate
-		}));
-		setExtraItems((prev) => [...prev, ...newRows]);
-		setBilledExpenseIds((prev) => [...prev, ...openBillableExpensesForCustomer.map((e) => e.id)]);
-		onNotify(`${newRows.length} Kunden-Beleg(e) als Position(en) übernommen.`);
-	};
-	const handleImportTravelCosts = () => {
-		const rate = company.travelRatePerKm ?? .3;
-		const roundTrip = company.travelRoundTripDefault !== false;
-		let totalKm = 0;
-		let totalCost = 0;
-		const matchedIds = [];
-		const addresses = /* @__PURE__ */ new Set();
-		for (const entry of openTravelEntriesForCustomer) {
-			let km = entry.travelDistanceKm ?? 0;
-			let cost = entry.travelCostNet ?? 0;
-			if (cost <= 0 && company.homeBaseLocation && entry.location) {
-				const calc = computeTravelFromBase(company.homeBaseLocation, entry.location, rate, roundTrip);
-				km = calc.distanceKm;
-				cost = calc.costNet;
-			}
-			if (cost > 0 || km > 0) {
-				totalKm += km;
-				totalCost += cost;
-				matchedIds.push(entry.id);
-				if (entry.location?.address) addresses.add(entry.location.address);
-			}
-		}
-		if (matchedIds.length === 0) {
-			onNotify("Keine abrechenbaren Fahrtkosten vorhanden (Standort & Startadresse nötig).", true);
-			return;
-		}
-		const kmRounded = Math.round(totalKm * 10) / 10;
-		const costRounded = Math.round(totalCost * 100) / 100;
-		setExtraItems((prev) => [...prev, {
-			id: createId("ext"),
-			productId: products[0]?.id ?? "",
-			description: `Fahrtkosten / Anfahrt (${kmRounded} km)`,
-			detail: `${matchedIds.length} Einsatzfahrten (${rate.toFixed(2)} €/km)${addresses.size > 0 ? ` · Ziele: ${Array.from(addresses).slice(0, 2).join("; ")}` : ""}`,
-			unit: "Pauschal",
-			quantity: 1,
-			unitPriceNet: costRounded,
-			taxRate: 19
-		}]);
-		setBilledTravelEntryIds((prev) => [...prev, ...matchedIds]);
-		onNotify(`Fahrtkosten (${kmRounded} km · ${formatCurrency(costRounded)}) als Position übernommen.`);
-	};
-	const formatEntryLocation = (entry) => {
-		if (!entry.location) return "";
-		return entry.location.address || `${entry.location.lat.toFixed(4)}, ${entry.location.lng.toFixed(4)}`;
-	};
-	const computedLineItems = (0, import_react.useMemo)(() => {
-		const selectedEntries = unbilledForCustomer.filter((e) => selectedEntryIds.includes(e.id));
-		const items = [];
-		if (groupByProduct) {
-			const grouped = /* @__PURE__ */ new Map();
-			for (const e of selectedEntries) {
-				const key = `${e.productId}::${e.hourlyRateNet}::${e.taxRate}`;
-				const list = grouped.get(key) ?? [];
-				list.push(e);
-				grouped.set(key, list);
-			}
-			for (const [, group] of grouped.entries()) {
-				const first = group[0];
-				const prod = productMap.get(first.productId);
-				const totalSeconds = roundDurationSeconds(group.reduce((acc, g) => acc + g.durationSeconds, 0), roundingMinutes);
-				const hours = Math.round(totalSeconds / 3600 * 100) / 100;
-				const net = Math.round(hours * first.hourlyRateNet * 100) / 100;
-				const effectiveTaxRate = isSmallBusiness ? 0 : first.taxRate;
-				const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
-				const taskTitles = Array.from(new Set(group.map((g) => g.title))).join(", ");
-				const notesList = includeTimeNotes ? Array.from(new Set(group.map((g) => (g.notes || "").trim()).filter(Boolean))) : [];
-				const notesSuffix = notesList.length > 0 ? ` · Notizen: ${notesList.join("; ")}` : "";
-				const locations = includeLocation ? Array.from(new Set(group.map((g) => formatEntryLocation(g)).filter(Boolean))) : [];
-				const locSuffix = locations.length > 0 ? ` · Ort: ${locations.join("; ")}` : "";
-				items.push({
-					id: createId("li"),
-					description: prod?.name ?? first.title,
-					detail: `${group.length} Zeiteinträge: ${taskTitles}${notesSuffix}${locSuffix}`,
-					quantity: hours,
-					unit: "Std.",
-					unitPriceNet: first.hourlyRateNet,
-					taxRate: effectiveTaxRate,
-					netTotal: net,
-					taxAmount: tax,
-					grossTotal: Math.round((net + tax) * 100) / 100,
-					timeEntryIds: group.map((g) => g.id),
-					productId: first.productId
-				});
-			}
-		} else for (const e of selectedEntries) {
-			const prod = productMap.get(e.productId);
-			const effectiveSeconds = roundDurationSeconds(e.durationSeconds, roundingMinutes);
-			const hours = Math.round(effectiveSeconds / 3600 * 100) / 100;
-			const net = Math.round(hours * e.hourlyRateNet * 100) / 100;
-			const effectiveTaxRate = isSmallBusiness ? 0 : e.taxRate;
-			const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
-			const locText = includeLocation ? formatEntryLocation(e) : "";
-			const noteText = includeTimeNotes ? (e.notes || "").trim() : "";
-			items.push({
-				id: createId("li"),
-				description: `${prod?.name ?? "Leistung"} — ${e.title}`,
-				detail: `${formatDateDE(e.startTime)}${noteText ? ` · ${noteText}` : ""}${locText ? ` · Ort: ${locText}` : ""}`,
-				quantity: hours,
-				unit: "Std.",
-				unitPriceNet: e.hourlyRateNet,
-				taxRate: effectiveTaxRate,
-				netTotal: net,
-				taxAmount: tax,
-				grossTotal: Math.round((net + tax) * 100) / 100,
-				timeEntryIds: [e.id],
-				productId: e.productId
-			});
-		}
-		for (const extra of extraItems) {
-			const prod = productMap.get(extra.productId);
-			const qty = Math.max(0, Number(extra.quantity) || 0);
-			const net = Math.round(qty * extra.unitPriceNet * 100) / 100;
-			const effectiveTaxRate = isSmallBusiness ? 0 : extra.taxRate;
-			const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
-			items.push({
-				id: createId("li"),
-				description: extra.description || prod?.name || "Position",
-				detail: extra.detail ?? prod?.description ?? "",
-				quantity: qty,
-				unit: extra.unit ?? prod?.unit ?? "Stk.",
-				unitPriceNet: extra.unitPriceNet,
-				taxRate: effectiveTaxRate,
-				netTotal: net,
-				taxAmount: tax,
-				grossTotal: Math.round((net + tax) * 100) / 100,
-				timeEntryIds: [],
-				productId: extra.productId
-			});
-		}
-		return items;
-	}, [
-		unbilledForCustomer,
-		selectedEntryIds,
-		groupByProduct,
-		includeLocation,
-		includeTimeNotes,
-		roundingMinutes,
-		extraItems,
-		productMap,
-		isSmallBusiness
-	]);
-	const builderTotals = (0, import_react.useMemo)(() => calculateDocumentTotals(computedLineItems, isSmallBusiness, discountType, discountValue), [
-		computedLineItems,
-		isSmallBusiness,
-		discountType,
-		discountValue
-	]);
-	const handleSaveInvoice = (e) => {
-		e.preventDefault();
-		setBuilderError("");
-		const cust = customerMap.get(customerId);
-		if (!cust) {
-			setBuilderError("Bitte einen Kunden auswählen.");
-			return;
-		}
-		if (computedLineItems.length === 0) {
-			setBuilderError("Bitte mindestens einen Zeiteintrag oder ein Produkt auswählen.");
-			return;
-		}
-		const dates = unbilledForCustomer.filter((entry) => selectedEntryIds.includes(entry.id)).map((entry) => entry.startTime.slice(0, 10)).sort();
-		const servicePeriodStart = dates[0] ?? issueDate;
-		const servicePeriodEnd = dates[dates.length - 1] ?? issueDate;
-		const dueDate = dueDateInput || addDaysISO(issueDate, cust.paymentTermDays || company.defaultPaymentTermDays || 14);
-		const fallbackNum = documentType === "quote" ? nextQuoteSeqNumber : nextInvoiceSeqNumber;
-		const savedInvoice = {
-			id: editingInvoice?.id ?? createId(documentType === "quote" ? "quote" : "inv"),
-			documentType,
-			invoiceNumber: invoiceNumber.trim() || fallbackNum,
-			customerId: cust.id,
-			customerSnapshot: {
-				companyName: cust.companyName,
-				contactName: cust.contactName,
-				street: cust.street,
-				postalCode: cust.postalCode,
-				city: cust.city,
-				country: cust.country,
-				vatId: cust.vatId,
-				email: cust.email
-			},
-			issueDate,
-			servicePeriodStart,
-			servicePeriodEnd,
-			dueDate: documentType === "quote" ? quoteValidUntil || dueDate : dueDate,
-			quoteValidUntil: documentType === "quote" ? quoteValidUntil || dueDate : void 0,
-			status: editingInvoice?.status ?? "Entwurf",
-			includeLocation,
-			includeTimeNotes,
-			isArchived: editingInvoice?.isArchived ?? false,
-			archivedAt: editingInvoice?.archivedAt ?? null,
-			lineItems: computedLineItems,
-			subtotalNetBeforeDiscount: builderTotals.subtotalNetBeforeDiscount,
-			discountType: discountValue > 0 ? discountType : void 0,
-			discountValue: discountValue > 0 ? discountValue : void 0,
-			discountLabel: discountValue > 0 ? discountLabel.trim() || "Rabatt" : void 0,
-			discountNetAmount: builderTotals.discountNetAmount > 0 ? builderTotals.discountNetAmount : void 0,
-			netTotal: builderTotals.netTotal,
-			taxTotal: builderTotals.taxTotal,
-			grossTotal: builderTotals.grossTotal,
-			introText: introText.trim(),
-			outroText: outroText.trim(),
-			isSmallBusiness,
-			smallBusinessNotice: isSmallBusiness ? defaultSmallBusinessNotice : void 0,
-			signature: editingInvoice?.signature,
-			nextcloudUploadedAt: null,
-			createdAt: editingInvoice?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
-		};
-		const entryIdsToBill = documentType === "quote" ? [] : selectedEntryIds;
-		const expIdsToBill = documentType === "quote" ? [] : billedExpenseIds;
-		const travelIdsToBill = documentType === "quote" ? [] : billedTravelEntryIds;
-		if (editingInvoice) onUpdateInvoice(savedInvoice, entryIdsToBill, expIdsToBill, travelIdsToBill);
-		else onCreateInvoice(savedInvoice, entryIdsToBill, expIdsToBill, travelIdsToBill);
-		setShowBuilder(false);
-		setEditingInvoice(null);
-		setPreviewInvoice(savedInvoice);
-		if (nextcloud.configured && nextcloud.autoSync) handleUploadToNextcloud(savedInvoice);
-	};
-	const handleConvertQuoteToInvoice = (quote) => {
-		const today = toInputDate();
-		const due = addDaysISO(today, customerMap.get(quote.customerId)?.paymentTermDays || company.defaultPaymentTermDays || 14);
-		const quotedEntryIds = new Set(quote.lineItems.flatMap((li) => li.timeEntryIds || []));
-		const toBillIds = timeEntries.filter((t) => quotedEntryIds.has(t.id) && t.billable && !t.billedInvoiceId).map((t) => t.id);
-		const converted = {
-			...quote,
-			id: createId("inv"),
-			documentType: "invoice",
-			invoiceNumber: nextInvoiceSeqNumber,
-			issueDate: today,
-			dueDate: due,
-			quoteValidUntil: void 0,
-			status: "Entwurf",
-			introText: defaultIntro,
-			outroText: defaultOutro,
-			nextcloudUploadedAt: null,
-			createdAt: (/* @__PURE__ */ new Date()).toISOString()
-		};
-		onCreateInvoice(converted, toBillIds);
-		setShowPreviewMenu(false);
-		setPreviewInvoice(converted);
-	};
-	const handleUploadToNextcloud = async (inv) => {
-		if (!nextcloud.configured) {
-			onNotify("Bitte konfiguriere zuerst deine Nextcloud-Verbindung unter \"Nextcloud & Setup\".", true);
-			return;
-		}
-		setUploadingId(inv.id);
-		try {
-			const pdfBase64 = await getInvoicePdfBase64(inv, company);
-			const result = await apiUploadInvoicePdf(`${inv.invoiceNumber}.pdf`, pdfBase64);
-			onMarkInvoiceUploaded(inv.id, result.uploadedAt);
-			setPreviewInvoice((prev) => prev?.id === inv.id ? {
-				...prev,
-				nextcloudUploadedAt: result.uploadedAt
-			} : prev);
-			onNotify(`Rechnung als PDF nach Nextcloud (${result.path}) hochgeladen.`);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Nextcloud-Upload fehlgeschlagen.", true);
-		} finally {
-			setUploadingId(null);
-		}
-	};
-	const handleOpenPdf = async (inv) => {
-		try {
-			await downloadInvoicePdf(inv, company);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "PDF konnte nicht geöffnet werden.", true);
-		}
-	};
-	const handleSharePdf = async (inv) => {
-		try {
-			await shareInvoicePdf(inv, company);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "PDF konnte nicht geteilt werden.", true);
-		}
-	};
-	const handlePaymentReminderPdf = async (inv) => {
-		try {
-			await downloadPaymentReminderPdf(inv, company);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Zahlungserinnerung konnte nicht erstellt werden.", true);
-		}
-	};
-	const getLinkedEntriesForInvoice = (inv) => {
-		const idSet = /* @__PURE__ */ new Set();
-		for (const li of inv.lineItems) for (const tid of li.timeEntryIds ?? []) idSet.add(tid);
-		return timeEntries.filter((t) => t.billedInvoiceId === inv.id || idSet.has(t.id));
-	};
-	const handleDownloadTimesheet = async (inv) => {
-		const linked = getLinkedEntriesForInvoice(inv);
-		if (linked.length === 0) {
-			onNotify("Diese Rechnung enthält keine verknüpften Zeiteinträge.", true);
-			return;
-		}
-		try {
-			await downloadTimesheetPdf(`Tätigkeitsbericht ${inv.invoiceNumber}`, `Taetigkeitsbericht-${inv.invoiceNumber}.pdf`, customerMap.get(inv.customerId), linked, company, `Leistungszeitraum: ${formatDateDE(inv.servicePeriodStart)} – ${formatDateDE(inv.servicePeriodEnd)}`);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Tätigkeitsbericht konnte nicht erstellt werden.", true);
-		}
-	};
-	const handleDownloadXRechnungXml = async (inv) => {
-		try {
-			const xml = buildXRechnungXml(inv, company);
-			await downloadOrShareTextFile(`XRechnung-${inv.invoiceNumber}.xml`, xml, "application/xml");
-			onNotify(`XRechnung ${inv.invoiceNumber} (.xml) exportiert.`);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "XRechnung konnte nicht exportiert werden.", true);
-		}
-	};
-	const handleUploadXRechnungXml = async (inv) => {
-		if (!nextcloud.configured) {
-			onNotify("Bitte konfiguriere zuerst deine Nextcloud-Verbindung unter \"Nextcloud & Setup\".", true);
-			return;
-		}
-		setUploadingId(inv.id);
-		try {
-			const xml = buildXRechnungXml(inv, company);
-			onNotify(`XRechnung nach Nextcloud (${(await apiUploadInvoiceTextFile(`XRechnung-${inv.invoiceNumber}.xml`, xml, "application/xml; charset=utf-8")).path}) hochgeladen.`);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "XRechnung-Upload fehlgeschlagen.", true);
-		} finally {
-			setUploadingId(null);
-		}
-	};
-	const handlePrint = async (inv) => {
-		try {
-			await printInvoiceView(inv.invoiceNumber);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Drucken fehlgeschlagen.", true);
-		}
-	};
-	const handleDownloadProtocolPdf = async (inv) => {
-		try {
-			await downloadAcceptanceProtocolPdf(inv, company);
-			onNotify(`Abnahmeprotokoll ${inv.invoiceNumber} erstellt.`);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Abnahmeprotokoll konnte nicht erstellt werden.", true);
-		}
-	};
-	const handleShareProtocolPdf = async (inv) => {
-		try {
-			await shareAcceptanceProtocolPdf(inv, company);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Abnahmeprotokoll konnte nicht geteilt werden.", true);
-		}
-	};
-	const handleUploadProtocolToNextcloud = async (inv) => {
-		if (!nextcloud.configured) {
-			onNotify("Bitte verbinde zuerst Nextcloud unter \"Nextcloud & Setup\".", true);
-			return;
-		}
-		setUploadingId(inv.id);
-		try {
-			const pdfBase64 = await getAcceptanceProtocolPdfBase64(inv, company);
-			onNotify(`Abnahmeprotokoll in Nextcloud (${(await apiUploadInvoicePdf(`Abnahme-${inv.invoiceNumber}.pdf`, pdfBase64)).path}) gespeichert.`);
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "Upload fehlgeschlagen.", true);
-		} finally {
-			setUploadingId(null);
-		}
-	};
-	const overdueCount = (0, import_react.useMemo)(() => invoices.filter((inv) => !inv.isArchived && isInvoiceOverdue(inv)).length, [invoices]);
-	const activeCount = (0, import_react.useMemo)(() => invoices.filter((inv) => !inv.isArchived).length, [invoices]);
-	const archivedCount = (0, import_react.useMemo)(() => invoices.filter((inv) => Boolean(inv.isArchived)).length, [invoices]);
-	const filteredInvoices = (0, import_react.useMemo)(() => {
-		return [...invoices].filter((inv) => {
-			if (archiveFilter === "active" && inv.isArchived) return false;
-			if (archiveFilter === "archived" && !inv.isArchived) return false;
-			const isQuote = inv.documentType === "quote";
-			if (docFilter === "invoice" && isQuote) return false;
-			if (docFilter === "quote" && !isQuote) return false;
-			if (statusFilter === "all") return true;
-			if (statusFilter === "Überfällig") return !inv.isArchived && isInvoiceOverdue(inv);
-			return inv.status === statusFilter;
-		}).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-	}, [
-		invoices,
-		statusFilter,
-		docFilter,
-		archiveFilter
-	]);
-	const handleExportCsv = async () => {
-		try {
-			const csv = invoicesToCsv(filteredInvoices);
-			await downloadOrShareTextFile(`taktwerk-rechnungen-${toInputDate()}.csv`, csv, "text/csv");
-			onNotify("Rechnungsliste als CSV exportiert.");
-		} catch (err) {
-			onNotify(err instanceof Error ? err.message : "CSV-Export fehlgeschlagen.", true);
-		}
-	};
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: "space-y-6",
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "no-print flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-					children: "Rechnungen & Angebote"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Rechnungen, Angebote mit Rabatten, rechtssichere PDFs, GiroCodes, XRechnungen und Tätigkeitsberichte erstellen."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex flex-wrap items-center gap-2 shrink-0",
-					children: [
-						invoices.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => void handleExportCsv(),
-							className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "h-4 w-4" }), "CSV-Export"]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => openBuilderFresh("quote"),
-							disabled: customers.length === 0,
-							className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neues Angebot"]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => openBuilderFresh("invoice"),
-							disabled: customers.length === 0,
-							className: "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-4 w-4" }), "Neue Rechnung erstellen"]
-						})
-					]
-				})]
-			}),
-			showBuilder && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "no-print rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "mb-4 flex flex-wrap items-center justify-between gap-3",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex flex-wrap items-center gap-3",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-							className: "font-display text-lg font-semibold text-slate-900 dark:text-slate-100",
-							children: editingInvoice ? `${documentType === "quote" ? "Angebot" : "Rechnung"} ${editingInvoice.invoiceNumber} bearbeiten` : documentType === "quote" ? "Neues Angebot erstellen" : "Rechnung aus Arbeitszeiten generieren"
-						}), !editingInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "flex rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
-							children: ["invoice", "quote"].map((dt) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => handleBuilderDocTypeChange(dt),
-								className: `rounded-md px-3 py-1 text-xs font-semibold transition-colors cursor-pointer ${documentType === dt ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
-								children: dt === "invoice" ? "Rechnung" : "Angebot"
-							}, dt))
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-						type: "button",
-						onClick: () => {
-							setShowBuilder(false);
-							setEditingInvoice(null);
-						},
-						className: "text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer",
-						children: "Schließen"
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-					onSubmit: handleSaveInvoice,
-					className: "space-y-5",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "grid grid-cols-1 gap-4 md:grid-cols-4",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Kunde"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-									value: customerId,
-									onChange: handleBuilderCustomerChange,
-									ariaLabel: "Kunde für Dokument auswählen",
-									options: customers.map((c) => ({
-										value: c.id,
-										label: c.companyName,
-										hint: c.city || void 0
-									}))
-								})] }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: documentType === "quote" ? "Angebotsnummer" : "Rechnungsnummer"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "text",
-									value: invoiceNumber,
-									onChange: (e) => setInvoiceNumber(e.target.value),
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-								})] }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: documentType === "quote" ? "Angebotsdatum" : "Rechnungsdatum"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "date",
-									value: issueDate,
-									onChange: (e) => setIssueDate(e.target.value),
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-								})] }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: documentType === "quote" ? "Gültig bis" : "Fällig bis"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "date",
-									value: documentType === "quote" ? quoteValidUntil : dueDateInput,
-									onChange: (e) => documentType === "quote" ? setQuoteValidUntil(e.target.value) : setDueDateInput(e.target.value),
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-								})] })
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "space-y-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center justify-between gap-3",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
-									className: "text-sm font-semibold text-slate-800 dark:text-slate-200",
-									children: [
-										"Offene abrechenbare Arbeitszeiten (",
-										unbilledForCustomer.length,
-										")"
-									]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-4",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-												className: "text-xs font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap",
-												children: "Zeitrundung:"
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-												size: "sm",
-												value: String(roundingMinutes),
-												onChange: (val) => setRoundingMinutes(Number(val)),
-												ariaLabel: "Zeitrundung auswählen",
-												className: "min-w-44",
-												options: [
-													{
-														value: "0",
-														label: "Exakt (keine Rundung)"
-													},
-													{
-														value: "5",
-														label: "Auf 5 Min. aufrunden"
-													},
-													{
-														value: "10",
-														label: "Auf 10 Min. aufrunden"
-													},
-													{
-														value: "15",
-														label: "Auf 15 Min. aufrunden"
-													},
-													{
-														value: "30",
-														label: "Auf 30 Min. aufrunden"
-													}
-												]
-											})]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-											className: "flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "checkbox",
-												checked: groupByProduct,
-												onChange: (e) => setGroupByProduct(e.target.checked),
-												className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-											}), "Gleichartige Leistungen zusammenfassen"]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-											className: "flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-													type: "checkbox",
-													checked: includeLocation,
-													onChange: (e) => setIncludeLocation(e.target.checked),
-													className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" }),
-												"Einsatzort in Rechnung angeben"
-											]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-											className: "flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-													type: "checkbox",
-													checked: includeTimeNotes,
-													onChange: (e) => setIncludeTimeNotes(e.target.checked),
-													className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StickyNote, { className: "h-3.5 w-3.5 text-violet-600 dark:text-violet-400" }),
-												"Auftragsnotizen auf Rechnung ausgeben"
-											]
-										})
-									]
-								})]
-							}), unbilledForCustomer.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "rounded-lg border border-slate-200 bg-slate-50 p-4 text-xs text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
-								children: "Für diesen Kunden liegen aktuell keine offenen Zeiteinträge vor. Du kannst trotzdem Produkte/Pauschalen unten hinzufügen."
-							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "max-h-56 overflow-y-auto rounded-lg border border-slate-200 divide-y divide-slate-200 dark:border-[#2e2349] dark:divide-[#2e2349]",
-								children: unbilledForCustomer.map((entry) => {
-									const prod = productMap.get(entry.productId);
-									const roundedSecs = roundDurationSeconds(entry.durationSeconds, roundingMinutes);
-									const net = roundedSecs / 3600 * entry.hourlyRateNet;
-									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-										className: "flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-[#211936]/60 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center gap-3 min-w-0",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "checkbox",
-												checked: selectedEntryIds.includes(entry.id),
-												onChange: () => toggleEntry(entry.id),
-												className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "min-w-0",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-													className: "truncate text-sm font-medium text-slate-900 dark:text-slate-100",
-													children: entry.title
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-															formatDateDE(entry.startTime),
-															" · ",
-															prod?.name ?? "Leistung"
-														] }),
-														entry.location && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-															className: "inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3 w-3" }), entry.location.address || "GPS"]
-														}),
-														(entry.travelCostNet ?? 0) > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-															className: "inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-violet-950/60 dark:text-violet-300",
-															children: [
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Car, { className: "h-3 w-3" }),
-																entry.travelDistanceKm,
-																" km · ",
-																formatCurrency(entry.travelCostNet ?? 0)
-															]
-														})
-													]
-												})]
-											})]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "text-right font-mono text-xs tabular-nums whitespace-nowrap",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "font-semibold text-slate-900 dark:text-slate-100",
-												children: formatCurrency(net)
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "text-slate-500 dark:text-slate-400",
-												children: [formatDuration(entry.durationSeconds), roundingMinutes > 0 && !groupByProduct && roundedSecs !== entry.durationSeconds ? ` → ${formatDuration(roundedSecs)}` : ""]
-											})]
-										})]
-									}, entry.id);
-								})
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "space-y-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center justify-between gap-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-									className: "text-sm font-semibold text-slate-800 dark:text-slate-200",
-									children: "Zusätzliche Produkte / Pauschalen & Auslagen"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-2",
-									children: [
-										openTravelEntriesForCustomer.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											onClick: handleImportTravelCosts,
-											className: "inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-800 hover:bg-blue-100 dark:border-violet-700/60 dark:bg-violet-950/50 dark:text-violet-200 dark:hover:bg-violet-900/50 cursor-pointer",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Car, { className: "h-3.5 w-3.5" }),
-												"Fahrtkosten (",
-												openTravelEntriesForCustomer.length,
-												") übernehmen"
-											]
-										}),
-										openBillableExpensesForCustomer.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											onClick: handleImportBillableExpenses,
-											className: "inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200 dark:hover:bg-emerald-900/50 cursor-pointer",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-3.5 w-3.5" }),
-												"Offene Belege (",
-												openBillableExpensesForCustomer.length,
-												") übernehmen"
-											]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											onClick: addExtraProductRow,
-											disabled: products.length === 0,
-											className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Position hinzufügen"]
-										})
-									]
-								})]
-							}), extraItems.map((row) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "grid grid-cols-1 gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50 sm:grid-cols-12",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "sm:col-span-3",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-											size: "sm",
-											value: row.productId,
-											onChange: (val) => updateExtraRow(row.id, { productId: val }),
-											ariaLabel: "Katalog-Position auswählen",
-											options: products.map((p) => ({
-												value: p.id,
-												label: p.name
-											}))
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "sm:col-span-3",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-											type: "text",
-											value: row.description,
-											onChange: (e) => updateExtraRow(row.id, { description: e.target.value }),
-											placeholder: "Positionsbeschreibung",
-											className: "w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "sm:col-span-2",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-											type: "number",
-											step: "0.5",
-											min: "0",
-											value: row.quantity,
-											onChange: (e) => updateExtraRow(row.id, { quantity: Number(e.target.value) }),
-											className: "w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-sm text-slate-900 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100",
-											placeholder: "Menge"
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "sm:col-span-2",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-											type: "number",
-											step: "0.01",
-											value: row.unitPriceNet,
-											onChange: (e) => updateExtraRow(row.id, { unitPriceNet: Number(e.target.value) }),
-											className: "w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-sm text-slate-900 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100",
-											placeholder: "Netto €"
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex items-center justify-between sm:col-span-2",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums",
-											children: formatCurrency(row.quantity * row.unitPriceNet)
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-											type: "button",
-											onClick: () => setExtraItems((prev) => prev.filter((x) => x.id !== row.id)),
-											className: "text-slate-400 hover:text-red-600 dark:hover:text-red-400 cursor-pointer",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
-										})]
-									})
-								]
-							}, row.id))]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex flex-col justify-between gap-4 border-t border-slate-200 pt-4 dark:border-[#2e2349] sm:flex-row sm:items-end",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex-1 space-y-3",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Einleitungstext"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
-									rows: 2,
-									value: introText,
-									onChange: (e) => setIntroText(e.target.value),
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Schlusstext / Zahlungshinweis"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
-									rows: 2,
-									value: outroText,
-									onChange: (e) => setOutroText(e.target.value),
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-								})] })]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "w-full space-y-2.5 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-[#2e2349] dark:bg-[#211936]/70 sm:w-96",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-										className: "flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-[#3b2d5e] text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-											type: "checkbox",
-											checked: isSmallBusiness,
-											onChange: (e) => setIsSmallBusiness(e.target.checked),
-											className: "h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-										}), "Kleinunternehmerregelung (§ 19 UStG)"]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "space-y-1.5 border-b border-slate-200 pb-2.5 dark:border-[#3b2d5e]",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-200",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Percent, { className: "h-3.5 w-3.5 text-blue-700 dark:text-violet-400" }), "Rabatt (optional)"]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "grid grid-cols-12 gap-1.5",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-													type: "text",
-													value: discountLabel,
-													onChange: (e) => setDiscountLabel(e.target.value),
-													placeholder: "Bezeichnung",
-													className: "col-span-5 rounded-md border border-slate-300 bg-white px-2 py-1 text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-													className: "col-span-3",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-														size: "sm",
-														value: discountType,
-														onChange: (val) => setDiscountType(val),
-														ariaLabel: "Rabatt-Art",
-														options: [{
-															value: "percent",
-															label: "%"
-														}, {
-															value: "fixed",
-															label: "€ Netto"
-														}]
-													})
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-													type: "number",
-													min: "0",
-													step: "0.5",
-													value: discountValue,
-													onChange: (e) => setDiscountValue(Math.max(0, Number(e.target.value) || 0)),
-													className: "col-span-4 rounded-md border border-slate-300 bg-white px-2 py-1 text-right font-mono text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
-												})
-											]
-										})]
-									}),
-									builderTotals.discountNetAmount > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex justify-between text-xs text-slate-500 dark:text-slate-400",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Zwischensumme Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "font-mono tabular-nums",
-											children: formatCurrency(builderTotals.subtotalNetBeforeDiscount)
-										})]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex justify-between text-xs text-emerald-700 dark:text-emerald-400",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-											discountLabel || "Rabatt",
-											" (",
-											discountType === "percent" ? `${discountValue}%` : formatCurrency(discountValue),
-											")"
-										] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: "font-mono tabular-nums",
-											children: ["− ", formatCurrency(builderTotals.discountNetAmount)]
-										})]
-									})] }),
-									!isSmallBusiness ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex justify-between text-xs text-slate-600 dark:text-slate-400",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Summe Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "font-mono font-medium tabular-nums",
-											children: formatCurrency(builderTotals.netTotal)
-										})]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex justify-between text-xs text-slate-600 dark:text-slate-400",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "MwSt. gesamt" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "font-mono font-medium tabular-nums",
-											children: formatCurrency(builderTotals.taxTotal)
-										})]
-									})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-[11px] text-slate-500 dark:text-violet-300/80",
-										children: defaultSmallBusinessNotice
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex justify-between border-t border-slate-200 pt-1.5 text-sm font-bold text-slate-900 dark:border-[#3b2d5e] dark:text-slate-100",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: isSmallBusiness ? documentType === "quote" ? "Angebotsbetrag" : "Rechnungsbetrag" : "Gesamt Brutto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "font-mono tabular-nums",
-											children: formatCurrency(builderTotals.grossTotal)
-										})]
-									})
-								]
-							})]
-						}),
-						builderError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-xs font-medium text-red-600 dark:text-red-400",
-							children: builderError
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex justify-end gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => {
-									setShowBuilder(false);
-									setEditingInvoice(null);
-								},
-								className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
-								children: "Abbrechen"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "submit",
-								className: "rounded-lg bg-blue-700 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-								children: editingInvoice ? "Änderungen speichern" : documentType === "quote" ? "Angebot erzeugen (Zeiten bleiben offen)" : "Rechnung erzeugen & Zeiten verbuchen"
-							})]
-						})
-					]
-				})]
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "no-print rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4 dark:border-[#2e2349]",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "flex flex-wrap items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
-						children: [
-							"all",
-							"Entwurf",
-							"Gesendet",
-							"Überfällig",
-							"Bezahlt",
-							"Storniert"
-						].map((st) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: () => setStatusFilter(st),
-							className: `rounded-md px-3 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${statusFilter === st ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : st === "Überfällig" && overdueCount > 0 ? "text-red-700 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
-							children: st === "all" ? "Alle" : st === "Überfällig" && overdueCount > 0 ? `Überfällig (${overdueCount})` : st
-						}, st))
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex flex-wrap items-center gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
-							children: [
-								{
-									id: "active",
-									label: `Aktiv (${activeCount})`
-								},
-								{
-									id: "archived",
-									label: `Archiv (${archivedCount})`
-								},
-								{
-									id: "all",
-									label: "Alle"
-								}
-							].map((af) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => setArchiveFilter(af.id),
-								className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${archiveFilter === af.id ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
-								children: af.label
-							}, af.id))
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
-							children: [
-								{
-									id: "all",
-									label: "Alle Typen"
-								},
-								{
-									id: "invoice",
-									label: "Rechnungen"
-								},
-								{
-									id: "quote",
-									label: "Angebote"
-								}
-							].map((dt) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => setDocFilter(dt.id),
-								className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${docFilter === dt.id ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
-								children: dt.label
-							}, dt.id))
-						})]
-					})]
-				}), filteredInvoices.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "p-10 text-center",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "text-sm font-medium text-slate-700 dark:text-slate-300",
-						children: archiveFilter === "archived" ? "Noch keine archivierten Dokumente vorhanden." : "Noch keine Dokumente in dieser Ansicht vorhanden."
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-						children: archiveFilter === "archived" ? "Archiviere bezahlte oder abgeschlossene Rechnungen über das Archiv-Symbol in der Tabelle." : "Erfasse Arbeitszeiten für einen Kunden oder erstelle ein Angebot mit einem Klick."
-					})]
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "overflow-x-auto",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
-						className: "w-full text-left text-sm",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-							className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Nr. / Typ"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Kunde"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Datum / Fällig"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Status"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Betrag (Brutto)"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Aktionen"
-								})
-							]
-						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
-							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
-							children: filteredInvoices.map((inv) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-								onClick: () => setPreviewInvoice(inv),
-								className: `cursor-pointer transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50 ${inv.isArchived ? "opacity-80" : ""}`,
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-										className: "px-4 py-3 whitespace-nowrap",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "font-mono text-sm font-semibold text-slate-900 dark:text-slate-100",
-											children: inv.invoiceNumber
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "mt-0.5 flex flex-wrap items-center gap-1.5",
-											children: [inv.documentType === "quote" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "inline-block text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400",
-												children: "Angebot"
-											}), inv.isArchived && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "inline-block rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-[#2c2147] dark:text-slate-300",
-												children: "Archiviert"
-											})]
-										})]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-										className: "px-4 py-3",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "font-medium text-slate-900 dark:text-slate-100",
-											children: inv.customerSnapshot.companyName
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "text-xs text-slate-500 dark:text-slate-400",
-											children: [
-												inv.lineItems.length,
-												" Positionen",
-												(inv.discountNetAmount ?? 0) > 0 ? ` · inkl. Rabatt (−${formatCurrency(inv.discountNetAmount ?? 0)})` : "",
-												inv.nextcloudUploadedAt ? ` · Nextcloud-PDF gesichert` : ""
-											]
-										})]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-										className: "px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums whitespace-nowrap",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: formatDateDE(inv.issueDate) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "text-slate-400 dark:text-slate-500",
-											children: ["Fällig ", formatDateDE(inv.dueDate)]
-										})]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-										className: "px-4 py-3",
-										onClick: (e) => e.stopPropagation(),
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex flex-col items-start gap-1",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-													size: "sm",
-													value: inv.status,
-													onChange: (val) => onUpdateInvoiceStatus(inv.id, val),
-													ariaLabel: `Status für ${inv.invoiceNumber}`,
-													className: "w-32",
-													options: [
-														{
-															value: "Entwurf",
-															label: "Entwurf"
-														},
-														{
-															value: "Gesendet",
-															label: "Gesendet"
-														},
-														{
-															value: "Bezahlt",
-															label: "Bezahlt"
-														},
-														{
-															value: "Storniert",
-															label: "Storniert"
-														}
-													]
-												}),
-												inv.signature && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-													className: "inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-3 w-3 shrink-0" }), "Abgenommen"]
-												}),
-												(() => {
-													const overdueDays = getOverdueDays(inv);
-													if (overdueDays <= 0) return null;
-													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-														className: "inline-flex items-center gap-1 text-[11px] font-semibold text-red-700 dark:text-red-400 whitespace-nowrap",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-3 w-3 shrink-0" }),
-															overdueDays,
-															" ",
-															overdueDays === 1 ? "Tag" : "Tage",
-															" überfällig"
-														]
-													});
-												})()
-											]
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-										className: "px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap",
-										children: formatCurrency(inv.grossTotal)
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-										className: "px-4 py-3",
-										onClick: (e) => e.stopPropagation(),
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center justify-end gap-1.5",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => openEditBuilder(inv),
-													title: "Rechnung bearbeiten",
-													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" })
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => setPreviewInvoice(inv),
-													title: "Vorschau öffnen",
-													className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-3.5 w-3.5" }), "Vorschau"]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => void handleOpenPdf(inv),
-													title: "PDF öffnen / herunterladen",
-													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-4 w-4" })
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => void handleSharePdf(inv),
-													title: "PDF teilen / auf Gerät speichern",
-													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { className: "h-4 w-4" })
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => void handleUploadToNextcloud(inv),
-													disabled: uploadingId === inv.id,
-													title: "PDF in Nextcloud (/Rechnungen) speichern",
-													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:text-violet-400 dark:hover:bg-[#231b38] cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-4 w-4" })
-												}),
-												onToggleArchiveInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => onToggleArchiveInvoice(inv.id),
-													title: inv.isArchived ? "Aus dem Archiv wiederherstellen" : "Dokument archivieren",
-													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
-													children: inv.isArchived ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArchiveRestore, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "h-4 w-4" })
-												}),
-												confirmDeleteId === inv.id ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 dark:border-red-900/60 dark:bg-red-950/60",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => {
-															onDeleteInvoice(inv.id);
-															setConfirmDeleteId(null);
-															if (previewInvoice?.id === inv.id) setPreviewInvoice(null);
-														},
-														className: "text-[11px] font-semibold text-red-700 hover:underline dark:text-red-300 cursor-pointer whitespace-nowrap",
-														children: "Löschen (Zeiten bleiben)"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => setConfirmDeleteId(null),
-														className: "text-[11px] text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer",
-														children: "×"
-													})]
-												}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => setConfirmDeleteId(inv.id),
-													title: "Rechnung löschen (Arbeitszeiten bleiben erhalten)",
-													className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
-												})
-											]
-										})
-									})
-								]
-							}, inv.id))
-						})]
-					})
-				})]
-			}),
-			previewInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				role: "dialog",
-				"aria-modal": "true",
-				"data-no-swipe": "true",
-				className: "fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#0e0a18]/75 p-4 sm:p-8",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "w-full max-w-3xl rounded-xl border border-slate-200 bg-white shadow-xl dark:border-[#3b2d5e]",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-6 py-4 rounded-t-xl dark:border-[#2e2349] dark:bg-[#171126]",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: [
-									previewInvoice.documentType === "quote" ? "Angebotsvorschau" : "Rechnungsvorschau",
-									" · ",
-									previewInvoice.invoiceNumber,
-									previewInvoice.isArchived && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "ml-2 rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2c2147] dark:text-slate-300",
-										children: "Archiviert"
-									})
-								]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center gap-2",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "relative",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											onClick: () => setShowPreviewMenu((prev) => !prev),
-											className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
-											children: ["Weitere Aktionen", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: "h-3.5 w-3.5" })]
-										}), showPreviewMenu && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "absolute left-0 top-full z-30 mt-1.5 w-60 max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-[#3b2d5e] dark:bg-[#1e1730]",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														setShowPreviewMenu(false);
-														openEditBuilder(previewInvoice);
-													},
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" }), "Bearbeiten"]
-												}),
-												onToggleArchiveInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														const nextArchived = !previewInvoice.isArchived;
-														onToggleArchiveInvoice(previewInvoice.id);
-														setPreviewInvoice({
-															...previewInvoice,
-															isArchived: nextArchived,
-															archivedAt: nextArchived ? (/* @__PURE__ */ new Date()).toISOString() : null
-														});
-														setShowPreviewMenu(false);
-													},
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [previewInvoice.isArchived ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArchiveRestore, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "h-3.5 w-3.5" }), previewInvoice.isArchived ? "Aus Archiv wiederherstellen" : "Archivieren"]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														setShowPreviewMenu(false);
-														handleOpenPdf(previewInvoice);
-													},
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), "PDF öffnen / herunterladen"]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														setShowPreviewMenu(false);
-														handlePrint(previewInvoice);
-													},
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Printer, { className: "h-3.5 w-3.5" }), "Drucken"]
-												}),
-												previewInvoice.documentType === "quote" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => handleConvertQuoteToInvoice(previewInvoice),
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleArrowRight, { className: "h-3.5 w-3.5" }), "In Rechnung umwandeln"]
-												}),
-												getLinkedEntriesForInvoice(previewInvoice).length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														setShowPreviewMenu(false);
-														handleDownloadTimesheet(previewInvoice);
-													},
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "h-3.5 w-3.5" }), "Tätigkeitsbericht (PDF)"]
-												}),
-												isInvoiceOverdue(previewInvoice) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														setShowPreviewMenu(false);
-														handlePaymentReminderPdf(previewInvoice);
-													},
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/60 cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-3.5 w-3.5" }), "Zahlungserinnerung (PDF)"]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														setShowPreviewMenu(false);
-														setSignatureModalOpen(true);
-													},
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenTool, { className: "h-3.5 w-3.5" }), previewInvoice.signature ? "Abnahme / Unterschrift bearbeiten" : "Abnahme unterschreiben"]
-												}),
-												previewInvoice.signature && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														onClick: () => {
-															setShowPreviewMenu(false);
-															handleDownloadProtocolPdf(previewInvoice);
-														},
-														className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileCheck2, { className: "h-3.5 w-3.5" }), "Abnahmeprotokoll (PDF)"]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														onClick: () => {
-															setShowPreviewMenu(false);
-															handleShareProtocolPdf(previewInvoice);
-														},
-														className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { className: "h-3.5 w-3.5" }), "Abnahmeprotokoll teilen"]
-													}),
-													nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														onClick: () => {
-															setShowPreviewMenu(false);
-															handleUploadProtocolToNextcloud(previewInvoice);
-														},
-														disabled: uploadingId === previewInvoice.id,
-														className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), "Abnahme-PDF → Nextcloud"]
-													})
-												] }),
-												previewInvoice.documentType !== "quote" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														setShowPreviewMenu(false);
-														handleDownloadXRechnungXml(previewInvoice);
-													},
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileCode2, { className: "h-3.5 w-3.5" }), "XRechnung (.xml)"]
-												}), nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => {
-														setShowPreviewMenu(false);
-														handleUploadXRechnungXml(previewInvoice);
-													},
-													disabled: uploadingId === previewInvoice.id,
-													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), "XML → Nextcloud"]
-												})] })
-											]
-										})]
-									}),
-									!previewInvoice.signature && onSaveSignature && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: () => setSignatureModalOpen(true),
-										className: "inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200 whitespace-nowrap shrink-0 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenTool, { className: "h-3.5 w-3.5" }), "Abnahme"]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: () => void handleSharePdf(previewInvoice),
-										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { className: "h-3.5 w-3.5" }), "Teilen"]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: () => void handleUploadToNextcloud(previewInvoice),
-										disabled: uploadingId === previewInvoice.id,
-										className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), uploadingId === previewInvoice.id ? "Lade hoch..." : "PDF → Nextcloud"]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: () => {
-											if (confirmDeleteId === previewInvoice.id) {
-												onDeleteInvoice(previewInvoice.id);
-												setConfirmDeleteId(null);
-												setPreviewInvoice(null);
-											} else setConfirmDeleteId(previewInvoice.id);
-										},
-										title: "Dokument löschen (Arbeitszeiten bleiben erhalten)",
-										className: `inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium cursor-pointer ${confirmDeleteId === previewInvoice.id ? "border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300" : "border-slate-200 text-red-600 hover:bg-red-50 dark:border-[#3b2d5e] dark:text-red-400 dark:hover:bg-red-950/40"}`,
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" }), confirmDeleteId === previewInvoice.id ? "Wirklich löschen? (Zeiten bleiben)" : "Löschen"]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-										type: "button",
-										onClick: () => {
-											setConfirmDeleteId(null);
-											setShowPreviewMenu(false);
-											setPreviewInvoice(null);
-										},
-										className: "inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-[#231b38] cursor-pointer",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
-									})
-								]
-							})]
-						}),
-						layoutStyle === "modern" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: `h-3 w-full ${accentStyle.bgClass}` }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: `p-8 sm:p-12 bg-white text-slate-900 rounded-b-xl ${fontOption.previewClass}`,
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-col justify-between gap-6 sm:flex-row",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "text-[11px] text-slate-500 underline",
-										children: [
-											company.companyName,
-											" · ",
-											company.street,
-											" · ",
-											company.postalCode,
-											" ",
-											company.city
-										]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "mt-4 text-sm",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "font-semibold",
-												children: previewInvoice.customerSnapshot.companyName
-											}),
-											previewInvoice.customerSnapshot.contactName && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: previewInvoice.customerSnapshot.contactName }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: previewInvoice.customerSnapshot.street }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-												previewInvoice.customerSnapshot.postalCode,
-												" ",
-												previewInvoice.customerSnapshot.city
-											] }),
-											previewInvoice.customerSnapshot.vatId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "mt-1 text-xs text-slate-500",
-												children: ["USt-IdNr.: ", previewInvoice.customerSnapshot.vatId]
-											})
-										]
-									})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "text-left sm:text-right",
-										children: [
-											company.logoDataUrl && company.invoiceShowLogo !== false && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "mb-3 flex sm:justify-end",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-													src: company.logoDataUrl,
-													alt: `${company.companyName} Logo`,
-													className: "max-h-14 max-w-[180px] object-contain"
-												})
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: `text-lg font-bold ${accentStyle.textClass}`,
-												children: company.companyName
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "mt-1 text-xs text-slate-500 space-y-0.5",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: company.ownerName }),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: company.street }),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-														company.postalCode,
-														" ",
-														company.city
-													] }),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: company.email })
-												]
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: `mt-5 rounded-lg p-3 text-xs space-y-1 text-left ${layoutStyle === "minimal" ? "border-l-2 border-slate-300 bg-transparent pl-3" : "border border-slate-200 bg-slate-50"}`,
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between gap-6",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-slate-500",
-															children: previewInvoice.documentType === "quote" ? "Angebotsnr." : "Rechnungsnr."
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-mono font-semibold",
-															children: previewInvoice.invoiceNumber
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between gap-6",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-slate-500",
-															children: "Datum"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-mono tabular-nums",
-															children: formatDateDE(previewInvoice.issueDate)
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between gap-6",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-slate-500",
-															children: "Leistungszeitraum"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-															className: "font-mono tabular-nums",
-															children: [
-																formatDateDE(previewInvoice.servicePeriodStart),
-																" –",
-																" ",
-																formatDateDE(previewInvoice.servicePeriodEnd)
-															]
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between gap-6",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-slate-500",
-															children: previewInvoice.documentType === "quote" ? "Gültig bis" : "Fällig bis"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-mono tabular-nums",
-															children: formatDateDE(previewInvoice.quoteValidUntil || previewInvoice.dueDate)
-														})]
-													})
-												]
-											})
-										]
-									})]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
-									className: `mt-8 text-xl font-bold ${accentStyle.textClass}`,
-									children: [
-										previewInvoice.documentType === "quote" ? quoteTitle : headerTitle,
-										" ",
-										previewInvoice.invoiceNumber
-									]
-								}),
-								previewInvoice.introText && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-3 whitespace-pre-line text-sm text-slate-600",
-									children: previewInvoice.introText
-								}),
-								(() => {
-									const previewSmallBiz = previewInvoice.isSmallBusiness ?? Boolean(company.smallBusinessMode);
-									const smallBizText = previewInvoice.smallBusinessNotice || company.smallBusinessNotice || "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.";
-									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
-											className: "mt-6 w-full text-left text-sm",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-												className: `border-b-2 ${accentStyle.borderClass} text-xs font-semibold text-slate-600`,
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-														className: "py-2 pr-2",
-														children: "Pos."
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-														className: "py-2 pr-2",
-														children: "Beschreibung"
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-														className: "py-2 px-2 text-right",
-														children: "Menge"
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-														className: "py-2 px-2 text-right",
-														children: "Einzelpreis"
-													}),
-													!previewSmallBiz && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-														className: "py-2 px-2 text-right",
-														children: "MwSt."
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-														className: "py-2 pl-2 text-right",
-														children: previewSmallBiz ? "Gesamt" : "Netto"
-													})
-												]
-											}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
-												className: "divide-y divide-slate-200",
-												children: previewInvoice.lineItems.map((item, idx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-														className: "py-3 pr-2 font-mono text-xs text-slate-500 align-top",
-														children: idx + 1
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-														className: "py-3 pr-2 align-top",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "font-medium text-slate-900",
-															children: item.description
-														}), item.detail && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "mt-0.5 text-xs text-slate-500",
-															children: item.detail
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-														className: "py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap",
-														children: [
-															formatNumber(item.quantity, 2),
-															" ",
-															item.unit
-														]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-														className: "py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap",
-														children: formatCurrency(item.unitPriceNet)
-													}),
-													!previewSmallBiz && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-														className: "py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap",
-														children: [item.taxRate, " %"]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-														className: "py-3 pl-2 text-right font-mono text-sm font-medium tabular-nums align-top whitespace-nowrap",
-														children: formatCurrency(item.netTotal)
-													})
-												] }, item.id))
-											})]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "mt-6 flex justify-end",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "w-full max-w-xs space-y-1.5 text-sm",
-												children: [
-													(previewInvoice.discountNetAmount ?? 0) > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between text-slate-600",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Zwischensumme Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-mono tabular-nums",
-															children: formatCurrency(previewInvoice.subtotalNetBeforeDiscount ?? previewInvoice.netTotal + (previewInvoice.discountNetAmount ?? 0))
-														})]
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between text-emerald-700",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [previewInvoice.discountLabel || "Rabatt", previewInvoice.discountType === "percent" && previewInvoice.discountValue ? ` (${previewInvoice.discountValue}%)` : ""] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-															className: "font-mono tabular-nums",
-															children: ["− ", formatCurrency(previewInvoice.discountNetAmount ?? 0)]
-														})]
-													})] }),
-													!previewSmallBiz && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between text-slate-600",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Summe Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-mono tabular-nums",
-															children: formatCurrency(previewInvoice.netTotal)
-														})]
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between text-slate-600",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Umsatzsteuer" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-mono tabular-nums",
-															children: formatCurrency(previewInvoice.taxTotal)
-														})]
-													})] }),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: `flex justify-between border-t-2 ${accentStyle.borderClass} pt-2 text-base font-bold ${accentStyle.textClass}`,
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: previewInvoice.documentType === "quote" ? "Angebotsbetrag" : "Rechnungsbetrag" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-mono tabular-nums",
-															children: formatCurrency(previewSmallBiz ? previewInvoice.netTotal : previewInvoice.grossTotal)
-														})]
-													})
-												]
-											})
-										}),
-										previewSmallBiz && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-											className: "mt-6 rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-medium text-slate-700",
-											children: smallBizText
-										})
-									] });
-								})(),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "mt-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex-1",
-										children: [previewInvoice.outroText && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-											className: "whitespace-pre-line text-xs text-slate-600",
-											children: previewInvoice.outroText
-										}), company.invoiceFooterNote && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-											className: "mt-3 whitespace-pre-line text-xs italic text-slate-500",
-											children: company.invoiceFooterNote
-										})]
-									}), previewGiroCodeUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "shrink-0 rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-center",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-											src: previewGiroCodeUrl,
-											alt: "GiroCode (EPC-QR-Code)",
-											className: "mx-auto h-24 w-24"
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "mt-1 text-[10px] font-semibold text-slate-600",
-											children: "GiroCode (EPC-QR)"
-										})]
-									})]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "mt-10 grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 text-[11px] text-slate-500 sm:grid-cols-3",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "font-semibold text-slate-700",
-											children: company.companyName
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-											company.street,
-											", ",
-											company.postalCode,
-											" ",
-											company.city
-										] })] }),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Bank: ", company.bankName] }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["IBAN: ", company.iban] }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["BIC: ", company.bic] })
-										] }),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Steuernr.: ", company.taxNumber] }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["USt-IdNr.: ", company.vatId] }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["E-Mail: ", company.email] })
-										] })
-									]
-								}),
-								previewInvoice.signature && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "mt-6 flex flex-col gap-4 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 sm:flex-row sm:items-center sm:justify-between",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "space-y-1 text-xs text-slate-700",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "inline-flex items-center gap-1.5 font-semibold text-emerald-800",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }), "Leistungsabnahme digital unterschrieben"]
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-												"Unterzeichner: ",
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "font-semibold",
-													children: previewInvoice.signature.signedBy
-												}),
-												previewInvoice.signature.signedRole ? ` (${previewInvoice.signature.signedRole})` : ""
-											] }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "text-slate-500",
-												children: [
-													"Datum: ",
-													formatDateTimeDE(previewInvoice.signature.signedAt),
-													previewInvoice.signature.locationAddress ? ` · Ort: ${previewInvoice.signature.locationAddress}` : ""
-												]
-											}),
-											previewInvoice.signature.notes && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "italic text-slate-600",
-												children: ["Hinweis: ", previewInvoice.signature.notes]
-											}),
-											onDeleteSignature && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-												type: "button",
-												onClick: () => {
-													onDeleteSignature(previewInvoice.id);
-													setPreviewInvoice((prev) => prev ? {
-														...prev,
-														signature: void 0
-													} : null);
-												},
-												className: "no-print mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-red-600 hover:underline cursor-pointer",
-												children: "Unterschrift entfernen"
-											})
-										]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "shrink-0 rounded-lg border border-slate-200 bg-white p-2",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-											src: previewInvoice.signature.signatureDataUrl,
-											alt: `Unterschrift ${previewInvoice.signature.signedBy}`,
-											className: "h-20 w-48 object-contain"
-										})
-									})]
-								})
-							]
-						})
-					]
-				})
-			}),
-			previewInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SignaturePadModal, {
-				open: signatureModalOpen,
-				title: `Abnahmeprotokoll · ${previewInvoice.invoiceNumber}`,
-				subtitle: `${previewInvoice.customerSnapshot.companyName} (${formatCurrency(previewInvoice.grossTotal)})`,
-				initialSignature: previewInvoice.signature,
-				defaultSignerName: previewInvoice.customerSnapshot.contactName || previewInvoice.customerSnapshot.companyName,
-				onClose: () => setSignatureModalOpen(false),
-				onSave: (sig) => {
-					if (onSaveSignature) {
-						onSaveSignature(previewInvoice.id, sig);
-						setPreviewInvoice((prev) => prev ? {
-							...prev,
-							signature: sig
-						} : null);
-					}
-					setSignatureModalOpen(false);
-				}
-			})
-		]
-	});
-}
-// src/utils/soundReminder.ts
-var REMINDER_SOUND_OPTIONS = {
-	device: {
-		label: "Pixel- / Smartphone-Systemton",
-		description: "Nutzt einen direkt gewählten Google Pixel- oder Android-Benachrichtigungston.",
-		group: "system"
-	},
-	popcorn: {
-		label: "Popcorn (Pixel-Stil)",
-		description: "Fröhliche, leicht hüpfende 3-Ton-Folge im Stil klassischer Pixel-Sounds.",
-		group: "pixel"
-	},
-	eureka: {
-		label: "Eureka (Pixel-Stil)",
-		description: "Heller, optimistischer Aufwärts-Akzent für klare Erinnerungen.",
-		group: "pixel"
-	},
-	chord: {
-		label: "Akkord (Pixel-Stil)",
-		description: "Weicher, warmer Major-7-Klang im modernen Material-Design-Stil.",
-		group: "pixel"
-	},
-	droplet: {
-		label: "Wassertropfen",
-		description: "Klarer, unaufdringlicher Tropfen-Impuls mit sanftem Frequenz-Aufstieg.",
-		group: "pixel"
-	},
-	crystal: {
-		label: "Kristall-Glockenspiel",
-		description: "Feiner, brillanter Oberton-Klang mit sanftem Nachhall.",
-		group: "melodic"
-	},
-	marimba: {
-		label: "Marimba (Warm)",
-		description: "Natürlicher, holziger Dreiklang mit angenehmem Volumen.",
-		group: "melodic"
-	},
-	piano: {
-		label: "Klavier-Hinweis",
-		description: "Kurzer, eleganter Klavier-Akkord mit warmem Ausklang.",
-		group: "melodic"
-	},
-	chime: {
-		label: "Dreiklang (Sanft)",
-		description: "Angenehmer, klassisch aufsteigender Dreiklang.",
-		group: "melodic"
-	},
-	bell: {
-		label: "Glocke (Klar)",
-		description: "Heller, länger ausklingender Glockenton.",
-		group: "melodic"
-	},
-	woodblock: {
-		label: "Holzklang (Minimal)",
-		description: "Sehr dezenter Doppel-Klick für ruhige Arbeitsumgebungen.",
-		group: "melodic"
-	},
-	sonar: {
-		label: "Sonar-Echo",
-		description: "Weicher, mitteltiefer Impuls mit leisem Echo.",
-		group: "melodic"
-	},
-	fanfare: {
-		label: "Erfolgs-Signal",
-		description: "Kräftige, aufsteigende Vierklang-Melodie.",
-		group: "alert"
-	},
-	pulse: {
-		label: "Doppel-Signal",
-		description: "Kurzer, moderner Doppel-Impuls.",
-		group: "alert"
-	},
-	alarm: {
-		label: "Deutlicher Hinweiston",
-		description: "Gut hörbare Tonfolge bei lauter Umgebung.",
-		group: "alert"
-	},
-	silent: {
-		label: "Lautlos (nur Banner / Vibration)",
-		description: "Kein Ton, nur sichtbarer Hinweis & Vibration.",
-		group: "system"
-	}
-};
-var REMINDER_SOUND_PRESET_ORDER = [
-	"device",
-	"popcorn",
-	"eureka",
-	"chord",
-	"droplet",
-	"crystal",
-	"marimba",
-	"piano",
-	"chime",
-	"bell",
-	"woodblock",
-	"sonar",
-	"fanfare",
-	"pulse",
-	"alarm",
-	"silent"
-];
-var activeAudioCtx = null;
-var activeCleanupTimer = null;
-function playReminderSound(preset) {
-	if (preset === "silent") {
-		if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") navigator.vibrate([
-			120,
-			80,
-			120
-		]);
-		return;
-	}
-	if (typeof window === "undefined") return;
-	const AudioCtx = window.AudioContext || window.webkitAudioContext;
-	if (!AudioCtx) return;
-	try {
-		if (activeCleanupTimer) {
-			clearTimeout(activeCleanupTimer);
-			activeCleanupTimer = null;
-		}
-		if (activeAudioCtx) {
-			activeAudioCtx.close().catch(() => {});
-			activeAudioCtx = null;
-		}
-		const ctx = new AudioCtx();
-		activeAudioCtx = ctx;
-		const now = ctx.currentTime;
-		const scheduleNote = (freq, startOffset, duration, type = "sine", peakGain = .2, attack = .015) => {
-			const osc = ctx.createOscillator();
-			const gain = ctx.createGain();
-			osc.type = type;
-			osc.frequency.setValueAtTime(freq, now + startOffset);
-			gain.gain.setValueAtTime(1e-4, now + startOffset);
-			gain.gain.exponentialRampToValueAtTime(Math.max(.001, peakGain), now + startOffset + Math.min(attack, duration * .4));
-			gain.gain.exponentialRampToValueAtTime(1e-4, now + startOffset + duration);
-			osc.connect(gain);
-			gain.connect(ctx.destination);
-			osc.start(now + startOffset);
-			osc.stop(now + startOffset + duration + .03);
-		};
-		const scheduleGlide = (startFreq, endFreq, startOffset, duration, type = "sine", peakGain = .22) => {
-			const osc = ctx.createOscillator();
-			const gain = ctx.createGain();
-			osc.type = type;
-			osc.frequency.setValueAtTime(startFreq, now + startOffset);
-			osc.frequency.exponentialRampToValueAtTime(endFreq, now + startOffset + duration);
-			gain.gain.setValueAtTime(1e-4, now + startOffset);
-			gain.gain.exponentialRampToValueAtTime(peakGain, now + startOffset + .012);
-			gain.gain.exponentialRampToValueAtTime(1e-4, now + startOffset + duration);
-			osc.connect(gain);
-			gain.connect(ctx.destination);
-			osc.start(now + startOffset);
-			osc.stop(now + startOffset + duration + .03);
-		};
-		switch (preset) {
-			case "popcorn":
-				scheduleNote(698.46, 0, .09, "sine", .22, .006);
-				scheduleNote(1396.91, 0, .05, "triangle", .07, .004);
-				scheduleNote(880, .095, .09, "sine", .24, .006);
-				scheduleNote(1046.5, .19, .22, "sine", .22, .008);
-				scheduleNote(2093, .19, .12, "sine", .06, .006);
-				break;
-			case "eureka":
-				scheduleNote(659.25, 0, .14, "sine", .18, .01);
-				scheduleNote(830.61, .08, .16, "sine", .19, .01);
-				scheduleNote(987.77, .16, .2, "sine", .2, .01);
-				scheduleNote(1318.51, .24, .42, "sine", .22, .012);
-				scheduleNote(2637.02, .24, .22, "sine", .05, .01);
-				break;
-			case "chord":
-				scheduleNote(523.25, 0, .65, "sine", .14, .04);
-				scheduleNote(659.25, .03, .65, "sine", .13, .04);
-				scheduleNote(783.99, .06, .65, "sine", .12, .04);
-				scheduleNote(987.77, .09, .7, "triangle", .08, .05);
-				break;
-			case "droplet":
-				scheduleGlide(520, 1240, 0, .14, "sine", .22);
-				scheduleGlide(680, 1520, .16, .16, "sine", .18);
-				break;
-			case "crystal":
-				scheduleNote(1318.51, 0, .55, "sine", .16, .008);
-				scheduleNote(2637.02, 0, .35, "sine", .06, .006);
-				scheduleNote(1975.53, .12, .65, "sine", .17, .008);
-				scheduleNote(3951.07, .12, .3, "sine", .04, .006);
-				break;
-			case "marimba":
-				scheduleNote(587.33, 0, .16, "triangle", .25, .005);
-				scheduleNote(1174.66, 0, .06, "sine", .08, .004);
-				scheduleNote(739.99, .13, .16, "triangle", .24, .005);
-				scheduleNote(880, .26, .34, "triangle", .24, .005);
-				break;
-			case "piano":
-				scheduleNote(523.25, 0, .5, "triangle", .16, .008);
-				scheduleNote(659.25, 0, .5, "triangle", .14, .008);
-				scheduleNote(783.99, 0, .5, "sine", .14, .008);
-				scheduleNote(1046.5, .18, .58, "triangle", .16, .008);
-				break;
-			case "woodblock":
-				scheduleNote(720, 0, .055, "triangle", .24, .003);
-				scheduleNote(1440, 0, .03, "sine", .09, .002);
-				scheduleNote(960, .12, .065, "triangle", .22, .003);
-				break;
-			case "sonar":
-				scheduleNote(440, 0, .45, "sine", .22, .015);
-				scheduleNote(880, 0, .22, "sine", .06, .015);
-				scheduleNote(440, .38, .5, "sine", .1, .02);
-				break;
-			case "fanfare":
-				scheduleNote(523.25, 0, .14, "triangle", .2, .008);
-				scheduleNote(659.25, .11, .14, "triangle", .2, .008);
-				scheduleNote(783.99, .22, .16, "triangle", .22, .008);
-				scheduleNote(1046.5, .34, .46, "triangle", .24, .01);
-				scheduleNote(1046.5, .34, .46, "sine", .12, .01);
-				break;
-			case "bell":
-				scheduleNote(880, 0, .75, "triangle", .24, .01);
-				scheduleNote(1760, 0, .4, "sine", .1, .008);
-				break;
-			case "pulse":
-				scheduleNote(660, 0, .14, "sine", .22, .01);
-				scheduleNote(660, .2, .18, "sine", .22, .01);
-				break;
-			case "alarm":
-				scheduleNote(740, 0, .18, "triangle", .25, .01);
-				scheduleNote(987.77, .2, .18, "triangle", .25, .01);
-				scheduleNote(740, .42, .18, "triangle", .25, .01);
-				scheduleNote(987.77, .62, .26, "triangle", .25, .01);
-				break;
-			default:
-				scheduleNote(523.25, 0, .25, "sine", .18, .015);
-				scheduleNote(659.25, .14, .28, "sine", .18, .015);
-				scheduleNote(783.99, .28, .45, "sine", .2, .015);
-		}
-		activeCleanupTimer = setTimeout(() => {
-			if (activeAudioCtx === ctx) activeAudioCtx = null;
-			ctx.close().catch(() => {});
-		}, 1600);
-	} catch {}
-}
-async function showWebReminderNotification(title, body) {
-	if (typeof window === "undefined" || !("Notification" in window)) return;
-	try {
-		if (Notification.permission === "default") await Notification.requestPermission();
-		if (Notification.permission === "granted") new Notification(title, {
-			body,
-			tag: "taktwerk-timer-reminder"
-		});
-	} catch {}
 }
 /* @preserve
 * Leaflet 1.9.4, a JS library for interactive maps. https://leafletjs.com
@@ -77690,6 +73148,5274 @@ function GeoFenceMapPicker({ selectedLat, selectedLng, selectedAddress, radiusMe
 		]
 	});
 }
+// src/components/GeoFenceRuleModal.tsx
+var RADIUS_OPTIONS = [
+	{
+		value: "50",
+		label: "50 m (Gebäude)"
+	},
+	{
+		value: "100",
+		label: "100 m (Standort)"
+	},
+	{
+		value: "150",
+		label: "150 m (Standard)"
+	},
+	{
+		value: "250",
+		label: "250 m (Werksgelände)"
+	},
+	{
+		value: "500",
+		label: "500 m (Stadtteil)"
+	},
+	{
+		value: "1000",
+		label: "1.000 m (Region)"
+	}
+];
+var GeoFenceRuleModal = ({ open, editingRule, initialCustomer, initialProduct, customers, products, existingRules, theme, onSave, onDelete, onClose, onNotify }) => {
+	const [name, setName] = (0, import_react.useState)("");
+	const [taskTitle, setTaskTitle] = (0, import_react.useState)("");
+	const [radius, setRadius] = (0, import_react.useState)("150");
+	const [customerId, setCustomerId] = (0, import_react.useState)("");
+	const [productId, setProductId] = (0, import_react.useState)("");
+	const [address, setAddress] = (0, import_react.useState)("");
+	const [lat, setLat] = (0, import_react.useState)("");
+	const [lng, setLng] = (0, import_react.useState)("");
+	const [notes, setNotes] = (0, import_react.useState)("");
+	const [autoStopOnExit, setAutoStopOnExit] = (0, import_react.useState)(false);
+	const [enabled, setEnabled] = (0, import_react.useState)(true);
+	const [searchingAddress, setSearchingAddress] = (0, import_react.useState)(false);
+	const [capturingGps, setCapturingGps] = (0, import_react.useState)(false);
+	const [cameraNonce, setCameraNonce] = (0, import_react.useState)(0);
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		let cancelled = false;
+		if (editingRule) {
+			setName(editingRule.name);
+			setTaskTitle(editingRule.taskTitle);
+			setRadius(String(editingRule.radiusMeters));
+			setCustomerId(editingRule.customerId);
+			setProductId(editingRule.productId);
+			setAddress(editingRule.address ?? "");
+			setLat(editingRule.lat.toFixed(6));
+			setLng(editingRule.lng.toFixed(6));
+			setNotes(editingRule.notes ?? "");
+			setAutoStopOnExit(Boolean(editingRule.autoStopOnExit));
+			setEnabled(editingRule.enabled);
+			setCameraNonce((n) => n + 1);
+			return;
+		}
+		const defaultServiceProduct = products.find((p) => p.type === "service") ?? products[0] ?? null;
+		if (initialCustomer) {
+			const customerAddress = [initialCustomer.street, [initialCustomer.postalCode, initialCustomer.city].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+			setName(`Vor Ort: ${initialCustomer.companyName}`);
+			setTaskTitle(`Vor-Ort-Einsatz ${initialCustomer.companyName}`);
+			setRadius("150");
+			setCustomerId(initialCustomer.id);
+			setProductId(initialProduct?.id ?? defaultServiceProduct?.id ?? "");
+			setAddress(customerAddress);
+			setLat("");
+			setLng("");
+			setNotes("");
+			setAutoStopOnExit(false);
+			setEnabled(true);
+			if (customerAddress) {
+				setSearchingAddress(true);
+				geocodeAddress(customerAddress).then((hit) => {
+					if (cancelled || !hit) return;
+					setLat(hit.lat.toFixed(6));
+					setLng(hit.lng.toFixed(6));
+					if (hit.address) setAddress(hit.address);
+					setCameraNonce((n) => n + 1);
+				}).catch(() => {}).finally(() => {
+					if (!cancelled) setSearchingAddress(false);
+				});
+			}
+			return () => {
+				cancelled = true;
+			};
+		}
+		if (initialProduct) {
+			setName(`Standort: ${initialProduct.name}`);
+			setTaskTitle(initialProduct.name);
+			setRadius("150");
+			setCustomerId("");
+			setProductId(initialProduct.id);
+			setAddress("");
+			setLat("");
+			setLng("");
+			setNotes("");
+			setAutoStopOnExit(false);
+			setEnabled(true);
+			return;
+		}
+		setName("");
+		setTaskTitle("");
+		setRadius("150");
+		setCustomerId(customers[0]?.id ?? "");
+		setProductId(defaultServiceProduct?.id ?? "");
+		setAddress("");
+		setLat("");
+		setLng("");
+		setNotes("");
+		setAutoStopOnExit(false);
+		setEnabled(true);
+	}, [
+		open,
+		editingRule,
+		initialCustomer,
+		initialProduct,
+		customers,
+		products
+	]);
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		const handleKey = (e) => {
+			if (e.key === "Escape") onClose();
+		};
+		window.addEventListener("keydown", handleKey);
+		return () => window.removeEventListener("keydown", handleKey);
+	}, [open, onClose]);
+	if (!open || typeof document === "undefined") return null;
+	const parsedLat = lat.trim() ? Number(lat.replace(",", ".")) : null;
+	const parsedLng = lng.trim() ? Number(lng.replace(",", ".")) : null;
+	const validLat = parsedLat !== null && Number.isFinite(parsedLat) ? parsedLat : null;
+	const validLng = parsedLng !== null && Number.isFinite(parsedLng) ? parsedLng : null;
+	const handleSearchAddress = async () => {
+		const query = address.trim();
+		if (!query) {
+			onNotify("Bitte zuerst eine Adresse eingeben.", true);
+			return;
+		}
+		setSearchingAddress(true);
+		try {
+			const hit = await geocodeAddress(query);
+			if (!hit) {
+				onNotify("Adresse wurde auf OpenStreetMap nicht gefunden.", true);
+				return;
+			}
+			setLat(hit.lat.toFixed(6));
+			setLng(hit.lng.toFixed(6));
+			if (hit.address) setAddress(hit.address);
+			setCameraNonce((n) => n + 1);
+			onNotify(`Standort gefunden: ${hit.address}`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Adresssuche fehlgeschlagen.", true);
+		} finally {
+			setSearchingAddress(false);
+		}
+	};
+	const handleCaptureGps = async () => {
+		setCapturingGps(true);
+		try {
+			const loc = await captureCurrentLocation();
+			setLat(loc.lat.toFixed(6));
+			setLng(loc.lng.toFixed(6));
+			if (loc.address) setAddress(loc.address);
+			setCameraNonce((n) => n + 1);
+			onNotify(`Aktueller GPS-Standort übernommen (${loc.address || "Position gespeichert"}).`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "GPS-Standort konnte nicht abgerufen werden.", true);
+		} finally {
+			setCapturingGps(false);
+		}
+	};
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const trimmedName = name.trim();
+		if (!trimmedName) {
+			onNotify("Bitte einen Ortsnamen eingeben.", true);
+			return;
+		}
+		if (validLat === null || validLng === null) {
+			onNotify("Bitte zuerst einen Punkt auf der Karte wählen, eine Adresse suchen oder GPS nutzen.", true);
+			return;
+		}
+		onSave({
+			id: editingRule?.id ?? createId("geo"),
+			name: trimmedName,
+			enabled,
+			lat: validLat,
+			lng: validLng,
+			address: address.trim() || void 0,
+			radiusMeters: Math.max(30, Number(radius) || 150),
+			customerId,
+			productId,
+			taskTitle: taskTitle.trim() || trimmedName,
+			notes: notes.trim(),
+			autoStopOnExit,
+			lastTriggeredAt: editingRule?.lastTriggeredAt,
+			createdAt: editingRule?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
+		});
+		onClose();
+	};
+	const inputClass = "min-w-0 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500";
+	const modalTitle = editingRule ? "Ortsabhängigkeit bearbeiten" : initialCustomer ? `Ortsabhängigkeit für ${initialCustomer.companyName}` : initialProduct ? `Ortsabhängigkeit für ${initialProduct.name}` : "Neue Ortsabhängigkeit anlegen";
+	return (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		role: "dialog",
+		"aria-modal": "true",
+		"aria-label": modalTitle,
+		onClick: onClose,
+		className: "fixed inset-0 z-[120] flex items-end justify-center bg-slate-950/60 p-2 backdrop-blur-[1px] sm:items-center sm:p-4",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			onClick: (e) => e.stopPropagation(),
+			className: "flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-3.5 dark:border-[#2e2349]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2 min-w-0",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100 truncate",
+						children: modalTitle
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					type: "button",
+					onClick: onClose,
+					"aria-label": "Modal schließen",
+					className: "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+				onSubmit: handleSubmit,
+				className: "flex flex-1 flex-col overflow-hidden",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex-1 space-y-4 overflow-y-auto p-5",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GeoFenceMapPicker, {
+							selectedLat: validLat,
+							selectedLng: validLng,
+							selectedAddress: address,
+							radiusMeters: Math.max(30, Number(radius) || 150),
+							rules: existingRules,
+							customers,
+							products,
+							focusedRuleId: editingRule?.id ?? null,
+							cameraRequestNonce: cameraNonce,
+							theme,
+							onSelectLocation: (loc) => {
+								setLat(loc.lat.toFixed(6));
+								setLng(loc.lng.toFixed(6));
+								if (loc.address) setAddress(loc.address);
+								if (!name.trim() && loc.suggestedName) setName(loc.suggestedName);
+							},
+							onNotify
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid grid-cols-1 gap-3 md:grid-cols-3",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Ortsname *"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									required: true,
+									value: name,
+									onChange: (e) => setName(e.target.value),
+									placeholder: "z. B. Kundenbüro München",
+									className: inputClass
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Aufgabentitel"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: taskTitle,
+									onChange: (e) => setTaskTitle(e.target.value),
+									placeholder: "z. B. Vor-Ort-Service",
+									className: inputClass
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Zielradius"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+									value: radius,
+									onChange: setRadius,
+									ariaLabel: "Zielradius",
+									options: RADIUS_OPTIONS
+								})] })
+							]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid grid-cols-1 gap-3 md:grid-cols-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Kunde"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+								value: customerId,
+								onChange: setCustomerId,
+								ariaLabel: "Kunde für Ortsabhängigkeit",
+								options: [{
+									value: "",
+									label: "Kein Kunde (interne Aufgabe)"
+								}, ...customers.map((c) => ({
+									value: c.id,
+									label: c.companyName
+								}))]
+							})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Produkt / Leistung"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+								value: productId,
+								onChange: setProductId,
+								ariaLabel: "Leistung für Ortsabhängigkeit",
+								options: [{
+									value: "",
+									label: "Keine Leistung gewählt"
+								}, ...products.map((p) => ({
+									value: p.id,
+									label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`
+								}))]
+							})] })]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid grid-cols-1 gap-3 md:grid-cols-12",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "md:col-span-6",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Adresse suchen oder GPS übernehmen"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-col gap-2 sm:flex-row sm:gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "text",
+											value: address,
+											onChange: (e) => setAddress(e.target.value),
+											placeholder: "Straße Nr., PLZ Ort",
+											className: `${inputClass} flex-1`
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex gap-1.5 shrink-0",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												onClick: () => void handleSearchAddress(),
+												disabled: searchingAddress,
+												className: "inline-flex flex-1 sm:flex-initial items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+												children: [searchingAddress ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-3.5 w-3.5" }), "Suchen"]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												onClick: () => void handleCaptureGps(),
+												disabled: capturingGps,
+												title: "Aktuellen GPS-Standort übernehmen",
+												className: "inline-flex flex-1 sm:flex-initial items-center justify-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-300 cursor-pointer shrink-0",
+												children: [capturingGps ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), "GPS"]
+											})]
+										})]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "md:col-span-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Breitengrad (Lat)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "text",
+										value: lat,
+										onChange: (e) => setLat(e.target.value),
+										placeholder: "48.13715",
+										className: `${inputClass} font-mono`
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "md:col-span-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Längengrad (Lng)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "text",
+										value: lng,
+										onChange: (e) => setLng(e.target.value),
+										placeholder: "11.57612",
+										className: `${inputClass} font-mono`
+									})]
+								})
+							]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Notizen für gestartete Zeiteinträge (optional)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: notes,
+							onChange: (e) => setNotes(e.target.value),
+							placeholder: "z. B. Automatisch per Standortregel gestartet",
+							className: inputClass
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: enabled,
+									onChange: (e) => setEnabled(e.target.checked),
+									className: "h-4 w-4 rounded border-slate-300 accent-violet-600"
+								}), "Ortsregel aktiv"]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: autoStopOnExit,
+									onChange: (e) => setAutoStopOnExit(e.target.checked),
+									className: "h-4 w-4 rounded border-slate-300 accent-violet-600"
+								}), "Aufgabe automatisch beenden, sobald ich den Radius verlasse"]
+							})]
+						})
+					]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 bg-slate-50/80 px-5 py-3 dark:border-[#2e2349] dark:bg-[#211936]/50",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: editingRule && onDelete && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => {
+							onDelete(editingRule.id);
+							onClose();
+						},
+						className: "inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300 cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" }), "Löschen"]
+					}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: onClose,
+							className: "rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+							children: "Abbrechen"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "submit",
+							className: "inline-flex items-center gap-1.5 rounded-lg ui-accent-active px-4 py-2 text-xs font-semibold text-white cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Save, { className: "h-3.5 w-3.5" }), "Ortsregel speichern"]
+						})]
+					})]
+				})]
+			})]
+		})
+	}), document.body);
+};
+// src/components/CustomersView.tsx
+function CustomersView({ customers, products, timeEntries, invoices, categories = [], geoFenceRules = [], autoLocationStartEnabled = false, theme = "light", onSaveCustomer, onDeleteCustomer, onSaveGeoFenceRules, onNotify, onCreateInvoiceForCustomer }) {
+	const [search, setSearch] = (0, import_react.useState)("");
+	const [categoryFilter, setCategoryFilter] = (0, import_react.useState)("all");
+	const [showForm, setShowForm] = (0, import_react.useState)(false);
+	const [editing, setEditing] = (0, import_react.useState)(null);
+	const [geoModalOpen, setGeoModalOpen] = (0, import_react.useState)(false);
+	const [geoModalCustomer, setGeoModalCustomer] = (0, import_react.useState)(null);
+	const [geoModalEditingRule, setGeoModalEditingRule] = (0, import_react.useState)(null);
+	const [customerNumber, setCustomerNumber] = (0, import_react.useState)("");
+	const [companyName, setCompanyName] = (0, import_react.useState)("");
+	const [contactName, setContactName] = (0, import_react.useState)("");
+	const [email, setEmail] = (0, import_react.useState)("");
+	const [phone, setPhone] = (0, import_react.useState)("");
+	const [street, setStreet] = (0, import_react.useState)("");
+	const [postalCode, setPostalCode] = (0, import_react.useState)("");
+	const [city, setCity] = (0, import_react.useState)("");
+	const [country, setCountry] = (0, import_react.useState)("Deutschland");
+	const [vatId, setVatId] = (0, import_react.useState)("");
+	const [paymentTermDays, setPaymentTermDays] = (0, import_react.useState)(14);
+	const [timeRoundingInput, setTimeRoundingInput] = (0, import_react.useState)("");
+	const [category, setCategory] = (0, import_react.useState)("");
+	const [notes, setNotes] = (0, import_react.useState)("");
+	const [error, setError] = (0, import_react.useState)("");
+	const availableCategories = (0, import_react.useMemo)(() => {
+		const seed = categories.length > 0 ? categories : DEFAULT_CUSTOMER_CATEGORIES;
+		const set = new Set(seed);
+		for (const c of customers) if (c.category?.trim()) set.add(c.category.trim());
+		return Array.from(set).sort((a, b) => a.localeCompare(b, "de"));
+	}, [categories, customers]);
+	const openNew = () => {
+		setEditing(null);
+		const nextNum = 1001 + customers.length;
+		setCustomerNumber(`KD-${nextNum}`);
+		setCompanyName("");
+		setContactName("");
+		setEmail("");
+		setPhone("");
+		setStreet("");
+		setPostalCode("");
+		setCity("");
+		setCountry("Deutschland");
+		setVatId("");
+		setPaymentTermDays(14);
+		setTimeRoundingInput("");
+		setCategory("");
+		setNotes("");
+		setError("");
+		setShowForm(true);
+	};
+	const openEdit = (c) => {
+		setEditing(c);
+		setCustomerNumber(c.customerNumber);
+		setCompanyName(c.companyName);
+		setContactName(c.contactName);
+		setEmail(c.email);
+		setPhone(c.phone);
+		setStreet(c.street);
+		setPostalCode(c.postalCode);
+		setCity(c.city);
+		setCountry(c.country);
+		setVatId(c.vatId);
+		setPaymentTermDays(c.paymentTermDays);
+		setTimeRoundingInput(c.timeRoundingMinutes !== void 0 && c.timeRoundingMinutes !== null ? String(c.timeRoundingMinutes) : "");
+		setCategory(c.category ?? "");
+		setNotes(c.notes);
+		setError("");
+		setShowForm(true);
+	};
+	const saveCurrentForm = () => {
+		setError("");
+		if (!companyName.trim()) {
+			setError("Bitte einen Firmen- oder Kundennamen angeben.");
+			return null;
+		}
+		const saved = {
+			id: editing?.id ?? createId("cust"),
+			customerNumber: customerNumber.trim() || `KD-${1001 + customers.length}`,
+			companyName: companyName.trim(),
+			contactName: contactName.trim(),
+			email: email.trim(),
+			phone: phone.trim(),
+			street: street.trim(),
+			postalCode: postalCode.trim(),
+			city: city.trim(),
+			country: country.trim() || "Deutschland",
+			vatId: vatId.trim(),
+			paymentTermDays: Math.max(0, Number(paymentTermDays) || 14),
+			timeRoundingMinutes: timeRoundingInput === "" ? null : Number(timeRoundingInput),
+			category: category.trim() || void 0,
+			notes: notes.trim(),
+			createdAt: editing?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
+		};
+		onSaveCustomer(saved);
+		return saved;
+	};
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		if (!saveCurrentForm()) return;
+		setShowForm(false);
+	};
+	const openNewGeoRuleForCustomer = (customer) => {
+		setGeoModalEditingRule(null);
+		setGeoModalCustomer(customer);
+		setGeoModalOpen(true);
+	};
+	const openEditGeoRule = (rule) => {
+		setGeoModalEditingRule(rule);
+		setGeoModalCustomer(null);
+		setGeoModalOpen(true);
+	};
+	const handleSaveGeoRule = (rule) => {
+		onSaveGeoFenceRules(geoFenceRules.some((r) => r.id === rule.id) ? geoFenceRules.map((r) => r.id === rule.id ? rule : r) : [rule, ...geoFenceRules]);
+		if (!autoLocationStartEnabled && rule.enabled) onNotify(`Ortsabhängigkeit "${rule.name}" gespeichert. Hinweis: Ortsautomatik unter Einstellungen → Ortung aktivieren.`);
+		else onNotify(`Ortsabhängigkeit "${rule.name}" gespeichert.`);
+	};
+	const handleDeleteGeoRule = (id) => {
+		onSaveGeoFenceRules(geoFenceRules.filter((r) => r.id !== id));
+		onNotify("Ortsabhängigkeit entfernt.");
+	};
+	const geoRulesByCustomer = (0, import_react.useMemo)(() => {
+		const map = /* @__PURE__ */ new Map();
+		for (const r of geoFenceRules) {
+			if (!r.customerId) continue;
+			const list = map.get(r.customerId) ?? [];
+			list.push(r);
+			map.set(r.customerId, list);
+		}
+		return map;
+	}, [geoFenceRules]);
+	const editingCustomerGeoRules = editing ? geoRulesByCustomer.get(editing.id) ?? [] : [];
+	const statsByCustomer = (0, import_react.useMemo)(() => {
+		const map = /* @__PURE__ */ new Map();
+		for (const c of customers) map.set(c.id, {
+			openSeconds: 0,
+			openNet: 0,
+			openIds: [],
+			invoiceCount: 0
+		});
+		for (const entry of timeEntries) if (entry.billable && !entry.billedInvoiceId) {
+			const cur = map.get(entry.customerId);
+			if (cur) {
+				cur.openSeconds += entry.durationSeconds;
+				cur.openNet += entry.durationSeconds / 3600 * entry.hourlyRateNet;
+				cur.openIds.push(entry.id);
+			}
+		}
+		for (const inv of invoices) {
+			const cur = map.get(inv.customerId);
+			if (cur) cur.invoiceCount += 1;
+		}
+		return map;
+	}, [
+		customers,
+		timeEntries,
+		invoices
+	]);
+	const filtered = (0, import_react.useMemo)(() => {
+		const q = search.trim().toLowerCase();
+		return customers.filter((c) => {
+			if (categoryFilter !== "all" && (c.category ?? "") !== categoryFilter) return false;
+			if (!q) return true;
+			return c.companyName.toLowerCase().includes(q) || c.contactName.toLowerCase().includes(q) || c.customerNumber.toLowerCase().includes(q) || c.city.toLowerCase().includes(q) || (c.category ?? "").toLowerCase().includes(q);
+		});
+	}, [
+		customers,
+		search,
+		categoryFilter
+	]);
+	const inputClass = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500";
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-6",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "Kundendatenbank"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "Kundendatenbank",
+						text: "Stammdaten, Rechnungsanschriften, Zahlungsziele, Ortsabhängigkeiten und offene Stunden pro Kunde verwalten."
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					type: "button",
+					onClick: openNew,
+					className: "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neuer Kunde"]
+				})]
+			}),
+			showForm && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					className: "mb-4 font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+					children: editing ? "Kunde bearbeiten" : "Neuen Kunden anlegen"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+					onSubmit: handleSubmit,
+					className: "grid grid-cols-1 gap-4 md:grid-cols-3",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Kundennummer"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: customerNumber,
+							onChange: (e) => setCustomerNumber(e.target.value),
+							className: `${inputClass} font-mono`
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "md:col-span-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Firmenname / Kunde *"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "text",
+								value: companyName,
+								onChange: (e) => setCompanyName(e.target.value),
+								placeholder: "z. B. Musterwerk GmbH",
+								className: inputClass
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Ansprechpartner"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: contactName,
+							onChange: (e) => setContactName(e.target.value),
+							className: inputClass
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "E-Mail"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "email",
+							value: email,
+							onChange: (e) => setEmail(e.target.value),
+							className: inputClass
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Telefon"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: phone,
+							onChange: (e) => setPhone(e.target.value),
+							className: inputClass
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Straße & Hausnummer"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: street,
+							onChange: (e) => setStreet(e.target.value),
+							className: inputClass
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid grid-cols-3 gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "PLZ"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "text",
+								value: postalCode,
+								onChange: (e) => setPostalCode(e.target.value),
+								className: `${inputClass} font-mono`
+							})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "col-span-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Ort"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: city,
+									onChange: (e) => setCity(e.target.value),
+									className: inputClass
+								})]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Land"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: country,
+							onChange: (e) => setCountry(e.target.value),
+							className: inputClass
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "USt-IdNr."
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: vatId,
+							onChange: (e) => setVatId(e.target.value),
+							placeholder: "DE...",
+							className: `${inputClass} font-mono`
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Zahlungsziel (Tage)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "number",
+							min: 0,
+							value: paymentTermDays,
+							onChange: (e) => setPaymentTermDays(Number(e.target.value)),
+							className: `${inputClass} font-mono`
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Zeitrundung (Takt für Rechnungen)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+							value: timeRoundingInput,
+							onChange: setTimeRoundingInput,
+							options: [
+								{
+									value: "",
+									label: "Firmen-Standard verwenden"
+								},
+								{
+									value: "0",
+									label: "Exakt (keine Aufrundung)"
+								},
+								{
+									value: "5",
+									label: "Aufrunden auf 5 Minuten"
+								},
+								{
+									value: "10",
+									label: "Aufrunden auf 10 Minuten"
+								},
+								{
+									value: "15",
+									label: "Aufrunden auf 15 Minuten"
+								},
+								{
+									value: "30",
+									label: "Aufrunden auf 30 Minuten"
+								}
+							]
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Kategorie"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CategoryPicker, {
+							value: category,
+							onChange: setCategory,
+							categories: availableCategories,
+							placeholder: "z. B. Stammkunde oder Wartungsvertrag"
+						})] }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "md:col-span-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Notizen"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "text",
+								value: notes,
+								onChange: (e) => setNotes(e.target.value),
+								className: inputClass
+							})]
+						}),
+						editing && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#2e2349] dark:bg-[#211936]/40 md:col-span-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "text-xs font-semibold text-slate-800 dark:text-slate-100",
+										children: [
+											"Ortsabhängigkeiten für diesen Kunden (",
+											editingCustomerGeoRules.length,
+											")"
+										]
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => openNewGeoRuleForCustomer({
+										...editing,
+										companyName: companyName.trim() || editing.companyName,
+										street: street.trim(),
+										postalCode: postalCode.trim(),
+										city: city.trim()
+									}),
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Ortsabhängigkeit anlegen"]
+								})]
+							}), editingCustomerGeoRules.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white dark:divide-[#2e2349] dark:border-[#2e2349] dark:bg-[#171126]",
+								children: editingCustomerGeoRules.map((rule) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-xs",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "min-w-0",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "font-semibold text-slate-900 dark:text-slate-100",
+												children: rule.name
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "mx-1.5 text-slate-400",
+												children: "·"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "font-mono text-slate-500 dark:text-slate-400",
+												children: [rule.radiusMeters, " m"]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "mx-1.5 text-slate-400",
+												children: "·"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: rule.enabled ? "font-medium text-emerald-700 dark:text-emerald-400" : "text-slate-400",
+												children: rule.enabled ? "Aktiv" : "Pausiert"
+											})
+										]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-1 shrink-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => openEditGeoRule(rule),
+											title: "Ortsregel bearbeiten",
+											className: "inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" })
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => handleDeleteGeoRule(rule.id),
+											title: "Ortsregel löschen",
+											className: "inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+										})]
+									})]
+								}, rule.id))
+							})]
+						}),
+						error && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-xs font-medium text-red-600 dark:text-red-400 md:col-span-3",
+							children: error
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-wrap justify-end gap-2 md:col-span-3",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setShowForm(false),
+									className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
+									children: "Abbrechen"
+								}),
+								!editing && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => {
+										const saved = saveCurrentForm();
+										if (!saved) return;
+										setShowForm(false);
+										openNewGeoRuleForCustomer(saved);
+									},
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-4 w-4" }), "Speichern & Ort festlegen"]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+									children: "Kunde speichern"
+								})
+							]
+						})
+					]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "relative max-w-sm flex-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-violet-300/60" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: search,
+							onChange: (e) => setSearch(e.target.value),
+							placeholder: "Kunden suchen...",
+							className: "w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+						})]
+					}), availableCategories.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+						size: "sm",
+						className: "w-52",
+						value: categoryFilter,
+						onChange: setCategoryFilter,
+						options: [{
+							value: "all",
+							label: "Alle Kategorien"
+						}, ...availableCategories.map((cat) => ({
+							value: cat,
+							label: cat
+						}))]
+					})]
+				}), filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "p-10 text-center",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm font-medium text-slate-700 dark:text-slate-300",
+						children: "Keine Kunden gefunden."
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+						children: "Lege deinen ersten Kunden an oder lade Beispieldaten unter „Nextcloud & Setup“."
+					})]
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "overflow-x-auto",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+						className: "w-full text-left text-sm",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+							className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3",
+									children: "Nr."
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3",
+									children: "Firma & Kontakt"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3",
+									children: "Adresse"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 text-right",
+									children: "Offene Zeiten"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 text-right",
+									children: "Offener Betrag"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 text-right",
+									children: "Aktionen"
+								})
+							]
+						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
+							children: filtered.map((c) => {
+								const st = statsByCustomer.get(c.id);
+								const hasOpen = (st?.openIds.length ?? 0) > 0;
+								const linkedGeoRules = geoRulesByCustomer.get(c.id) ?? [];
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+											className: "px-4 py-3 font-mono text-xs text-slate-600 dark:text-violet-200/80 whitespace-nowrap",
+											children: c.customerNumber
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											className: "px-4 py-3",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex flex-wrap items-center gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "font-medium text-slate-900 dark:text-slate-100",
+													children: c.companyName
+												}), c.category && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-[#231b38] dark:text-violet-300",
+													children: c.category
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500 dark:text-slate-400",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: [c.contactName, c.email].filter(Boolean).join(" · ") || "—" }), linkedGeoRules.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => openEditGeoRule(linkedGeoRules[0]),
+													className: "inline-flex items-center gap-1 font-medium text-blue-700 hover:underline dark:text-violet-300 cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3 w-3 shrink-0" }), linkedGeoRules.length === 1 ? linkedGeoRules[0].name : `${linkedGeoRules.length} Ortsregeln`]
+												})]
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											className: "px-4 py-3 text-xs text-slate-600 dark:text-slate-400",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: c.street || "—" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: [c.postalCode, c.city].filter(Boolean).join(" ") || "—" })]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+											className: "px-4 py-3 text-right font-mono text-sm text-slate-700 dark:text-slate-300 tabular-nums whitespace-nowrap",
+											children: st ? formatHoursShort(st.openSeconds) : "0,00 Std."
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+											className: "px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap",
+											children: st ? formatCurrency(st.openNet) : "0,00 €"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+											className: "px-4 py-3",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center justify-end gap-1",
+												children: [
+													hasOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => onCreateInvoiceForCustomer(c.id),
+														className: "mr-1 inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), "Abrechnen"]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => openNewGeoRuleForCustomer(c),
+														title: "Ortsabhängigkeit für diesen Kunden anlegen",
+														className: `inline-flex h-8 w-8 items-center justify-center rounded-md cursor-pointer ${linkedGeoRules.length > 0 ? "text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#231b38]" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100"}`,
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-4 w-4" })
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => openEdit(c),
+														title: "Bearbeiten",
+														className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-4 w-4" })
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => onDeleteCustomer(c.id),
+														title: "Löschen",
+														className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
+													})
+												]
+											})
+										})
+									]
+								}, c.id);
+							})
+						})]
+					})
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GeoFenceRuleModal, {
+				open: geoModalOpen,
+				editingRule: geoModalEditingRule,
+				initialCustomer: geoModalCustomer,
+				customers,
+				products,
+				existingRules: geoFenceRules,
+				theme,
+				onSave: handleSaveGeoRule,
+				onDelete: handleDeleteGeoRule,
+				onClose: () => {
+					setGeoModalOpen(false);
+					setGeoModalCustomer(null);
+					setGeoModalEditingRule(null);
+				},
+				onNotify
+			})
+		]
+	});
+}
+// src/components/ExpensesView.tsx
+var INTERVAL_LABELS$1 = {
+	monthly: "Monatlich",
+	quarterly: "Quartalsweise",
+	yearly: "Jährlich"
+};
+async function compressImageFileToJpeg(file) {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onerror = () => reject(/* @__PURE__ */ new Error("Datei konnte nicht gelesen werden."));
+		reader.onload = () => {
+			const src = typeof reader.result === "string" ? reader.result : "";
+			if (!src) {
+				reject(/* @__PURE__ */ new Error("Leeres Bild."));
+				return;
+			}
+			const img = new Image();
+			img.onerror = () => reject(/* @__PURE__ */ new Error("Bildformat wird nicht unterstützt."));
+			img.onload = () => {
+				const scale = Math.min(1, 1400 / Math.max(img.width, img.height, 1));
+				const w = Math.max(1, Math.round(img.width * scale));
+				const h = Math.max(1, Math.round(img.height * scale));
+				const canvas = document.createElement("canvas");
+				canvas.width = w;
+				canvas.height = h;
+				const ctx = canvas.getContext("2d");
+				if (!ctx) {
+					resolve(src);
+					return;
+				}
+				ctx.drawImage(img, 0, 0, w, h);
+				resolve(canvas.toDataURL("image/jpeg", .82));
+			};
+			img.src = src;
+		};
+		reader.readAsDataURL(file);
+	});
+}
+function ExpensesView({ expenses, recurringExpenses = [], customers, expenseCategories, nextcloudConfigured, onAddExpense, onUpdateExpense, onDeleteExpense, onUploadExpenseReceipt, onAddRecurringExpense, onUpdateRecurringExpense, onDeleteRecurringExpense, onBookRecurringExpense, onBookAllDueRecurringExpenses, onNotify }) {
+	const cameraInputRef = (0, import_react.useRef)(null);
+	const galleryInputRef = (0, import_react.useRef)(null);
+	const recCameraInputRef = (0, import_react.useRef)(null);
+	const recGalleryInputRef = (0, import_react.useRef)(null);
+	const configuredCategories = (0, import_react.useMemo)(() => expenseCategories && expenseCategories.length > 0 ? expenseCategories : DEFAULT_EXPENSE_CATEGORIES, [expenseCategories]);
+	const defaultOperatingCategory = (0, import_react.useMemo)(() => configuredCategories.find((c) => /miete|raum/i.test(c)) ?? configuredCategories[0] ?? "Sonstiges", [configuredCategories]);
+	const defaultProjectCategory = (0, import_react.useMemo)(() => configuredCategories.find((c) => !/miete|raum/i.test(c)) ?? configuredCategories[0] ?? "Sonstiges", [configuredCategories]);
+	const [activeSubTab, setActiveSubTab] = (0, import_react.useState)("receipts");
+	const [typeFilter, setTypeFilter] = (0, import_react.useState)("ALL");
+	const [categoryFilter, setCategoryFilter] = (0, import_react.useState)("ALL");
+	const [showBillableOnly, setShowBillableOnly] = (0, import_react.useState)(false);
+	const [formOpen, setFormOpen] = (0, import_react.useState)(false);
+	const [editingId, setEditingId] = (0, import_react.useState)(null);
+	const [scanningAi, setScanningAi] = (0, import_react.useState)(false);
+	const [uploadingId, setUploadingId] = (0, import_react.useState)(null);
+	const [previewReceipt, setPreviewReceipt] = (0, import_react.useState)(null);
+	const [date, setDate] = (0, import_react.useState)(toInputDate());
+	const [vendor, setVendor] = (0, import_react.useState)("");
+	const [description, setDescription] = (0, import_react.useState)("");
+	const [category, setCategory] = (0, import_react.useState)(defaultOperatingCategory);
+	const [expenseType, setExpenseType] = (0, import_react.useState)("operating");
+	const [taxRate, setTaxRate] = (0, import_react.useState)(19);
+	const [grossAmount, setGrossAmount] = (0, import_react.useState)(0);
+	const [netAmount, setNetAmount] = (0, import_react.useState)(0);
+	const [customerId, setCustomerId] = (0, import_react.useState)("");
+	const [billableToCustomer, setBillableToCustomer] = (0, import_react.useState)(false);
+	const [notes, setNotes] = (0, import_react.useState)("");
+	const [receiptImageDataUrl, setReceiptImageDataUrl] = (0, import_react.useState)("");
+	const [recFormOpen, setRecFormOpen] = (0, import_react.useState)(false);
+	const [editingRecId, setEditingRecId] = (0, import_react.useState)(null);
+	const [recVendor, setRecVendor] = (0, import_react.useState)("");
+	const [recDescription, setRecDescription] = (0, import_react.useState)("");
+	const [recCategory, setRecCategory] = (0, import_react.useState)(defaultOperatingCategory);
+	const [recTaxRate, setRecTaxRate] = (0, import_react.useState)(19);
+	const [recGross, setRecGross] = (0, import_react.useState)(0);
+	const [recNet, setRecNet] = (0, import_react.useState)(0);
+	const [recInterval, setRecInterval] = (0, import_react.useState)("monthly");
+	const [recNextDueDate, setRecNextDueDate] = (0, import_react.useState)(toInputDate());
+	const [recActive, setRecActive] = (0, import_react.useState)(true);
+	const [recNotes, setRecNotes] = (0, import_react.useState)("");
+	const [recReceiptImageDataUrl, setRecReceiptImageDataUrl] = (0, import_react.useState)("");
+	const [recScanningAi, setRecScanningAi] = (0, import_react.useState)(false);
+	const availableCategories = (0, import_react.useMemo)(() => {
+		const ordered = [];
+		const seen = /* @__PURE__ */ new Set();
+		const addUnique = (val) => {
+			const clean = val?.trim();
+			if (clean && !seen.has(clean)) {
+				seen.add(clean);
+				ordered.push(clean);
+			}
+		};
+		configuredCategories.forEach(addUnique);
+		expenses.forEach((e) => addUnique(e.category));
+		recurringExpenses.forEach((r) => addUnique(r.category));
+		return ordered;
+	}, [
+		configuredCategories,
+		expenses,
+		recurringExpenses
+	]);
+	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
+	const todayStr = toInputDate();
+	const dueRecurringList = (0, import_react.useMemo)(() => recurringExpenses.filter((r) => r.active && r.nextDueDate <= todayStr), [recurringExpenses, todayStr]);
+	const monthlyFixedCosts = (0, import_react.useMemo)(() => {
+		let net = 0;
+		let gross = 0;
+		for (const r of recurringExpenses) {
+			if (!r.active) continue;
+			const factor = r.interval === "monthly" ? 1 : r.interval === "quarterly" ? 1 / 3 : 1 / 12;
+			net += (r.netAmount || 0) * factor;
+			gross += (r.grossAmount || 0) * factor;
+		}
+		return {
+			net: Math.round(net * 100) / 100,
+			gross: Math.round(gross * 100) / 100
+		};
+	}, [recurringExpenses]);
+	const filtered = (0, import_react.useMemo)(() => {
+		return [...expenses].filter((e) => {
+			const isOperating = e.expenseType === "operating" || !e.customerId;
+			if (typeFilter === "operating" && !isOperating) return false;
+			if (typeFilter === "project" && isOperating) return false;
+			return true;
+		}).filter((e) => categoryFilter === "ALL" ? true : e.category === categoryFilter).filter((e) => showBillableOnly ? Boolean(e.billableToCustomer) : true).sort((a, b) => b.date.localeCompare(a.date));
+	}, [
+		expenses,
+		typeFilter,
+		categoryFilter,
+		showBillableOnly
+	]);
+	const stats = (0, import_react.useMemo)(() => {
+		const totalGross = expenses.reduce((acc, e) => acc + (e.grossAmount || 0), 0);
+		const totalNet = expenses.reduce((acc, e) => acc + (e.netAmount || 0), 0);
+		const openBillable = expenses.filter((e) => e.billableToCustomer && !e.billedInvoiceId);
+		const openBillableNet = openBillable.reduce((acc, e) => acc + (e.netAmount || 0), 0);
+		return {
+			totalGross,
+			totalNet,
+			openBillableCount: openBillable.length,
+			openBillableNet
+		};
+	}, [expenses]);
+	const resetForm = () => {
+		setEditingId(null);
+		setDate(toInputDate());
+		setVendor("");
+		setDescription("");
+		setCategory(defaultProjectCategory);
+		setExpenseType("operating");
+		setTaxRate(19);
+		setGrossAmount(0);
+		setNetAmount(0);
+		setCustomerId("");
+		setBillableToCustomer(false);
+		setNotes("");
+		setReceiptImageDataUrl("");
+	};
+	const openNewModal = (defaultType = "operating") => {
+		resetForm();
+		setExpenseType(defaultType);
+		setCategory(defaultType === "operating" ? defaultOperatingCategory : defaultProjectCategory);
+		setFormOpen(true);
+	};
+	const openEditModal = (exp) => {
+		setEditingId(exp.id);
+		setDate(exp.date);
+		setVendor(exp.vendor);
+		setDescription(exp.description);
+		setCategory(exp.category || defaultOperatingCategory);
+		setExpenseType(exp.expenseType ?? (exp.customerId ? "project" : "operating"));
+		setTaxRate(exp.taxRate);
+		setGrossAmount(exp.grossAmount);
+		setNetAmount(exp.netAmount);
+		setCustomerId(exp.customerId || "");
+		setBillableToCustomer(Boolean(exp.billableToCustomer));
+		setNotes(exp.notes || "");
+		setReceiptImageDataUrl(exp.receiptImageDataUrl || "");
+		setFormOpen(true);
+	};
+	const openNewRecurringModal = () => {
+		setEditingRecId(null);
+		setRecVendor("");
+		setRecDescription("");
+		setRecCategory(defaultOperatingCategory);
+		setRecTaxRate(19);
+		setRecGross(0);
+		setRecNet(0);
+		setRecInterval("monthly");
+		setRecNextDueDate(toInputDate());
+		setRecActive(true);
+		setRecNotes("");
+		setRecReceiptImageDataUrl("");
+		setRecFormOpen(true);
+	};
+	const openEditRecurringModal = (item) => {
+		setEditingRecId(item.id);
+		setRecVendor(item.vendor);
+		setRecDescription(item.description);
+		setRecCategory(item.category || defaultOperatingCategory);
+		setRecTaxRate(item.taxRate);
+		setRecGross(item.grossAmount);
+		setRecNet(item.netAmount);
+		setRecInterval(item.interval);
+		setRecNextDueDate(item.nextDueDate);
+		setRecActive(item.active);
+		setRecNotes(item.notes || "");
+		setRecReceiptImageDataUrl(item.receiptImageDataUrl || "");
+		setRecFormOpen(true);
+	};
+	const runRecurringReceiptAiScan = async (imageDataUrl) => {
+		setRecScanningAi(true);
+		try {
+			const parsed = await apiScanReceiptWithAi(imageDataUrl);
+			if (parsed.vendor) setRecVendor(parsed.vendor);
+			if (parsed.description) setRecDescription(parsed.description);
+			if (parsed.category) setRecCategory(parsed.category);
+			setRecTaxRate(parsed.taxRate);
+			if (parsed.grossAmount > 0) setRecGross(parsed.grossAmount);
+			if (parsed.netAmount > 0) setRecNet(parsed.netAmount);
+			if (parsed.notes) setRecNotes(parsed.notes);
+			onNotify("Belegdaten für Fixkosten übernommen.", "success");
+		} catch (aiErr) {
+			onNotify(aiErr instanceof Error ? aiErr.message : "Beleg angehängt. Werte bitte bei Bedarf manuell ergänzen.", "warning");
+		} finally {
+			setRecScanningAi(false);
+		}
+	};
+	const handleRecurringReceiptSelected = async (e) => {
+		const file = e.target.files?.[0];
+		e.target.value = "";
+		if (!file) return;
+		try {
+			const dataUrl = await compressImageFileToJpeg(file);
+			setRecReceiptImageDataUrl(dataUrl);
+			if (!recVendor.trim() && recGross === 0) await runRecurringReceiptAiScan(dataUrl);
+			else onNotify("Beleg / Vertrag an Fixkosten angehängt.", "success");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Bild konnte nicht verarbeitet werden.", "warning");
+		}
+	};
+	const handleRecGrossChange = (val) => {
+		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
+		setRecGross(safe);
+		setRecNet(Math.round(safe / (1 + recTaxRate / 100) * 100) / 100);
+	};
+	const handleRecNetChange = (val) => {
+		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
+		setRecNet(safe);
+		setRecGross(Math.round(safe * (1 + recTaxRate / 100) * 100) / 100);
+	};
+	const handleRecTaxChange = (nextTax) => {
+		setRecTaxRate(nextTax);
+		if (recGross > 0) setRecNet(Math.round(recGross / (1 + nextTax / 100) * 100) / 100);
+		else if (recNet > 0) setRecGross(Math.round(recNet * (1 + nextTax / 100) * 100) / 100);
+	};
+	const handleSaveRecurring = (e) => {
+		e.preventDefault();
+		if (!recVendor.trim() && !recDescription.trim()) {
+			onNotify("Bitte Anbieter oder Beschreibung für die Fixkosten angeben.", "warning");
+			return;
+		}
+		const existing = editingRecId ? recurringExpenses.find((r) => r.id === editingRecId) : void 0;
+		const payload = {
+			id: editingRecId || createId("recexp"),
+			vendor: recVendor.trim() || "Unbekannter Anbieter",
+			description: recDescription.trim() || recVendor.trim(),
+			category: recCategory.trim() || "Miete & Raumkosten",
+			netAmount: Math.round(recNet * 100) / 100,
+			taxRate: recTaxRate,
+			grossAmount: Math.round(recGross * 100) / 100,
+			interval: recInterval,
+			active: recActive,
+			nextDueDate: recNextDueDate || toInputDate(),
+			lastBookedDate: existing?.lastBookedDate ?? null,
+			receiptImageDataUrl: recReceiptImageDataUrl || void 0,
+			notes: recNotes.trim() || void 0,
+			createdAt: existing?.createdAt || (/* @__PURE__ */ new Date()).toISOString()
+		};
+		if (editingRecId) onUpdateRecurringExpense?.(payload);
+		else onAddRecurringExpense?.(payload);
+		setRecFormOpen(false);
+	};
+	const handleGrossChange = (val) => {
+		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
+		setGrossAmount(safe);
+		setNetAmount(Math.round(safe / (1 + taxRate / 100) * 100) / 100);
+	};
+	const handleNetChange = (val) => {
+		const safe = Math.max(0, Number.isFinite(val) ? val : 0);
+		setNetAmount(safe);
+		setGrossAmount(Math.round(safe * (1 + taxRate / 100) * 100) / 100);
+	};
+	const handleTaxChange = (nextTax) => {
+		setTaxRate(nextTax);
+		if (grossAmount > 0) setNetAmount(Math.round(grossAmount / (1 + nextTax / 100) * 100) / 100);
+		else if (netAmount > 0) setGrossAmount(Math.round(netAmount * (1 + nextTax / 100) * 100) / 100);
+	};
+	const handleReceiptSelected = async (e, autoScan = true) => {
+		const file = e.target.files?.[0];
+		e.target.value = "";
+		if (!file) return;
+		try {
+			const dataUrl = await compressImageFileToJpeg(file);
+			setReceiptImageDataUrl(dataUrl);
+			if (!formOpen) setFormOpen(true);
+			if (autoScan) {
+				setScanningAi(true);
+				try {
+					const parsed = await apiScanReceiptWithAi(dataUrl);
+					if (parsed.vendor) setVendor(parsed.vendor);
+					if (parsed.date) setDate(parsed.date);
+					if (parsed.description) setDescription(parsed.description);
+					if (parsed.category) setCategory(parsed.category);
+					setTaxRate(parsed.taxRate);
+					if (parsed.grossAmount > 0) setGrossAmount(parsed.grossAmount);
+					if (parsed.netAmount > 0) setNetAmount(parsed.netAmount);
+					if (parsed.notes) setNotes(parsed.notes);
+					onNotify("Beleg erfolgreich per KI analysiert!", "success");
+				} catch (aiErr) {
+					onNotify(aiErr instanceof Error ? aiErr.message : "Belegfoto angehängt. Werte bitte manuell ergänzen.", "warning");
+				} finally {
+					setScanningAi(false);
+				}
+			}
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Bild konnte nicht verarbeitet werden.", "warning");
+		}
+	};
+	const handleSave = (e) => {
+		e.preventDefault();
+		if (!vendor.trim() && !description.trim()) {
+			onNotify("Bitte mindestens Händler/Anbieter oder Beschreibung angeben.", "warning");
+			return;
+		}
+		const existing = editingId ? expenses.find((item) => item.id === editingId) : void 0;
+		const payload = {
+			id: editingId || createId("exp"),
+			date: date || toInputDate(),
+			vendor: vendor.trim() || "Unbekannter Anbieter",
+			description: description.trim() || vendor.trim(),
+			category: category.trim() || "Sonstiges",
+			expenseType,
+			netAmount: Math.round(netAmount * 100) / 100,
+			taxRate,
+			grossAmount: Math.round(grossAmount * 100) / 100,
+			customerId: expenseType === "project" ? customerId || null : null,
+			billableToCustomer: Boolean(expenseType === "project" && billableToCustomer && customerId),
+			billedInvoiceId: existing?.billedInvoiceId ?? null,
+			receiptImageDataUrl: receiptImageDataUrl || void 0,
+			notes: notes.trim() || void 0,
+			isRecurring: existing?.isRecurring,
+			recurringExpenseId: existing?.recurringExpenseId ?? null,
+			nextcloudUploadedAt: existing?.nextcloudUploadedAt ?? null,
+			createdAt: existing?.createdAt || (/* @__PURE__ */ new Date()).toISOString()
+		};
+		if (editingId) onUpdateExpense(payload);
+		else onAddExpense(payload);
+		setFormOpen(false);
+		resetForm();
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-6",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				ref: cameraInputRef,
+				type: "file",
+				accept: "image/*",
+				capture: "environment",
+				onChange: (e) => void handleReceiptSelected(e, true),
+				className: "hidden"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				ref: galleryInputRef,
+				type: "file",
+				accept: "image/*",
+				onChange: (e) => void handleReceiptSelected(e, true),
+				className: "hidden"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				ref: recCameraInputRef,
+				type: "file",
+				accept: "image/*",
+				capture: "environment",
+				onChange: (e) => void handleRecurringReceiptSelected(e),
+				className: "hidden"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				ref: recGalleryInputRef,
+				type: "file",
+				accept: "image/*",
+				onChange: (e) => void handleRecurringReceiptSelected(e),
+				className: "hidden"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "Belege & Betriebskosten"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "Belege & Betriebskosten",
+						text: "Einzelbelege scannen, allgemeine Betriebskosten erfassen und wiederkehrende Fixkosten wie Miete oder Abos verwalten."
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 dark:border-[#342653] dark:bg-[#19122c] self-start sm:self-auto",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => setActiveSubTab("receipts"),
+						className: `inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors cursor-pointer ${activeSubTab === "receipts" ? "ui-accent-active text-white" : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-[#241b3d]"}`,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-3.5 w-3.5" }),
+							"Belege & Ausgaben (",
+							expenses.length,
+							")"
+						]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => setActiveSubTab("recurring"),
+						className: `inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-colors cursor-pointer ${activeSubTab === "recurring" ? "ui-accent-active text-white" : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-[#241b3d]"}`,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Repeat, { className: "h-3.5 w-3.5" }),
+							"Wiederkehrende Fixkosten (",
+							recurringExpenses.length,
+							")",
+							dueRecurringList.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "rounded-full bg-amber-500 px-1.5 py-0.5 text-[10px] font-bold text-white",
+								children: dueRecurringList.length
+							})
+						]
+					})]
+				})]
+			}),
+			dueRecurringList.length > 0 && onBookAllDueRecurringExpenses && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50/90 p-4 dark:border-amber-800/60 dark:bg-amber-950/40 sm:flex-row sm:items-center sm:justify-between",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-start gap-2.5 text-sm text-amber-950 dark:text-amber-100",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "font-semibold",
+						children: [dueRecurringList.length, " wiederkehrende Ausgabe(n) sind fällig"]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-xs text-amber-800 dark:text-amber-200/80",
+						children: dueRecurringList.map((r) => `${r.vendor} (${formatCurrency(r.grossAmount)})`).join(" · ")
+					})] })]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					type: "button",
+					onClick: onBookAllDueRecurringExpenses,
+					className: "inline-flex items-center gap-1.5 rounded-xl bg-amber-600 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-700 whitespace-nowrap shrink-0 cursor-pointer",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3.5 w-3.5 fill-current" }), "Alle fälligen verbuchen"]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: "Ausgaben gesamt (Brutto)"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-1 font-mono text-xl font-bold text-slate-900 dark:text-white tabular-nums",
+								children: formatCurrency(stats.totalGross)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-0.5 text-[11px] text-slate-500 dark:text-slate-400",
+								children: [
+									"Netto: ",
+									formatCurrency(stats.totalNet),
+									" (",
+									expenses.length,
+									" Buchungen)"
+								]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: "Fixkosten pro Monat (Ø)"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-1 font-mono text-xl font-bold text-amber-700 dark:text-amber-400 tabular-nums",
+								children: formatCurrency(monthlyFixedCosts.gross)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-0.5 text-[11px] text-slate-500 dark:text-slate-400",
+								children: [
+									"Netto ",
+									formatCurrency(monthlyFixedCosts.net),
+									"/Monat ·",
+									" ",
+									recurringExpenses.filter((r) => r.active).length,
+									" aktiv"
+								]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: "Weiterberechenbar (offen)"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-1 font-mono text-xl font-bold text-emerald-700 dark:text-emerald-400 tabular-nums",
+								children: formatCurrency(stats.openBillableNet)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-0.5 text-[11px] text-slate-500 dark:text-slate-400",
+								children: [stats.openBillableCount, " offene Kundenauslage(n)"]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex flex-col justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
+						children: activeSubTab === "recurring" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: openNewRecurringModal,
+							className: "inline-flex w-full items-center justify-center gap-1.5 rounded-xl ui-accent-btn px-3 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neue Fixkosten (z. B. Miete)"]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-[11px] text-slate-500 dark:text-slate-400",
+							children: "Monatliche, quartalsweise oder jährliche Betriebskosten automatisieren."
+						})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-wrap gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => cameraInputRef.current?.click(),
+								className: "flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl ui-accent-btn px-3 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-4 w-4" }), "Beleg scannen"]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => openNewModal("operating"),
+								className: "inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neu"]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-[11px] text-slate-500 dark:text-slate-400",
+							children: "Beleg scannen oder sonstige Betriebskosten manuell eintragen."
+						})] })
+					})
+				]
+			}),
+			activeSubTab === "recurring" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "space-y-4",
+				children: recurringExpenses.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-[#3b2d5e] dark:bg-[#19122c]",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Building2, { className: "mx-auto mb-2 h-8 w-8 text-slate-400" }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm font-semibold text-slate-700 dark:text-slate-200",
+							children: "Noch keine wiederkehrenden Betriebskosten hinterlegt"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+							children: "Lege hier laufende Fixkosten wie Studio-Miete, Strom, Internet, Versicherungen oder Software-Abos an."
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: openNewRecurringModal,
+							className: "mt-4 inline-flex items-center gap-1.5 rounded-xl ui-accent-btn px-4 py-2 text-xs font-semibold text-white cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Erste Fixkosten anlegen"]
+						})
+					]
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "grid grid-cols-1 gap-3 md:grid-cols-2",
+					children: recurringExpenses.map((rec) => {
+						const isDue = rec.active && rec.nextDueDate <= todayStr;
+						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: `flex flex-col justify-between gap-3 rounded-2xl border bg-white p-4 shadow-sm dark:bg-[#19122c] ${isDue ? "border-amber-300 dark:border-amber-700/70" : "border-slate-200 dark:border-[#342653]"} ${!rec.active ? "opacity-65" : ""}`,
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-3",
+								children: [rec.receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => setPreviewReceipt({
+										title: rec.vendor,
+										subtitle: `${INTERVAL_LABELS$1[rec.interval]} · ${formatCurrency(rec.grossAmount)}`,
+										imageDataUrl: rec.receiptImageDataUrl
+									}),
+									className: "group relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-[#3b2d5e] cursor-pointer",
+									title: "Hinterlegten Beleg / Vertrag vergrößern",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+										src: rec.receiptImageDataUrl,
+										alt: `Beleg ${rec.vendor}`,
+										className: "h-full w-full object-cover"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 transition-opacity group-hover:opacity-100",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-4 w-4 text-white" })
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "min-w-0 flex-1",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-start justify-between gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "min-w-0",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex flex-wrap items-center gap-1.5",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+															className: "truncate text-sm font-bold text-slate-900 dark:text-white",
+															children: rec.vendor
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "rounded-md bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
+															children: INTERVAL_LABELS$1[rec.interval]
+														}),
+														!rec.active && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "rounded-md bg-slate-200 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2a2045] dark:text-slate-400",
+															children: "Pausiert"
+														})
+													]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-0.5 text-xs text-slate-600 dark:text-slate-300",
+													children: rec.description
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "text-right shrink-0",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "font-mono text-sm font-bold text-slate-900 dark:text-white tabular-nums",
+													children: formatCurrency(rec.grossAmount)
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "font-mono text-[11px] text-slate-500 dark:text-slate-400 tabular-nums",
+													children: [
+														"Netto ",
+														formatCurrency(rec.netAmount),
+														" (",
+														rec.taxRate,
+														"%)"
+													]
+												})]
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-2.5 flex flex-wrap items-center gap-2 text-[11px]",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded-md bg-violet-50 px-2 py-0.5 font-medium text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
+													children: rec.category
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: `rounded-md px-2 py-0.5 font-medium ${isDue ? "bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300" : "bg-slate-100 text-slate-700 dark:bg-[#2a2045] dark:text-slate-300"}`,
+													children: [isDue ? "Fällig seit " : "Nächste Buchung: ", formatDateDE(rec.nextDueDate)]
+												}),
+												rec.receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => setPreviewReceipt({
+														title: rec.vendor,
+														subtitle: `${INTERVAL_LABELS$1[rec.interval]} · ${formatCurrency(rec.grossAmount)}`,
+														imageDataUrl: rec.receiptImageDataUrl
+													}),
+													className: "inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300 dark:hover:bg-emerald-500/25 cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-3 w-3" }), "Beleg ansehen"]
+												}),
+												rec.lastBookedDate && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "text-slate-500 dark:text-slate-400",
+													children: ["Zuletzt: ", formatDateDE(rec.lastBookedDate)]
+												})
+											]
+										}),
+										rec.notes && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1.5 text-xs text-slate-500 dark:text-slate-400",
+											children: rec.notes
+										})
+									]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-2.5 dark:border-[#2e234a]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "checkbox",
+										checked: rec.active,
+										onChange: (e) => onUpdateRecurringExpense?.({
+											...rec,
+											active: e.target.checked
+										}),
+										className: "h-3.5 w-3.5 rounded accent-violet-600"
+									}), "Aktiv"]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center gap-1.5",
+									children: [
+										onBookRecurringExpense && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: () => onBookRecurringExpense(rec.id),
+											className: `inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold cursor-pointer ${isDue ? "bg-amber-600 text-white hover:bg-amber-700" : "border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#2a2045]"}`,
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3 w-3 fill-current" }), "Jetzt verbuchen"]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: () => openEditRecurringModal(rec),
+											className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenLine, { className: "h-3.5 w-3.5" }), "Bearbeiten"]
+										}),
+										onDeleteRecurringExpense && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => onDeleteRecurringExpense(rec.id),
+											className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 px-2.5 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:text-rose-300 dark:hover:bg-rose-500/15 cursor-pointer",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+										})
+									]
+								})]
+							})]
+						}, rec.id);
+					})
+				})
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap items-center gap-2.5",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
+							children: [
+								{
+									id: "ALL",
+									label: "Alle"
+								},
+								{
+									id: "operating",
+									label: "Betriebskosten"
+								},
+								{
+									id: "project",
+									label: "Projekt / Kunde"
+								}
+							].map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => setTypeFilter(t.id),
+								className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${typeFilter === t.id ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300"}`,
+								children: t.label
+							}, t.id))
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+							size: "sm",
+							className: "w-56",
+							value: categoryFilter,
+							onChange: setCategoryFilter,
+							options: [{
+								value: "ALL",
+								label: "Alle Ausgabenkategorien"
+							}, ...availableCategories.map((c) => ({
+								value: c,
+								label: c
+							}))]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setShowBillableOnly((prev) => !prev),
+							className: `rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${showBillableOnly ? "ui-accent-selected border-violet-300" : "border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300"}`,
+							children: "Nur weiterberechenbare"
+						})
+					]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					type: "button",
+					onClick: () => galleryInputRef.current?.click(),
+					className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 cursor-pointer",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileImage, { className: "h-3.5 w-3.5" }), "Foto aus Galerie scannen"]
+				})]
+			}), filtered.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-[#3b2d5e] dark:bg-[#19122c]",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "mx-auto mb-2 h-8 w-8 text-slate-400" }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm font-semibold text-slate-700 dark:text-slate-200",
+						children: "Noch keine Belege oder Ausgaben erfasst"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+						children: "Scanne Kassenbons per Kamera oder erfasse eine Betriebsausgabe manuell."
+					})
+				]
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "grid grid-cols-1 gap-3 md:grid-cols-2",
+				children: filtered.map((exp) => {
+					const cust = exp.customerId ? customerMap.get(exp.customerId) : void 0;
+					const isOperating = exp.expenseType === "operating" || !exp.customerId;
+					return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#342653] dark:bg-[#19122c]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-start gap-3",
+							children: [exp.receiptImageDataUrl ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => setPreviewReceipt({
+									title: exp.vendor,
+									subtitle: `${formatDateDE(exp.date)} · ${formatCurrency(exp.grossAmount)}`,
+									imageDataUrl: exp.receiptImageDataUrl
+								}),
+								className: "group relative h-16 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-[#3b2d5e] cursor-pointer",
+								title: "Belegfoto vergrößern",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+									src: exp.receiptImageDataUrl,
+									alt: exp.vendor,
+									className: "h-full w-full object-cover"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "absolute inset-0 flex items-center justify-center bg-slate-900/40 opacity-0 transition-opacity group-hover:opacity-100",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-4 w-4 text-white" })
+								})]
+							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-[#241b3d] dark:text-slate-400",
+								children: exp.isRecurring ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Repeat, { className: "h-5 w-5 text-amber-600 dark:text-amber-400" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-5 w-5" })
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "min-w-0 flex-1",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center justify-between gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+											className: "truncate text-sm font-bold text-slate-900 dark:text-white",
+											children: exp.vendor
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "font-mono text-sm font-bold text-slate-900 dark:text-white tabular-nums",
+											children: formatCurrency(exp.grossAmount)
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-0.5 truncate text-xs text-slate-600 dark:text-slate-300",
+										children: exp.description
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mt-2 flex flex-wrap items-center gap-1.5 text-[11px]",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "rounded-md bg-slate-100 px-2 py-0.5 font-medium text-slate-700 dark:bg-[#2a2045] dark:text-slate-300",
+												children: formatDateDE(exp.date)
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "rounded-md bg-violet-50 px-2 py-0.5 font-medium text-violet-700 dark:bg-violet-500/15 dark:text-violet-300",
+												children: exp.category
+											}),
+											isOperating && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "rounded-md bg-amber-50 px-2 py-0.5 font-medium text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
+												children: exp.isRecurring ? "Fixkosten" : "Betriebskosten"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "text-slate-500 dark:text-slate-400",
+												children: [
+													"Netto ",
+													formatCurrency(exp.netAmount),
+													" (",
+													exp.taxRate,
+													" %)"
+												]
+											})
+										]
+									}),
+									cust && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mt-2 flex flex-wrap items-center gap-1.5 text-[11px]",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "rounded-md bg-sky-50 px-2 py-0.5 font-medium text-sky-700 dark:bg-sky-500/15 dark:text-sky-300",
+											children: ["Kunde: ", cust.companyName]
+										}), exp.billableToCustomer && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: `inline-flex items-center gap-1 rounded-md px-2 py-0.5 font-semibold ${exp.billedInvoiceId ? "bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300" : "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"}`,
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-3 w-3" }), exp.billedInvoiceId ? "Bereits berechnet" : "Weiterberechenbar"]
+										})]
+									})
+								]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-wrap items-center justify-end gap-1.5 border-t border-slate-100 pt-2.5 dark:border-[#2e234a]",
+							children: [
+								exp.receiptImageDataUrl && nextcloudConfigured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									disabled: uploadingId === exp.id,
+									onClick: async () => {
+										setUploadingId(exp.id);
+										try {
+											await onUploadExpenseReceipt(exp);
+										} finally {
+											setUploadingId(null);
+										}
+									},
+									className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [uploadingId === exp.id ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5 text-violet-600 dark:text-violet-300" }), exp.nextcloudUploadedAt ? "Erneut sichern" : "Nach Nextcloud"]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => openEditModal(exp),
+									className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenLine, { className: "h-3.5 w-3.5" }), "Bearbeiten"]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => onDeleteExpense(exp.id),
+									className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 px-2.5 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:text-rose-300 dark:hover:bg-rose-500/15 cursor-pointer",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+								})
+							]
+						})]
+					}, exp.id);
+				})
+			})] }),
+			formOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				role: "dialog",
+				"aria-modal": "true",
+				"data-no-swipe": "true",
+				className: "fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 backdrop-blur-sm sm:p-4",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#342653] dark:bg-[#19122c]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2e234a]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+							className: "text-base font-bold text-slate-900 dark:text-white",
+							children: editingId ? "Ausgabe bearbeiten" : "Beleg / Betriebskosten erfassen"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setFormOpen(false),
+							className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-5 w-5" })
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+						onSubmit: handleSave,
+						className: "overflow-y-auto p-5 space-y-4",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2 rounded-xl border border-violet-200 bg-violet-50/70 p-3 dark:border-violet-500/30 dark:bg-violet-500/10",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2 text-xs text-violet-900 dark:text-violet-200",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: scanningAi ? "KI liest Belegdaten aus..." : "Foto aufnehmen / auswählen für automatische Beleg-Erkennung" })]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										disabled: scanningAi,
+										onClick: () => cameraInputRef.current?.click(),
+										className: "inline-flex items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer",
+										children: [scanningAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5" }), "Kamera"]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										disabled: scanningAi,
+										onClick: () => galleryInputRef.current?.click(),
+										className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileImage, { className: "h-3.5 w-3.5" }), "Datei"]
+									})]
+								})]
+							}),
+							receiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => setPreviewReceipt({
+											title: vendor.trim() || "Belegvorschau",
+											subtitle: `${formatDateDE(date)} · ${formatCurrency(grossAmount)}`,
+											imageDataUrl: receiptImageDataUrl
+										}),
+										className: "h-16 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 cursor-pointer",
+										title: "Vorschau vergrößern",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+											src: receiptImageDataUrl,
+											alt: "Belegvorschau",
+											className: "h-full w-full object-cover"
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "min-w-0 flex-1 text-xs text-slate-600 dark:text-slate-300",
+										children: "Belegfoto angehängt."
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											disabled: scanningAi,
+											onClick: async () => {
+												setScanningAi(true);
+												try {
+													const parsed = await apiScanReceiptWithAi(receiptImageDataUrl);
+													if (parsed.vendor) setVendor(parsed.vendor);
+													if (parsed.date) setDate(parsed.date);
+													if (parsed.description) setDescription(parsed.description);
+													if (parsed.category) setCategory(parsed.category);
+													setTaxRate(parsed.taxRate);
+													if (parsed.grossAmount > 0) setGrossAmount(parsed.grossAmount);
+													if (parsed.netAmount > 0) setNetAmount(parsed.netAmount);
+													if (parsed.notes) setNotes(parsed.notes);
+													onNotify("Belegdaten aktualisiert.", "success");
+												} catch (err) {
+													onNotify(err instanceof Error ? err.message : "Scan fehlgeschlagen.", "warning");
+												} finally {
+													setScanningAi(false);
+												}
+											},
+											className: "inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-3.5 w-3.5" }), "Erneut scannen"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setReceiptImageDataUrl(""),
+											className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:bg-[#19122c] dark:text-rose-300 cursor-pointer",
+											title: "Beleg entfernen",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+										})]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Anbieter / Händler *"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									required: true,
+									value: vendor,
+									onChange: (e) => setVendor(e.target.value),
+									placeholder: "z. B. Aral, Conrad, Obi...",
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Belegdatum"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "date",
+									value: date,
+									onChange: (e) => setDate(e.target.value),
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+								})] })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Beschreibung / Positionen"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: description,
+									onChange: (e) => setDescription(e.target.value),
+									placeholder: "z. B. Materialeinsatz oder Kraftstoff",
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Kategorie"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CategoryPicker, {
+									value: category,
+									onChange: setCategory,
+									categories: availableCategories
+								})] })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-3 sm:grid-cols-3",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Bruttobetrag (€)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "number",
+										step: "0.01",
+										min: "0",
+										value: grossAmount,
+										onChange: (e) => handleGrossChange(Number(e.target.value)),
+										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "MwSt.-Satz"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: String(taxRate),
+										onChange: (v) => handleTaxChange(Number(v)),
+										options: [
+											{
+												value: "19",
+												label: "19 % USt."
+											},
+											{
+												value: "7",
+												label: "7 % USt."
+											},
+											{
+												value: "0",
+												label: "0 % (Steuerfrei)"
+											}
+										]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Nettobetrag (€)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "number",
+										step: "0.01",
+										min: "0",
+										value: netAmount,
+										onChange: (e) => handleNetChange(Number(e.target.value)),
+										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+									})] })
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 space-y-3 dark:border-[#342653] dark:bg-[#211936]/70",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center justify-between gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Kostenart"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "inline-flex items-center gap-1 rounded-lg bg-slate-200/70 p-1 dark:bg-[#19122c]",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => {
+												setExpenseType("operating");
+												setCustomerId("");
+												setBillableToCustomer(false);
+											},
+											className: `rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer ${expenseType === "operating" ? "bg-amber-600 text-white" : "text-slate-600 dark:text-slate-300"}`,
+											children: "Betriebskosten (allgemein)"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setExpenseType("project"),
+											className: `rounded-md px-2.5 py-1 text-xs font-semibold cursor-pointer ${expenseType === "project" ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 dark:text-slate-300"}`,
+											children: "Projekt / Kunde"
+										})]
+									})]
+								}), expenseType === "project" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Kunde zuordnen"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+									value: customerId,
+									onChange: (v) => {
+										setCustomerId(v);
+										if (!v) setBillableToCustomer(false);
+									},
+									options: [{
+										value: "",
+										label: "Kein Kunde"
+									}, ...customers.map((c) => ({
+										value: c.id,
+										label: c.companyName,
+										hint: c.customerNumber
+									}))]
+								})] }), customerId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "checkbox",
+										checked: billableToCustomer,
+										onChange: (e) => setBillableToCustomer(e.target.checked),
+										className: "rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+									}), "Auf nächster Kundenrechnung weiterberechnen (Auslage)"]
+								})] })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Notizen / Belegnummer"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "text",
+								value: notes,
+								onChange: (e) => setNotes(e.target.value),
+								placeholder: "Optional...",
+								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+							})] }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-end gap-2.5 border-t border-slate-200 pt-4 dark:border-[#2e234a]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setFormOpen(false),
+									className: "rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 cursor-pointer",
+									children: "Abbrechen"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
+									children: editingId ? "Änderungen speichern" : "Beleg speichern"
+								})]
+							})
+						]
+					})]
+				})
+			}),
+			recFormOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				role: "dialog",
+				"aria-modal": "true",
+				"data-no-swipe": "true",
+				className: "fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-3 backdrop-blur-sm sm:p-4",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#342653] dark:bg-[#19122c]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2e234a]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+							className: "text-base font-bold text-slate-900 dark:text-white",
+							children: editingRecId ? "Wiederkehrende Fixkosten bearbeiten" : "Neue wiederkehrende Ausgabe (z. B. Miete)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setRecFormOpen(false),
+							className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-5 w-5" })
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+						onSubmit: handleSaveRecurring,
+						className: "overflow-y-auto p-5 space-y-4",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2 rounded-xl border border-violet-200 bg-violet-50/70 p-3 dark:border-violet-500/30 dark:bg-violet-500/10",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2 text-xs text-violet-900 dark:text-violet-200",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: recScanningAi ? "KI liest Belegdaten aus..." : "Vertrag, Dauerrechnung oder Belegfoto hinterlegen (wird bei Verbuchung übernommen)" })]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										disabled: recScanningAi,
+										onClick: () => recCameraInputRef.current?.click(),
+										className: "inline-flex items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer",
+										children: [recScanningAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5" }), "Kamera"]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										disabled: recScanningAi,
+										onClick: () => recGalleryInputRef.current?.click(),
+										className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileImage, { className: "h-3.5 w-3.5" }), "Datei"]
+									})]
+								})]
+							}),
+							recReceiptImageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => setPreviewReceipt({
+											title: recVendor.trim() || "Fixkosten-Beleg",
+											subtitle: `${INTERVAL_LABELS$1[recInterval]} · ${formatCurrency(recGross)}`,
+											imageDataUrl: recReceiptImageDataUrl
+										}),
+										className: "h-16 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 cursor-pointer",
+										title: "Beleg vergrößern",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+											src: recReceiptImageDataUrl,
+											alt: "Fixkosten-Belegvorschau",
+											className: "h-full w-full object-cover"
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "min-w-0 flex-1 text-xs text-slate-600 dark:text-slate-300",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold text-slate-800 dark:text-slate-100",
+											children: "Beleg / Vertrag angehängt"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-[11px] text-slate-500 dark:text-slate-400",
+											children: "Tippen zum Vergrößern — wird bei jeder Buchung mit übernommen."
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											disabled: recScanningAi,
+											onClick: () => void runRecurringReceiptAiScan(recReceiptImageDataUrl),
+											className: "inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 hover:bg-violet-50 dark:border-violet-500/40 dark:bg-[#19122c] dark:text-violet-300 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-3.5 w-3.5" }), "KI auslesen"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setRecReceiptImageDataUrl(""),
+											className: "inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:border-rose-500/30 dark:bg-[#19122c] dark:text-rose-300 cursor-pointer",
+											title: "Beleg entfernen",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+										})]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Anbieter / Vermieter *"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									required: true,
+									value: recVendor,
+									onChange: (e) => setRecVendor(e.target.value),
+									placeholder: "z. B. Immobilienverwaltung, Telekom, Stromanbieter...",
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Kategorie"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CategoryPicker, {
+									value: recCategory,
+									onChange: setRecCategory,
+									categories: availableCategories
+								})] })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Beschreibung"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "text",
+								value: recDescription,
+								onChange: (e) => setRecDescription(e.target.value),
+								placeholder: "z. B. Studio-Miete inkl. Nebenkosten",
+								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+							})] }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-3 sm:grid-cols-3",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Bruttobetrag (€)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "number",
+										step: "0.01",
+										min: "0",
+										value: recGross,
+										onChange: (e) => handleRecGrossChange(Number(e.target.value)),
+										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "MwSt.-Satz"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: String(recTaxRate),
+										onChange: (v) => handleRecTaxChange(Number(v)),
+										options: [
+											{
+												value: "19",
+												label: "19 % USt."
+											},
+											{
+												value: "7",
+												label: "7 % USt."
+											},
+											{
+												value: "0",
+												label: "0 % (z. B. Miete / Versicherung)"
+											}
+										]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Nettobetrag (€)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "number",
+										step: "0.01",
+										min: "0",
+										value: recNet,
+										onChange: (e) => handleRecNetChange(Number(e.target.value)),
+										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+									})] })
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Zahlungsintervall"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+									value: recInterval,
+									onChange: (v) => setRecInterval(v),
+									options: [
+										{
+											value: "monthly",
+											label: "Monatlich"
+										},
+										{
+											value: "quarterly",
+											label: "Quartalsweise (alle 3 Monate)"
+										},
+										{
+											value: "yearly",
+											label: "Jährlich"
+										}
+									]
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Nächste Fälligkeit"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "date",
+									value: recNextDueDate,
+									onChange: (e) => setRecNextDueDate(e.target.value),
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+								})] })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Notizen / Vertragsnummer (optional)"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "text",
+								value: recNotes,
+								onChange: (e) => setRecNotes(e.target.value),
+								placeholder: "Optional...",
+								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+							})] }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: recActive,
+									onChange: (e) => setRecActive(e.target.checked),
+									className: "h-4 w-4 rounded accent-violet-600"
+								}), "Aktiv (wird bei Fälligkeit zur Verbuchung vorgeschlagen)"]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-end gap-2.5 border-t border-slate-200 pt-4 dark:border-[#2e234a]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setRecFormOpen(false),
+									className: "rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 cursor-pointer",
+									children: "Abbrechen"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
+									children: editingRecId ? "Änderungen speichern" : "Fixkosten speichern"
+								})]
+							})
+						]
+					})]
+				})
+			}),
+			previewReceipt && previewReceipt.imageDataUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				role: "dialog",
+				"aria-modal": "true",
+				"data-no-swipe": "true",
+				onClick: () => setPreviewReceipt(null),
+				className: "fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					onClick: (e) => e.stopPropagation(),
+					className: "max-w-xl w-full overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between border-b border-slate-800 px-4 py-3 text-white",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "min-w-0",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "truncate text-sm font-bold",
+								children: previewReceipt.title
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-xs text-slate-400",
+								children: previewReceipt.subtitle
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setPreviewReceipt(null),
+							className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white cursor-pointer",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-5 w-5" })
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "p-3 bg-slate-950 flex items-center justify-center",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+							src: previewReceipt.imageDataUrl,
+							alt: previewReceipt.title,
+							className: "max-h-[75vh] w-auto rounded-lg object-contain"
+						})
+					})]
+				})
+			})
+		]
+	});
+}
+// src/utils/eInvoiceXml.ts
+function escapeXml(value) {
+	return (value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+}
+function mapUnitCode(unit) {
+	switch (unit) {
+		case "Std.": return "HUR";
+		case "Tag": return "DAY";
+		case "Pauschal": return "LS";
+		default: return "C62";
+	}
+}
+function cleanSpaces(value) {
+	return (value || "").replace(/\s+/g, "").toUpperCase();
+}
+function buildXRechnungXml(invoice, company) {
+	const isSmallBiz = invoice.isSmallBusiness ?? Boolean(company.smallBusinessMode);
+	const totals = calculateDocumentTotals(invoice.lineItems, isSmallBiz, invoice.discountType ?? "percent", invoice.discountValue ?? 0);
+	const totalPayable = isSmallBiz ? invoice.netTotal : invoice.grossTotal;
+	const taxTotal = isSmallBiz ? 0 : invoice.taxTotal;
+	const iban = cleanSpaces(company.iban);
+	const bic = cleanSpaces(company.bic);
+	const taxSubtotalsXml = totals.taxBreakdown.map((grp) => {
+		const rate = grp.rate;
+		const catId = isSmallBiz || rate === 0 ? "E" : "S";
+		const exemptionReason = isSmallBiz ? `<cbc:TaxExemptionReason>${escapeXml(invoice.smallBusinessNotice || company.smallBusinessNotice || "Kein Ausweis von Umsatzsteuer, da Kleinunternehmer gemäß § 19 UStG.")}</cbc:TaxExemptionReason>` : rate === 0 ? "<cbc:TaxExemptionReason>Steuerfreie Leistung (0 %)</cbc:TaxExemptionReason>" : "";
+		return `    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="EUR">${grp.taxable.toFixed(2)}</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="EUR">${grp.tax.toFixed(2)}</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>${catId}</cbc:ID>
+        <cbc:Percent>${rate.toFixed(2)}</cbc:Percent>
+        ${exemptionReason}
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>`;
+	}).join("\n");
+	const discountAmount = invoice.discountNetAmount ?? totals.discountNetAmount;
+	const lineExtensionSum = invoice.subtotalNetBeforeDiscount ?? totals.subtotalNetBeforeDiscount;
+	const allowanceChargeXml = discountAmount > 0 ? `  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+    <cbc:AllowanceChargeReason>${escapeXml(invoice.discountLabel || "Rabatt")}</cbc:AllowanceChargeReason>
+    <cbc:Amount currencyID="EUR">${discountAmount.toFixed(2)}</cbc:Amount>
+    <cac:TaxCategory>
+      <cbc:ID>${isSmallBiz ? "E" : "S"}</cbc:ID>
+      <cbc:Percent>${(isSmallBiz ? 0 : totals.taxBreakdown[0]?.rate ?? 19).toFixed(2)}</cbc:Percent>
+      <cac:TaxScheme>
+        <cbc:ID>VAT</cbc:ID>
+      </cac:TaxScheme>
+    </cac:TaxCategory>
+  </cac:AllowanceCharge>` : "";
+	const linesXml = invoice.lineItems.map((item, idx) => {
+		const rate = isSmallBiz ? 0 : item.taxRate;
+		const catId = isSmallBiz || rate === 0 ? "E" : "S";
+		return `  <cac:InvoiceLine>
+    <cbc:ID>${idx + 1}</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="${mapUnitCode(item.unit)}">${item.quantity.toFixed(2)}</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="EUR">${item.netTotal.toFixed(2)}</cbc:LineExtensionAmount>
+    <cac:Item>
+      <cbc:Description>${escapeXml(item.detail || item.description)}</cbc:Description>
+      <cbc:Name>${escapeXml(item.description)}</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>${catId}</cbc:ID>
+        <cbc:Percent>${rate.toFixed(2)}</cbc:Percent>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="EUR">${item.unitPriceNet.toFixed(2)}</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>`;
+	}).join("\n");
+	const supplierTaxId = company.vatId?.trim() || company.taxNumber?.trim() || "";
+	const supplierScheme = company.vatId?.trim() ? "VAT" : "FC";
+	return `<?xml version="1.0" encoding="UTF-8"?>
+<ubl:Invoice xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+             xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+             xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0</cbc:CustomizationID>
+  <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>
+  <cbc:ID>${escapeXml(invoice.invoiceNumber)}</cbc:ID>
+  <cbc:IssueDate>${escapeXml(invoice.issueDate)}</cbc:IssueDate>
+  <cbc:DueDate>${escapeXml(invoice.dueDate)}</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  ${invoice.introText ? `<cbc:Note>${escapeXml(invoice.introText)}</cbc:Note>` : ""}
+  <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:BuyerReference>
+  <cac:InvoicePeriod>
+    <cbc:StartDate>${escapeXml(invoice.servicePeriodStart)}</cbc:StartDate>
+    <cbc:EndDate>${escapeXml(invoice.servicePeriodEnd)}</cbc:EndDate>
+  </cac:InvoicePeriod>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">${escapeXml(company.email || "info@taktwerk.local")}</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>${escapeXml(company.companyName || "TaktWerk")}</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>${escapeXml(company.street)}</cbc:StreetName>
+        <cbc:CityName>${escapeXml(company.city)}</cbc:CityName>
+        <cbc:PostalZone>${escapeXml(company.postalCode)}</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      ${supplierTaxId ? `<cac:PartyTaxScheme>
+        <cbc:CompanyID>${escapeXml(supplierTaxId)}</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>${supplierScheme}</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>` : ""}
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>${escapeXml(company.companyName || company.ownerName)}</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>${escapeXml(company.ownerName || company.companyName)}</cbc:Name>
+        ${company.phone ? `<cbc:Telephone>${escapeXml(company.phone)}</cbc:Telephone>` : ""}
+        ${company.email ? `<cbc:ElectronicMail>${escapeXml(company.email)}</cbc:ElectronicMail>` : ""}
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="EM">${escapeXml(invoice.customerSnapshot.email || "kunde@local")}</cbc:EndpointID>
+      <cac:PartyName>
+        <cbc:Name>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>${escapeXml(invoice.customerSnapshot.street)}</cbc:StreetName>
+        <cbc:CityName>${escapeXml(invoice.customerSnapshot.city)}</cbc:CityName>
+        <cbc:PostalZone>${escapeXml(invoice.customerSnapshot.postalCode)}</cbc:PostalZone>
+        <cac:Country>
+          <cbc:IdentificationCode>DE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      ${invoice.customerSnapshot.vatId ? `<cac:PartyTaxScheme>
+        <cbc:CompanyID>${escapeXml(invoice.customerSnapshot.vatId)}</cbc:CompanyID>
+        <cac:TaxScheme>
+          <cbc:ID>VAT</cbc:ID>
+        </cac:TaxScheme>
+      </cac:PartyTaxScheme>` : ""}
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>${escapeXml(invoice.customerSnapshot.companyName)}</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  ${iban ? `<cac:PaymentMeans>
+    <cbc:PaymentMeansCode>58</cbc:PaymentMeansCode>
+    <cbc:PaymentID>${escapeXml(invoice.invoiceNumber)}</cbc:PaymentID>
+    <cac:PayeeFinancialAccount>
+      <cbc:ID>${escapeXml(iban)}</cbc:ID>
+      <cbc:Name>${escapeXml(company.companyName || company.ownerName)}</cbc:Name>
+      ${bic ? `<cac:FinancialInstitutionBranch>
+        <cbc:ID>${escapeXml(bic)}</cbc:ID>
+      </cac:FinancialInstitutionBranch>` : ""}
+    </cac:PayeeFinancialAccount>
+  </cac:PaymentMeans>` : ""}
+  <cac:PaymentTerms>
+    <cbc:Note>${escapeXml(invoice.outroText || `Zahlbar bis ${invoice.dueDate}`)}</cbc:Note>
+  </cac:PaymentTerms>
+${allowanceChargeXml}
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="EUR">${taxTotal.toFixed(2)}</cbc:TaxAmount>
+${taxSubtotalsXml}
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="EUR">${lineExtensionSum.toFixed(2)}</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="EUR">${invoice.netTotal.toFixed(2)}</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="EUR">${totalPayable.toFixed(2)}</cbc:TaxInclusiveAmount>
+    ${discountAmount > 0 ? `<cbc:AllowanceTotalAmount currencyID="EUR">${discountAmount.toFixed(2)}</cbc:AllowanceTotalAmount>` : ""}
+    <cbc:PayableAmount currencyID="EUR">${totalPayable.toFixed(2)}</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+${linesXml}
+</ubl:Invoice>
+`;
+}
+// src/components/SignaturePadModal.tsx
+function SignaturePadModal({ open, title, subtitle, initialSignature, defaultSignerName = "", onClose, onSave }) {
+	const canvasRef = (0, import_react.useRef)(null);
+	const drawingRef = (0, import_react.useRef)(false);
+	const [hasStroke, setHasStroke] = (0, import_react.useState)(false);
+	const [signedBy, setSignedBy] = (0, import_react.useState)(defaultSignerName);
+	const [signedRole, setSignedRole] = (0, import_react.useState)("");
+	const [locationAddress, setLocationAddress] = (0, import_react.useState)("");
+	const [notes, setNotes] = (0, import_react.useState)("");
+	const [locating, setLocating] = (0, import_react.useState)(false);
+	const [error, setError] = (0, import_react.useState)(null);
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		setSignedBy(initialSignature?.signedBy || defaultSignerName || "");
+		setSignedRole(initialSignature?.signedRole || "");
+		setLocationAddress(initialSignature?.locationAddress || "");
+		setNotes(initialSignature?.notes || "");
+		setError(null);
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		if (initialSignature?.signatureDataUrl) {
+			const img = new Image();
+			img.onload = () => {
+				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+				setHasStroke(true);
+			};
+			img.src = initialSignature.signatureDataUrl;
+		} else setHasStroke(false);
+	}, [
+		open,
+		initialSignature,
+		defaultSignerName
+	]);
+	if (!open) return null;
+	const getCoords = (e) => {
+		const canvas = canvasRef.current;
+		if (!canvas) return {
+			x: 0,
+			y: 0
+		};
+		const rect = canvas.getBoundingClientRect();
+		const scaleX = canvas.width / Math.max(1, rect.width);
+		const scaleY = canvas.height / Math.max(1, rect.height);
+		return {
+			x: (e.clientX - rect.left) * scaleX,
+			y: (e.clientY - rect.top) * scaleY
+		};
+	};
+	const handlePointerDown = (e) => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		canvas.setPointerCapture(e.pointerId);
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+		const { x, y } = getCoords(e);
+		drawingRef.current = true;
+		ctx.strokeStyle = "#0f172a";
+		ctx.lineWidth = 3.2;
+		ctx.lineCap = "round";
+		ctx.lineJoin = "round";
+		ctx.beginPath();
+		ctx.moveTo(x, y);
+		ctx.lineTo(x + .1, y + .1);
+		ctx.stroke();
+		setHasStroke(true);
+		setError(null);
+	};
+	const handlePointerMove = (e) => {
+		if (!drawingRef.current) return;
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+		const { x, y } = getCoords(e);
+		ctx.lineTo(x, y);
+		ctx.stroke();
+	};
+	const handlePointerUp = () => {
+		drawingRef.current = false;
+	};
+	const handleClear = () => {
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const ctx = canvas.getContext("2d");
+		if (!ctx) return;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		setHasStroke(false);
+	};
+	const handleCaptureGps = async () => {
+		setLocating(true);
+		try {
+			const snap = await captureCurrentLocation();
+			setLocationAddress(formatLocationLabel(snap));
+		} catch (err) {
+			setError(err instanceof Error ? err.message : "Standort konnte nicht ermittelt werden.");
+		} finally {
+			setLocating(false);
+		}
+	};
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		if (!hasStroke) {
+			setError("Bitte direkt im Unterschriftsfeld unterzeichnen.");
+			return;
+		}
+		if (!signedBy.trim()) {
+			setError("Bitte den Namen des Unterzeichners angeben.");
+			return;
+		}
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+		const signatureDataUrl = canvas.toDataURL("image/png");
+		onSave({
+			signedBy: signedBy.trim(),
+			signedRole: signedRole.trim() || void 0,
+			signedAt: (/* @__PURE__ */ new Date()).toISOString(),
+			locationAddress: locationAddress.trim() || void 0,
+			notes: notes.trim() || void 0,
+			signatureDataUrl
+		});
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		role: "dialog",
+		"aria-modal": "true",
+		"data-no-swipe": "true",
+		onTouchStart: (e) => e.stopPropagation(),
+		onTouchMove: (e) => e.stopPropagation(),
+		onTouchEnd: (e) => e.stopPropagation(),
+		className: "fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/65 p-3 backdrop-blur-sm sm:p-4",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			"data-no-swipe": "true",
+			className: "flex max-h-[94vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#342653] dark:bg-[#19122c]",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2e234a]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2.5 min-w-0",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenTool, { className: "h-4.5 w-4.5" })
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "min-w-0",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+							className: "truncate text-base font-bold text-slate-900 dark:text-white",
+							children: title
+						}), subtitle && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "truncate text-xs text-slate-500 dark:text-slate-400",
+							children: subtitle
+						})]
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					type: "button",
+					onClick: onClose,
+					"aria-label": "Schließen",
+					className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] cursor-pointer",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-5 w-5" })
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+				onSubmit: handleSubmit,
+				className: "overflow-y-auto p-5 space-y-4",
+				children: [
+					error && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/15 dark:text-rose-200",
+						children: error
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mb-1.5 flex items-center justify-between",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "text-xs font-semibold text-slate-700 dark:text-slate-300",
+							children: "Unterschrift auf dem Display (Finger oder Stift)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: handleClear,
+							className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#2a2045] cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eraser, { className: "h-3.5 w-3.5" }), "Leeren"]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "relative overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-white dark:border-violet-500/40",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("canvas", {
+							ref: canvasRef,
+							width: 720,
+							height: 240,
+							"data-no-swipe": "true",
+							onTouchStart: (e) => e.stopPropagation(),
+							onTouchMove: (e) => e.stopPropagation(),
+							onTouchEnd: (e) => e.stopPropagation(),
+							onPointerDown: handlePointerDown,
+							onPointerMove: handlePointerMove,
+							onPointerUp: handlePointerUp,
+							onPointerCancel: handlePointerUp,
+							onPointerLeave: handlePointerUp,
+							className: "block h-44 w-full touch-none cursor-crosshair sm:h-48"
+						}), !hasStroke && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "pointer-events-none absolute inset-0 flex items-center justify-center",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "text-xs font-medium text-slate-400",
+								children: "Hier direkt unterschreiben..."
+							})
+						})]
+					})] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "grid grid-cols-1 gap-3 sm:grid-cols-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Name des Unterzeichners *"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							required: true,
+							value: signedBy,
+							onChange: (e) => setSignedBy(e.target.value),
+							placeholder: "Vor- und Nachname",
+							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+						})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+							children: "Funktion / Rolle (optional)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: signedRole,
+							onChange: (e) => setSignedRole(e.target.value),
+							placeholder: "z. B. Geschäftsführung, Bauleitung",
+							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+						})] })]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+						className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+						children: "Abnahmeort (optional)"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: locationAddress,
+							onChange: (e) => setLocationAddress(e.target.value),
+							placeholder: "Adresse oder Standort...",
+							className: "min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							disabled: locating,
+							onClick: handleCaptureGps,
+							className: "inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
+							children: [locating ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), "GPS"]
+						})]
+					})] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+						className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+						children: "Abnahmehinweis / Mängelfrei-Vermerk (optional)"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+						type: "text",
+						value: notes,
+						onChange: (e) => setNotes(e.target.value),
+						placeholder: "z. B. Anlage vollständig geprüft & übergeben",
+						className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+					})] }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-end gap-2.5 border-t border-slate-200 pt-4 dark:border-[#2e234a]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: onClose,
+							className: "rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#2a2045] cursor-pointer",
+							children: "Abbrechen"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "submit",
+							className: "inline-flex items-center gap-1.5 rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white shadow-sm cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }), "Abnahme speichern"]
+						})]
+					})
+				]
+			})]
+		})
+	});
+}
+// src/components/InvoicesView.tsx
+function InvoicesView({ company, customers, products, timeEntries, expenses = [], invoices, nextcloud, preselectedDraft, onClearPreselectedDraft, onCreateInvoice, onUpdateInvoice, onUpdateInvoiceStatus, onMarkInvoiceUploaded, onSaveSignature, onDeleteSignature, onToggleArchiveInvoice, onDeleteInvoice, onNotify }) {
+	const [statusFilter, setStatusFilter] = (0, import_react.useState)("all");
+	const [docFilter, setDocFilter] = (0, import_react.useState)("all");
+	const [archiveFilter, setArchiveFilter] = (0, import_react.useState)("active");
+	const [showBuilder, setShowBuilder] = (0, import_react.useState)(false);
+	const [editingInvoice, setEditingInvoice] = (0, import_react.useState)(null);
+	const [previewInvoice, setPreviewInvoice] = (0, import_react.useState)(null);
+	const [showPreviewMenu, setShowPreviewMenu] = (0, import_react.useState)(false);
+	const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = (0, import_react.useState)(null);
+	const [uploadingId, setUploadingId] = (0, import_react.useState)(null);
+	const [confirmDeleteId, setConfirmDeleteId] = (0, import_react.useState)(null);
+	const [signatureModalOpen, setSignatureModalOpen] = (0, import_react.useState)(false);
+	const [documentType, setDocumentType] = (0, import_react.useState)("invoice");
+	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
+	const [selectedEntryIds, setSelectedEntryIds] = (0, import_react.useState)([]);
+	const [groupByProduct, setGroupByProduct] = (0, import_react.useState)(true);
+	const [includeLocation, setIncludeLocation] = (0, import_react.useState)(Boolean(company.invoiceIncludeLocationDefault));
+	const [includeTimeNotes, setIncludeTimeNotes] = (0, import_react.useState)(Boolean(company.invoiceIncludeTimeNotesDefault));
+	const [roundingMinutes, setRoundingMinutes] = (0, import_react.useState)(company.defaultTimeRoundingMinutes ?? 0);
+	const [extraItems, setExtraItems] = (0, import_react.useState)([]);
+	const [billedExpenseIds, setBilledExpenseIds] = (0, import_react.useState)([]);
+	const [billedTravelEntryIds, setBilledTravelEntryIds] = (0, import_react.useState)([]);
+	const [issueDate, setIssueDate] = (0, import_react.useState)(toInputDate());
+	const [dueDateInput, setDueDateInput] = (0, import_react.useState)(() => addDaysISO(toInputDate(), company.defaultPaymentTermDays || 14));
+	const [quoteValidUntil, setQuoteValidUntil] = (0, import_react.useState)(() => addDaysISO(toInputDate(), 30));
+	const [invoiceNumber, setInvoiceNumber] = (0, import_react.useState)("");
+	const [discountType, setDiscountType] = (0, import_react.useState)("percent");
+	const [discountValue, setDiscountValue] = (0, import_react.useState)(0);
+	const [discountLabel, setDiscountLabel] = (0, import_react.useState)("Rabatt");
+	const defaultIntro = company.invoiceDefaultIntroText ?? "Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihren Auftrag. Vereinbarungsgemäß berechnen wir Ihnen folgende erbrachte Leistungen:";
+	const defaultOutro = company.invoiceDefaultOutroText ?? "Bitte überweisen Sie den Rechnungsbetrag innerhalb der Zahlungsfrist unter Angabe der Rechnungsnummer auf das unten genannte Konto.";
+	const defaultQuoteIntro = company.quoteDefaultIntroText ?? "Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot:";
+	const defaultQuoteOutro = company.quoteDefaultOutroText ?? "Dieses Angebot ist freibleibend. Bei Fragen oder zur Beauftragung freuen wir uns auf Ihre Rückmeldung.";
+	const [introText, setIntroText] = (0, import_react.useState)(defaultIntro);
+	const [outroText, setOutroText] = (0, import_react.useState)(defaultOutro);
+	const [isSmallBusiness, setIsSmallBusiness] = (0, import_react.useState)(Boolean(company.smallBusinessMode));
+	const [builderError, setBuilderError] = (0, import_react.useState)("");
+	const defaultSmallBusinessNotice = company.smallBusinessNotice || "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.";
+	const nextInvoiceSeqNumber = (0, import_react.useMemo)(() => formatInvoiceNumber(company, company.nextInvoiceSequence || invoices.filter((i) => i.documentType !== "quote").length + 1), [company, invoices]);
+	const nextQuoteSeqNumber = (0, import_react.useMemo)(() => formatQuoteNumber(company, company.nextQuoteSequence || invoices.filter((i) => i.documentType === "quote").length + 1), [company, invoices]);
+	const accentStyle = INVOICE_ACCENT_STYLES[company.invoiceAccentColor ?? "slate"] ?? INVOICE_ACCENT_STYLES.slate;
+	const fontOption = INVOICE_FONT_OPTIONS[company.invoiceFontFamily ?? "sans"] ?? INVOICE_FONT_OPTIONS.sans;
+	const layoutStyle = company.invoiceLayoutStyle ?? "classic";
+	const headerTitle = (company.invoiceHeaderTitle || "Rechnung").trim();
+	const quoteTitle = (company.quoteHeaderTitle || "Angebot").trim();
+	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
+	const productMap = (0, import_react.useMemo)(() => new Map(products.map((p) => [p.id, p])), [products]);
+	const getEffectiveRounding = (custId) => {
+		const cust = customerMap.get(custId);
+		if (cust?.timeRoundingMinutes != null) return cust.timeRoundingMinutes;
+		return company.defaultTimeRoundingMinutes ?? 0;
+	};
+	(0, import_react.useEffect)(() => {
+		setShowPreviewMenu(false);
+		let cancelled = false;
+		if (!previewInvoice || previewInvoice.documentType === "quote") {
+			setPreviewGiroCodeUrl(null);
+			return;
+		}
+		generateGiroCodeDataUrl(previewInvoice, company).then((url) => {
+			if (!cancelled) setPreviewGiroCodeUrl(url);
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [previewInvoice, company]);
+	(0, import_react.useEffect)(() => {
+		if (!preselectedDraft) return;
+		setDocumentType("invoice");
+		setCustomerId(preselectedDraft.customerId);
+		if (preselectedDraft.entryIds.length > 0) setSelectedEntryIds(preselectedDraft.entryIds);
+		else {
+			const openIds = timeEntries.filter((t) => t.customerId === preselectedDraft.customerId && t.billable && !t.billedInvoiceId).map((t) => t.id);
+			setSelectedEntryIds(openIds);
+		}
+		setEditingInvoice(null);
+		setExtraItems([]);
+		setBilledExpenseIds([]);
+		setBilledTravelEntryIds([]);
+		setIncludeLocation(Boolean(company.invoiceIncludeLocationDefault));
+		setIncludeTimeNotes(Boolean(company.invoiceIncludeTimeNotesDefault));
+		const today = toInputDate();
+		setIssueDate(today);
+		const custTerm = customerMap.get(preselectedDraft.customerId)?.paymentTermDays || company.defaultPaymentTermDays || 14;
+		setDueDateInput(addDaysISO(today, custTerm));
+		setQuoteValidUntil(addDaysISO(today, 30));
+		setInvoiceNumber(nextInvoiceSeqNumber);
+		setDiscountType("percent");
+		setDiscountValue(0);
+		setDiscountLabel("Rabatt");
+		setIntroText(defaultIntro);
+		setOutroText(defaultOutro);
+		setIsSmallBusiness(Boolean(company.smallBusinessMode));
+		setRoundingMinutes(getEffectiveRounding(preselectedDraft.customerId));
+		setBuilderError("");
+		setShowBuilder(true);
+		onClearPreselectedDraft();
+	}, [
+		preselectedDraft,
+		timeEntries,
+		nextInvoiceSeqNumber,
+		defaultIntro,
+		defaultOutro,
+		company.smallBusinessMode,
+		company.invoiceIncludeLocationDefault,
+		company.invoiceIncludeTimeNotesDefault,
+		company.defaultPaymentTermDays,
+		company.defaultTimeRoundingMinutes,
+		customerMap,
+		onClearPreselectedDraft
+	]);
+	const openBuilderFresh = (type = "invoice") => {
+		const firstCust = customers[0]?.id ?? "";
+		setEditingInvoice(null);
+		setDocumentType(type);
+		setCustomerId(firstCust);
+		const openIds = timeEntries.filter((t) => t.customerId === firstCust && t.billable && !t.billedInvoiceId).map((t) => t.id);
+		setSelectedEntryIds(openIds);
+		setExtraItems([]);
+		setBilledExpenseIds([]);
+		setBilledTravelEntryIds([]);
+		setIncludeLocation(Boolean(company.invoiceIncludeLocationDefault));
+		setIncludeTimeNotes(Boolean(company.invoiceIncludeTimeNotesDefault));
+		const today = toInputDate();
+		setIssueDate(today);
+		const custTerm = customerMap.get(firstCust)?.paymentTermDays || company.defaultPaymentTermDays || 14;
+		setDueDateInput(addDaysISO(today, custTerm));
+		setQuoteValidUntil(addDaysISO(today, 30));
+		setInvoiceNumber(type === "quote" ? nextQuoteSeqNumber : nextInvoiceSeqNumber);
+		setDiscountType("percent");
+		setDiscountValue(0);
+		setDiscountLabel("Rabatt");
+		setIntroText(type === "quote" ? defaultQuoteIntro : defaultIntro);
+		setOutroText(type === "quote" ? defaultQuoteOutro : defaultOutro);
+		setIsSmallBusiness(Boolean(company.smallBusinessMode));
+		setRoundingMinutes(getEffectiveRounding(firstCust));
+		setBuilderError("");
+		setShowBuilder(true);
+	};
+	const handleBuilderDocTypeChange = (nextType) => {
+		setDocumentType(nextType);
+		if (!editingInvoice) {
+			setInvoiceNumber(nextType === "quote" ? nextQuoteSeqNumber : nextInvoiceSeqNumber);
+			setIntroText(nextType === "quote" ? defaultQuoteIntro : defaultIntro);
+			setOutroText(nextType === "quote" ? defaultQuoteOutro : defaultOutro);
+		}
+	};
+	const openEditBuilder = (inv) => {
+		setPreviewInvoice(null);
+		setEditingInvoice(inv);
+		setDocumentType(inv.documentType ?? "invoice");
+		setCustomerId(inv.customerId);
+		const linkedIds = timeEntries.filter((t) => t.billedInvoiceId === inv.id).map((t) => t.id);
+		const fallbackIds = inv.lineItems.flatMap((li) => li.timeEntryIds || []).filter((id) => timeEntries.some((t) => t.id === id));
+		const entryIds = Array.from(/* @__PURE__ */ new Set([...linkedIds, ...fallbackIds]));
+		setSelectedEntryIds(entryIds);
+		const timeBasedLineItems = inv.lineItems.filter((li) => (li.timeEntryIds?.length ?? 0) > 0);
+		if (timeBasedLineItems.length > 0) setGroupByProduct(timeBasedLineItems.some((li) => (li.timeEntryIds?.length ?? 0) > 1) || entryIds.length === timeBasedLineItems.length);
+		setIncludeLocation(inv.includeLocation ?? (inv.lineItems.some((li) => li.detail?.includes("Ort:")) || Boolean(company.invoiceIncludeLocationDefault)));
+		setIncludeTimeNotes(inv.includeTimeNotes ?? Boolean(company.invoiceIncludeTimeNotesDefault));
+		const manualRows = inv.lineItems.filter((li) => (li.timeEntryIds?.length ?? 0) === 0).map((li) => ({
+			id: createId("ext"),
+			productId: li.productId || products[0]?.id || "",
+			description: li.description,
+			detail: li.detail,
+			unit: li.unit,
+			quantity: li.quantity,
+			unitPriceNet: li.unitPriceNet,
+			taxRate: li.taxRate
+		}));
+		setExtraItems(manualRows);
+		setBilledExpenseIds(expenses.filter((ex) => ex.billedInvoiceId === inv.id).map((ex) => ex.id));
+		setBilledTravelEntryIds(timeEntries.filter((t) => t.travelBilledInvoiceId === inv.id).map((t) => t.id));
+		setIssueDate(inv.issueDate);
+		setDueDateInput(inv.dueDate);
+		setQuoteValidUntil(inv.quoteValidUntil || inv.dueDate);
+		setInvoiceNumber(inv.invoiceNumber);
+		setDiscountType(inv.discountType ?? "percent");
+		setDiscountValue(inv.discountValue ?? 0);
+		setDiscountLabel(inv.discountLabel ?? "Rabatt");
+		setIntroText(inv.introText ?? "");
+		setOutroText(inv.outroText ?? "");
+		setIsSmallBusiness(inv.isSmallBusiness ?? Boolean(company.smallBusinessMode));
+		setRoundingMinutes(getEffectiveRounding(inv.customerId));
+		setBuilderError("");
+		setShowBuilder(true);
+	};
+	const handleBuilderCustomerChange = (newCustId) => {
+		setCustomerId(newCustId);
+		const openIds = timeEntries.filter((t) => t.customerId === newCustId && t.billable && (!t.billedInvoiceId || editingInvoice !== null && t.billedInvoiceId === editingInvoice.id)).map((t) => t.id);
+		setSelectedEntryIds(openIds);
+		setBilledExpenseIds([]);
+		setBilledTravelEntryIds([]);
+		setRoundingMinutes(getEffectiveRounding(newCustId));
+		if (!editingInvoice) {
+			const custTerm = customerMap.get(newCustId)?.paymentTermDays || company.defaultPaymentTermDays || 14;
+			setDueDateInput(addDaysISO(issueDate, custTerm));
+		}
+	};
+	const unbilledForCustomer = (0, import_react.useMemo)(() => timeEntries.filter((t) => t.customerId === customerId && t.billable && (!t.billedInvoiceId || editingInvoice !== null && t.billedInvoiceId === editingInvoice.id)), [
+		timeEntries,
+		customerId,
+		editingInvoice
+	]);
+	const openBillableExpensesForCustomer = (0, import_react.useMemo)(() => expenses.filter((exp) => exp.customerId === customerId && exp.billableToCustomer && !exp.billedInvoiceId && !billedExpenseIds.includes(exp.id)), [
+		expenses,
+		customerId,
+		billedExpenseIds
+	]);
+	const openTravelEntriesForCustomer = (0, import_react.useMemo)(() => unbilledForCustomer.filter((entry) => {
+		if (billedTravelEntryIds.includes(entry.id) || entry.travelBilledInvoiceId) return false;
+		if ((entry.travelCostNet ?? 0) > 0) return true;
+		return Boolean(company.homeBaseLocation && entry.location);
+	}), [
+		unbilledForCustomer,
+		billedTravelEntryIds,
+		company.homeBaseLocation
+	]);
+	const toggleEntry = (id) => {
+		setSelectedEntryIds((prev) => prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]);
+	};
+	const addExtraProductRow = () => {
+		const defaultProd = products.find((p) => p.type === "product") ?? products[0];
+		if (!defaultProd) return;
+		setExtraItems((prev) => [...prev, {
+			id: createId("ext"),
+			productId: defaultProd.id,
+			description: defaultProd.name,
+			quantity: 1,
+			unitPriceNet: defaultProd.unitPriceNet,
+			taxRate: defaultProd.taxRate
+		}]);
+	};
+	const updateExtraRow = (id, patch) => {
+		setExtraItems((prev) => prev.map((row) => {
+			if (row.id !== id) return row;
+			const next = {
+				...row,
+				...patch
+			};
+			if (patch.productId) {
+				const p = productMap.get(patch.productId);
+				if (p) {
+					next.description = p.name;
+					next.unitPriceNet = p.unitPriceNet;
+					next.taxRate = p.taxRate;
+				}
+			}
+			return next;
+		}));
+	};
+	const handleImportBillableExpenses = () => {
+		if (openBillableExpensesForCustomer.length === 0) return;
+		const newRows = openBillableExpensesForCustomer.map((exp) => ({
+			id: createId("ext"),
+			productId: products[0]?.id ?? "",
+			description: `${exp.vendor} — ${exp.description}`,
+			detail: `Beleg vom ${formatDateDE(exp.date)} (${exp.category})`,
+			unit: "Stk.",
+			quantity: 1,
+			unitPriceNet: exp.netAmount,
+			taxRate: exp.taxRate
+		}));
+		setExtraItems((prev) => [...prev, ...newRows]);
+		setBilledExpenseIds((prev) => [...prev, ...openBillableExpensesForCustomer.map((e) => e.id)]);
+		onNotify(`${newRows.length} Kunden-Beleg(e) als Position(en) übernommen.`);
+	};
+	const handleImportTravelCosts = () => {
+		const rate = company.travelRatePerKm ?? .3;
+		const roundTrip = company.travelRoundTripDefault !== false;
+		let totalKm = 0;
+		let totalCost = 0;
+		const matchedIds = [];
+		const addresses = /* @__PURE__ */ new Set();
+		for (const entry of openTravelEntriesForCustomer) {
+			let km = entry.travelDistanceKm ?? 0;
+			let cost = entry.travelCostNet ?? 0;
+			if (cost <= 0 && company.homeBaseLocation && entry.location) {
+				const calc = computeTravelFromBase(company.homeBaseLocation, entry.location, rate, roundTrip);
+				km = calc.distanceKm;
+				cost = calc.costNet;
+			}
+			if (cost > 0 || km > 0) {
+				totalKm += km;
+				totalCost += cost;
+				matchedIds.push(entry.id);
+				if (entry.location?.address) addresses.add(entry.location.address);
+			}
+		}
+		if (matchedIds.length === 0) {
+			onNotify("Keine abrechenbaren Fahrtkosten vorhanden (Standort & Startadresse nötig).", true);
+			return;
+		}
+		const kmRounded = Math.round(totalKm * 10) / 10;
+		const costRounded = Math.round(totalCost * 100) / 100;
+		setExtraItems((prev) => [...prev, {
+			id: createId("ext"),
+			productId: products[0]?.id ?? "",
+			description: `Fahrtkosten / Anfahrt (${kmRounded} km)`,
+			detail: `${matchedIds.length} Einsatzfahrten (${rate.toFixed(2)} €/km)${addresses.size > 0 ? ` · Ziele: ${Array.from(addresses).slice(0, 2).join("; ")}` : ""}`,
+			unit: "Pauschal",
+			quantity: 1,
+			unitPriceNet: costRounded,
+			taxRate: 19
+		}]);
+		setBilledTravelEntryIds((prev) => [...prev, ...matchedIds]);
+		onNotify(`Fahrtkosten (${kmRounded} km · ${formatCurrency(costRounded)}) als Position übernommen.`);
+	};
+	const formatEntryLocation = (entry) => {
+		if (!entry.location) return "";
+		return entry.location.address || `${entry.location.lat.toFixed(4)}, ${entry.location.lng.toFixed(4)}`;
+	};
+	const computedLineItems = (0, import_react.useMemo)(() => {
+		const selectedEntries = unbilledForCustomer.filter((e) => selectedEntryIds.includes(e.id));
+		const items = [];
+		if (groupByProduct) {
+			const grouped = /* @__PURE__ */ new Map();
+			for (const e of selectedEntries) {
+				const key = `${e.productId}::${e.hourlyRateNet}::${e.taxRate}`;
+				const list = grouped.get(key) ?? [];
+				list.push(e);
+				grouped.set(key, list);
+			}
+			for (const [, group] of grouped.entries()) {
+				const first = group[0];
+				const prod = productMap.get(first.productId);
+				const totalSeconds = roundDurationSeconds(group.reduce((acc, g) => acc + g.durationSeconds, 0), roundingMinutes);
+				const hours = Math.round(totalSeconds / 3600 * 100) / 100;
+				const net = Math.round(hours * first.hourlyRateNet * 100) / 100;
+				const effectiveTaxRate = isSmallBusiness ? 0 : first.taxRate;
+				const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
+				const taskTitles = Array.from(new Set(group.map((g) => g.title))).join(", ");
+				const notesList = includeTimeNotes ? Array.from(new Set(group.map((g) => (g.notes || "").trim()).filter(Boolean))) : [];
+				const notesSuffix = notesList.length > 0 ? ` · Notizen: ${notesList.join("; ")}` : "";
+				const locations = includeLocation ? Array.from(new Set(group.map((g) => formatEntryLocation(g)).filter(Boolean))) : [];
+				const locSuffix = locations.length > 0 ? ` · Ort: ${locations.join("; ")}` : "";
+				items.push({
+					id: createId("li"),
+					description: prod?.name ?? first.title,
+					detail: `${group.length} Zeiteinträge: ${taskTitles}${notesSuffix}${locSuffix}`,
+					quantity: hours,
+					unit: "Std.",
+					unitPriceNet: first.hourlyRateNet,
+					taxRate: effectiveTaxRate,
+					netTotal: net,
+					taxAmount: tax,
+					grossTotal: Math.round((net + tax) * 100) / 100,
+					timeEntryIds: group.map((g) => g.id),
+					productId: first.productId
+				});
+			}
+		} else for (const e of selectedEntries) {
+			const prod = productMap.get(e.productId);
+			const effectiveSeconds = roundDurationSeconds(e.durationSeconds, roundingMinutes);
+			const hours = Math.round(effectiveSeconds / 3600 * 100) / 100;
+			const net = Math.round(hours * e.hourlyRateNet * 100) / 100;
+			const effectiveTaxRate = isSmallBusiness ? 0 : e.taxRate;
+			const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
+			const locText = includeLocation ? formatEntryLocation(e) : "";
+			const noteText = includeTimeNotes ? (e.notes || "").trim() : "";
+			items.push({
+				id: createId("li"),
+				description: `${prod?.name ?? "Leistung"} — ${e.title}`,
+				detail: `${formatDateDE(e.startTime)}${noteText ? ` · ${noteText}` : ""}${locText ? ` · Ort: ${locText}` : ""}`,
+				quantity: hours,
+				unit: "Std.",
+				unitPriceNet: e.hourlyRateNet,
+				taxRate: effectiveTaxRate,
+				netTotal: net,
+				taxAmount: tax,
+				grossTotal: Math.round((net + tax) * 100) / 100,
+				timeEntryIds: [e.id],
+				productId: e.productId
+			});
+		}
+		for (const extra of extraItems) {
+			const prod = productMap.get(extra.productId);
+			const qty = Math.max(0, Number(extra.quantity) || 0);
+			const net = Math.round(qty * extra.unitPriceNet * 100) / 100;
+			const effectiveTaxRate = isSmallBusiness ? 0 : extra.taxRate;
+			const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
+			items.push({
+				id: createId("li"),
+				description: extra.description || prod?.name || "Position",
+				detail: extra.detail ?? prod?.description ?? "",
+				quantity: qty,
+				unit: extra.unit ?? prod?.unit ?? "Stk.",
+				unitPriceNet: extra.unitPriceNet,
+				taxRate: effectiveTaxRate,
+				netTotal: net,
+				taxAmount: tax,
+				grossTotal: Math.round((net + tax) * 100) / 100,
+				timeEntryIds: [],
+				productId: extra.productId
+			});
+		}
+		return items;
+	}, [
+		unbilledForCustomer,
+		selectedEntryIds,
+		groupByProduct,
+		includeLocation,
+		includeTimeNotes,
+		roundingMinutes,
+		extraItems,
+		productMap,
+		isSmallBusiness
+	]);
+	const builderTotals = (0, import_react.useMemo)(() => calculateDocumentTotals(computedLineItems, isSmallBusiness, discountType, discountValue), [
+		computedLineItems,
+		isSmallBusiness,
+		discountType,
+		discountValue
+	]);
+	const handleSaveInvoice = (e) => {
+		e.preventDefault();
+		setBuilderError("");
+		const cust = customerMap.get(customerId);
+		if (!cust) {
+			setBuilderError("Bitte einen Kunden auswählen.");
+			return;
+		}
+		if (computedLineItems.length === 0) {
+			setBuilderError("Bitte mindestens einen Zeiteintrag oder ein Produkt auswählen.");
+			return;
+		}
+		const dates = unbilledForCustomer.filter((entry) => selectedEntryIds.includes(entry.id)).map((entry) => entry.startTime.slice(0, 10)).sort();
+		const servicePeriodStart = dates[0] ?? issueDate;
+		const servicePeriodEnd = dates[dates.length - 1] ?? issueDate;
+		const dueDate = dueDateInput || addDaysISO(issueDate, cust.paymentTermDays || company.defaultPaymentTermDays || 14);
+		const fallbackNum = documentType === "quote" ? nextQuoteSeqNumber : nextInvoiceSeqNumber;
+		const savedInvoice = {
+			id: editingInvoice?.id ?? createId(documentType === "quote" ? "quote" : "inv"),
+			documentType,
+			invoiceNumber: invoiceNumber.trim() || fallbackNum,
+			customerId: cust.id,
+			customerSnapshot: {
+				companyName: cust.companyName,
+				contactName: cust.contactName,
+				street: cust.street,
+				postalCode: cust.postalCode,
+				city: cust.city,
+				country: cust.country,
+				vatId: cust.vatId,
+				email: cust.email
+			},
+			issueDate,
+			servicePeriodStart,
+			servicePeriodEnd,
+			dueDate: documentType === "quote" ? quoteValidUntil || dueDate : dueDate,
+			quoteValidUntil: documentType === "quote" ? quoteValidUntil || dueDate : void 0,
+			status: editingInvoice?.status ?? "Entwurf",
+			includeLocation,
+			includeTimeNotes,
+			isArchived: editingInvoice?.isArchived ?? false,
+			archivedAt: editingInvoice?.archivedAt ?? null,
+			lineItems: computedLineItems,
+			subtotalNetBeforeDiscount: builderTotals.subtotalNetBeforeDiscount,
+			discountType: discountValue > 0 ? discountType : void 0,
+			discountValue: discountValue > 0 ? discountValue : void 0,
+			discountLabel: discountValue > 0 ? discountLabel.trim() || "Rabatt" : void 0,
+			discountNetAmount: builderTotals.discountNetAmount > 0 ? builderTotals.discountNetAmount : void 0,
+			netTotal: builderTotals.netTotal,
+			taxTotal: builderTotals.taxTotal,
+			grossTotal: builderTotals.grossTotal,
+			introText: introText.trim(),
+			outroText: outroText.trim(),
+			isSmallBusiness,
+			smallBusinessNotice: isSmallBusiness ? defaultSmallBusinessNotice : void 0,
+			signature: editingInvoice?.signature,
+			nextcloudUploadedAt: null,
+			createdAt: editingInvoice?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
+		};
+		const entryIdsToBill = documentType === "quote" ? [] : selectedEntryIds;
+		const expIdsToBill = documentType === "quote" ? [] : billedExpenseIds;
+		const travelIdsToBill = documentType === "quote" ? [] : billedTravelEntryIds;
+		if (editingInvoice) onUpdateInvoice(savedInvoice, entryIdsToBill, expIdsToBill, travelIdsToBill);
+		else onCreateInvoice(savedInvoice, entryIdsToBill, expIdsToBill, travelIdsToBill);
+		setShowBuilder(false);
+		setEditingInvoice(null);
+		setPreviewInvoice(savedInvoice);
+		if (nextcloud.configured && nextcloud.autoSync) handleUploadToNextcloud(savedInvoice);
+	};
+	const handleConvertQuoteToInvoice = (quote) => {
+		const today = toInputDate();
+		const due = addDaysISO(today, customerMap.get(quote.customerId)?.paymentTermDays || company.defaultPaymentTermDays || 14);
+		const quotedEntryIds = new Set(quote.lineItems.flatMap((li) => li.timeEntryIds || []));
+		const toBillIds = timeEntries.filter((t) => quotedEntryIds.has(t.id) && t.billable && !t.billedInvoiceId).map((t) => t.id);
+		const converted = {
+			...quote,
+			id: createId("inv"),
+			documentType: "invoice",
+			invoiceNumber: nextInvoiceSeqNumber,
+			issueDate: today,
+			dueDate: due,
+			quoteValidUntil: void 0,
+			status: "Entwurf",
+			introText: defaultIntro,
+			outroText: defaultOutro,
+			nextcloudUploadedAt: null,
+			createdAt: (/* @__PURE__ */ new Date()).toISOString()
+		};
+		onCreateInvoice(converted, toBillIds);
+		setShowPreviewMenu(false);
+		setPreviewInvoice(converted);
+	};
+	const handleUploadToNextcloud = async (inv) => {
+		if (!nextcloud.configured) {
+			onNotify("Bitte konfiguriere zuerst deine Nextcloud-Verbindung unter \"Nextcloud & Setup\".", true);
+			return;
+		}
+		setUploadingId(inv.id);
+		try {
+			const pdfBase64 = await getInvoicePdfBase64(inv, company);
+			const result = await apiUploadInvoicePdf(`${inv.invoiceNumber}.pdf`, pdfBase64);
+			onMarkInvoiceUploaded(inv.id, result.uploadedAt);
+			setPreviewInvoice((prev) => prev?.id === inv.id ? {
+				...prev,
+				nextcloudUploadedAt: result.uploadedAt
+			} : prev);
+			onNotify(`Rechnung als PDF nach Nextcloud (${result.path}) hochgeladen.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Nextcloud-Upload fehlgeschlagen.", true);
+		} finally {
+			setUploadingId(null);
+		}
+	};
+	const handleOpenPdf = async (inv) => {
+		try {
+			await downloadInvoicePdf(inv, company);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "PDF konnte nicht geöffnet werden.", true);
+		}
+	};
+	const handleSharePdf = async (inv) => {
+		try {
+			await shareInvoicePdf(inv, company);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "PDF konnte nicht geteilt werden.", true);
+		}
+	};
+	const handlePaymentReminderPdf = async (inv) => {
+		try {
+			await downloadPaymentReminderPdf(inv, company);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Zahlungserinnerung konnte nicht erstellt werden.", true);
+		}
+	};
+	const getLinkedEntriesForInvoice = (inv) => {
+		const idSet = /* @__PURE__ */ new Set();
+		for (const li of inv.lineItems) for (const tid of li.timeEntryIds ?? []) idSet.add(tid);
+		return timeEntries.filter((t) => t.billedInvoiceId === inv.id || idSet.has(t.id));
+	};
+	const handleDownloadTimesheet = async (inv) => {
+		const linked = getLinkedEntriesForInvoice(inv);
+		if (linked.length === 0) {
+			onNotify("Diese Rechnung enthält keine verknüpften Zeiteinträge.", true);
+			return;
+		}
+		try {
+			await downloadTimesheetPdf(`Tätigkeitsbericht ${inv.invoiceNumber}`, `Taetigkeitsbericht-${inv.invoiceNumber}.pdf`, customerMap.get(inv.customerId), linked, company, `Leistungszeitraum: ${formatDateDE(inv.servicePeriodStart)} – ${formatDateDE(inv.servicePeriodEnd)}`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Tätigkeitsbericht konnte nicht erstellt werden.", true);
+		}
+	};
+	const handleDownloadXRechnungXml = async (inv) => {
+		try {
+			const xml = buildXRechnungXml(inv, company);
+			await downloadOrShareTextFile(`XRechnung-${inv.invoiceNumber}.xml`, xml, "application/xml");
+			onNotify(`XRechnung ${inv.invoiceNumber} (.xml) exportiert.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "XRechnung konnte nicht exportiert werden.", true);
+		}
+	};
+	const handleUploadXRechnungXml = async (inv) => {
+		if (!nextcloud.configured) {
+			onNotify("Bitte konfiguriere zuerst deine Nextcloud-Verbindung unter \"Nextcloud & Setup\".", true);
+			return;
+		}
+		setUploadingId(inv.id);
+		try {
+			const xml = buildXRechnungXml(inv, company);
+			onNotify(`XRechnung nach Nextcloud (${(await apiUploadInvoiceTextFile(`XRechnung-${inv.invoiceNumber}.xml`, xml, "application/xml; charset=utf-8")).path}) hochgeladen.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "XRechnung-Upload fehlgeschlagen.", true);
+		} finally {
+			setUploadingId(null);
+		}
+	};
+	const handlePrint = async (inv) => {
+		try {
+			await printInvoiceView(inv.invoiceNumber);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Drucken fehlgeschlagen.", true);
+		}
+	};
+	const handleDownloadProtocolPdf = async (inv) => {
+		try {
+			await downloadAcceptanceProtocolPdf(inv, company);
+			onNotify(`Abnahmeprotokoll ${inv.invoiceNumber} erstellt.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Abnahmeprotokoll konnte nicht erstellt werden.", true);
+		}
+	};
+	const handleShareProtocolPdf = async (inv) => {
+		try {
+			await shareAcceptanceProtocolPdf(inv, company);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Abnahmeprotokoll konnte nicht geteilt werden.", true);
+		}
+	};
+	const handleUploadProtocolToNextcloud = async (inv) => {
+		if (!nextcloud.configured) {
+			onNotify("Bitte verbinde zuerst Nextcloud unter \"Nextcloud & Setup\".", true);
+			return;
+		}
+		setUploadingId(inv.id);
+		try {
+			const pdfBase64 = await getAcceptanceProtocolPdfBase64(inv, company);
+			onNotify(`Abnahmeprotokoll in Nextcloud (${(await apiUploadInvoicePdf(`Abnahme-${inv.invoiceNumber}.pdf`, pdfBase64)).path}) gespeichert.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Upload fehlgeschlagen.", true);
+		} finally {
+			setUploadingId(null);
+		}
+	};
+	const overdueCount = (0, import_react.useMemo)(() => invoices.filter((inv) => !inv.isArchived && isInvoiceOverdue(inv)).length, [invoices]);
+	const activeCount = (0, import_react.useMemo)(() => invoices.filter((inv) => !inv.isArchived).length, [invoices]);
+	const archivedCount = (0, import_react.useMemo)(() => invoices.filter((inv) => Boolean(inv.isArchived)).length, [invoices]);
+	const filteredInvoices = (0, import_react.useMemo)(() => {
+		return [...invoices].filter((inv) => {
+			if (archiveFilter === "active" && inv.isArchived) return false;
+			if (archiveFilter === "archived" && !inv.isArchived) return false;
+			const isQuote = inv.documentType === "quote";
+			if (docFilter === "invoice" && isQuote) return false;
+			if (docFilter === "quote" && !isQuote) return false;
+			if (statusFilter === "all") return true;
+			if (statusFilter === "Überfällig") return !inv.isArchived && isInvoiceOverdue(inv);
+			return inv.status === statusFilter;
+		}).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+	}, [
+		invoices,
+		statusFilter,
+		docFilter,
+		archiveFilter
+	]);
+	const handleExportCsv = async () => {
+		try {
+			const csv = invoicesToCsv(filteredInvoices);
+			await downloadOrShareTextFile(`taktwerk-rechnungen-${toInputDate()}.csv`, csv, "text/csv");
+			onNotify("Rechnungsliste als CSV exportiert.");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "CSV-Export fehlgeschlagen.", true);
+		}
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-6",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "no-print flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "Rechnungen & Angebote"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "Rechnungen & Angebote",
+						text: "Rechnungen, Angebote mit Rabatten, rechtssichere PDFs, GiroCodes, XRechnungen und Tätigkeitsberichte erstellen."
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap items-center gap-2 shrink-0",
+					children: [
+						invoices.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => void handleExportCsv(),
+							className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "h-4 w-4" }), "CSV-Export"]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => openBuilderFresh("quote"),
+							disabled: customers.length === 0,
+							className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-800 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Neues Angebot"]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => openBuilderFresh("invoice"),
+							disabled: customers.length === 0,
+							className: "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-4 w-4" }), "Neue Rechnung erstellen"]
+						})
+					]
+				})]
+			}),
+			showBuilder && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "no-print rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mb-4 flex flex-wrap items-center justify-between gap-3",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-wrap items-center gap-3",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							className: "font-display text-lg font-semibold text-slate-900 dark:text-slate-100",
+							children: editingInvoice ? `${documentType === "quote" ? "Angebot" : "Rechnung"} ${editingInvoice.invoiceNumber} bearbeiten` : documentType === "quote" ? "Neues Angebot erstellen" : "Rechnung aus Arbeitszeiten generieren"
+						}), !editingInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
+							children: ["invoice", "quote"].map((dt) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => handleBuilderDocTypeChange(dt),
+								className: `rounded-md px-3 py-1 text-xs font-semibold transition-colors cursor-pointer ${documentType === dt ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+								children: dt === "invoice" ? "Rechnung" : "Angebot"
+							}, dt))
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: () => {
+							setShowBuilder(false);
+							setEditingInvoice(null);
+						},
+						className: "text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer",
+						children: "Schließen"
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+					onSubmit: handleSaveInvoice,
+					className: "space-y-5",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid grid-cols-1 gap-4 md:grid-cols-4",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Kunde"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+									value: customerId,
+									onChange: handleBuilderCustomerChange,
+									ariaLabel: "Kunde für Dokument auswählen",
+									options: customers.map((c) => ({
+										value: c.id,
+										label: c.companyName,
+										hint: c.city || void 0
+									}))
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: documentType === "quote" ? "Angebotsnummer" : "Rechnungsnummer"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: invoiceNumber,
+									onChange: (e) => setInvoiceNumber(e.target.value),
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: documentType === "quote" ? "Angebotsdatum" : "Rechnungsdatum"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "date",
+									value: issueDate,
+									onChange: (e) => setIssueDate(e.target.value),
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: documentType === "quote" ? "Gültig bis" : "Fällig bis"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "date",
+									value: documentType === "quote" ? quoteValidUntil : dueDateInput,
+									onChange: (e) => documentType === "quote" ? setQuoteValidUntil(e.target.value) : setDueDateInput(e.target.value),
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+								})] })
+							]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+									className: "text-sm font-semibold text-slate-800 dark:text-slate-200",
+									children: [
+										"Offene abrechenbare Arbeitszeiten (",
+										unbilledForCustomer.length,
+										")"
+									]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center gap-4",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "text-xs font-medium text-slate-600 dark:text-slate-400 whitespace-nowrap",
+												children: "Zeitrundung:"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+												size: "sm",
+												value: String(roundingMinutes),
+												onChange: (val) => setRoundingMinutes(Number(val)),
+												ariaLabel: "Zeitrundung auswählen",
+												className: "min-w-44",
+												options: [
+													{
+														value: "0",
+														label: "Exakt (keine Rundung)"
+													},
+													{
+														value: "5",
+														label: "Auf 5 Min. aufrunden"
+													},
+													{
+														value: "10",
+														label: "Auf 10 Min. aufrunden"
+													},
+													{
+														value: "15",
+														label: "Auf 15 Min. aufrunden"
+													},
+													{
+														value: "30",
+														label: "Auf 30 Min. aufrunden"
+													}
+												]
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+											className: "flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "checkbox",
+												checked: groupByProduct,
+												onChange: (e) => setGroupByProduct(e.target.checked),
+												className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+											}), "Gleichartige Leistungen zusammenfassen"]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+											className: "flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "checkbox",
+													checked: includeLocation,
+													onChange: (e) => setIncludeLocation(e.target.checked),
+													className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" }),
+												"Einsatzort in Rechnung angeben"
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+											className: "flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "checkbox",
+													checked: includeTimeNotes,
+													onChange: (e) => setIncludeTimeNotes(e.target.checked),
+													className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StickyNote, { className: "h-3.5 w-3.5 text-violet-600 dark:text-violet-400" }),
+												"Auftragsnotizen auf Rechnung ausgeben"
+											]
+										})
+									]
+								})]
+							}), unbilledForCustomer.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "rounded-lg border border-slate-200 bg-slate-50 p-4 text-xs text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
+								children: "Für diesen Kunden liegen aktuell keine offenen Zeiteinträge vor. Du kannst trotzdem Produkte/Pauschalen unten hinzufügen."
+							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "max-h-56 overflow-y-auto rounded-lg border border-slate-200 divide-y divide-slate-200 dark:border-[#2e2349] dark:divide-[#2e2349]",
+								children: unbilledForCustomer.map((entry) => {
+									const prod = productMap.get(entry.productId);
+									const roundedSecs = roundDurationSeconds(entry.durationSeconds, roundingMinutes);
+									const net = roundedSecs / 3600 * entry.hourlyRateNet;
+									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+										className: "flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-[#211936]/60 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center gap-3 min-w-0",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "checkbox",
+												checked: selectedEntryIds.includes(entry.id),
+												onChange: () => toggleEntry(entry.id),
+												className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "min-w-0",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "truncate text-sm font-medium text-slate-900 dark:text-slate-100",
+													children: entry.title
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+															formatDateDE(entry.startTime),
+															" · ",
+															prod?.name ?? "Leistung"
+														] }),
+														entry.location && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+															className: "inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3 w-3" }), entry.location.address || "GPS"]
+														}),
+														(entry.travelCostNet ?? 0) > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+															className: "inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-[11px] font-medium text-blue-700 dark:bg-violet-950/60 dark:text-violet-300",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Car, { className: "h-3 w-3" }),
+																entry.travelDistanceKm,
+																" km · ",
+																formatCurrency(entry.travelCostNet ?? 0)
+															]
+														})
+													]
+												})]
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "text-right font-mono text-xs tabular-nums whitespace-nowrap",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "font-semibold text-slate-900 dark:text-slate-100",
+												children: formatCurrency(net)
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "text-slate-500 dark:text-slate-400",
+												children: [formatDuration(entry.durationSeconds), roundingMinutes > 0 && !groupByProduct && roundedSecs !== entry.durationSeconds ? ` → ${formatDuration(roundedSecs)}` : ""]
+											})]
+										})]
+									}, entry.id);
+								})
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+									className: "text-sm font-semibold text-slate-800 dark:text-slate-200",
+									children: "Zusätzliche Produkte / Pauschalen & Auslagen"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center gap-2",
+									children: [
+										openTravelEntriesForCustomer.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: handleImportTravelCosts,
+											className: "inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-800 hover:bg-blue-100 dark:border-violet-700/60 dark:bg-violet-950/50 dark:text-violet-200 dark:hover:bg-violet-900/50 cursor-pointer",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Car, { className: "h-3.5 w-3.5" }),
+												"Fahrtkosten (",
+												openTravelEntriesForCustomer.length,
+												") übernehmen"
+											]
+										}),
+										openBillableExpensesForCustomer.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: handleImportBillableExpenses,
+											className: "inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200 dark:hover:bg-emerald-900/50 cursor-pointer",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-3.5 w-3.5" }),
+												"Offene Belege (",
+												openBillableExpensesForCustomer.length,
+												") übernehmen"
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: addExtraProductRow,
+											disabled: products.length === 0,
+											className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Position hinzufügen"]
+										})
+									]
+								})]
+							}), extraItems.map((row) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50 sm:grid-cols-12",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "sm:col-span-3",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+											size: "sm",
+											value: row.productId,
+											onChange: (val) => updateExtraRow(row.id, { productId: val }),
+											ariaLabel: "Katalog-Position auswählen",
+											options: products.map((p) => ({
+												value: p.id,
+												label: p.name
+											}))
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "sm:col-span-3",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "text",
+											value: row.description,
+											onChange: (e) => updateExtraRow(row.id, { description: e.target.value }),
+											placeholder: "Positionsbeschreibung",
+											className: "w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm text-slate-900 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "sm:col-span-2",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "number",
+											step: "0.5",
+											min: "0",
+											value: row.quantity,
+											onChange: (e) => updateExtraRow(row.id, { quantity: Number(e.target.value) }),
+											className: "w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-sm text-slate-900 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100",
+											placeholder: "Menge"
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "sm:col-span-2",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "number",
+											step: "0.01",
+											value: row.unitPriceNet,
+											onChange: (e) => updateExtraRow(row.id, { unitPriceNet: Number(e.target.value) }),
+											className: "w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-sm text-slate-900 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100",
+											placeholder: "Netto €"
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center justify-between sm:col-span-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums",
+											children: formatCurrency(row.quantity * row.unitPriceNet)
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setExtraItems((prev) => prev.filter((x) => x.id !== row.id)),
+											className: "text-slate-400 hover:text-red-600 dark:hover:text-red-400 cursor-pointer",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
+										})]
+									})
+								]
+							}, row.id))]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col justify-between gap-4 border-t border-slate-200 pt-4 dark:border-[#2e2349] sm:flex-row sm:items-end",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex-1 space-y-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Einleitungstext"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+									rows: 2,
+									value: introText,
+									onChange: (e) => setIntroText(e.target.value),
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Schlusstext / Zahlungshinweis"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+									rows: 2,
+									value: outroText,
+									onChange: (e) => setOutroText(e.target.value),
+									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+								})] })]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "w-full space-y-2.5 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-[#2e2349] dark:bg-[#211936]/70 sm:w-96",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+										className: "flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-[#3b2d5e] text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "checkbox",
+											checked: isSmallBusiness,
+											onChange: (e) => setIsSmallBusiness(e.target.checked),
+											className: "h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+										}), "Kleinunternehmerregelung (§ 19 UStG)"]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-1.5 border-b border-slate-200 pb-2.5 dark:border-[#3b2d5e]",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-200",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Percent, { className: "h-3.5 w-3.5 text-blue-700 dark:text-violet-400" }), "Rabatt (optional)"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "grid grid-cols-12 gap-1.5",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: discountLabel,
+													onChange: (e) => setDiscountLabel(e.target.value),
+													placeholder: "Bezeichnung",
+													className: "col-span-5 rounded-md border border-slate-300 bg-white px-2 py-1 text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "col-span-3",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+														size: "sm",
+														value: discountType,
+														onChange: (val) => setDiscountType(val),
+														ariaLabel: "Rabatt-Art",
+														options: [{
+															value: "percent",
+															label: "%"
+														}, {
+															value: "fixed",
+															label: "€ Netto"
+														}]
+													})
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "number",
+													min: "0",
+													step: "0.5",
+													value: discountValue,
+													onChange: (e) => setDiscountValue(Math.max(0, Number(e.target.value) || 0)),
+													className: "col-span-4 rounded-md border border-slate-300 bg-white px-2 py-1 text-right font-mono text-xs text-slate-900 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+												})
+											]
+										})]
+									}),
+									builderTotals.discountNetAmount > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between text-xs text-slate-500 dark:text-slate-400",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Zwischensumme Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "font-mono tabular-nums",
+											children: formatCurrency(builderTotals.subtotalNetBeforeDiscount)
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between text-xs text-emerald-700 dark:text-emerald-400",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+											discountLabel || "Rabatt",
+											" (",
+											discountType === "percent" ? `${discountValue}%` : formatCurrency(discountValue),
+											")"
+										] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "font-mono tabular-nums",
+											children: ["− ", formatCurrency(builderTotals.discountNetAmount)]
+										})]
+									})] }),
+									!isSmallBusiness ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between text-xs text-slate-600 dark:text-slate-400",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Summe Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "font-mono font-medium tabular-nums",
+											children: formatCurrency(builderTotals.netTotal)
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between text-xs text-slate-600 dark:text-slate-400",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "MwSt. gesamt" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "font-mono font-medium tabular-nums",
+											children: formatCurrency(builderTotals.taxTotal)
+										})]
+									})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-[11px] text-slate-500 dark:text-violet-300/80",
+										children: defaultSmallBusinessNotice
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between border-t border-slate-200 pt-1.5 text-sm font-bold text-slate-900 dark:border-[#3b2d5e] dark:text-slate-100",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: isSmallBusiness ? documentType === "quote" ? "Angebotsbetrag" : "Rechnungsbetrag" : "Gesamt Brutto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "font-mono tabular-nums",
+											children: formatCurrency(builderTotals.grossTotal)
+										})]
+									})
+								]
+							})]
+						}),
+						builderError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-xs font-medium text-red-600 dark:text-red-400",
+							children: builderError
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex justify-end gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => {
+									setShowBuilder(false);
+									setEditingInvoice(null);
+								},
+								className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
+								children: "Abbrechen"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "submit",
+								className: "rounded-lg bg-blue-700 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+								children: editingInvoice ? "Änderungen speichern" : documentType === "quote" ? "Angebot erzeugen (Zeiten bleiben offen)" : "Rechnung erzeugen & Zeiten verbuchen"
+							})]
+						})
+					]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "no-print rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4 dark:border-[#2e2349]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex flex-wrap items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
+						children: [
+							"all",
+							"Entwurf",
+							"Gesendet",
+							"Überfällig",
+							"Bezahlt",
+							"Storniert"
+						].map((st) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setStatusFilter(st),
+							className: `rounded-md px-3 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${statusFilter === st ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : st === "Überfällig" && overdueCount > 0 ? "text-red-700 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+							children: st === "all" ? "Alle" : st === "Überfällig" && overdueCount > 0 ? `Überfällig (${overdueCount})` : st
+						}, st))
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-wrap items-center gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
+							children: [
+								{
+									id: "active",
+									label: `Aktiv (${activeCount})`
+								},
+								{
+									id: "archived",
+									label: `Archiv (${archivedCount})`
+								},
+								{
+									id: "all",
+									label: "Alle"
+								}
+							].map((af) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => setArchiveFilter(af.id),
+								className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${archiveFilter === af.id ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+								children: af.label
+							}, af.id))
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
+							children: [
+								{
+									id: "all",
+									label: "Alle Typen"
+								},
+								{
+									id: "invoice",
+									label: "Rechnungen"
+								},
+								{
+									id: "quote",
+									label: "Angebote"
+								}
+							].map((dt) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => setDocFilter(dt.id),
+								className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors whitespace-nowrap shrink-0 cursor-pointer ${docFilter === dt.id ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+								children: dt.label
+							}, dt.id))
+						})]
+					})]
+				}), filteredInvoices.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "p-10 text-center",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm font-medium text-slate-700 dark:text-slate-300",
+						children: archiveFilter === "archived" ? "Noch keine archivierten Dokumente vorhanden." : "Noch keine Dokumente in dieser Ansicht vorhanden."
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+						children: archiveFilter === "archived" ? "Archiviere bezahlte oder abgeschlossene Rechnungen über das Archiv-Symbol in der Tabelle." : "Erfasse Arbeitszeiten für einen Kunden oder erstelle ein Angebot mit einem Klick."
+					})]
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "overflow-x-auto",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+						className: "w-full text-left text-sm",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+							className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3",
+									children: "Nr. / Typ"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3",
+									children: "Kunde"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3",
+									children: "Datum / Fällig"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3",
+									children: "Status"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 text-right",
+									children: "Betrag (Brutto)"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 text-right",
+									children: "Aktionen"
+								})
+							]
+						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
+							children: filteredInvoices.map((inv) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								onClick: () => setPreviewInvoice(inv),
+								className: `cursor-pointer transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50 ${inv.isArchived ? "opacity-80" : ""}`,
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										className: "px-4 py-3 whitespace-nowrap",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "font-mono text-sm font-semibold text-slate-900 dark:text-slate-100",
+											children: inv.invoiceNumber
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-0.5 flex flex-wrap items-center gap-1.5",
+											children: [inv.documentType === "quote" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "inline-block text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400",
+												children: "Angebot"
+											}), inv.isArchived && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "inline-block rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-[#2c2147] dark:text-slate-300",
+												children: "Archiviert"
+											})]
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										className: "px-4 py-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "font-medium text-slate-900 dark:text-slate-100",
+											children: inv.customerSnapshot.companyName
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "text-xs text-slate-500 dark:text-slate-400",
+											children: [
+												inv.lineItems.length,
+												" Positionen",
+												(inv.discountNetAmount ?? 0) > 0 ? ` · inkl. Rabatt (−${formatCurrency(inv.discountNetAmount ?? 0)})` : "",
+												inv.nextcloudUploadedAt ? ` · Nextcloud-PDF gesichert` : ""
+											]
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+										className: "px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums whitespace-nowrap",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: formatDateDE(inv.issueDate) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "text-slate-400 dark:text-slate-500",
+											children: ["Fällig ", formatDateDE(inv.dueDate)]
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3",
+										onClick: (e) => e.stopPropagation(),
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-col items-start gap-1",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+													size: "sm",
+													value: inv.status,
+													onChange: (val) => onUpdateInvoiceStatus(inv.id, val),
+													ariaLabel: `Status für ${inv.invoiceNumber}`,
+													className: "w-32",
+													options: [
+														{
+															value: "Entwurf",
+															label: "Entwurf"
+														},
+														{
+															value: "Gesendet",
+															label: "Gesendet"
+														},
+														{
+															value: "Bezahlt",
+															label: "Bezahlt"
+														},
+														{
+															value: "Storniert",
+															label: "Storniert"
+														}
+													]
+												}),
+												inv.signature && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-3 w-3 shrink-0" }), "Abgenommen"]
+												}),
+												(() => {
+													const overdueDays = getOverdueDays(inv);
+													if (overdueDays <= 0) return null;
+													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: "inline-flex items-center gap-1 text-[11px] font-semibold text-red-700 dark:text-red-400 whitespace-nowrap",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-3 w-3 shrink-0" }),
+															overdueDays,
+															" ",
+															overdueDays === 1 ? "Tag" : "Tage",
+															" überfällig"
+														]
+													});
+												})()
+											]
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap",
+										children: formatCurrency(inv.grossTotal)
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3",
+										onClick: (e) => e.stopPropagation(),
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center justify-end gap-1.5",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => openEditBuilder(inv),
+													title: "Rechnung bearbeiten",
+													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" })
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => setPreviewInvoice(inv),
+													title: "Vorschau öffnen",
+													className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-3.5 w-3.5" }), "Vorschau"]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => void handleOpenPdf(inv),
+													title: "PDF öffnen / herunterladen",
+													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-4 w-4" })
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => void handleSharePdf(inv),
+													title: "PDF teilen / auf Gerät speichern",
+													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] cursor-pointer",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { className: "h-4 w-4" })
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => void handleUploadToNextcloud(inv),
+													disabled: uploadingId === inv.id,
+													title: "PDF in Nextcloud (/Rechnungen) speichern",
+													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:text-violet-400 dark:hover:bg-[#231b38] cursor-pointer",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-4 w-4" })
+												}),
+												onToggleArchiveInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => onToggleArchiveInvoice(inv.id),
+													title: inv.isArchived ? "Aus dem Archiv wiederherstellen" : "Dokument archivieren",
+													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
+													children: inv.isArchived ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArchiveRestore, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "h-4 w-4" })
+												}),
+												confirmDeleteId === inv.id ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 dark:border-red-900/60 dark:bg-red-950/60",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => {
+															onDeleteInvoice(inv.id);
+															setConfirmDeleteId(null);
+															if (previewInvoice?.id === inv.id) setPreviewInvoice(null);
+														},
+														className: "text-[11px] font-semibold text-red-700 hover:underline dark:text-red-300 cursor-pointer whitespace-nowrap",
+														children: "Löschen (Zeiten bleiben)"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => setConfirmDeleteId(null),
+														className: "text-[11px] text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer",
+														children: "×"
+													})]
+												}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => setConfirmDeleteId(inv.id),
+													title: "Rechnung löschen (Arbeitszeiten bleiben erhalten)",
+													className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
+												})
+											]
+										})
+									})
+								]
+							}, inv.id))
+						})]
+					})
+				})]
+			}),
+			previewInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				role: "dialog",
+				"aria-modal": "true",
+				"data-no-swipe": "true",
+				className: "fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#0e0a18]/75 p-4 sm:p-8",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "w-full max-w-3xl rounded-xl border border-slate-200 bg-white shadow-xl dark:border-[#3b2d5e]",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "no-print flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-6 py-4 rounded-t-xl dark:border-[#2e2349] dark:bg-[#171126]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: [
+									previewInvoice.documentType === "quote" ? "Angebotsvorschau" : "Rechnungsvorschau",
+									" · ",
+									previewInvoice.invoiceNumber,
+									previewInvoice.isArchived && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "ml-2 rounded bg-slate-200 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-slate-600 dark:bg-[#2c2147] dark:text-slate-300",
+										children: "Archiviert"
+									})
+								]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-2",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "relative",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: () => setShowPreviewMenu((prev) => !prev),
+											className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+											children: ["Weitere Aktionen", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: "h-3.5 w-3.5" })]
+										}), showPreviewMenu && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "absolute left-0 top-full z-30 mt-1.5 w-60 max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-[#3b2d5e] dark:bg-[#1e1730]",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														openEditBuilder(previewInvoice);
+													},
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" }), "Bearbeiten"]
+												}),
+												onToggleArchiveInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														const nextArchived = !previewInvoice.isArchived;
+														onToggleArchiveInvoice(previewInvoice.id);
+														setPreviewInvoice({
+															...previewInvoice,
+															isArchived: nextArchived,
+															archivedAt: nextArchived ? (/* @__PURE__ */ new Date()).toISOString() : null
+														});
+														setShowPreviewMenu(false);
+													},
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [previewInvoice.isArchived ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArchiveRestore, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "h-3.5 w-3.5" }), previewInvoice.isArchived ? "Aus Archiv wiederherstellen" : "Archivieren"]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														handleOpenPdf(previewInvoice);
+													},
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), "PDF öffnen / herunterladen"]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														handlePrint(previewInvoice);
+													},
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Printer, { className: "h-3.5 w-3.5" }), "Drucken"]
+												}),
+												previewInvoice.documentType === "quote" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => handleConvertQuoteToInvoice(previewInvoice),
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleArrowRight, { className: "h-3.5 w-3.5" }), "In Rechnung umwandeln"]
+												}),
+												getLinkedEntriesForInvoice(previewInvoice).length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														handleDownloadTimesheet(previewInvoice);
+													},
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "h-3.5 w-3.5" }), "Tätigkeitsbericht (PDF)"]
+												}),
+												isInvoiceOverdue(previewInvoice) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														handlePaymentReminderPdf(previewInvoice);
+													},
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/60 cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-3.5 w-3.5" }), "Zahlungserinnerung (PDF)"]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														setSignatureModalOpen(true);
+													},
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-emerald-700 hover:bg-emerald-50 dark:text-emerald-300 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenTool, { className: "h-3.5 w-3.5" }), previewInvoice.signature ? "Abnahme / Unterschrift bearbeiten" : "Abnahme unterschreiben"]
+												}),
+												previewInvoice.signature && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => {
+															setShowPreviewMenu(false);
+															handleDownloadProtocolPdf(previewInvoice);
+														},
+														className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileCheck2, { className: "h-3.5 w-3.5" }), "Abnahmeprotokoll (PDF)"]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => {
+															setShowPreviewMenu(false);
+															handleShareProtocolPdf(previewInvoice);
+														},
+														className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { className: "h-3.5 w-3.5" }), "Abnahmeprotokoll teilen"]
+													}),
+													nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => {
+															setShowPreviewMenu(false);
+															handleUploadProtocolToNextcloud(previewInvoice);
+														},
+														disabled: uploadingId === previewInvoice.id,
+														className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), "Abnahme-PDF → Nextcloud"]
+													})
+												] }),
+												previewInvoice.documentType !== "quote" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														handleDownloadXRechnungXml(previewInvoice);
+													},
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileCode2, { className: "h-3.5 w-3.5" }), "XRechnung (.xml)"]
+												}), nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														handleUploadXRechnungXml(previewInvoice);
+													},
+													disabled: uploadingId === previewInvoice.id,
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), "XML → Nextcloud"]
+												})] })
+											]
+										})]
+									}),
+									!previewInvoice.signature && onSaveSignature && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => setSignatureModalOpen(true),
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200 whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenTool, { className: "h-3.5 w-3.5" }), "Abnahme"]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => void handleSharePdf(previewInvoice),
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { className: "h-3.5 w-3.5" }), "Teilen"]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => void handleUploadToNextcloud(previewInvoice),
+										disabled: uploadingId === previewInvoice.id,
+										className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-3.5 w-3.5" }), uploadingId === previewInvoice.id ? "Lade hoch..." : "PDF → Nextcloud"]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => {
+											if (confirmDeleteId === previewInvoice.id) {
+												onDeleteInvoice(previewInvoice.id);
+												setConfirmDeleteId(null);
+												setPreviewInvoice(null);
+											} else setConfirmDeleteId(previewInvoice.id);
+										},
+										title: "Dokument löschen (Arbeitszeiten bleiben erhalten)",
+										className: `inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium cursor-pointer ${confirmDeleteId === previewInvoice.id ? "border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300" : "border-slate-200 text-red-600 hover:bg-red-50 dark:border-[#3b2d5e] dark:text-red-400 dark:hover:bg-red-950/40"}`,
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" }), confirmDeleteId === previewInvoice.id ? "Wirklich löschen? (Zeiten bleiben)" : "Löschen"]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => {
+											setConfirmDeleteId(null);
+											setShowPreviewMenu(false);
+											setPreviewInvoice(null);
+										},
+										className: "inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-[#231b38] cursor-pointer",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
+									})
+								]
+							})]
+						}),
+						layoutStyle === "modern" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: `h-3 w-full ${accentStyle.bgClass}` }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: `p-8 sm:p-12 bg-white text-slate-900 rounded-b-xl ${fontOption.previewClass}`,
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-col justify-between gap-6 sm:flex-row",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-[11px] text-slate-500 underline",
+										children: [
+											company.companyName,
+											" · ",
+											company.street,
+											" · ",
+											company.postalCode,
+											" ",
+											company.city
+										]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mt-4 text-sm",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "font-semibold",
+												children: previewInvoice.customerSnapshot.companyName
+											}),
+											previewInvoice.customerSnapshot.contactName && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: previewInvoice.customerSnapshot.contactName }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: previewInvoice.customerSnapshot.street }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+												previewInvoice.customerSnapshot.postalCode,
+												" ",
+												previewInvoice.customerSnapshot.city
+											] }),
+											previewInvoice.customerSnapshot.vatId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-1 text-xs text-slate-500",
+												children: ["USt-IdNr.: ", previewInvoice.customerSnapshot.vatId]
+											})
+										]
+									})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-left sm:text-right",
+										children: [
+											company.logoDataUrl && company.invoiceShowLogo !== false && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "mb-3 flex sm:justify-end",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+													src: company.logoDataUrl,
+													alt: `${company.companyName} Logo`,
+													className: "max-h-14 max-w-[180px] object-contain"
+												})
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: `text-lg font-bold ${accentStyle.textClass}`,
+												children: company.companyName
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-1 text-xs text-slate-500 space-y-0.5",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: company.ownerName }),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: company.street }),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+														company.postalCode,
+														" ",
+														company.city
+													] }),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: company.email })
+												]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: `mt-5 rounded-lg p-3 text-xs space-y-1 text-left ${layoutStyle === "minimal" ? "border-l-2 border-slate-300 bg-transparent pl-3" : "border border-slate-200 bg-slate-50"}`,
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between gap-6",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-slate-500",
+															children: previewInvoice.documentType === "quote" ? "Angebotsnr." : "Rechnungsnr."
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "font-mono font-semibold",
+															children: previewInvoice.invoiceNumber
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between gap-6",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-slate-500",
+															children: "Datum"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "font-mono tabular-nums",
+															children: formatDateDE(previewInvoice.issueDate)
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between gap-6",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-slate-500",
+															children: "Leistungszeitraum"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+															className: "font-mono tabular-nums",
+															children: [
+																formatDateDE(previewInvoice.servicePeriodStart),
+																" –",
+																" ",
+																formatDateDE(previewInvoice.servicePeriodEnd)
+															]
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between gap-6",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-slate-500",
+															children: previewInvoice.documentType === "quote" ? "Gültig bis" : "Fällig bis"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "font-mono tabular-nums",
+															children: formatDateDE(previewInvoice.quoteValidUntil || previewInvoice.dueDate)
+														})]
+													})
+												]
+											})
+										]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
+									className: `mt-8 text-xl font-bold ${accentStyle.textClass}`,
+									children: [
+										previewInvoice.documentType === "quote" ? quoteTitle : headerTitle,
+										" ",
+										previewInvoice.invoiceNumber
+									]
+								}),
+								previewInvoice.introText && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-3 whitespace-pre-line text-sm text-slate-600",
+									children: previewInvoice.introText
+								}),
+								(() => {
+									const previewSmallBiz = previewInvoice.isSmallBusiness ?? Boolean(company.smallBusinessMode);
+									const smallBizText = previewInvoice.smallBusinessNotice || company.smallBusinessNotice || "Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.";
+									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+											className: "mt-6 w-full text-left text-sm",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+												className: `border-b-2 ${accentStyle.borderClass} text-xs font-semibold text-slate-600`,
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "py-2 pr-2",
+														children: "Pos."
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "py-2 pr-2",
+														children: "Beschreibung"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "py-2 px-2 text-right",
+														children: "Menge"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "py-2 px-2 text-right",
+														children: "Einzelpreis"
+													}),
+													!previewSmallBiz && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "py-2 px-2 text-right",
+														children: "MwSt."
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "py-2 pl-2 text-right",
+														children: previewSmallBiz ? "Gesamt" : "Netto"
+													})
+												]
+											}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+												className: "divide-y divide-slate-200",
+												children: previewInvoice.lineItems.map((item, idx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+														className: "py-3 pr-2 font-mono text-xs text-slate-500 align-top",
+														children: idx + 1
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+														className: "py-3 pr-2 align-top",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "font-medium text-slate-900",
+															children: item.description
+														}), item.detail && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-0.5 text-xs text-slate-500",
+															children: item.detail
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+														className: "py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap",
+														children: [
+															formatNumber(item.quantity, 2),
+															" ",
+															item.unit
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+														className: "py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap",
+														children: formatCurrency(item.unitPriceNet)
+													}),
+													!previewSmallBiz && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+														className: "py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap",
+														children: [item.taxRate, " %"]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+														className: "py-3 pl-2 text-right font-mono text-sm font-medium tabular-nums align-top whitespace-nowrap",
+														children: formatCurrency(item.netTotal)
+													})
+												] }, item.id))
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "mt-6 flex justify-end",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "w-full max-w-xs space-y-1.5 text-sm",
+												children: [
+													(previewInvoice.discountNetAmount ?? 0) > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between text-slate-600",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Zwischensumme Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "font-mono tabular-nums",
+															children: formatCurrency(previewInvoice.subtotalNetBeforeDiscount ?? previewInvoice.netTotal + (previewInvoice.discountNetAmount ?? 0))
+														})]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between text-emerald-700",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [previewInvoice.discountLabel || "Rabatt", previewInvoice.discountType === "percent" && previewInvoice.discountValue ? ` (${previewInvoice.discountValue}%)` : ""] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+															className: "font-mono tabular-nums",
+															children: ["− ", formatCurrency(previewInvoice.discountNetAmount ?? 0)]
+														})]
+													})] }),
+													!previewSmallBiz && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between text-slate-600",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Summe Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "font-mono tabular-nums",
+															children: formatCurrency(previewInvoice.netTotal)
+														})]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between text-slate-600",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Umsatzsteuer" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "font-mono tabular-nums",
+															children: formatCurrency(previewInvoice.taxTotal)
+														})]
+													})] }),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: `flex justify-between border-t-2 ${accentStyle.borderClass} pt-2 text-base font-bold ${accentStyle.textClass}`,
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: previewInvoice.documentType === "quote" ? "Angebotsbetrag" : "Rechnungsbetrag" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "font-mono tabular-nums",
+															children: formatCurrency(previewSmallBiz ? previewInvoice.netTotal : previewInvoice.grossTotal)
+														})]
+													})
+												]
+											})
+										}),
+										previewSmallBiz && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-6 rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs font-medium text-slate-700",
+											children: smallBizText
+										})
+									] });
+								})(),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex-1",
+										children: [previewInvoice.outroText && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "whitespace-pre-line text-xs text-slate-600",
+											children: previewInvoice.outroText
+										}), company.invoiceFooterNote && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-3 whitespace-pre-line text-xs italic text-slate-500",
+											children: company.invoiceFooterNote
+										})]
+									}), previewGiroCodeUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "shrink-0 rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-center",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+											src: previewGiroCodeUrl,
+											alt: "GiroCode (EPC-QR-Code)",
+											className: "mx-auto h-24 w-24"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "mt-1 text-[10px] font-semibold text-slate-600",
+											children: "GiroCode (EPC-QR)"
+										})]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-10 grid grid-cols-1 gap-4 border-t border-slate-200 pt-4 text-[11px] text-slate-500 sm:grid-cols-3",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "font-semibold text-slate-700",
+											children: company.companyName
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+											company.street,
+											", ",
+											company.postalCode,
+											" ",
+											company.city
+										] })] }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Bank: ", company.bankName] }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["IBAN: ", company.iban] }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["BIC: ", company.bic] })
+										] }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Steuernr.: ", company.taxNumber] }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["USt-IdNr.: ", company.vatId] }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["E-Mail: ", company.email] })
+										] })
+									]
+								}),
+								previewInvoice.signature && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-6 flex flex-col gap-4 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 sm:flex-row sm:items-center sm:justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-1 text-xs text-slate-700",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "inline-flex items-center gap-1.5 font-semibold text-emerald-800",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }), "Leistungsabnahme digital unterschrieben"]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+												"Unterzeichner: ",
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "font-semibold",
+													children: previewInvoice.signature.signedBy
+												}),
+												previewInvoice.signature.signedRole ? ` (${previewInvoice.signature.signedRole})` : ""
+											] }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "text-slate-500",
+												children: [
+													"Datum: ",
+													formatDateTimeDE(previewInvoice.signature.signedAt),
+													previewInvoice.signature.locationAddress ? ` · Ort: ${previewInvoice.signature.locationAddress}` : ""
+												]
+											}),
+											previewInvoice.signature.notes && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "italic text-slate-600",
+												children: ["Hinweis: ", previewInvoice.signature.notes]
+											}),
+											onDeleteSignature && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												type: "button",
+												onClick: () => {
+													onDeleteSignature(previewInvoice.id);
+													setPreviewInvoice((prev) => prev ? {
+														...prev,
+														signature: void 0
+													} : null);
+												},
+												className: "no-print mt-1 inline-flex items-center gap-1 text-[11px] font-medium text-red-600 hover:underline cursor-pointer",
+												children: "Unterschrift entfernen"
+											})
+										]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "shrink-0 rounded-lg border border-slate-200 bg-white p-2",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+											src: previewInvoice.signature.signatureDataUrl,
+											alt: `Unterschrift ${previewInvoice.signature.signedBy}`,
+											className: "h-20 w-48 object-contain"
+										})
+									})]
+								})
+							]
+						})
+					]
+				})
+			}),
+			previewInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SignaturePadModal, {
+				open: signatureModalOpen,
+				title: `Abnahmeprotokoll · ${previewInvoice.invoiceNumber}`,
+				subtitle: `${previewInvoice.customerSnapshot.companyName} (${formatCurrency(previewInvoice.grossTotal)})`,
+				initialSignature: previewInvoice.signature,
+				defaultSignerName: previewInvoice.customerSnapshot.contactName || previewInvoice.customerSnapshot.companyName,
+				onClose: () => setSignatureModalOpen(false),
+				onSave: (sig) => {
+					if (onSaveSignature) {
+						onSaveSignature(previewInvoice.id, sig);
+						setPreviewInvoice((prev) => prev ? {
+							...prev,
+							signature: sig
+						} : null);
+					}
+					setSignatureModalOpen(false);
+				}
+			})
+		]
+	});
+}
+// src/utils/soundReminder.ts
+var REMINDER_SOUND_OPTIONS = {
+	device: {
+		label: "Pixel- / Smartphone-Systemton",
+		description: "Nutzt einen direkt gewählten Google Pixel- oder Android-Benachrichtigungston.",
+		group: "system"
+	},
+	popcorn: {
+		label: "Popcorn (Pixel-Stil)",
+		description: "Fröhliche, leicht hüpfende 3-Ton-Folge im Stil klassischer Pixel-Sounds.",
+		group: "pixel"
+	},
+	eureka: {
+		label: "Eureka (Pixel-Stil)",
+		description: "Heller, optimistischer Aufwärts-Akzent für klare Erinnerungen.",
+		group: "pixel"
+	},
+	chord: {
+		label: "Akkord (Pixel-Stil)",
+		description: "Weicher, warmer Major-7-Klang im modernen Material-Design-Stil.",
+		group: "pixel"
+	},
+	droplet: {
+		label: "Wassertropfen",
+		description: "Klarer, unaufdringlicher Tropfen-Impuls mit sanftem Frequenz-Aufstieg.",
+		group: "pixel"
+	},
+	crystal: {
+		label: "Kristall-Glockenspiel",
+		description: "Feiner, brillanter Oberton-Klang mit sanftem Nachhall.",
+		group: "melodic"
+	},
+	marimba: {
+		label: "Marimba (Warm)",
+		description: "Natürlicher, holziger Dreiklang mit angenehmem Volumen.",
+		group: "melodic"
+	},
+	piano: {
+		label: "Klavier-Hinweis",
+		description: "Kurzer, eleganter Klavier-Akkord mit warmem Ausklang.",
+		group: "melodic"
+	},
+	chime: {
+		label: "Dreiklang (Sanft)",
+		description: "Angenehmer, klassisch aufsteigender Dreiklang.",
+		group: "melodic"
+	},
+	bell: {
+		label: "Glocke (Klar)",
+		description: "Heller, länger ausklingender Glockenton.",
+		group: "melodic"
+	},
+	woodblock: {
+		label: "Holzklang (Minimal)",
+		description: "Sehr dezenter Doppel-Klick für ruhige Arbeitsumgebungen.",
+		group: "melodic"
+	},
+	sonar: {
+		label: "Sonar-Echo",
+		description: "Weicher, mitteltiefer Impuls mit leisem Echo.",
+		group: "melodic"
+	},
+	fanfare: {
+		label: "Erfolgs-Signal",
+		description: "Kräftige, aufsteigende Vierklang-Melodie.",
+		group: "alert"
+	},
+	pulse: {
+		label: "Doppel-Signal",
+		description: "Kurzer, moderner Doppel-Impuls.",
+		group: "alert"
+	},
+	alarm: {
+		label: "Deutlicher Hinweiston",
+		description: "Gut hörbare Tonfolge bei lauter Umgebung.",
+		group: "alert"
+	},
+	silent: {
+		label: "Lautlos (nur Banner / Vibration)",
+		description: "Kein Ton, nur sichtbarer Hinweis & Vibration.",
+		group: "system"
+	}
+};
+var REMINDER_SOUND_PRESET_ORDER = [
+	"device",
+	"popcorn",
+	"eureka",
+	"chord",
+	"droplet",
+	"crystal",
+	"marimba",
+	"piano",
+	"chime",
+	"bell",
+	"woodblock",
+	"sonar",
+	"fanfare",
+	"pulse",
+	"alarm",
+	"silent"
+];
+var activeAudioCtx = null;
+var activeCleanupTimer = null;
+function playReminderSound(preset) {
+	if (preset === "silent") {
+		if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") navigator.vibrate([
+			120,
+			80,
+			120
+		]);
+		return;
+	}
+	if (typeof window === "undefined") return;
+	const AudioCtx = window.AudioContext || window.webkitAudioContext;
+	if (!AudioCtx) return;
+	try {
+		if (activeCleanupTimer) {
+			clearTimeout(activeCleanupTimer);
+			activeCleanupTimer = null;
+		}
+		if (activeAudioCtx) {
+			activeAudioCtx.close().catch(() => {});
+			activeAudioCtx = null;
+		}
+		const ctx = new AudioCtx();
+		activeAudioCtx = ctx;
+		const now = ctx.currentTime;
+		const scheduleNote = (freq, startOffset, duration, type = "sine", peakGain = .2, attack = .015) => {
+			const osc = ctx.createOscillator();
+			const gain = ctx.createGain();
+			osc.type = type;
+			osc.frequency.setValueAtTime(freq, now + startOffset);
+			gain.gain.setValueAtTime(1e-4, now + startOffset);
+			gain.gain.exponentialRampToValueAtTime(Math.max(.001, peakGain), now + startOffset + Math.min(attack, duration * .4));
+			gain.gain.exponentialRampToValueAtTime(1e-4, now + startOffset + duration);
+			osc.connect(gain);
+			gain.connect(ctx.destination);
+			osc.start(now + startOffset);
+			osc.stop(now + startOffset + duration + .03);
+		};
+		const scheduleGlide = (startFreq, endFreq, startOffset, duration, type = "sine", peakGain = .22) => {
+			const osc = ctx.createOscillator();
+			const gain = ctx.createGain();
+			osc.type = type;
+			osc.frequency.setValueAtTime(startFreq, now + startOffset);
+			osc.frequency.exponentialRampToValueAtTime(endFreq, now + startOffset + duration);
+			gain.gain.setValueAtTime(1e-4, now + startOffset);
+			gain.gain.exponentialRampToValueAtTime(peakGain, now + startOffset + .012);
+			gain.gain.exponentialRampToValueAtTime(1e-4, now + startOffset + duration);
+			osc.connect(gain);
+			gain.connect(ctx.destination);
+			osc.start(now + startOffset);
+			osc.stop(now + startOffset + duration + .03);
+		};
+		switch (preset) {
+			case "popcorn":
+				scheduleNote(698.46, 0, .09, "sine", .22, .006);
+				scheduleNote(1396.91, 0, .05, "triangle", .07, .004);
+				scheduleNote(880, .095, .09, "sine", .24, .006);
+				scheduleNote(1046.5, .19, .22, "sine", .22, .008);
+				scheduleNote(2093, .19, .12, "sine", .06, .006);
+				break;
+			case "eureka":
+				scheduleNote(659.25, 0, .14, "sine", .18, .01);
+				scheduleNote(830.61, .08, .16, "sine", .19, .01);
+				scheduleNote(987.77, .16, .2, "sine", .2, .01);
+				scheduleNote(1318.51, .24, .42, "sine", .22, .012);
+				scheduleNote(2637.02, .24, .22, "sine", .05, .01);
+				break;
+			case "chord":
+				scheduleNote(523.25, 0, .65, "sine", .14, .04);
+				scheduleNote(659.25, .03, .65, "sine", .13, .04);
+				scheduleNote(783.99, .06, .65, "sine", .12, .04);
+				scheduleNote(987.77, .09, .7, "triangle", .08, .05);
+				break;
+			case "droplet":
+				scheduleGlide(520, 1240, 0, .14, "sine", .22);
+				scheduleGlide(680, 1520, .16, .16, "sine", .18);
+				break;
+			case "crystal":
+				scheduleNote(1318.51, 0, .55, "sine", .16, .008);
+				scheduleNote(2637.02, 0, .35, "sine", .06, .006);
+				scheduleNote(1975.53, .12, .65, "sine", .17, .008);
+				scheduleNote(3951.07, .12, .3, "sine", .04, .006);
+				break;
+			case "marimba":
+				scheduleNote(587.33, 0, .16, "triangle", .25, .005);
+				scheduleNote(1174.66, 0, .06, "sine", .08, .004);
+				scheduleNote(739.99, .13, .16, "triangle", .24, .005);
+				scheduleNote(880, .26, .34, "triangle", .24, .005);
+				break;
+			case "piano":
+				scheduleNote(523.25, 0, .5, "triangle", .16, .008);
+				scheduleNote(659.25, 0, .5, "triangle", .14, .008);
+				scheduleNote(783.99, 0, .5, "sine", .14, .008);
+				scheduleNote(1046.5, .18, .58, "triangle", .16, .008);
+				break;
+			case "woodblock":
+				scheduleNote(720, 0, .055, "triangle", .24, .003);
+				scheduleNote(1440, 0, .03, "sine", .09, .002);
+				scheduleNote(960, .12, .065, "triangle", .22, .003);
+				break;
+			case "sonar":
+				scheduleNote(440, 0, .45, "sine", .22, .015);
+				scheduleNote(880, 0, .22, "sine", .06, .015);
+				scheduleNote(440, .38, .5, "sine", .1, .02);
+				break;
+			case "fanfare":
+				scheduleNote(523.25, 0, .14, "triangle", .2, .008);
+				scheduleNote(659.25, .11, .14, "triangle", .2, .008);
+				scheduleNote(783.99, .22, .16, "triangle", .22, .008);
+				scheduleNote(1046.5, .34, .46, "triangle", .24, .01);
+				scheduleNote(1046.5, .34, .46, "sine", .12, .01);
+				break;
+			case "bell":
+				scheduleNote(880, 0, .75, "triangle", .24, .01);
+				scheduleNote(1760, 0, .4, "sine", .1, .008);
+				break;
+			case "pulse":
+				scheduleNote(660, 0, .14, "sine", .22, .01);
+				scheduleNote(660, .2, .18, "sine", .22, .01);
+				break;
+			case "alarm":
+				scheduleNote(740, 0, .18, "triangle", .25, .01);
+				scheduleNote(987.77, .2, .18, "triangle", .25, .01);
+				scheduleNote(740, .42, .18, "triangle", .25, .01);
+				scheduleNote(987.77, .62, .26, "triangle", .25, .01);
+				break;
+			default:
+				scheduleNote(523.25, 0, .25, "sine", .18, .015);
+				scheduleNote(659.25, .14, .28, "sine", .18, .015);
+				scheduleNote(783.99, .28, .45, "sine", .2, .015);
+		}
+		activeCleanupTimer = setTimeout(() => {
+			if (activeAudioCtx === ctx) activeAudioCtx = null;
+			ctx.close().catch(() => {});
+		}, 1600);
+	} catch {}
+}
+async function showWebReminderNotification(title, body) {
+	if (typeof window === "undefined" || !("Notification" in window)) return;
+	try {
+		if (Notification.permission === "default") await Notification.requestPermission();
+		if (Notification.permission === "granted") new Notification(title, {
+			body,
+			tag: "taktwerk-timer-reminder"
+		});
+	} catch {}
+}
 // src/components/NextcloudSettingsView.tsx
 var UI_ACCENTS = [
 	{
@@ -77871,6 +78597,7 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 	const [locatingRule, setLocatingRule] = (0, import_react.useState)(false);
 	const [focusedRuleId, setFocusedRuleId] = (0, import_react.useState)(null);
 	const [mapCameraNonce, setMapCameraNonce] = (0, import_react.useState)(0);
+	const [editingGeoRule, setEditingGeoRule] = (0, import_react.useState)(null);
 	const mapSectionRef = (0, import_react.useRef)(null);
 	const invoiceNumberPreview = (0, import_react.useMemo)(() => formatInvoiceNumber(companyForm), [companyForm]);
 	const quoteNumberPreview = (0, import_react.useMemo)(() => formatQuoteNumber(companyForm), [companyForm]);
@@ -78342,18 +79069,14 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 		onNotify(`Koordinaten von "${rule.name}" in das Formular übernommen.`);
 	};
 	const handleAddGeoRule = () => {
-		const lat = Number(newRuleLat);
-		const lng = Number(newRuleLng);
+		const lat = Number(newRuleLat.replace(",", "."));
+		const lng = Number(newRuleLng.replace(",", "."));
 		if (!newRuleName.trim()) {
 			onNotify("Bitte einen Namen für die Ortsregel eingeben.", true);
 			return;
 		}
 		if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat === 0 && lng === 0) {
-			onNotify("Bitte Koordinaten über Adresse oder GPS übernehmen.", true);
-			return;
-		}
-		if (!newRuleCustomerId || !newRuleProductId) {
-			onNotify("Bitte Kunde und Leistung auswählen.", true);
+			onNotify("Bitte Koordinaten über Adresse, Karte oder GPS übernehmen.", true);
 			return;
 		}
 		const rule = {
@@ -78379,6 +79102,10 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 		setNewRuleTaskTitle("");
 		setNewRuleNotes("");
 		onNotify(`Ortsregel "${rule.name}" gespeichert.`);
+	};
+	const handleSaveEditedGeoRule = (updated) => {
+		onSaveGeoFenceRules(geoFenceRules.some((r) => r.id === updated.id) ? geoFenceRules.map((r) => r.id === updated.id ? updated : r) : [updated, ...geoFenceRules]);
+		onNotify(`Ortsregel "${updated.name}" aktualisiert.`);
 	};
 	const handleToggleGeoRule = (id) => {
 		onSaveGeoFenceRules(geoFenceRules.map((r) => r.id === id ? {
@@ -78631,13 +79358,16 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-				className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-				children: "Einstellungen, Design & Nextcloud"
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-				className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-				children: "Passe App-Oberfläche, Nummernkreise, Rechnungsdesign, Nextcloud-Synchronisation, Backups und Automatisierung an."
-			})] }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-center gap-2",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+					children: "Einstellungen, Design & Nextcloud"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+					title: "Einstellungen, Design & Nextcloud",
+					text: "Passe App-Oberfläche, Nummernkreise, Rechnungsdesign, Nextcloud-Synchronisation, Backups und Automatisierung an."
+				})]
+			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				className: "flex flex-wrap gap-1.5 rounded-xl border border-slate-200 bg-white p-1.5 dark:border-[#2e2349] dark:bg-[#171126]",
 				children: [
@@ -78684,13 +79414,14 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 					className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "border-b border-slate-200 pb-3 dark:border-[#2e2349]",
+							className: "flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 								children: "App-Oberfläche anpassen"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-								children: "Steuere Akzentfarbe, Informationsdichte, Textgröße, Startansicht und Wischgesten."
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "App-Oberfläche anpassen",
+								text: "Steuere Akzentfarbe, Informationsdichte, Textgröße, Startansicht und Wischgesten."
 							})]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -78870,13 +79601,14 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 					className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "border-b border-slate-200 pb-3 dark:border-[#2e2349]",
+							className: "flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 								children: "Kategorien für Kunden, Produkte, Kosten & interne Arbeiten"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-								children: "Stehen in der Kunden-, Produkt-, Beleg-/Kosten-, NFC- und Zeiterfassung als Schnellauswahl & Filter zur Verfügung."
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Kategorien verwalten",
+								text: "Stehen in der Kunden-, Produkt-, Beleg-/Kosten-, NFC- und Zeiterfassung als Schnellauswahl & Filter zur Verfügung."
 							})]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -79073,198 +79805,203 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 								children: "Eigene Firmendaten & Bankverbindung (für Rechnungen & Angebote)"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-								children: "Diese Angaben erscheinen im Briefkopf und in der Fußzeile jeder PDF-Rechnung."
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "mt-5 grid grid-cols-1 gap-4 md:grid-cols-3",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Eigene Firmendaten & Bankverbindung",
+								text: "Diese Angaben erscheinen im Briefkopf und in der Fußzeile jeder PDF-Rechnung."
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mt-5 grid grid-cols-1 gap-4 md:grid-cols-3",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Firmenname"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.companyName,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										companyName: e.target.value
+									}),
+									className: inputClass
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Inhaber / Geschäftsführer"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.ownerName,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										ownerName: e.target.value
+									}),
+									className: inputClass
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "E-Mail"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "email",
+									value: companyForm.email,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										email: e.target.value
+									}),
+									className: inputClass
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Straße"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.street,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										street: e.target.value
+									}),
+									className: inputClass
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "grid grid-cols-3 gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Firmenname"
+										children: "PLZ"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 										type: "text",
-										value: companyForm.companyName,
+										value: companyForm.postalCode,
 										onChange: (e) => setCompanyForm({
 											...companyForm,
-											companyName: e.target.value
+											postalCode: e.target.value
 										}),
-										className: inputClass
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Inhaber / Geschäftsführer"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.ownerName,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											ownerName: e.target.value
-										}),
-										className: inputClass
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "E-Mail"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "email",
-										value: companyForm.email,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											email: e.target.value
-										}),
-										className: inputClass
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Straße"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.street,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											street: e.target.value
-										}),
-										className: inputClass
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "grid grid-cols-3 gap-2",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: `${inputClass} font-mono`
+									})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "col-span-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-											children: "PLZ"
+											children: "Ort"
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 											type: "text",
-											value: companyForm.postalCode,
+											value: companyForm.city,
 											onChange: (e) => setCompanyForm({
 												...companyForm,
-												postalCode: e.target.value
+												city: e.target.value
 											}),
-											className: `${inputClass} font-mono`
-										})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "col-span-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-												className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-												children: "Ort"
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "text",
-												value: companyForm.city,
-												onChange: (e) => setCompanyForm({
-													...companyForm,
-													city: e.target.value
-												}),
-												className: inputClass
-											})]
+											className: inputClass
 										})]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Telefon"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.phone,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										phone: e.target.value
 									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Telefon"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.phone,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											phone: e.target.value
-										}),
-										className: inputClass
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Steuernummer"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.taxNumber,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											taxNumber: e.target.value
-										}),
-										className: `${inputClass} font-mono`
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "USt-IdNr."
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.vatId,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											vatId: e.target.value
-										}),
-										className: `${inputClass} font-mono`
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Standard-Zahlungsziel (Tage)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "number",
-										min: "1",
-										value: companyForm.defaultPaymentTermDays,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											defaultPaymentTermDays: Math.max(1, Number(e.target.value) || 14)
-										}),
-										className: `${inputClass} font-mono`
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "Bankname"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.bankName,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											bankName: e.target.value
-										}),
-										className: inputClass
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "IBAN"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.iban,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											iban: e.target.value
-										}),
-										className: `${inputClass} font-mono`
-									})] }),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-										children: "BIC"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "text",
-										value: companyForm.bic,
-										onChange: (e) => setCompanyForm({
-											...companyForm,
-											bic: e.target.value
-										}),
-										className: `${inputClass} font-mono`
-									})] })
-								]
-							})
-						]
+									className: inputClass
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Steuernummer"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.taxNumber,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										taxNumber: e.target.value
+									}),
+									className: `${inputClass} font-mono`
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "USt-IdNr."
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.vatId,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										vatId: e.target.value
+									}),
+									className: `${inputClass} font-mono`
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Standard-Zahlungsziel (Tage)"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "number",
+									min: "1",
+									value: companyForm.defaultPaymentTermDays,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										defaultPaymentTermDays: Math.max(1, Number(e.target.value) || 14)
+									}),
+									className: `${inputClass} font-mono`
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Bankname"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.bankName,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										bankName: e.target.value
+									}),
+									className: inputClass
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "IBAN"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.iban,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										iban: e.target.value
+									}),
+									className: `${inputClass} font-mono`
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "BIC"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.bic,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										bic: e.target.value
+									}),
+									className: `${inputClass} font-mono`
+								})] })
+							]
+						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-6",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "border-b border-slate-200 pb-3 dark:border-[#2e2349]",
+								className: "flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 									children: "Nummernkreise & Artikelnummer-Bezeichnung"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-									className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-									children: ["Platzhalter überall nutzbar: ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "font-mono",
-										children: "{PREFIX}, {YYYY}, {YY}, {MM}, {DD}, {NR}"
-									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+									size: "sm",
+									title: "Nummernkreise & Platzhalter",
+									text: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+										"Platzhalter überall nutzbar:",
+										" ",
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "font-mono font-semibold",
+											children: "{PREFIX}, {YYYY}, {YY}, {MM}, {DD}, {NR}"
+										})
+									] })
 								})]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -79525,13 +80262,14 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-6",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "border-b border-slate-200 pb-3 dark:border-[#2e2349]",
+								className: "flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 									children: "Rechnungs- & Angebotsdesign"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-									children: "Gestalte Logo, Akzentfarben, eigene Wunschfarbe, Schriftart, Layout-Stil und Standardtexte für Vorschau & PDF."
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+									size: "sm",
+									title: "Rechnungs- & Angebotsdesign",
+									text: "Gestalte Logo, Akzentfarben, eigene Wunschfarbe, Schriftart, Layout-Stil und Standardtexte für Vorschau & PDF."
 								})]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -79857,13 +80595,17 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "flex items-start gap-2.5",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Server, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "TaktWerk Server-URL (optional für Android-App)"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-								children: "Leer lassen für eigenständigen Gerätespeicher + direkten Nextcloud-Sync, oder eigene Server-URL hinterlegen."
-							})] })]
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Server, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-1.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+									children: "TaktWerk Server-URL (optional für Android-App)"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+									size: "sm",
+									title: "TaktWerk Server-URL",
+									text: "Leer lassen für eigenständigen Gerätespeicher + direkten Nextcloud-Sync, oder eigene Server-URL hinterlegen."
+								})]
+							})]
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 							onSubmit: handleSaveServerUrl,
 							className: "mt-4 flex flex-col gap-2 sm:flex-row",
@@ -79886,13 +80628,17 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 							className: "flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex items-center gap-2.5",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cloud, { className: "h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-									children: "Nextcloud WebDAV-Anbindung"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "text-xs text-slate-500 dark:text-slate-400",
-									children: "Speichert Datenbank, PDF-Rechnungen und Backups in deiner eigenen Nextcloud."
-								})] })]
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cloud, { className: "h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+										children: "Nextcloud WebDAV-Anbindung"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: "Nextcloud WebDAV-Anbindung",
+										text: "Speichert Datenbank, PDF-Rechnungen und Backups in deiner eigenen Nextcloud."
+									})]
+								})]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 								className: "text-xs font-medium",
 								children: nextcloud.configured ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
@@ -80060,13 +80806,17 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 								className: "flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "flex items-center gap-2.5",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Calendar, { className: "h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-										children: "Nextcloud Kalender (CalDAV)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-xs text-slate-500 dark:text-slate-400",
-										children: "Verknüpfe einen Nextcloud-Kalender, um Termine direkt in TaktWerk zu sehen & Zeiten zu starten oder zurückzuschreiben."
-									})] })]
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Calendar, { className: "h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: "Nextcloud Kalender (CalDAV)"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "Nextcloud Kalender (CalDAV)",
+											text: "Verknüpfe einen Nextcloud-Kalender, um Termine direkt in TaktWerk zu sehen & Zeiten zu starten oder zurückzuschreiben."
+										})]
+									})]
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => void handleDiscoverCalendars(),
@@ -80180,13 +80930,17 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-									children: "Automatisierte Multi-Format-Backups"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-									children: "Sichert automatisch alle Daten als JSON, CSV, Excel (.xlsx), Gesamtbericht-PDF und Rechnungen-ZIP nach Zeitplan."
-								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+										children: "Automatisierte Multi-Format-Backups"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: "Automatisierte Multi-Format-Backups",
+										text: "Sichert automatisch alle Daten als JSON, CSV, Excel (.xlsx), Gesamtbericht-PDF und Rechnungen-ZIP nach Zeitplan."
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => void handleRunBackupNow(),
 									disabled: runningBackup,
@@ -80325,13 +81079,17 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 								className: "flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "flex items-start gap-2.5",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-										children: "Grafische Auswertung als PDF (mit Filtern)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-										children: "Erstellt einen visuellen PDF-Bericht mit Kennzahlen, Verteilungsdiagramm, Schwerpunkt-Balken und Einzelaufstellung nach Wunschfilter."
-									})] })]
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: "Grafische Auswertung als PDF (mit Filtern)"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "Grafische Auswertung als PDF",
+											text: "Erstellt einen visuellen PDF-Bericht mit Kennzahlen, Verteilungsdiagramm, Schwerpunkt-Balken und Einzelaufstellung nach Wunschfilter."
+										})]
+									})]
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 									className: "flex flex-wrap gap-1.5",
 									children: [
@@ -80551,13 +81309,17 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 							className: "flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex items-start gap-2.5",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileArchive, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-									children: "Rechnungen als ZIP-Paket sichern"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-									children: "Bündelt alle PDF-Rechnungen (inkl. unterschriebener Abnahmeprotokolle und einer CSV-Übersicht) in einem einzigen ZIP-Archiv für Buchhaltung oder Steuerberater."
-								})] })]
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileArchive, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+										children: "Rechnungen als ZIP-Paket sichern"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: "Rechnungen als ZIP-Paket sichern",
+										text: "Bündelt alle PDF-Rechnungen (inkl. unterschriebener Abnahmeprotokolle und einer CSV-Übersicht) in einem einzigen ZIP-Archiv für Buchhaltung oder Steuerberater."
+									})]
+								})]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
 								className: "rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs font-semibold text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 shrink-0",
 								children: [zipTargetCount, " Dokument(e) im Paket"]
@@ -80607,13 +81369,17 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 							className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex items-start gap-3",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Database, { className: "mt-0.5 h-5 w-5 text-slate-600 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-									children: "Manuelle Exporte, Wiederherstellung & Datenbank"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "text-xs text-slate-500 dark:text-slate-400",
-									children: "Alle Formate einzeln exportieren oder ein vorhandenes JSON-Backup einspielen."
-								})] })]
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Database, { className: "mt-0.5 h-5 w-5 text-slate-600 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+										children: "Manuelle Exporte, Wiederherstellung & Datenbank"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: "Manuelle Exporte & Wiederherstellung",
+										text: "Alle Formate einzeln exportieren oder ein vorhandenes JSON-Backup einspielen."
+									})]
+								})]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex flex-wrap gap-2",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
@@ -80705,14 +81471,19 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex items-start gap-2.5",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Radar, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-										children: "Ortung & automatischer Aufgaben-Start (Geofencing)"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-										children: "Erfasst deinen Standort beim Timer-Start oder startet bestimmte Aufgaben automatisch, sobald du dich an einem hinterlegten Ort befindest."
-									})] })]
+									className: "flex items-center gap-2",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Radar, { className: "h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: "Ortung & automatischer Aufgaben-Start (Geofencing)"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "Ortung & Geofencing",
+											text: "Erfasst deinen Standort beim Timer-Start oder startet bestimmte Aufgaben automatisch, sobald du dich an einem hinterlegten Ort befindest. Ortsregeln lassen sich auch direkt bei Kunden oder Produkten anlegen."
+										})
+									]
 								}), onCheckGeoFenceNow && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: onCheckGeoFenceNow,
@@ -80801,84 +81572,121 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 										className: "text-xs text-slate-500 dark:text-slate-400",
 										children: "Noch keine Ortsregeln angelegt. Füge unten z. B. dein Büro oder einen Kundenstandort hinzu."
 									}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "space-y-2",
-										children: geoFenceRules.map((rule) => {
-											const cust = db.customers.find((c) => c.id === rule.customerId);
-											const prod = db.products.find((p) => p.id === rule.productId);
-											return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "flex flex-col gap-2 rounded-lg border border-slate-200 bg-slate-50/80 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50 sm:flex-row sm:items-center sm:justify-between",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "space-y-0.5 min-w-0",
+										className: "overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "overflow-x-auto",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+												className: "w-full text-left text-sm",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+													className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
 													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex flex-wrap items-center gap-2",
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+															className: "px-3.5 py-2.5",
+															children: "Ort & Aufgabe"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+															className: "px-3.5 py-2.5",
+															children: "Kunde / Leistung"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+															className: "px-3.5 py-2.5",
+															children: "Radius & Adresse"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+															className: "px-3.5 py-2.5",
+															children: "Status"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+															className: "px-3.5 py-2.5 text-right",
+															children: "Aktionen"
+														})
+													]
+												}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+													className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
+													children: geoFenceRules.map((rule) => {
+														const cust = db.customers.find((c) => c.id === rule.customerId);
+														const prod = db.products.find((p) => p.id === rule.productId);
+														return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+															className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
 															children: [
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																	className: "text-sm font-semibold text-slate-900 dark:text-slate-100",
-																	children: rule.name
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+																	className: "px-3.5 py-2.5",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "font-medium text-slate-900 dark:text-slate-100",
+																		children: rule.name
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "text-xs text-slate-500 dark:text-slate-400",
+																		children: [rule.taskTitle, rule.autoStopOnExit && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																			className: "text-amber-700 dark:text-amber-300",
+																			children: [" ", "· Auto-Stopp"]
+																		})]
+																	})]
 																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-																	className: "rounded bg-blue-50 px-1.5 py-0.5 font-mono text-[11px] font-medium text-blue-700 dark:bg-violet-950/70 dark:text-violet-300",
-																	children: [rule.radiusMeters, " m Radius"]
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+																	className: "px-3.5 py-2.5",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "text-xs font-medium text-slate-800 dark:text-slate-200",
+																		children: cust?.companyName ?? "Intern / ohne Kunde"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "text-xs text-slate-500 dark:text-slate-400",
+																		children: prod?.name ?? "—"
+																	})]
 																}),
-																rule.autoStopOnExit && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																	className: "rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-950/60 dark:text-amber-300",
-																	children: "Auto-Stopp bei Verlassen"
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+																	className: "px-3.5 py-2.5",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "font-mono text-xs font-semibold text-slate-700 dark:text-slate-200 tabular-nums whitespace-nowrap",
+																		children: [rule.radiusMeters, " m"]
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "max-w-[220px] truncate text-[11px] font-mono text-slate-400 dark:text-slate-500",
+																		title: rule.address || `${rule.lat.toFixed(5)}, ${rule.lng.toFixed(5)}`,
+																		children: rule.address || `${rule.lat.toFixed(5)}, ${rule.lng.toFixed(5)}`
+																	})]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+																	className: "px-3.5 py-2.5 whitespace-nowrap",
+																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																		type: "button",
+																		onClick: () => handleToggleGeoRule(rule.id),
+																		title: "Status umschalten",
+																		className: `inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors cursor-pointer ${rule.enabled ? "border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300" : "border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-400"}`,
+																		children: rule.enabled ? "Aktiv" : "Pausiert"
+																	})
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+																	className: "px-3.5 py-2.5",
+																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "flex items-center justify-end gap-1",
+																		children: [
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => handleFocusRuleOnMap(rule),
+																				title: "Auf der Karte anzeigen",
+																				className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Map$1, { className: "h-4 w-4" })
+																			}),
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setEditingGeoRule(rule),
+																				title: "Ortsregel bearbeiten",
+																				className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-4 w-4" })
+																			}),
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => handleDeleteGeoRule(rule.id),
+																				title: "Ortsregel löschen",
+																				className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/50 dark:hover:text-red-400 cursor-pointer",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
+																			})
+																		]
+																	})
 																})
 															]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "text-xs text-slate-600 dark:text-slate-300",
-															children: [
-																"Startet: ",
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																	className: "font-medium",
-																	children: rule.taskTitle
-																}),
-																" ·",
-																" ",
-																cust?.companyName ?? "Kunde",
-																" (",
-																prod?.name ?? "Leistung",
-																")"
-															]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate",
-															children: [
-																rule.address ? `${rule.address} · ` : "",
-																rule.lat.toFixed(5),
-																", ",
-																rule.lng.toFixed(5)
-															]
-														})
-													]
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-center gap-2 shrink-0",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-															type: "button",
-															onClick: () => handleFocusRuleOnMap(rule),
-															title: "Auf der Karte anzeigen",
-															className: "inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Map$1, { className: "h-3.5 w-3.5" }), "Karte"]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-															type: "button",
-															onClick: () => handleToggleGeoRule(rule.id),
-															className: `rounded-lg border px-2.5 py-1 text-xs font-semibold cursor-pointer ${rule.enabled ? "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300" : "border-slate-200 bg-white text-slate-500 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-400"}`,
-															children: rule.enabled ? "Aktiv" : "Pausiert"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-															type: "button",
-															onClick: () => handleDeleteGeoRule(rule.id),
-															title: "Ortsregel löschen",
-															className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/50 dark:hover:text-red-400 cursor-pointer",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
-														})
-													]
+														}, rule.id);
+													})
 												})]
-											}, rule.id);
+											})
 										})
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -80987,10 +81795,13 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 													value: newRuleCustomerId,
 													onChange: setNewRuleCustomerId,
 													ariaLabel: "Kunde für Ortsregel",
-													options: db.customers.map((c) => ({
+													options: [{
+														value: "",
+														label: "Kein Kunde (interne Aufgabe)"
+													}, ...db.customers.map((c) => ({
 														value: c.id,
 														label: c.companyName
-													}))
+													}))]
 												})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 													className: "mb-1 block text-xs text-slate-500",
 													children: "Leistung"
@@ -80998,10 +81809,13 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 													value: newRuleProductId,
 													onChange: setNewRuleProductId,
 													ariaLabel: "Leistung für Ortsregel",
-													options: db.products.map((p) => ({
+													options: [{
+														value: "",
+														label: "Keine Leistung gewählt"
+													}, ...db.products.map((p) => ({
 														value: p.id,
 														label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`
-													}))
+													}))]
 												})] })]
 											}),
 											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -81094,14 +81908,19 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-4",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-start gap-2.5",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Car, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-									children: "Fahrtkosten- & Distanz-Automatik"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-									children: "Berechnet aus deiner Startadresse und dem Einsatzort automatisch die Straßenentfernung (Faktor 1,25) und den Nettopreis in €/km."
-								})] })]
+								className: "flex items-center gap-2",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Car, { className: "h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+										children: "Fahrtkosten- & Distanz-Automatik"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: "Fahrtkosten- & Distanz-Automatik",
+										text: "Berechnet aus deiner Startadresse und dem Einsatzort automatisch die Straßenentfernung (Faktor 1,25) und den Nettopreis in €/km."
+									})
+								]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "space-y-2",
@@ -81221,14 +82040,19 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-4",
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-start gap-2.5",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BellRing, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-									children: "Erinnerung für laufende Aufgaben & Klingelton"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-									children: "Benachrichtigt dich nach einer Stunde (oder deiner Wunschdauer), falls ein Timer noch aktiv ist — inklusive wählbarem Signalton."
-								})] })]
+								className: "flex items-center gap-2",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BellRing, { className: "h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+										children: "Erinnerung für laufende Aufgaben & Klingelton"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: "Erinnerung & Klingelton",
+										text: "Benachrichtigt dich nach einer Stunde (oder deiner Wunschdauer), falls ein Timer noch aktiv ist — inklusive wählbarem Signalton."
+									})
+								]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 								className: "flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer",
@@ -81397,26 +82221,36 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 						]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
-						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-3",
+						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-start gap-2.5",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "Android Startbildschirm-Widget"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed",
-								children: [
-									"TaktWerk liefert ein natives Startbildschirm-Widget für Android (Pixel & Co.). Halte eine freie Stelle auf dem Android-Startbildschirm gedrückt → ",
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "font-semibold text-slate-700 dark:text-slate-200",
-										children: "Widgets → TaktWerk"
-									}),
-									". Dort siehst du deinen laufenden Timer, heutige Gesamtstunden und 1-Tippen-Schnellstarts für deine wichtigsten NFC-Aufgaben."
-								]
-							})] })]
+							className: "flex items-center gap-2",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, { className: "h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+									children: "Android Startbildschirm-Widget"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+									size: "sm",
+									title: "Android Startbildschirm-Widget",
+									text: "TaktWerk liefert ein natives Startbildschirm-Widget für Android (Pixel & Co.). Halte eine freie Stelle auf dem Android-Startbildschirm gedrückt → Widgets → TaktWerk. Dort siehst du deinen laufenden Timer, heutige Gesamtstunden und 1-Tippen-Schnellstarts für deine wichtigsten NFC-Aufgaben."
+								})
+							]
 						})
 					})
 				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GeoFenceRuleModal, {
+				open: editingGeoRule !== null,
+				editingRule: editingGeoRule,
+				customers: db.customers,
+				products: db.products,
+				existingRules: geoFenceRules,
+				theme,
+				onSave: handleSaveEditedGeoRule,
+				onDelete: handleDeleteGeoRule,
+				onClose: () => setEditingGeoRule(null),
+				onNotify
 			})
 		]
 	});
@@ -81778,13 +82612,16 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-					children: "NFC-Aufgaben & Trigger"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Verknüpfe physische NFC-Tags mit Kundenaufträgen oder internen Aufgaben (z. B. Reinigung, Akquise), um Timer per Smartphone-Tap zu starten oder zu stoppen."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "NFC-Aufgaben & Trigger"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "NFC-Aufgaben & Trigger",
+						text: "Verknüpfe physische NFC-Tags mit Kundenaufträgen oder internen Aufgaben (z. B. Reinigung, Akquise), um Timer per Smartphone-Tap zu starten oder zu stoppen."
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 					type: "button",
 					onClick: openNewForm,
 					className: "inline-flex items-center justify-center gap-2 rounded-lg ui-accent-active px-4 py-2.5 text-sm font-semibold text-white transition-colors whitespace-nowrap shrink-0 cursor-pointer",
@@ -81799,17 +82636,19 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "space-y-1",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex items-center gap-2",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Radio, { className: "h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "flex items-center gap-2 min-w-0",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Radio, { className: "h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 										children: nativeCapacitor ? "Automatischer NFC-Empfang (Android-App)" : "Live NFC-Scanner (Web NFC & Deep-Link)"
-									})]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: "text-xs text-slate-500 dark:text-slate-400",
-									children: nativeCapacitor ? writingTagId ? "Schreibmodus aktiv — halte den NFC-Tag zum Beschreiben ruhig an die Rückseite deines Smartphones." : nativeNfcStatus === "NFC_DISABLED" ? "NFC ist am Smartphone deaktiviert. Tippe rechts auf „NFC aktivieren“, um die Android-NFC-Einstellungen zu öffnen." : nativeNfcStatus === "NO_NFC" || nativeNfcStatus === "UNSUPPORTED" ? "Auf diesem Gerät wurde keine aktive NFC-Hardware erkannt." : "Ohne Scanner-Start aktiv: Solange die App offen ist, erkennt TaktWerk jeden Tag sofort. Einmal mit „App-Tag schreiben“ beschriebene Tags starten die Zeiterfassung sogar, wenn TaktWerk komplett geschlossen ist!" : webNfcSupported ? "Browser-Modus (Chrome Web NFC): Aus Sicherheitsgründen verlangen Webbrowser einen Klick auf „NFC-Scanner starten“. Für automatisches Scannen ohne Knopf & bei geschlossener App bitte die TaktWerk Android-APK nutzen." : "Desktop / iOS erkannt: Kopiere die Trigger-URL auf deinen NFC-Tag (z. B. mit NFC Tools) — beim Scannen startet TaktWerk die Aufgabe automatisch."
-								})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: nativeCapacitor ? "Automatischer NFC-Empfang" : "Live NFC-Scanner",
+										text: nativeCapacitor ? writingTagId ? "Schreibmodus aktiv — halte den NFC-Tag zum Beschreiben ruhig an die Rückseite deines Smartphones." : nativeNfcStatus === "NFC_DISABLED" ? "NFC ist am Smartphone deaktiviert. Tippe auf „NFC aktivieren“, um die Android-NFC-Einstellungen zu öffnen." : nativeNfcStatus === "NO_NFC" || nativeNfcStatus === "UNSUPPORTED" ? "Auf diesem Gerät wurde keine aktive NFC-Hardware erkannt." : "Ohne Scanner-Start aktiv: Solange die App offen ist, erkennt TaktWerk jeden Tag sofort. Einmal mit „App-Tag schreiben“ beschriebene Tags starten die Zeiterfassung sogar, wenn TaktWerk komplett geschlossen ist!" : webNfcSupported ? "Browser-Modus (Chrome Web NFC): Aus Sicherheitsgründen verlangen Webbrowser einen Klick auf „NFC-Scanner starten“. Für automatisches Scannen ohne Knopf & bei geschlossener App bitte die TaktWerk Android-APK nutzen." : "Desktop / iOS erkannt: Kopiere die Trigger-URL auf deinen NFC-Tag (z. B. mit NFC Tools) — beim Scannen startet TaktWerk die Aufgabe automatisch."
+									})
+								]
 							}), nativeCapacitor ? writingTagId ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 								type: "button",
 								onClick: () => void stopNativeWriteMode(),
@@ -81846,34 +82685,35 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 					]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-5",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, { className: "h-4 w-4 shrink-0 text-slate-700 dark:text-violet-300" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-2",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, { className: "h-4 w-4 shrink-0 text-slate-700 dark:text-violet-300" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 								children: "Tag-ID direkt testen / auslösen"
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-							children: "Gib eine Tag-UID ein oder nutze die Auslösen-Buttons unten in der Liste."
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-							onSubmit: handleManualScanSubmit,
-							className: "mt-3 flex items-center gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: manualScanCode,
-								onChange: (e) => setManualScanCode(e.target.value),
-								placeholder: "z. B. NFC-ALPEN-SRV",
-								className: "min-w-0 w-full flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "submit",
-								className: "rounded-lg ui-accent-active px-3.5 py-2 text-sm font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer sm:px-4",
-								children: "Auslösen"
-							})]
-						})
-					]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Tag-ID testen",
+								text: "Gib eine Tag-UID ein oder nutze die Auslösen-Buttons unten in der Liste."
+							})
+						]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+						onSubmit: handleManualScanSubmit,
+						className: "mt-3 flex items-center gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							value: manualScanCode,
+							onChange: (e) => setManualScanCode(e.target.value),
+							placeholder: "z. B. NFC-ALPEN-SRV",
+							className: "min-w-0 w-full flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "submit",
+							className: "rounded-lg ui-accent-active px-3.5 py-2 text-sm font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer sm:px-4",
+							children: "Auslösen"
+						})]
+					})]
 				})]
 			}),
 			showForm && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
@@ -82319,12 +83159,15 @@ function PWAInstallButton() {
 	return null;
 }
 // src/components/ProductsView.tsx
-function ProductsView({ company, products, onSaveProduct, onDeleteProduct }) {
+function ProductsView({ company, customers, products, geoFenceRules = [], autoLocationStartEnabled = false, theme = "light", onSaveProduct, onDeleteProduct, onSaveGeoFenceRules, onNotify }) {
 	const [search, setSearch] = (0, import_react.useState)("");
 	const [typeFilter, setTypeFilter] = (0, import_react.useState)("all");
 	const [categoryFilter, setCategoryFilter] = (0, import_react.useState)("all");
 	const [showForm, setShowForm] = (0, import_react.useState)(false);
 	const [editing, setEditing] = (0, import_react.useState)(null);
+	const [geoModalOpen, setGeoModalOpen] = (0, import_react.useState)(false);
+	const [geoModalProduct, setGeoModalProduct] = (0, import_react.useState)(null);
+	const [geoModalEditingRule, setGeoModalEditingRule] = (0, import_react.useState)(null);
 	const [sku, setSku] = (0, import_react.useState)("");
 	const [name, setName] = (0, import_react.useState)("");
 	const [description, setDescription] = (0, import_react.useState)("");
@@ -82367,20 +83210,19 @@ function ProductsView({ company, products, onSaveProduct, onDeleteProduct }) {
 		setError("");
 		setShowForm(true);
 	};
-	const handleSubmit = (e) => {
-		e.preventDefault();
+	const saveCurrentForm = () => {
 		setError("");
 		if (!name.trim()) {
 			setError("Bitte eine Bezeichnung angeben.");
-			return;
+			return null;
 		}
 		const price = Number(unitPriceNet.replace(",", "."));
 		if (Number.isNaN(price) || price < 0) {
 			setError("Bitte einen gültigen Netto-Preis eingeben.");
-			return;
+			return null;
 		}
 		const fallbackSku = formatProductSku(company, company.nextProductSequence ?? products.length + 101);
-		onSaveProduct({
+		const saved = {
 			id: editing?.id ?? createId("prod"),
 			sku: sku.trim() || fallbackSku,
 			name: name.trim(),
@@ -82391,9 +83233,45 @@ function ProductsView({ company, products, onSaveProduct, onDeleteProduct }) {
 			taxRate,
 			category: category.trim() || void 0,
 			createdAt: editing?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
-		}, !editing);
+		};
+		onSaveProduct(saved, !editing);
+		return saved;
+	};
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		if (!saveCurrentForm()) return;
 		setShowForm(false);
 	};
+	const openNewGeoRuleForProduct = (product) => {
+		setGeoModalEditingRule(null);
+		setGeoModalProduct(product);
+		setGeoModalOpen(true);
+	};
+	const openEditGeoRule = (rule) => {
+		setGeoModalEditingRule(rule);
+		setGeoModalProduct(null);
+		setGeoModalOpen(true);
+	};
+	const handleSaveGeoRule = (rule) => {
+		onSaveGeoFenceRules(geoFenceRules.some((r) => r.id === rule.id) ? geoFenceRules.map((r) => r.id === rule.id ? rule : r) : [rule, ...geoFenceRules]);
+		if (!autoLocationStartEnabled && rule.enabled) onNotify(`Ortsabhängigkeit "${rule.name}" gespeichert. Hinweis: Ortsautomatik unter Einstellungen → Ortung aktivieren.`);
+		else onNotify(`Ortsabhängigkeit "${rule.name}" gespeichert.`);
+	};
+	const handleDeleteGeoRule = (id) => {
+		onSaveGeoFenceRules(geoFenceRules.filter((r) => r.id !== id));
+		onNotify("Ortsabhängigkeit entfernt.");
+	};
+	const geoRulesByProduct = (0, import_react.useMemo)(() => {
+		const map = /* @__PURE__ */ new Map();
+		for (const r of geoFenceRules) {
+			if (!r.productId) continue;
+			const list = map.get(r.productId) ?? [];
+			list.push(r);
+			map.set(r.productId, list);
+		}
+		return map;
+	}, [geoFenceRules]);
+	const editingProductGeoRules = editing ? geoRulesByProduct.get(editing.id) ?? [] : [];
 	const filtered = (0, import_react.useMemo)(() => {
 		const q = search.trim().toLowerCase();
 		return products.filter((p) => {
@@ -82414,13 +83292,16 @@ function ProductsView({ company, products, onSaveProduct, onDeleteProduct }) {
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-					children: "Produkt- & Leistungskatalog"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Stundensätze für die Zeiterfassung sowie Pauschalartikel und Hardware für Rechnungen."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "Produkt- & Leistungskatalog"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "Produkt- & Leistungskatalog",
+						text: "Stundensätze für die Zeiterfassung sowie Pauschalartikel, Hardware und Ortsabhängigkeiten für automatische Aufgaben verwalten."
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 					type: "button",
 					onClick: openNew,
 					className: "inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
@@ -82556,22 +83437,106 @@ function ProductsView({ company, products, onSaveProduct, onDeleteProduct }) {
 								placeholder: "z. B. Beratung, Entwicklung, Hardware"
 							})]
 						}),
+						editing && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#2e2349] dark:bg-[#211936]/40 md:col-span-4",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "text-xs font-semibold text-slate-800 dark:text-slate-100",
+										children: [
+											"Ortsabhängigkeiten für dieses Produkt (",
+											editingProductGeoRules.length,
+											")"
+										]
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => openNewGeoRuleForProduct({
+										...editing,
+										name: name.trim() || editing.name
+									}),
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Ortsabhängigkeit anlegen"]
+								})]
+							}), editingProductGeoRules.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white dark:divide-[#2e2349] dark:border-[#2e2349] dark:bg-[#171126]",
+								children: editingProductGeoRules.map((rule) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-xs",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "min-w-0",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "font-semibold text-slate-900 dark:text-slate-100",
+												children: rule.name
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "mx-1.5 text-slate-400",
+												children: "·"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "font-mono text-slate-500 dark:text-slate-400",
+												children: [rule.radiusMeters, " m"]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "mx-1.5 text-slate-400",
+												children: "·"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: rule.enabled ? "font-medium text-emerald-700 dark:text-emerald-400" : "text-slate-400",
+												children: rule.enabled ? "Aktiv" : "Pausiert"
+											})
+										]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-1 shrink-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => openEditGeoRule(rule),
+											title: "Ortsregel bearbeiten",
+											className: "inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" })
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => handleDeleteGeoRule(rule.id),
+											title: "Ortsregel löschen",
+											className: "inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+										})]
+									})]
+								}, rule.id))
+							})]
+						}),
 						error && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "text-xs font-medium text-red-600 dark:text-red-400 md:col-span-4",
 							children: error
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex justify-end gap-2 md:col-span-4",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => setShowForm(false),
-								className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
-								children: "Abbrechen"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "submit",
-								className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-								children: "Speichern"
-							})]
+							className: "flex flex-wrap justify-end gap-2 md:col-span-4",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setShowForm(false),
+									className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
+									children: "Abbrechen"
+								}),
+								!editing && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => {
+										const saved = saveCurrentForm();
+										if (!saved) return;
+										setShowForm(false);
+										openNewGeoRuleForProduct(saved);
+									},
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-4 w-4" }), "Speichern & Ort festlegen"]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+									children: "Speichern"
+								})
+							]
 						})
 					]
 				})]
@@ -82669,66 +83634,101 @@ function ProductsView({ company, products, onSaveProduct, onDeleteProduct }) {
 							]
 						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
 							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
-							children: filtered.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-								className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-										className: "px-4 py-3 font-mono text-xs text-slate-600 dark:text-violet-200/80 whitespace-nowrap",
-										children: p.sku
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-										className: "px-4 py-3",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "font-medium text-slate-900 dark:text-slate-100",
-											children: p.name
-										}), p.description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-											children: p.description
-										})]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-										className: "px-4 py-3 text-xs text-slate-600 dark:text-slate-400 whitespace-nowrap",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: p.type === "service" ? "Dienstleistung" : "Produkt / Pauschale" }), p.category && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "mt-0.5 inline-block rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-[#231b38] dark:text-violet-300",
-											children: p.category
-										})]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-										className: "px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap",
-										children: [
-											formatCurrency(p.unitPriceNet),
-											" / ",
-											p.unit
-										]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-										className: "px-4 py-3 text-right font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums whitespace-nowrap",
-										children: [p.taxRate, " %"]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-										className: "px-4 py-3",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center justify-end gap-1",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-												type: "button",
-												onClick: () => openEdit(p),
-												title: "Bearbeiten",
-												className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-4 w-4" })
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-												type: "button",
-												onClick: () => onDeleteProduct(p.id),
-												title: "Löschen",
-												className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
+							children: filtered.map((p) => {
+								const linkedGeoRules = geoRulesByProduct.get(p.id) ?? [];
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+									className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+											className: "px-4 py-3 font-mono text-xs text-slate-600 dark:text-violet-200/80 whitespace-nowrap",
+											children: p.sku
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											className: "px-4 py-3",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "font-medium text-slate-900 dark:text-slate-100",
+												children: p.name
+											}), (p.description || linkedGeoRules.length > 0) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500 dark:text-slate-400",
+												children: [p.description && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: p.description }), linkedGeoRules.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => openEditGeoRule(linkedGeoRules[0]),
+													className: "inline-flex items-center gap-1 font-medium text-blue-700 hover:underline dark:text-violet-300 cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3 w-3 shrink-0" }), linkedGeoRules.length === 1 ? linkedGeoRules[0].name : `${linkedGeoRules.length} Ortsregeln`]
+												})]
 											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											className: "px-4 py-3 text-xs text-slate-600 dark:text-slate-400 whitespace-nowrap",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: p.type === "service" ? "Dienstleistung" : "Produkt / Pauschale" }), p.category && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "mt-0.5 inline-block rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-[#231b38] dark:text-violet-300",
+												children: p.category
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											className: "px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap",
+											children: [
+												formatCurrency(p.unitPriceNet),
+												" / ",
+												p.unit
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+											className: "px-4 py-3 text-right font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums whitespace-nowrap",
+											children: [p.taxRate, " %"]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+											className: "px-4 py-3",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center justify-end gap-1",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => openNewGeoRuleForProduct(p),
+														title: "Ortsabhängigkeit für dieses Produkt anlegen",
+														className: `inline-flex h-8 w-8 items-center justify-center rounded-md cursor-pointer ${linkedGeoRules.length > 0 ? "text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#231b38]" : "text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100"}`,
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-4 w-4" })
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => openEdit(p),
+														title: "Bearbeiten",
+														className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-4 w-4" })
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => onDeleteProduct(p.id),
+														title: "Löschen",
+														className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
+													})
+												]
+											})
 										})
-									})
-								]
-							}, p.id))
+									]
+								}, p.id);
+							})
 						})]
 					})
 				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GeoFenceRuleModal, {
+				open: geoModalOpen,
+				editingRule: geoModalEditingRule,
+				initialProduct: geoModalProduct,
+				customers,
+				products,
+				existingRules: geoFenceRules,
+				theme,
+				onSave: handleSaveGeoRule,
+				onDelete: handleDeleteGeoRule,
+				onClose: () => {
+					setGeoModalOpen(false);
+					setGeoModalProduct(null);
+					setGeoModalEditingRule(null);
+				},
+				onNotify
 			})
 		]
 	});
@@ -82960,6 +83960,16 @@ function RecurringInvoicesView({ templates, customers, products, company, onSave
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-center gap-2",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+					children: "Wartungsverträge & Abos"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+					title: "Wartungsverträge & Abos",
+					text: "Verwalte wiederkehrende Kundenverträge, Wartungspauschalen und Abo-Rechnungen mit automatischer Fälligkeitsprüfung und 1-Klick-Rechnungserstellung."
+				})]
+			}),
 			dueTemplates.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-300 bg-amber-50/90 px-5 py-4 dark:border-amber-500/40 dark:bg-amber-500/15",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -83995,13 +85005,16 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-					className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-					children: "Zeiterfassung"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-sm text-slate-500 dark:text-slate-400",
-					children: "Kundenaufträge und interne Tätigkeiten live erfassen, nachtragen und auswerten."
-				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "Zeiterfassung"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "Zeiterfassung",
+						text: "Kundenaufträge und interne Tätigkeiten live erfassen, nachtragen, mit Standort oder NFC starten und direkt abrechnen."
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex flex-wrap items-center gap-6 border-t border-slate-200 pt-3 dark:border-[#2e2349] sm:border-t-0 sm:pt-0",
 					children: [
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -85745,6 +86758,7 @@ function App() {
 			const nowIso = (/* @__PURE__ */ new Date()).toISOString();
 			const geoTimer = {
 				id: createId("timer"),
+				entryType: rule.customerId ? "project" : "internal",
 				customerId: rule.customerId,
 				productId: rule.productId,
 				nfcTaskId: null,
@@ -86829,11 +87843,17 @@ function App() {
 								}),
 								section === "customers" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CustomersView, {
 									customers: db.customers,
+									products: db.products,
 									timeEntries: db.timeEntries,
 									invoices: db.invoices,
 									categories: db.company.customerCategories ?? [],
+									geoFenceRules: db.geoFenceRules ?? [],
+									autoLocationStartEnabled: Boolean(db.company.autoLocationStartEnabled),
+									theme,
 									onSaveCustomer: handleSaveCustomer,
 									onDeleteCustomer: handleDeleteCustomer,
+									onSaveGeoFenceRules: handleSaveGeoFenceRules,
+									onNotify: notify,
 									onCreateInvoiceForCustomer: (custId) => {
 										setInvoiceDraft({
 											customerId: custId,
@@ -86844,9 +87864,15 @@ function App() {
 								}),
 								section === "products" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProductsView, {
 									company: db.company,
+									customers: db.customers,
 									products: db.products,
+									geoFenceRules: db.geoFenceRules ?? [],
+									autoLocationStartEnabled: Boolean(db.company.autoLocationStartEnabled),
+									theme,
 									onSaveProduct: handleSaveProduct,
-									onDeleteProduct: handleDeleteProduct
+									onDeleteProduct: handleDeleteProduct,
+									onSaveGeoFenceRules: handleSaveGeoFenceRules,
+									onNotify: notify
 								}),
 								section === "invoices" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InvoicesView, {
 									company: db.company,

@@ -21,6 +21,7 @@ import {
   MapPin,
   Music,
   Palette,
+  Pencil,
   Plus,
   Radar,
   RefreshCw,
@@ -104,6 +105,8 @@ import {
   playReminderSound,
 } from '../utils/soundReminder';
 import { GeoFenceMapPicker, type PickedMapLocation } from './GeoFenceMapPicker';
+import { GeoFenceRuleModal } from './GeoFenceRuleModal';
+import { InfoHintPopup } from './InfoHintPopup';
 import { ThemedSelect } from './ThemedSelect';
 
 type SettingsTab = 'general' | 'company' | 'cloud' | 'backups' | 'automation';
@@ -285,6 +288,7 @@ export function NextcloudSettingsView({
   const [locatingRule, setLocatingRule] = useState(false);
   const [focusedRuleId, setFocusedRuleId] = useState<string | null>(null);
   const [mapCameraNonce, setMapCameraNonce] = useState(0);
+  const [editingGeoRule, setEditingGeoRule] = useState<GeoFenceRule | null>(null);
   const mapSectionRef = useRef<HTMLDivElement | null>(null);
 
   const invoiceNumberPreview = useMemo(
@@ -850,18 +854,14 @@ export function NextcloudSettingsView({
   };
 
   const handleAddGeoRule = () => {
-    const lat = Number(newRuleLat);
-    const lng = Number(newRuleLng);
+    const lat = Number(newRuleLat.replace(',', '.'));
+    const lng = Number(newRuleLng.replace(',', '.'));
     if (!newRuleName.trim()) {
       onNotify('Bitte einen Namen für die Ortsregel eingeben.', true);
       return;
     }
     if (!Number.isFinite(lat) || !Number.isFinite(lng) || (lat === 0 && lng === 0)) {
-      onNotify('Bitte Koordinaten über Adresse oder GPS übernehmen.', true);
-      return;
-    }
-    if (!newRuleCustomerId || !newRuleProductId) {
-      onNotify('Bitte Kunde und Leistung auswählen.', true);
+      onNotify('Bitte Koordinaten über Adresse, Karte oder GPS übernehmen.', true);
       return;
     }
     const rule: GeoFenceRule = {
@@ -887,6 +887,16 @@ export function NextcloudSettingsView({
     setNewRuleTaskTitle('');
     setNewRuleNotes('');
     onNotify(`Ortsregel "${rule.name}" gespeichert.`);
+  };
+
+  const handleSaveEditedGeoRule = (updated: GeoFenceRule) => {
+    const exists = geoFenceRules.some((r) => r.id === updated.id);
+    onSaveGeoFenceRules(
+      exists
+        ? geoFenceRules.map((r) => (r.id === updated.id ? updated : r))
+        : [updated, ...geoFenceRules]
+    );
+    onNotify(`Ortsregel "${updated.name}" aktualisiert.`);
   };
 
   const handleToggleGeoRule = (id: string) => {
@@ -1222,13 +1232,14 @@ export function NextcloudSettingsView({
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center gap-2">
         <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           Einstellungen, Design &amp; Nextcloud
         </h1>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Passe App-Oberfläche, Nummernkreise, Rechnungsdesign, Nextcloud-Synchronisation, Backups und Automatisierung an.
-        </p>
+        <InfoHintPopup
+          title="Einstellungen, Design & Nextcloud"
+          text="Passe App-Oberfläche, Nummernkreise, Rechnungsdesign, Nextcloud-Synchronisation, Backups und Automatisierung an."
+        />
       </div>
 
       {/* Sub-Menu Tabs */}
@@ -1258,13 +1269,15 @@ export function NextcloudSettingsView({
       {activeTab === 'general' && (
         <form onSubmit={handleCompanySubmit} className="space-y-6">
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
-            <div className="border-b border-slate-200 pb-3 dark:border-[#2e2349]">
+            <div className="flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]">
               <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                 App-Oberfläche anpassen
               </h2>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Steuere Akzentfarbe, Informationsdichte, Textgröße, Startansicht und Wischgesten.
-              </p>
+              <InfoHintPopup
+                size="sm"
+                title="App-Oberfläche anpassen"
+                text="Steuere Akzentfarbe, Informationsdichte, Textgröße, Startansicht und Wischgesten."
+              />
             </div>
 
             <div className="space-y-3">
@@ -1474,13 +1487,15 @@ export function NextcloudSettingsView({
 
           {/* Categories Management */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
-            <div className="border-b border-slate-200 pb-3 dark:border-[#2e2349]">
+            <div className="flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]">
               <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                 Kategorien für Kunden, Produkte, Kosten &amp; interne Arbeiten
               </h2>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Stehen in der Kunden-, Produkt-, Beleg-/Kosten-, NFC- und Zeiterfassung als Schnellauswahl &amp; Filter zur Verfügung.
-              </p>
+              <InfoHintPopup
+                size="sm"
+                title="Kategorien verwalten"
+                text="Stehen in der Kunden-, Produkt-, Beleg-/Kosten-, NFC- und Zeiterfassung als Schnellauswahl & Filter zur Verfügung."
+              />
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -1690,12 +1705,16 @@ export function NextcloudSettingsView({
         <form onSubmit={handleCompanySubmit} className="space-y-6">
           {/* Firmendaten & Bank */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]">
-            <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-              Eigene Firmendaten &amp; Bankverbindung (für Rechnungen &amp; Angebote)
-            </h2>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Diese Angaben erscheinen im Briefkopf und in der Fußzeile jeder PDF-Rechnung.
-            </p>
+            <div className="flex items-center gap-1.5">
+              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                Eigene Firmendaten &amp; Bankverbindung (für Rechnungen &amp; Angebote)
+              </h2>
+              <InfoHintPopup
+                size="sm"
+                title="Eigene Firmendaten & Bankverbindung"
+                text="Diese Angaben erscheinen im Briefkopf und in der Fußzeile jeder PDF-Rechnung."
+              />
+            </div>
 
             <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
@@ -1854,13 +1873,20 @@ export function NextcloudSettingsView({
 
           {/* Nummernkreise: Rechnungen, Angebote & Artikelnummer */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-6">
-            <div className="border-b border-slate-200 pb-3 dark:border-[#2e2349]">
+            <div className="flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]">
               <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                 Nummernkreise &amp; Artikelnummer-Bezeichnung
               </h2>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Platzhalter überall nutzbar: <span className="font-mono">{'{PREFIX}, {YYYY}, {YY}, {MM}, {DD}, {NR}'}</span>
-              </p>
+              <InfoHintPopup
+                size="sm"
+                title="Nummernkreise & Platzhalter"
+                text={
+                  <span>
+                    Platzhalter überall nutzbar:{' '}
+                    <span className="font-mono font-semibold">{'{PREFIX}, {YYYY}, {YY}, {MM}, {DD}, {NR}'}</span>
+                  </span>
+                }
+              />
             </div>
 
             {/* Rechnungsnummer */}
@@ -2067,13 +2093,15 @@ export function NextcloudSettingsView({
 
           {/* Rechnungsgestaltung: Logo, Farben, Schriftarten, Layouts & Texte */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-6">
-            <div className="border-b border-slate-200 pb-3 dark:border-[#2e2349]">
+            <div className="flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]">
               <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                 Rechnungs- &amp; Angebotsdesign
               </h2>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Gestalte Logo, Akzentfarben, eigene Wunschfarbe, Schriftart, Layout-Stil und Standardtexte für Vorschau &amp; PDF.
-              </p>
+              <InfoHintPopup
+                size="sm"
+                title="Rechnungs- & Angebotsdesign"
+                text="Gestalte Logo, Akzentfarben, eigene Wunschfarbe, Schriftart, Layout-Stil und Standardtexte für Vorschau & PDF."
+              />
             </div>
 
             {/* Logo */}
@@ -2439,13 +2467,15 @@ export function NextcloudSettingsView({
             <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]">
               <div className="flex items-start gap-2.5">
                 <Server className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                     TaktWerk Server-URL (optional für Android-App)
                   </h2>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    Leer lassen für eigenständigen Gerätespeicher + direkten Nextcloud-Sync, oder eigene Server-URL hinterlegen.
-                  </p>
+                  <InfoHintPopup
+                    size="sm"
+                    title="TaktWerk Server-URL"
+                    text="Leer lassen für eigenständigen Gerätespeicher + direkten Nextcloud-Sync, oder eigene Server-URL hinterlegen."
+                  />
                 </div>
               </div>
               <form onSubmit={handleSaveServerUrl} className="mt-4 flex flex-col gap-2 sm:flex-row">
@@ -2471,13 +2501,15 @@ export function NextcloudSettingsView({
             <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2.5">
                 <Cloud className="h-5 w-5 text-blue-700 dark:text-violet-400" />
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                     Nextcloud WebDAV-Anbindung
                   </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Speichert Datenbank, PDF-Rechnungen und Backups in deiner eigenen Nextcloud.
-                  </p>
+                  <InfoHintPopup
+                    size="sm"
+                    title="Nextcloud WebDAV-Anbindung"
+                    text="Speichert Datenbank, PDF-Rechnungen und Backups in deiner eigenen Nextcloud."
+                  />
                 </div>
               </div>
               <div className="text-xs font-medium">
@@ -2663,13 +2695,15 @@ export function NextcloudSettingsView({
             <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-2.5">
                 <Calendar className="h-5 w-5 text-blue-700 dark:text-violet-400" />
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                     Nextcloud Kalender (CalDAV)
                   </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Verknüpfe einen Nextcloud-Kalender, um Termine direkt in TaktWerk zu sehen &amp; Zeiten zu starten oder zurückzuschreiben.
-                  </p>
+                  <InfoHintPopup
+                    size="sm"
+                    title="Nextcloud Kalender (CalDAV)"
+                    text="Verknüpfe einen Nextcloud-Kalender, um Termine direkt in TaktWerk zu sehen & Zeiten zu starten oder zurückzuschreiben."
+                  />
                 </div>
               </div>
               <button
@@ -2797,13 +2831,15 @@ export function NextcloudSettingsView({
         <div className="space-y-6">
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
             <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
-              <div>
+              <div className="flex items-center gap-1.5">
                 <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                   Automatisierte Multi-Format-Backups
                 </h2>
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                  Sichert automatisch alle Daten als JSON, CSV, Excel (.xlsx), Gesamtbericht-PDF und Rechnungen-ZIP nach Zeitplan.
-                </p>
+                <InfoHintPopup
+                  size="sm"
+                  title="Automatisierte Multi-Format-Backups"
+                  text="Sichert automatisch alle Daten als JSON, CSV, Excel (.xlsx), Gesamtbericht-PDF und Rechnungen-ZIP nach Zeitplan."
+                />
               </div>
               <button
                 type="button"
@@ -2918,13 +2954,15 @@ export function NextcloudSettingsView({
             <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-2.5">
                 <BarChart3 className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                     Grafische Auswertung als PDF (mit Filtern)
                   </h2>
-                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                    Erstellt einen visuellen PDF-Bericht mit Kennzahlen, Verteilungsdiagramm, Schwerpunkt-Balken und Einzelaufstellung nach Wunschfilter.
-                  </p>
+                  <InfoHintPopup
+                    size="sm"
+                    title="Grafische Auswertung als PDF"
+                    text="Erstellt einen visuellen PDF-Bericht mit Kennzahlen, Verteilungsdiagramm, Schwerpunkt-Balken und Einzelaufstellung nach Wunschfilter."
+                  />
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -3119,13 +3157,15 @@ export function NextcloudSettingsView({
             <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-2.5">
                 <FileArchive className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                     Rechnungen als ZIP-Paket sichern
                   </h2>
-                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                    Bündelt alle PDF-Rechnungen (inkl. unterschriebener Abnahmeprotokolle und einer CSV-Übersicht) in einem einzigen ZIP-Archiv für Buchhaltung oder Steuerberater.
-                  </p>
+                  <InfoHintPopup
+                    size="sm"
+                    title="Rechnungen als ZIP-Paket sichern"
+                    text="Bündelt alle PDF-Rechnungen (inkl. unterschriebener Abnahmeprotokolle und einer CSV-Übersicht) in einem einzigen ZIP-Archiv für Buchhaltung oder Steuerberater."
+                  />
                 </div>
               </div>
               <span className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs font-semibold text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 shrink-0">
@@ -3182,13 +3222,15 @@ export function NextcloudSettingsView({
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
                 <Database className="mt-0.5 h-5 w-5 text-slate-600 dark:text-violet-400" />
-                <div>
+                <div className="flex items-center gap-1.5">
                   <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                     Manuelle Exporte, Wiederherstellung &amp; Datenbank
                   </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Alle Formate einzeln exportieren oder ein vorhandenes JSON-Backup einspielen.
-                  </p>
+                  <InfoHintPopup
+                    size="sm"
+                    title="Manuelle Exporte & Wiederherstellung"
+                    text="Alle Formate einzeln exportieren oder ein vorhandenes JSON-Backup einspielen."
+                  />
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -3287,16 +3329,16 @@ export function NextcloudSettingsView({
           {/* Ortserkennung & Ortsbasierter Start (Geofencing) */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="flex items-start gap-2.5">
-                <Radar className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
-                <div>
-                  <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                    Ortung &amp; automatischer Aufgaben-Start (Geofencing)
-                  </h2>
-                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                    Erfasst deinen Standort beim Timer-Start oder startet bestimmte Aufgaben automatisch, sobald du dich an einem hinterlegten Ort befindest.
-                  </p>
-                </div>
+              <div className="flex items-center gap-2">
+                <Radar className="h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" />
+                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                  Ortung &amp; automatischer Aufgaben-Start (Geofencing)
+                </h2>
+                <InfoHintPopup
+                  size="sm"
+                  title="Ortung & Geofencing"
+                  text="Erfasst deinen Standort beim Timer-Start oder startet bestimmte Aufgaben automatisch, sobald du dich an einem hinterlegten Ort befindest. Ortsregeln lassen sich auch direkt bei Kunden oder Produkten anlegen."
+                />
               </div>
               {onCheckGeoFenceNow && (
                 <button
@@ -3386,71 +3428,111 @@ export function NextcloudSettingsView({
                   Noch keine Ortsregeln angelegt. Füge unten z. B. dein Büro oder einen Kundenstandort hinzu.
                 </p>
               ) : (
-                <div className="space-y-2">
-                  {geoFenceRules.map((rule) => {
-                    const cust = db.customers.find((c) => c.id === rule.customerId);
-                    const prod = db.products.find((p) => p.id === rule.productId);
-                    return (
-                      <div
-                        key={rule.id}
-                        className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-slate-50/80 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50 sm:flex-row sm:items-center sm:justify-between"
-                      >
-                        <div className="space-y-0.5 min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                              {rule.name}
-                            </span>
-                            <span className="rounded bg-blue-50 px-1.5 py-0.5 font-mono text-[11px] font-medium text-blue-700 dark:bg-violet-950/70 dark:text-violet-300">
-                              {rule.radiusMeters} m Radius
-                            </span>
-                            {rule.autoStopOnExit && (
-                              <span className="rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
-                                Auto-Stopp bei Verlassen
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-xs text-slate-600 dark:text-slate-300">
-                            Startet: <span className="font-medium">{rule.taskTitle}</span> ·{' '}
-                            {cust?.companyName ?? 'Kunde'} ({prod?.name ?? 'Leistung'})
-                          </div>
-                          <div className="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate">
-                            {rule.address ? `${rule.address} · ` : ''}
-                            {rule.lat.toFixed(5)}, {rule.lng.toFixed(5)}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => handleFocusRuleOnMap(rule)}
-                            title="Auf der Karte anzeigen"
-                            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
-                          >
-                            <MapIcon className="h-3.5 w-3.5" />
-                            Karte
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleToggleGeoRule(rule.id)}
-                            className={`rounded-lg border px-2.5 py-1 text-xs font-semibold cursor-pointer ${
-                              rule.enabled
-                                ? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300'
-                                : 'border-slate-200 bg-white text-slate-500 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-400'
-                            }`}
-                          >
-                            {rule.enabled ? 'Aktiv' : 'Pausiert'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteGeoRule(rule.id)}
-                            title="Ortsregel löschen"
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/50 dark:hover:text-red-400 cursor-pointer"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm">
+                      <thead>
+                        <tr className="border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70">
+                          <th className="px-3.5 py-2.5">Ort &amp; Aufgabe</th>
+                          <th className="px-3.5 py-2.5">Kunde / Leistung</th>
+                          <th className="px-3.5 py-2.5">Radius &amp; Adresse</th>
+                          <th className="px-3.5 py-2.5">Status</th>
+                          <th className="px-3.5 py-2.5 text-right">Aktionen</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200 dark:divide-[#2e2349]">
+                        {geoFenceRules.map((rule) => {
+                          const cust = db.customers.find((c) => c.id === rule.customerId);
+                          const prod = db.products.find((p) => p.id === rule.productId);
+                          return (
+                            <tr
+                              key={rule.id}
+                              className="transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50"
+                            >
+                              <td className="px-3.5 py-2.5">
+                                <div className="font-medium text-slate-900 dark:text-slate-100">
+                                  {rule.name}
+                                </div>
+                                <div className="text-xs text-slate-500 dark:text-slate-400">
+                                  {rule.taskTitle}
+                                  {rule.autoStopOnExit && (
+                                    <span className="text-amber-700 dark:text-amber-300">
+                                      {' '}· Auto-Stopp
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="px-3.5 py-2.5">
+                                <div className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                                  {cust?.companyName ?? 'Intern / ohne Kunde'}
+                                </div>
+                                <div className="text-xs text-slate-500 dark:text-slate-400">
+                                  {prod?.name ?? '—'}
+                                </div>
+                              </td>
+                              <td className="px-3.5 py-2.5">
+                                <div className="font-mono text-xs font-semibold text-slate-700 dark:text-slate-200 tabular-nums whitespace-nowrap">
+                                  {rule.radiusMeters} m
+                                </div>
+                                <div
+                                  className="max-w-[220px] truncate text-[11px] font-mono text-slate-400 dark:text-slate-500"
+                                  title={
+                                    rule.address ||
+                                    `${rule.lat.toFixed(5)}, ${rule.lng.toFixed(5)}`
+                                  }
+                                >
+                                  {rule.address ||
+                                    `${rule.lat.toFixed(5)}, ${rule.lng.toFixed(5)}`}
+                                </div>
+                              </td>
+                              <td className="px-3.5 py-2.5 whitespace-nowrap">
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleGeoRule(rule.id)}
+                                  title="Status umschalten"
+                                  className={`inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold transition-colors cursor-pointer ${
+                                    rule.enabled
+                                      ? 'border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-300'
+                                      : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-400'
+                                  }`}
+                                >
+                                  {rule.enabled ? 'Aktiv' : 'Pausiert'}
+                                </button>
+                              </td>
+                              <td className="px-3.5 py-2.5">
+                                <div className="flex items-center justify-end gap-1">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleFocusRuleOnMap(rule)}
+                                    title="Auf der Karte anzeigen"
+                                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                                  >
+                                    <MapIcon className="h-4 w-4" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingGeoRule(rule)}
+                                    title="Ortsregel bearbeiten"
+                                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer"
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteGeoRule(rule.id)}
+                                    title="Ortsregel löschen"
+                                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/50 dark:hover:text-red-400 cursor-pointer"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               )}
 
@@ -3538,10 +3620,13 @@ export function NextcloudSettingsView({
                       value={newRuleCustomerId}
                       onChange={setNewRuleCustomerId}
                       ariaLabel="Kunde für Ortsregel"
-                      options={db.customers.map((c) => ({
-                        value: c.id,
-                        label: c.companyName,
-                      }))}
+                      options={[
+                        { value: '', label: 'Kein Kunde (interne Aufgabe)' },
+                        ...db.customers.map((c) => ({
+                          value: c.id,
+                          label: c.companyName,
+                        })),
+                      ]}
                     />
                   </div>
                   <div>
@@ -3550,10 +3635,13 @@ export function NextcloudSettingsView({
                       value={newRuleProductId}
                       onChange={setNewRuleProductId}
                       ariaLabel="Leistung für Ortsregel"
-                      options={db.products.map((p) => ({
-                        value: p.id,
-                        label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`,
-                      }))}
+                      options={[
+                        { value: '', label: 'Keine Leistung gewählt' },
+                        ...db.products.map((p) => ({
+                          value: p.id,
+                          label: `${p.name} (${formatCurrency(p.unitPriceNet)}/${p.unit})`,
+                        })),
+                      ]}
                     />
                   </div>
                 </div>
@@ -3640,16 +3728,16 @@ export function NextcloudSettingsView({
 
           {/* Fahrtkosten- & Distanz-Automatik */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-4">
-            <div className="flex items-start gap-2.5">
-              <Car className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
-              <div>
-                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                  Fahrtkosten- &amp; Distanz-Automatik
-                </h2>
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                  Berechnet aus deiner Startadresse und dem Einsatzort automatisch die Straßenentfernung (Faktor 1,25) und den Nettopreis in €/km.
-                </p>
-              </div>
+            <div className="flex items-center gap-2">
+              <Car className="h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" />
+              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                Fahrtkosten- &amp; Distanz-Automatik
+              </h2>
+              <InfoHintPopup
+                size="sm"
+                title="Fahrtkosten- & Distanz-Automatik"
+                text="Berechnet aus deiner Startadresse und dem Einsatzort automatisch die Straßenentfernung (Faktor 1,25) und den Nettopreis in €/km."
+              />
             </div>
 
             <div className="space-y-2">
@@ -3768,16 +3856,16 @@ export function NextcloudSettingsView({
 
           {/* 1-Stunden Erinnerung */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-4">
-            <div className="flex items-start gap-2.5">
-              <BellRing className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
-              <div>
-                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                  Erinnerung für laufende Aufgaben &amp; Klingelton
-                </h2>
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                  Benachrichtigt dich nach einer Stunde (oder deiner Wunschdauer), falls ein Timer noch aktiv ist — inklusive wählbarem Signalton.
-                </p>
-              </div>
+            <div className="flex items-center gap-2">
+              <BellRing className="h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" />
+              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                Erinnerung für laufende Aufgaben &amp; Klingelton
+              </h2>
+              <InfoHintPopup
+                size="sm"
+                title="Erinnerung & Klingelton"
+                text="Benachrichtigt dich nach einer Stunde (oder deiner Wunschdauer), falls ein Timer noch aktiv ist — inklusive wählbarem Signalton."
+              />
             </div>
 
             <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
@@ -3982,21 +4070,34 @@ export function NextcloudSettingsView({
           </section>
 
           {/* Android Homescreen Widget Guide */}
-          <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-3">
-            <div className="flex items-start gap-2.5">
-              <Smartphone className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" />
-              <div>
-                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                  Android Startbildschirm-Widget
-                </h2>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  TaktWerk liefert ein natives Startbildschirm-Widget für Android (Pixel &amp; Co.). Halte eine freie Stelle auf dem Android-Startbildschirm gedrückt → <span className="font-semibold text-slate-700 dark:text-slate-200">Widgets → TaktWerk</span>. Dort siehst du deinen laufenden Timer, heutige Gesamtstunden und 1-Tippen-Schnellstarts für deine wichtigsten NFC-Aufgaben.
-                </p>
-              </div>
+          <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
+            <div className="flex items-center gap-2">
+              <Smartphone className="h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" />
+              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                Android Startbildschirm-Widget
+              </h2>
+              <InfoHintPopup
+                size="sm"
+                title="Android Startbildschirm-Widget"
+                text="TaktWerk liefert ein natives Startbildschirm-Widget für Android (Pixel & Co.). Halte eine freie Stelle auf dem Android-Startbildschirm gedrückt → Widgets → TaktWerk. Dort siehst du deinen laufenden Timer, heutige Gesamtstunden und 1-Tippen-Schnellstarts für deine wichtigsten NFC-Aufgaben."
+              />
             </div>
           </section>
         </form>
       )}
+
+      <GeoFenceRuleModal
+        open={editingGeoRule !== null}
+        editingRule={editingGeoRule}
+        customers={db.customers}
+        products={db.products}
+        existingRules={geoFenceRules}
+        theme={theme}
+        onSave={handleSaveEditedGeoRule}
+        onDelete={handleDeleteGeoRule}
+        onClose={() => setEditingGeoRule(null)}
+        onNotify={onNotify}
+      />
     </div>
   );
 }

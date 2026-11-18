@@ -84,6 +84,7 @@ import {
   invoicesToCsv,
 } from '../utils/exportBackup';
 import { generateGiroCodeDataUrl } from '../utils/epcQr';
+import { InfoHintPopup } from './InfoHintPopup';
 import { SignaturePadModal } from './SignaturePadModal';
 import { ThemedSelect } from './ThemedSelect';
 
@@ -1131,13 +1132,14 @@ export function InvoicesView({
   return (
     <div className="space-y-6">
       <div className="no-print flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Rechnungen &amp; Angebote
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Rechnungen, Angebote mit Rabatten, rechtssichere PDFs, GiroCodes, XRechnungen und Tätigkeitsberichte erstellen.
-          </p>
+          <InfoHintPopup
+            title="Rechnungen & Angebote"
+            text="Rechnungen, Angebote mit Rabatten, rechtssichere PDFs, GiroCodes, XRechnungen und Tätigkeitsberichte erstellen."
+          />
         </div>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           {invoices.length > 0 && (

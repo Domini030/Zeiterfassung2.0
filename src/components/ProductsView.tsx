@@ -1,7 +1,9 @@
-import { Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { MapPin, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type {
   CompanyProfile,
+  Customer,
+  GeoFenceRule,
   Product,
   ProductType,
   TaxRate,
@@ -9,26 +11,43 @@ import type {
 } from '../types';
 import { createId, formatCurrency, formatProductSku } from '../utils/format';
 import { DEFAULT_PRODUCT_CATEGORIES } from '../utils/sampleData';
+import { GeoFenceRuleModal } from './GeoFenceRuleModal';
+import { InfoHintPopup } from './InfoHintPopup';
 import { CategoryPicker, ThemedSelect } from './ThemedSelect';
 
 interface ProductsViewProps {
   company: CompanyProfile;
+  customers: Customer[];
   products: Product[];
+  geoFenceRules?: GeoFenceRule[];
+  autoLocationStartEnabled?: boolean;
+  theme?: 'light' | 'dark';
   onSaveProduct: (product: Product, incrementSkuSequence?: boolean) => void;
   onDeleteProduct: (id: string) => void;
+  onSaveGeoFenceRules: (rules: GeoFenceRule[]) => void;
+  onNotify: (msg: string, isError?: boolean) => void;
 }
 
 export function ProductsView({
   company,
+  customers,
   products,
+  geoFenceRules = [],
+  autoLocationStartEnabled = false,
+  theme = 'light',
   onSaveProduct,
   onDeleteProduct,
+  onSaveGeoFenceRules,
+  onNotify,
 }: ProductsViewProps) {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | ProductType>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
+  const [geoModalOpen, setGeoModalOpen] = useState(false);
+  const [geoModalProduct, setGeoModalProduct] = useState<Product | null>(null);
+  const [geoModalEditingRule, setGeoModalEditingRule] = useState<GeoFenceRule | null>(null);
 
   const [sku, setSku] = useState('');
   const [name, setName] = useState('');
@@ -87,17 +106,16 @@ export function ProductsView({
     setShowForm(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const saveCurrentForm = (): Product | null => {
     setError('');
     if (!name.trim()) {
       setError('Bitte eine Bezeichnung angeben.');
-      return;
+      return null;
     }
     const price = Number(unitPriceNet.replace(',', '.'));
     if (Number.isNaN(price) || price < 0) {
       setError('Bitte einen gültigen Netto-Preis eingeben.');
-      return;
+      return null;
     }
 
     const fallbackSku = formatProductSku(
@@ -117,8 +135,60 @@ export function ProductsView({
       createdAt: editing?.createdAt ?? new Date().toISOString(),
     };
     onSaveProduct(saved, !editing);
+    return saved;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const saved = saveCurrentForm();
+    if (!saved) return;
     setShowForm(false);
   };
+
+  const openNewGeoRuleForProduct = (product: Product) => {
+    setGeoModalEditingRule(null);
+    setGeoModalProduct(product);
+    setGeoModalOpen(true);
+  };
+
+  const openEditGeoRule = (rule: GeoFenceRule) => {
+    setGeoModalEditingRule(rule);
+    setGeoModalProduct(null);
+    setGeoModalOpen(true);
+  };
+
+  const handleSaveGeoRule = (rule: GeoFenceRule) => {
+    const exists = geoFenceRules.some((r) => r.id === rule.id);
+    const next = exists
+      ? geoFenceRules.map((r) => (r.id === rule.id ? rule : r))
+      : [rule, ...geoFenceRules];
+    onSaveGeoFenceRules(next);
+    if (!autoLocationStartEnabled && rule.enabled) {
+      onNotify(
+        `Ortsabhängigkeit "${rule.name}" gespeichert. Hinweis: Ortsautomatik unter Einstellungen → Ortung aktivieren.`
+      );
+    } else {
+      onNotify(`Ortsabhängigkeit "${rule.name}" gespeichert.`);
+    }
+  };
+
+  const handleDeleteGeoRule = (id: string) => {
+    onSaveGeoFenceRules(geoFenceRules.filter((r) => r.id !== id));
+    onNotify('Ortsabhängigkeit entfernt.');
+  };
+
+  const geoRulesByProduct = useMemo(() => {
+    const map = new Map<string, GeoFenceRule[]>();
+    for (const r of geoFenceRules) {
+      if (!r.productId) continue;
+      const list = map.get(r.productId) ?? [];
+      list.push(r);
+      map.set(r.productId, list);
+    }
+    return map;
+  }, [geoFenceRules]);
+
+  const editingProductGeoRules = editing ? geoRulesByProduct.get(editing.id) ?? [] : [];
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -143,13 +213,14 @@ export function ProductsView({
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Produkt- &amp; Leistungskatalog
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Stundensätze für die Zeiterfassung sowie Pauschalartikel und Hardware für Rechnungen.
-          </p>
+          <InfoHintPopup
+            title="Produkt- & Leistungskatalog"
+            text="Stundensätze für die Zeiterfassung sowie Pauschalartikel, Hardware und Ortsabhängigkeiten für automatische Aufgaben verwalten."
+          />
         </div>
         <button
           type="button"
@@ -268,12 +339,85 @@ export function ProductsView({
                 placeholder="z. B. Beratung, Entwicklung, Hardware"
               />
             </div>
+            {editing && (
+              <div className="space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#2e2349] dark:bg-[#211936]/40 md:col-span-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-blue-700 dark:text-violet-400" />
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                      Ortsabhängigkeiten für dieses Produkt ({editingProductGeoRules.length})
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openNewGeoRuleForProduct({
+                        ...editing,
+                        name: name.trim() || editing.name,
+                      })
+                    }
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Ortsabhängigkeit anlegen
+                  </button>
+                </div>
+                {editingProductGeoRules.length > 0 && (
+                  <div className="divide-y divide-slate-200 rounded-lg border border-slate-200 bg-white dark:divide-[#2e2349] dark:border-[#2e2349] dark:bg-[#171126]">
+                    {editingProductGeoRules.map((rule) => (
+                      <div
+                        key={rule.id}
+                        className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-xs"
+                      >
+                        <div className="min-w-0">
+                          <span className="font-semibold text-slate-900 dark:text-slate-100">
+                            {rule.name}
+                          </span>
+                          <span className="mx-1.5 text-slate-400">·</span>
+                          <span className="font-mono text-slate-500 dark:text-slate-400">
+                            {rule.radiusMeters} m
+                          </span>
+                          <span className="mx-1.5 text-slate-400">·</span>
+                          <span
+                            className={
+                              rule.enabled
+                                ? 'font-medium text-emerald-700 dark:text-emerald-400'
+                                : 'text-slate-400'
+                            }
+                          >
+                            {rule.enabled ? 'Aktiv' : 'Pausiert'}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => openEditGeoRule(rule)}
+                            title="Ortsregel bearbeiten"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteGeoRule(rule.id)}
+                            title="Ortsregel löschen"
+                            className="inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             {error && (
               <p className="text-xs font-medium text-red-600 dark:text-red-400 md:col-span-4">
                 {error}
               </p>
             )}
-            <div className="flex justify-end gap-2 md:col-span-4">
+            <div className="flex flex-wrap justify-end gap-2 md:col-span-4">
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
@@ -281,6 +425,21 @@ export function ProductsView({
               >
                 Abbrechen
               </button>
+              {!editing && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const saved = saveCurrentForm();
+                    if (!saved) return;
+                    setShowForm(false);
+                    openNewGeoRuleForProduct(saved);
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                >
+                  <MapPin className="h-4 w-4" />
+                  Speichern &amp; Ort festlegen
+                </button>
+              )}
               <button
                 type="submit"
                 className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
@@ -366,65 +525,110 @@ export function ProductsView({
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-[#2e2349]">
-                {filtered.map((p) => (
-                  <tr
-                    key={p.id}
-                    className="transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50"
-                  >
-                    <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-violet-200/80 whitespace-nowrap">
-                      {p.sku}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-slate-900 dark:text-slate-100">
-                        {p.name}
-                      </div>
-                      {p.description && (
-                        <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                          {p.description}
+                {filtered.map((p) => {
+                  const linkedGeoRules = geoRulesByProduct.get(p.id) ?? [];
+                  return (
+                    <tr
+                      key={p.id}
+                      className="transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50"
+                    >
+                      <td className="px-4 py-3 font-mono text-xs text-slate-600 dark:text-violet-200/80 whitespace-nowrap">
+                        {p.sku}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900 dark:text-slate-100">
+                          {p.name}
                         </div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                      <div>{p.type === 'service' ? 'Dienstleistung' : 'Produkt / Pauschale'}</div>
-                      {p.category && (
-                        <span className="mt-0.5 inline-block rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-[#231b38] dark:text-violet-300">
-                          {p.category}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap">
-                      {formatCurrency(p.unitPriceNet)} / {p.unit}
-                    </td>
-                    <td className="px-4 py-3 text-right font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums whitespace-nowrap">
-                      {p.taxRate} %
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          type="button"
-                          onClick={() => openEdit(p)}
-                          title="Bearbeiten"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => onDeleteProduct(p.id)}
-                          title="Löschen"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                        {(p.description || linkedGeoRules.length > 0) && (
+                          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500 dark:text-slate-400">
+                            {p.description && <span>{p.description}</span>}
+                            {linkedGeoRules.length > 0 && (
+                              <button
+                                type="button"
+                                onClick={() => openEditGeoRule(linkedGeoRules[0])}
+                                className="inline-flex items-center gap-1 font-medium text-blue-700 hover:underline dark:text-violet-300 cursor-pointer"
+                              >
+                                <MapPin className="h-3 w-3 shrink-0" />
+                                {linkedGeoRules.length === 1
+                                  ? linkedGeoRules[0].name
+                                  : `${linkedGeoRules.length} Ortsregeln`}
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                        <div>{p.type === 'service' ? 'Dienstleistung' : 'Produkt / Pauschale'}</div>
+                        {p.category && (
+                          <span className="mt-0.5 inline-block rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-700 dark:bg-[#231b38] dark:text-violet-300">
+                            {p.category}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums whitespace-nowrap">
+                        {formatCurrency(p.unitPriceNet)} / {p.unit}
+                      </td>
+                      <td className="px-4 py-3 text-right font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums whitespace-nowrap">
+                        {p.taxRate} %
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            type="button"
+                            onClick={() => openNewGeoRuleForProduct(p)}
+                            title="Ortsabhängigkeit für dieses Produkt anlegen"
+                            className={`inline-flex h-8 w-8 items-center justify-center rounded-md cursor-pointer ${
+                              linkedGeoRules.length > 0
+                                ? 'text-blue-700 hover:bg-blue-50 dark:text-violet-300 dark:hover:bg-[#231b38]'
+                                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100'
+                            }`}
+                          >
+                            <MapPin className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => openEdit(p)}
+                            title="Bearbeiten"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => onDeleteProduct(p.id)}
+                            title="Löschen"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
         )}
       </section>
+
+      <GeoFenceRuleModal
+        open={geoModalOpen}
+        editingRule={geoModalEditingRule}
+        initialProduct={geoModalProduct}
+        customers={customers}
+        products={products}
+        existingRules={geoFenceRules}
+        theme={theme}
+        onSave={handleSaveGeoRule}
+        onDelete={handleDeleteGeoRule}
+        onClose={() => {
+          setGeoModalOpen(false);
+          setGeoModalProduct(null);
+          setGeoModalEditingRule(null);
+        }}
+        onNotify={onNotify}
+      />
     </div>
   );
 }

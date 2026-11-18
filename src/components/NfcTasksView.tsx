@@ -18,6 +18,7 @@ import {
   extractTagIdFromPayload,
 } from '../utils/nfcHelpers';
 import { TaktWerkNative } from '../utils/taktwerkNative';
+import { InfoHintPopup } from './InfoHintPopup';
 import { ThemedSelect } from './ThemedSelect';
 
 interface NdefRecordLike {
@@ -504,13 +505,14 @@ export function NfcTasksView({
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             NFC-Aufgaben &amp; Trigger
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Verknüpfe physische NFC-Tags mit Kundenaufträgen oder internen Aufgaben (z. B. Reinigung, Akquise), um Timer per Smartphone-Tap zu starten oder zu stoppen.
-          </p>
+          <InfoHintPopup
+            title="NFC-Aufgaben & Trigger"
+            text="Verknüpfe physische NFC-Tags mit Kundenaufträgen oder internen Aufgaben (z. B. Reinigung, Akquise), um Timer per Smartphone-Tap zu starten oder zu stoppen."
+          />
         </div>
         <button
           type="button"
@@ -526,28 +528,34 @@ export function NfcTasksView({
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-12">
         <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Radio className="h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" />
-                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                  {nativeCapacitor
-                    ? 'Automatischer NFC-Empfang (Android-App)'
-                    : 'Live NFC-Scanner (Web NFC & Deep-Link)'}
-                </h2>
-              </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-2 min-w-0">
+              <Radio className="h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" />
+              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                 {nativeCapacitor
-                  ? writingTagId
-                    ? 'Schreibmodus aktiv — halte den NFC-Tag zum Beschreiben ruhig an die Rückseite deines Smartphones.'
-                    : nativeNfcStatus === 'NFC_DISABLED'
-                    ? 'NFC ist am Smartphone deaktiviert. Tippe rechts auf „NFC aktivieren“, um die Android-NFC-Einstellungen zu öffnen.'
-                    : nativeNfcStatus === 'NO_NFC' || nativeNfcStatus === 'UNSUPPORTED'
-                    ? 'Auf diesem Gerät wurde keine aktive NFC-Hardware erkannt.'
-                    : 'Ohne Scanner-Start aktiv: Solange die App offen ist, erkennt TaktWerk jeden Tag sofort. Einmal mit „App-Tag schreiben“ beschriebene Tags starten die Zeiterfassung sogar, wenn TaktWerk komplett geschlossen ist!'
-                  : webNfcSupported
-                  ? 'Browser-Modus (Chrome Web NFC): Aus Sicherheitsgründen verlangen Webbrowser einen Klick auf „NFC-Scanner starten“. Für automatisches Scannen ohne Knopf & bei geschlossener App bitte die TaktWerk Android-APK nutzen.'
-                  : 'Desktop / iOS erkannt: Kopiere die Trigger-URL auf deinen NFC-Tag (z. B. mit NFC Tools) — beim Scannen startet TaktWerk die Aufgabe automatisch.'}
-              </p>
+                  ? 'Automatischer NFC-Empfang (Android-App)'
+                  : 'Live NFC-Scanner (Web NFC & Deep-Link)'}
+              </h2>
+              <InfoHintPopup
+                size="sm"
+                title={
+                  nativeCapacitor
+                    ? 'Automatischer NFC-Empfang'
+                    : 'Live NFC-Scanner'
+                }
+                text={
+                  nativeCapacitor
+                    ? writingTagId
+                      ? 'Schreibmodus aktiv — halte den NFC-Tag zum Beschreiben ruhig an die Rückseite deines Smartphones.'
+                      : nativeNfcStatus === 'NFC_DISABLED'
+                      ? 'NFC ist am Smartphone deaktiviert. Tippe auf „NFC aktivieren“, um die Android-NFC-Einstellungen zu öffnen.'
+                      : nativeNfcStatus === 'NO_NFC' || nativeNfcStatus === 'UNSUPPORTED'
+                      ? 'Auf diesem Gerät wurde keine aktive NFC-Hardware erkannt.'
+                      : 'Ohne Scanner-Start aktiv: Solange die App offen ist, erkennt TaktWerk jeden Tag sofort. Einmal mit „App-Tag schreiben“ beschriebene Tags starten die Zeiterfassung sogar, wenn TaktWerk komplett geschlossen ist!'
+                    : webNfcSupported
+                    ? 'Browser-Modus (Chrome Web NFC): Aus Sicherheitsgründen verlangen Webbrowser einen Klick auf „NFC-Scanner starten“. Für automatisches Scannen ohne Knopf & bei geschlossener App bitte die TaktWerk Android-APK nutzen.'
+                    : 'Desktop / iOS erkannt: Kopiere die Trigger-URL auf deinen NFC-Tag (z. B. mit NFC Tools) — beim Scannen startet TaktWerk die Aufgabe automatisch.'
+                }
+              />
             </div>
             {nativeCapacitor ? (
               writingTagId ? (
@@ -624,10 +632,12 @@ export function NfcTasksView({
             <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
               Tag-ID direkt testen / auslösen
             </h2>
+            <InfoHintPopup
+              size="sm"
+              title="Tag-ID testen"
+              text="Gib eine Tag-UID ein oder nutze die Auslösen-Buttons unten in der Liste."
+            />
           </div>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Gib eine Tag-UID ein oder nutze die Auslösen-Buttons unten in der Liste.
-          </p>
           <form onSubmit={handleManualScanSubmit} className="mt-3 flex items-center gap-2">
             <input
               type="text"

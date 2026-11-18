@@ -33,6 +33,7 @@ import {
   formatHoursShort,
   toInputDate,
 } from '../utils/format';
+import { InfoHintPopup } from './InfoHintPopup';
 import { ThemedSelect } from './ThemedSelect';
 
 interface CalendarViewProps {
@@ -283,13 +284,14 @@ export function CalendarView({
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Kalender &amp; Terminplanung
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Verbinde deinen Nextcloud-Kalender (CalDAV), behalte Fälligkeiten im Blick und starte Aufgaben direkt aus Terminen.
-          </p>
+          <InfoHintPopup
+            title="Kalender & Terminplanung"
+            text="Verbinde deinen Nextcloud-Kalender (CalDAV), behalte Fälligkeiten im Blick und starte Aufgaben direkt aus Terminen."
+          />
         </div>
 
         <div className="flex flex-wrap items-center gap-2 shrink-0">

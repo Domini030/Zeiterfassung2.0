@@ -27,6 +27,7 @@ import type {
 import { apiScanReceiptWithAi } from '../utils/apiClient';
 import { createId, formatCurrency, formatDateDE, toInputDate } from '../utils/format';
 import { DEFAULT_EXPENSE_CATEGORIES } from '../utils/sampleData';
+import { InfoHintPopup } from './InfoHintPopup';
 import { CategoryPicker, ThemedSelect } from './ThemedSelect';
 
 const INTERVAL_LABELS: Record<RecurringInterval, string> = {
@@ -558,13 +559,14 @@ export function ExpensesView({
 
       {/* Page Header & Sub-Tabs */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Belege &amp; Betriebskosten
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Einzelbelege scannen, allgemeine Betriebskosten erfassen und wiederkehrende Fixkosten wie Miete oder Abos verwalten.
-          </p>
+          <InfoHintPopup
+            title="Belege & Betriebskosten"
+            text="Einzelbelege scannen, allgemeine Betriebskosten erfassen und wiederkehrende Fixkosten wie Miete oder Abos verwalten."
+          />
         </div>
         <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 dark:border-[#342653] dark:bg-[#19122c] self-start sm:self-auto">
           <button

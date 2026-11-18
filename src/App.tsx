@@ -1106,6 +1106,7 @@ export default function App() {
         const nowIso = new Date().toISOString();
         const geoTimer: ActiveTimer = {
           id: createId('timer'),
+          entryType: rule.customerId ? 'project' : 'internal',
           customerId: rule.customerId,
           productId: rule.productId,
           nfcTaskId: null,
@@ -2490,11 +2491,17 @@ export default function App() {
               {section === 'customers' && (
                 <CustomersView
                   customers={db.customers}
+                  products={db.products}
                   timeEntries={db.timeEntries}
                   invoices={db.invoices}
                   categories={db.company.customerCategories ?? []}
+                  geoFenceRules={db.geoFenceRules ?? []}
+                  autoLocationStartEnabled={Boolean(db.company.autoLocationStartEnabled)}
+                  theme={theme}
                   onSaveCustomer={handleSaveCustomer}
                   onDeleteCustomer={handleDeleteCustomer}
+                  onSaveGeoFenceRules={handleSaveGeoFenceRules}
+                  onNotify={notify}
                   onCreateInvoiceForCustomer={(custId) => {
                     setInvoiceDraft({ customerId: custId, entryIds: [] });
                     navigateToSection('invoices');
@@ -2505,9 +2512,15 @@ export default function App() {
               {section === 'products' && (
                 <ProductsView
                   company={db.company}
+                  customers={db.customers}
                   products={db.products}
+                  geoFenceRules={db.geoFenceRules ?? []}
+                  autoLocationStartEnabled={Boolean(db.company.autoLocationStartEnabled)}
+                  theme={theme}
                   onSaveProduct={handleSaveProduct}
                   onDeleteProduct={handleDeleteProduct}
+                  onSaveGeoFenceRules={handleSaveGeoFenceRules}
+                  onNotify={notify}
                 />
               )}
 

@@ -10,6 +10,7 @@ import type {
 } from '../types';
 import { formatCurrency, formatNumber, toInputDate } from '../utils/format';
 import { downloadFilteredReportPdf } from '../utils/pdfInvoice';
+import { InfoHintPopup } from './InfoHintPopup';
 import { ThemedSelect } from './ThemedSelect';
 
 interface AnalyticsViewProps {
@@ -459,13 +460,14 @@ export function AnalyticsView({
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             Grafische Zeit- &amp; Umsatzauswertung
           </h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Verteilung deiner erfassten Arbeitszeiten nach Tagen, Kunden und verknüpften Leistungen.
-          </p>
+          <InfoHintPopup
+            title="Grafische Zeit- & Umsatzauswertung"
+            text="Verteilung deiner erfassten Arbeitszeiten nach Tagen, Kunden und verknüpften Leistungen."
+          />
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -593,13 +595,15 @@ export function AnalyticsView({
       {(kpis.internalHours > 0 || kpis.billableHours > 0) && (
         <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div>
+            <div className="flex items-center gap-1.5">
               <h2 className="font-display text-sm font-semibold text-slate-900 dark:text-slate-100">
                 Verhältnis: Verrechenbare Aufträge vs. Interne Arbeiten
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Übersicht über ertragbringende Projektzeit und interne Aufgaben (z. B. Kundenakquise, Studio-Reinigung).
-              </p>
+              <InfoHintPopup
+                size="sm"
+                title="Verrechenbare vs. Interne Arbeiten"
+                text="Übersicht über ertragbringende Projektzeit und interne Aufgaben (z. B. Kundenakquise, Studio-Reinigung)."
+              />
             </div>
             <div className="font-mono text-xs font-semibold text-slate-700 dark:text-slate-200">
               {kpis.billableRatioPct} % Verrechenbar · {100 - kpis.billableRatioPct} % Intern / Nicht verrechenbar
@@ -652,13 +656,15 @@ export function AnalyticsView({
           {/* Daily Stacked Bar Chart */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div>
+              <div className="flex items-center gap-1.5">
                 <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                   Zeitverlauf nach Tagen &amp; Kunden
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Gestapelte Stunden pro Tag, farblich nach Kunde aufgeschlüsselt (Tippen/Hover für Tagesdetails).
-                </p>
+                <InfoHintPopup
+                  size="sm"
+                  title="Zeitverlauf nach Tagen & Kunden"
+                  text="Gestapelte Stunden pro Tag, farblich nach Kunde aufgeschlüsselt (Tippen/Hover für Tagesdetails)."
+                />
               </div>
               {activeDayDetail && (
                 <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs dark:border-[#3b2d5e] dark:bg-[#211936]">
@@ -783,12 +789,16 @@ export function AnalyticsView({
           <section className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             {/* Customer Donut */}
             <div className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6">
-              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                Arbeitszeit &amp; Umsatz nach Kunden
-              </h2>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                Anteilige Zeitverteilung über alle aktiven Kunden.
-              </p>
+              <div className="flex items-center gap-1.5">
+                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                  Arbeitszeit &amp; Umsatz nach Kunden
+                </h2>
+                <InfoHintPopup
+                  size="sm"
+                  title="Arbeitszeit & Umsatz nach Kunden"
+                  text="Anteilige Zeitverteilung über alle aktiven Kunden."
+                />
+              </div>
 
               <div className="mt-5 flex flex-col items-center gap-6 sm:flex-row">
                 <div className="relative h-44 w-44 shrink-0">
@@ -874,12 +884,16 @@ export function AnalyticsView({
 
             {/* Product Horizontal Bars */}
             <div className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6">
-              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                Arbeitszeit nach Produkten &amp; Leistungen
-              </h2>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                Welche Leistungen die meiste Arbeitszeit und den höchsten Umsatz erzeugen.
-              </p>
+              <div className="flex items-center gap-1.5">
+                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                  Arbeitszeit nach Produkten &amp; Leistungen
+                </h2>
+                <InfoHintPopup
+                  size="sm"
+                  title="Arbeitszeit nach Produkten & Leistungen"
+                  text="Welche Leistungen die meiste Arbeitszeit und den höchsten Umsatz erzeugen."
+                />
+              </div>
 
               <div className="mt-5 space-y-4">
                 {productStats.map((prod) => {
@@ -931,13 +945,15 @@ export function AnalyticsView({
           <section className="rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]">
             <div className="flex items-center gap-2 border-b border-slate-200 px-6 py-4 dark:border-[#2e2349]">
               <Layers className="h-4 w-4 text-blue-700 dark:text-violet-400" />
-              <div>
+              <div className="flex items-center gap-1.5">
                 <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
                   Kunde × Produkt Verknüpfung
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Aufschlüsselung, welcher Kunde welche Leistung in welchem Umfang genutzt hat.
-                </p>
+                <InfoHintPopup
+                  size="sm"
+                  title="Kunde × Produkt Verknüpfung"
+                  text="Aufschlüsselung, welcher Kunde welche Leistung in welchem Umfang genutzt hat."
+                />
               </div>
             </div>
 
