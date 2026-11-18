@@ -377,6 +377,14 @@ export function isBackupDue(db: AppDatabase): boolean {
   return ageDays >= 7;
 }
 
+export function toBackupTimestamp(date = new Date()): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}_` +
+    `${pad(date.getHours())}-${pad(date.getMinutes())}-${pad(date.getSeconds())}`
+  );
+}
+
 export async function generateBackupArtifacts(
   db: AppDatabase,
   formats: AutoBackupFormat[]
@@ -386,7 +394,7 @@ export async function generateBackupArtifacts(
   isBinary: boolean;
   data: string;
 }[]> {
-  const stamp = toInputDate();
+  const stamp = toBackupTimestamp();
   const files: {
     filename: string;
     mimeType: string;

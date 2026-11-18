@@ -159,7 +159,6 @@ export function InvoicesView({
   const [showPreviewMenu, setShowPreviewMenu] = useState(false);
   const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [signatureModalOpen, setSignatureModalOpen] = useState(false);
 
   const [documentType, setDocumentType] = useState<DocumentType>('invoice');
@@ -277,6 +276,17 @@ export function InvoicesView({
       cancelled = true;
     };
   }, [previewInvoice, company]);
+
+  useEffect(() => {
+    if (!previewInvoice) return;
+    const latest = invoices.find((inv) => inv.id === previewInvoice.id);
+    if (!latest) {
+      setShowPreviewMenu(false);
+      setPreviewInvoice(null);
+    } else if (latest !== previewInvoice) {
+      setPreviewInvoice(latest);
+    }
+  }, [invoices, previewInvoice]);
 
   useEffect(() => {
     if (!preselectedDraft) return;
@@ -1759,18 +1769,19 @@ export function InvoicesView({
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70">
-                  <th className="px-4 py-3">Nr. / Typ</th>
-                  <th className="px-4 py-3">Kunde</th>
-                  <th className="px-4 py-3">Datum / Fällig</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3 text-right">Betrag (Brutto)</th>
-                  <th className="px-4 py-3 text-right">Aktionen</th>
-                </tr>
-              </thead>
+          <>
+            <div className="max-h-[385px] overflow-y-auto overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]">
+                  <tr className="border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70">
+                    <th className="px-4 py-3">Nr. / Typ</th>
+                    <th className="px-4 py-3">Kunde</th>
+                    <th className="px-4 py-3">Datum / Fällig</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-right">Betrag (Brutto)</th>
+                    <th className="px-4 py-3 text-right">Aktionen</th>
+                  </tr>
+                </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-[#2e2349]">
                 {filteredInvoices.map((inv) => (
                   <tr
@@ -1917,39 +1928,19 @@ export function InvoicesView({
                             )}
                           </button>
                         )}
-                        {confirmDeleteId === inv.id ? (
-                          <div className="flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 dark:border-red-900/60 dark:bg-red-950/60">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                onDeleteInvoice(inv.id);
-                                setConfirmDeleteId(null);
-                                if (previewInvoice?.id === inv.id) {
-                                  setPreviewInvoice(null);
-                                }
-                              }}
-                              className="text-[11px] font-semibold text-red-700 hover:underline dark:text-red-300 cursor-pointer whitespace-nowrap"
-                            >
-                              Löschen (Zeiten bleiben)
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setConfirmDeleteId(null)}
-                              className="text-[11px] text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer"
-                            >
-                              ×
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => setConfirmDeleteId(inv.id)}
-                            title="Rechnung löschen (Arbeitszeiten bleiben erhalten)"
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onDeleteInvoice(inv.id);
+                            if (previewInvoice?.id === inv.id) {
+                              setPreviewInvoice(null);
+                            }
+                          }}
+                          title="Dokument löschen (Arbeitszeiten bleiben erhalten)"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -1957,6 +1948,12 @@ export function InvoicesView({
               </tbody>
             </table>
           </div>
+          {filteredInvoices.length > 5 && (
+            <div className="border-t border-slate-200 bg-slate-50/80 px-4 py-2 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400">
+              Zeigt 5 sichtbar · insgesamt {filteredInvoices.length} Dokumente (nach oben &amp; unten scrollbar)
+            </div>
+          )}
+        </>
         )}
       </section>
 
@@ -2215,32 +2212,17 @@ export function InvoicesView({
 
                 <button
                   type="button"
-                  onClick={() => {
-                    if (confirmDeleteId === previewInvoice.id) {
-                      onDeleteInvoice(previewInvoice.id);
-                      setConfirmDeleteId(null);
-                      setPreviewInvoice(null);
-                    } else {
-                      setConfirmDeleteId(previewInvoice.id);
-                    }
-                  }}
+                  onClick={() => onDeleteInvoice(previewInvoice.id)}
                   title="Dokument löschen (Arbeitszeiten bleiben erhalten)"
-                  className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium cursor-pointer ${
-                    confirmDeleteId === previewInvoice.id
-                      ? 'border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300'
-                      : 'border-slate-200 text-red-600 hover:bg-red-50 dark:border-[#3b2d5e] dark:text-red-400 dark:hover:bg-red-950/40'
-                  }`}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-[#3b2d5e] dark:text-red-400 dark:hover:bg-red-950/40 cursor-pointer"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
-                  {confirmDeleteId === previewInvoice.id
-                    ? 'Wirklich löschen? (Zeiten bleiben)'
-                    : 'Löschen'}
+                  Löschen
                 </button>
 
                 <button
                   type="button"
                   onClick={() => {
-                    setConfirmDeleteId(null);
                     setShowPreviewMenu(false);
                     setPreviewInvoice(null);
                   }}

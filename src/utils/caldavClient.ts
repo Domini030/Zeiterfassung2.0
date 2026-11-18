@@ -56,6 +56,12 @@ function toIcsUtcString(iso: string): string {
 
 export function buildIcsEvent(appointment: CalendarAppointment): string {
   const uid = appointment.uid || `${appointment.id}@taktwerk.app`;
+  const startDate = new Date(appointment.startTime);
+  const safeStartMs = Number.isNaN(startDate.getTime()) ? Date.now() : startDate.getTime();
+  const rawEndDate = new Date(appointment.endTime);
+  const rawEndMs = Number.isNaN(rawEndDate.getTime()) ? safeStartMs + 60_000 : rawEndDate.getTime();
+  const safeEndMs = rawEndMs > safeStartMs ? rawEndMs : safeStartMs + 60_000;
+
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -63,8 +69,8 @@ export function buildIcsEvent(appointment: CalendarAppointment): string {
     'BEGIN:VEVENT',
     `UID:${uid}`,
     `DTSTAMP:${toIcsUtcString(new Date().toISOString())}`,
-    `DTSTART:${toIcsUtcString(appointment.startTime)}`,
-    `DTEND:${toIcsUtcString(appointment.endTime)}`,
+    `DTSTART:${toIcsUtcString(new Date(safeStartMs).toISOString())}`,
+    `DTEND:${toIcsUtcString(new Date(safeEndMs).toISOString())}`,
     `SUMMARY:${escapeIcsText(appointment.title || 'TaktWerk Termin')}`,
   ];
   if (appointment.location) {

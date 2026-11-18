@@ -216,7 +216,11 @@ export function TimeTrackerView({
         }
         return true;
       })
-      .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+      .sort(
+        (a, b) =>
+          new Date(b.endTime || b.startTime).getTime() -
+          new Date(a.endTime || a.startTime).getTime()
+      );
   }, [timeEntries, filterCustomerId, filterStatus, filterActivityType]);
 
   const unbilledTotalSeconds = useMemo(
@@ -1466,21 +1470,22 @@ export function TimeTrackerView({
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70">
-                  <th className="w-10 px-4 py-3">
-                    <CheckSquare className="h-4 w-4 text-slate-400 dark:text-violet-400/60" />
-                  </th>
-                  <th className="px-4 py-3">Aufgabe &amp; Zuordnung</th>
-                  <th className="px-4 py-3">Zeitraum</th>
-                  <th className="px-4 py-3 text-right">Dauer</th>
-                  <th className="px-4 py-3 text-right">Nettowert</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3 text-right">Aktionen</th>
-                </tr>
-              </thead>
+          <>
+            <div className="max-h-[375px] overflow-y-auto overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]">
+                  <tr className="border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70">
+                    <th className="w-10 px-4 py-3">
+                      <CheckSquare className="h-4 w-4 text-slate-400 dark:text-violet-400/60" />
+                    </th>
+                    <th className="px-4 py-3">Aufgabe &amp; Zuordnung</th>
+                    <th className="px-4 py-3">Zeitraum</th>
+                    <th className="px-4 py-3 text-right">Dauer</th>
+                    <th className="px-4 py-3 text-right">Nettowert</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-right">Aktionen</th>
+                  </tr>
+                </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-[#2e2349]">
                 {filteredEntries.map((entry) => {
                   const isInternal = entry.entryType === 'internal' || !entry.customerId;
@@ -1669,6 +1674,12 @@ export function TimeTrackerView({
               </tbody>
             </table>
           </div>
+          {filteredEntries.length > 5 && (
+            <div className="border-t border-slate-200 bg-slate-50/80 px-4 py-2 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400">
+              Die letzten 5 beendeten Tätigkeiten sichtbar · insgesamt {filteredEntries.length} Einträge (nach oben &amp; unten scrollbar)
+            </div>
+          )}
+        </>
         )}
       </section>
     </div>

@@ -15,6 +15,7 @@ import {
   FileArchive,
   FileSpreadsheet,
   FileText,
+  History,
   ImagePlus,
   Loader2,
   Map as MapIcon,
@@ -40,6 +41,7 @@ import type {
   AppDatabase,
   AutoBackupFormat,
   AutoBackupFrequency,
+  BackupVersionEntry,
   CompanyProfile,
   GeoFenceRule,
   HomeBaseLocation,
@@ -104,6 +106,14 @@ import {
   REMINDER_SOUND_PRESET_ORDER,
   playReminderSound,
 } from '../utils/soundReminder';
+import {
+  createBackupVersion,
+  deleteBackupVersion,
+  downloadBackupVersion,
+  listBackupVersions,
+  loadBackupVersionSnapshot,
+} from '../utils/backupVersions';
+import { ConfirmActionDialog, type ConfirmDialogState } from './ConfirmActionDialog';
 import { GeoFenceMapPicker, type PickedMapLocation } from './GeoFenceMapPicker';
 import { GeoFenceRuleModal } from './GeoFenceRuleModal';
 import { InfoHintPopup } from './InfoHintPopup';
@@ -231,6 +241,15 @@ export function NextcloudSettingsView({
   const [discoveredCalendars, setDiscoveredCalendars] = useState<DiscoveredCalendar[]>([]);
   const [discoveringCalendars, setDiscoveringCalendars] = useState(false);
   const [runningBackup, setRunningBackup] = useState(false);
+
+  // Backup versions state
+  const [backupVersions, setBackupVersions] = useState<BackupVersionEntry[]>(() =>
+    listBackupVersions()
+  );
+  const [newVersionLabel, setNewVersionLabel] = useState('');
+  const [versionUploadNextcloud, setVersionUploadNextcloud] = useState(true);
+  const [creatingVersion, setCreatingVersion] = useState(false);
+  const [localConfirm, setLocalConfirm] = useState<ConfirmDialogState | null>(null);
 
   // Android Pixel / System notification sound browser state
   const [deviceSounds, setDeviceSounds] = useState<Array<{ uri: string; title: string }>>([]);
@@ -605,6 +624,15 @@ export function NextcloudSettingsView({
         uploadToNextcloud: autoBackup.uploadToNextcloud && nextcloud.configured,
         localDownload: autoBackup.localDownload,
       });
+      const verRes = await createBackupVersion(db, {
+        label: 'Multi-Format-Backup',
+        source: 'auto',
+        maxVersions: autoBackup.maxBackupVersions ?? 10,
+        uploadToNextcloud: false,
+      }).catch(() => null);
+      if (verRes) {
+        setBackupVersions(verRes.versions);
+      }
       const nowIso = new Date().toISOString();
       const updatedCompany: CompanyProfile = {
         ...companyForm,
@@ -625,6 +653,76 @@ export function NextcloudSettingsView({
     } finally {
       setRunningBackup(false);
     }
+  };
+
+  const handleCreateBackupVersion = async () => {
+    setCreatingVersion(true);
+    try {
+      const res = await createBackupVersion(db, {
+        label: newVersionLabel.trim() || undefined,
+        source: 'manual',
+        maxVersions: autoBackup.maxBackupVersions ?? 10,
+        uploadToNextcloud: versionUploadNextcloud && nextcloud.configured,
+      });
+      setBackupVersions(res.versions);
+      setNewVersionLabel('');
+      if (res.uploadError) {
+        onNotify(
+          `Backup-Version lokal gespeichert, aber Nextcloud-Upload fehlgeschlagen: ${res.uploadError}`,
+          true
+        );
+      } else if (res.entry.nextcloudPath) {
+        onNotify(`Backup-Version „${res.entry.label}“ lokal & auf Nextcloud gesichert.`);
+      } else {
+        onNotify(`Backup-Version „${res.entry.label}“ gespeichert.`);
+      }
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Backup-Version konnte nicht angelegt werden.',
+        true
+      );
+    } finally {
+      setCreatingVersion(false);
+    }
+  };
+
+  const handleRestoreBackupVersion = (entry: BackupVersionEntry) => {
+    const snapshot = loadBackupVersionSnapshot(entry.id);
+    if (!snapshot) {
+      onNotify('Backup-Daten dieser Version konnten nicht mehr gelesen werden.', true);
+      return;
+    }
+    onImportDatabase(snapshot);
+    setTimeout(() => setBackupVersions(listBackupVersions()), 400);
+  };
+
+  const handleDownloadBackupVersion = async (entry: BackupVersionEntry) => {
+    try {
+      const ok = await downloadBackupVersion(entry);
+      if (!ok) {
+        onNotify('Snapshot-Daten nicht gefunden.', true);
+        return;
+      }
+      onNotify(`Backup-Version „${entry.label}“ exportiert.`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Download der Backup-Version fehlgeschlagen.',
+        true
+      );
+    }
+  };
+
+  const handleDeleteBackupVersion = (entry: BackupVersionEntry) => {
+    setLocalConfirm({
+      title: 'Backup-Version löschen?',
+      message: `Soll die Backup-Version „${entry.label}“ (${formatDateTimeDE(entry.createdAt)}) wirklich aus dem lokalen Speicher gelöscht werden?`,
+      confirmLabel: 'Version löschen',
+      onConfirm: () => {
+        const next = deleteBackupVersion(entry.id);
+        setBackupVersions(next);
+        onNotify(`Backup-Version „${entry.label}“ gelöscht.`);
+      },
+    });
   };
 
   const previewReminderTone = (preset: ReminderSoundPreset, customUri?: string) => {
@@ -907,7 +1005,6 @@ export function NextcloudSettingsView({
 
   const handleDeleteGeoRule = (id: string) => {
     onSaveGeoFenceRules(geoFenceRules.filter((r) => r.id !== id));
-    onNotify('Ortsregel gelöscht.');
   };
 
   const handleExportTimeCsv = async () => {
@@ -2949,6 +3046,179 @@ export function NextcloudSettingsView({
             </div>
           </section>
 
+          {/* Mehrere Backup-Versionen (Snapshots) */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
+            <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-2.5">
+                <History className="mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400 shrink-0" />
+                <div className="flex items-center gap-1.5">
+                  <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                    Backup-Versionen ({backupVersions.length})
+                  </h2>
+                  <InfoHintPopup
+                    size="sm"
+                    title="Mehrere Backup-Versionen"
+                    text="Lege beliebig viele benannte Sicherungsstände mit Zeitstempel an (z. B. vor Monatsabschluss oder Preisänderung). Jede Version kann einzeln wiederhergestellt oder als JSON heruntergeladen werden."
+                  />
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="text-xs text-slate-500 dark:text-slate-400">Max. Versionen:</span>
+                <ThemedSelect
+                  size="sm"
+                  className="w-24"
+                  ariaLabel="Maximale Anzahl Backup-Versionen"
+                  value={String(autoBackup.maxBackupVersions ?? 10)}
+                  onChange={(val) =>
+                    updateAutoBackup({ maxBackupVersions: Math.max(2, Number(val) || 10) })
+                  }
+                  options={[
+                    { value: '5', label: '5' },
+                    { value: '10', label: '10' },
+                    { value: '20', label: '20' },
+                    { value: '50', label: '50' },
+                  ]}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+              <div className="min-w-0 flex-1">
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Bezeichnung der neuen Backup-Version (optional)
+                </label>
+                <input
+                  type="text"
+                  value={newVersionLabel}
+                  onChange={(e) => setNewVersionLabel(e.target.value)}
+                  placeholder="z. B. Vor Monatsabschluss oder Stand Q4"
+                  className={inputClass}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => void handleCreateBackupVersion()}
+                disabled={creatingVersion}
+                className="inline-flex items-center justify-center gap-1.5 rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                {creatingVersion ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Plus className="h-4 w-4" />
+                )}
+                {creatingVersion ? 'Erstelle Version…' : 'Neue Backup-Version anlegen'}
+              </button>
+            </div>
+
+            {nextcloud.configured && (
+              <label className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={versionUploadNextcloud}
+                  onChange={(e) => setVersionUploadNextcloud(e.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                />
+                Neue Version zusätzlich in Nextcloud (/Backups/Versionen) mit Zeitstempel sichern
+              </label>
+            )}
+
+            {backupVersions.length === 0 ? (
+              <div className="rounded-lg border border-dashed border-slate-200 px-4 py-6 text-center text-xs text-slate-500 dark:border-[#3b2d5e] dark:text-slate-400">
+                Noch keine Backup-Versionen gespeichert. Klicke oben auf „Neue Backup-Version anlegen“, um deinen ersten Snapshot zu erstellen.
+              </div>
+            ) : (
+              <div className="overflow-hidden rounded-xl border border-slate-200 dark:border-[#2e2349]">
+                <div className="max-h-[325px] overflow-y-auto overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]">
+                      <tr className="border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70">
+                        <th className="px-3.5 py-2.5">Version &amp; Zeitpunkt</th>
+                        <th className="px-3.5 py-2.5">Umfang</th>
+                        <th className="px-3.5 py-2.5">Speicherort</th>
+                        <th className="px-3.5 py-2.5 text-right">Aktionen</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200 dark:divide-[#2e2349]">
+                      {backupVersions.map((ver) => (
+                        <tr
+                          key={ver.id}
+                          className="transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50"
+                        >
+                          <td className="px-3.5 py-2.5">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <span className="font-medium text-slate-900 dark:text-slate-100">
+                                {ver.label}
+                              </span>
+                              <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-[#2a2045] dark:text-violet-300">
+                                {ver.source === 'auto'
+                                  ? 'Auto'
+                                  : ver.source === 'pre-restore'
+                                    ? 'Sicherheit'
+                                    : 'Manuell'}
+                              </span>
+                            </div>
+                            <div className="mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+                              {formatDateTimeDE(ver.createdAt)} ·{' '}
+                              {Math.max(1, Math.round(ver.sizeBytes / 1024))} KB
+                            </div>
+                          </td>
+                          <td className="px-3.5 py-2.5 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                            {ver.counts.timeEntries} Zeiten · {ver.counts.invoices} Dok. ·{' '}
+                            {ver.counts.customers} Kunden
+                          </td>
+                          <td className="px-3.5 py-2.5 text-xs whitespace-nowrap">
+                            {ver.nextcloudPath ? (
+                              <span className="inline-flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400">
+                                <Cloud className="h-3.5 w-3.5" />
+                                Lokal + Nextcloud
+                              </span>
+                            ) : (
+                              <span className="text-slate-500 dark:text-slate-400">Lokal</span>
+                            )}
+                          </td>
+                          <td className="px-3.5 py-2.5">
+                            <div className="flex items-center justify-end gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleRestoreBackupVersion(ver)}
+                                title="Diese Version wiederherstellen"
+                                className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer"
+                              >
+                                <RotateCcw className="h-3 w-3" />
+                                Laden
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => void handleDownloadBackupVersion(ver)}
+                                title="Als JSON-Datei exportieren"
+                                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer"
+                              >
+                                <Download className="h-3.5 w-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteBackupVersion(ver)}
+                                title="Backup-Version löschen"
+                                className="inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/50 dark:hover:text-red-400 cursor-pointer"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {backupVersions.length > 5 && (
+                  <div className="border-t border-slate-200 bg-slate-50/80 px-3.5 py-1.5 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400">
+                    Zeigt die letzten 5 sichtbar · insgesamt {backupVersions.length} Versionen (nach oben &amp; unten scrollbar)
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+
           {/* Grafische PDF-Auswertung mit Filtern */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
             <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
@@ -3429,10 +3699,10 @@ export function NextcloudSettingsView({
                 </p>
               ) : (
                 <div className="overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]">
-                  <div className="overflow-x-auto">
+                  <div className="max-h-[325px] overflow-y-auto overflow-x-auto">
                     <table className="w-full text-left text-sm">
-                      <thead>
-                        <tr className="border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70">
+                      <thead className="sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]">
+                        <tr className="border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70">
                           <th className="px-3.5 py-2.5">Ort &amp; Aufgabe</th>
                           <th className="px-3.5 py-2.5">Kunde / Leistung</th>
                           <th className="px-3.5 py-2.5">Radius &amp; Adresse</th>
@@ -3533,6 +3803,11 @@ export function NextcloudSettingsView({
                       </tbody>
                     </table>
                   </div>
+                  {geoFenceRules.length > 5 && (
+                    <div className="border-t border-slate-200 bg-slate-50/80 px-3.5 py-1.5 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400">
+                      Zeigt 5 sichtbar · insgesamt {geoFenceRules.length} Orte (nach oben &amp; unten scrollbar)
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -4097,6 +4372,11 @@ export function NextcloudSettingsView({
         onDelete={handleDeleteGeoRule}
         onClose={() => setEditingGeoRule(null)}
         onNotify={onNotify}
+      />
+
+      <ConfirmActionDialog
+        dialog={localConfirm}
+        onCancel={() => setLocalConfirm(null)}
       />
     </div>
   );

@@ -105,6 +105,8 @@ public class TaktWerkNativePlugin extends Plugin {
     private volatile String pendingTimerAction = null;
     private volatile String pendingWidgetAction = null;
     private volatile String pendingWidgetTagUid = null;
+    private volatile String pendingLaunchNfcUid = null;
+    private volatile List<String> pendingLaunchNfcPayloads = null;
     private boolean foregroundDispatchActive = false;
     private volatile Ringtone activePreviewRingtone = null;
     private final Handler previewStopHandler = new Handler(Looper.getMainLooper());
@@ -121,8 +123,51 @@ public class TaktWerkNativePlugin extends Plugin {
         super.load();
         Activity activity = getActivity();
         if (activity != null && activity.getIntent() != null) {
-            handleWidgetUri(activity.getIntent(), false);
+            Intent launchIntent = activity.getIntent();
+            handleWidgetUri(launchIntent, false);
+            captureLaunchNfcIntent(launchIntent);
         }
+    }
+
+    private void captureLaunchNfcIntent(Intent intent) {
+        if (intent == null || (intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0) {
+            return;
+        }
+        String action = intent.getAction();
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)
+            || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)
+            || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
+            Tag tag = extractTagFromIntent(intent);
+            NdefMessage[] msgs = extractNdefMessagesFromIntent(intent);
+            List<String> payloads = decodeNdefMessages(msgs);
+            Uri dataUri = intent.getData();
+            if (dataUri != null && !dataUri.toString().isEmpty()) {
+                payloads.add(0, dataUri.toString());
+            }
+            String uidHex = (tag != null && tag.getId() != null) ? bytesToColonHex(tag.getId()) : "";
+            if (!uidHex.isEmpty() || !payloads.isEmpty()) {
+                pendingLaunchNfcUid = uidHex;
+                pendingLaunchNfcPayloads = payloads;
+            }
+        }
+    }
+
+    @PluginMethod
+    public void getPendingLaunchNfc(PluginCall call) {
+        JSObject res = new JSObject();
+        if (pendingLaunchNfcUid != null) {
+            res.put("uidHex", pendingLaunchNfcUid);
+        }
+        JSArray arr = new JSArray();
+        if (pendingLaunchNfcPayloads != null) {
+            for (String p : pendingLaunchNfcPayloads) {
+                arr.put(p);
+            }
+        }
+        res.put("payloads", arr);
+        pendingLaunchNfcUid = null;
+        pendingLaunchNfcPayloads = null;
+        call.resolve(res);
     }
 
     private boolean handleWidgetUri(Intent intent, boolean emitNow) {
@@ -1436,14 +1481,28 @@ public class TaktWerkNativePlugin extends Plugin {
                     return;
                 }
                 Location bestLast = null;
-                for (String provider : lm.getProviders(true)) {
-                    Location l = lm.getLastKnownLocation(provider);
-                    if (l != null && (bestLast == null || l.getAccuracy() < bestLast.getAccuracy())) {
-                        bestLast = l;
-                    }
-                }
                 long now = System.currentTimeMillis();
-                if (bestLast != null && (now - bestLast.getTime()) < 180_000L) {
+                for (String provider : lm.getProviders(true)) {
+                    try {
+                        Location l = lm.getLastKnownLocation(provider);
+                        if (l != null) {
+                            if (bestLast == null) {
+                                bestLast = l;
+                            } else {
+                                long lAge = Math.max(0L, now - l.getTime());
+                                long bAge = Math.max(0L, now - bestLast.getTime());
+                                boolean lMuchNewer = lAge + 120_000L < bAge;
+                                boolean bMuchNewer = bAge + 120_000L < lAge;
+                                if (lMuchNewer || (!bMuchNewer && l.getAccuracy() < bestLast.getAccuracy())) {
+                                    bestLast = l;
+                                }
+                            }
+                        }
+                    } catch (Exception ignored) {}
+                }
+
+                // Use recent cached fix immediately (up to 5 min if reasonably accurate)
+                if (bestLast != null && (now - bestLast.getTime()) < 300_000L && bestLast.getAccuracy() <= 150f) {
                     JSObject res = new JSObject();
                     res.put("lat", bestLast.getLatitude());
                     res.put("lng", bestLast.getLongitude());
@@ -1452,11 +1511,27 @@ public class TaktWerkNativePlugin extends Plugin {
                     return;
                 }
 
-                String provider = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                    ? LocationManager.GPS_PROVIDER
-                    : (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) ? LocationManager.NETWORK_PROVIDER : null);
+                // Collect all available active providers (Fused + GPS + Network) so indoor cold-start NFC works fast!
+                List<String> activeProviders = new ArrayList<>();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    try {
+                        if (lm.isProviderEnabled(LocationManager.FUSED_PROVIDER)) {
+                            activeProviders.add(LocationManager.FUSED_PROVIDER);
+                        }
+                    } catch (Exception ignored) {}
+                }
+                try {
+                    if (lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                        activeProviders.add(LocationManager.NETWORK_PROVIDER);
+                    }
+                } catch (Exception ignored) {}
+                try {
+                    if (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        activeProviders.add(LocationManager.GPS_PROVIDER);
+                    }
+                } catch (Exception ignored) {}
 
-                if (provider == null) {
+                if (activeProviders.isEmpty()) {
                     if (bestLast != null) {
                         JSObject res = new JSObject();
                         res.put("lat", bestLast.getLatitude());
@@ -1476,7 +1551,7 @@ public class TaktWerkNativePlugin extends Plugin {
                 final LocationListener listener = new LocationListener() {
                     @Override
                     public void onLocationChanged(Location loc) {
-                        if (settled[0]) return;
+                        if (settled[0] || loc == null) return;
                         settled[0] = true;
                         timeoutHandler.removeCallbacksAndMessages(null);
                         try { lm.removeUpdates(this); } catch (Exception ignored) {}
@@ -1491,7 +1566,27 @@ public class TaktWerkNativePlugin extends Plugin {
                     @Override public void onProviderDisabled(String p) {}
                 };
 
-                lm.requestLocationUpdates(provider, 0L, 0f, listener, Looper.getMainLooper());
+                int registered = 0;
+                for (String p : activeProviders) {
+                    try {
+                        lm.requestLocationUpdates(p, 0L, 0f, listener, Looper.getMainLooper());
+                        registered++;
+                    } catch (Exception ignored) {}
+                }
+
+                if (registered == 0) {
+                    if (fallbackLocation != null) {
+                        JSObject res = new JSObject();
+                        res.put("lat", fallbackLocation.getLatitude());
+                        res.put("lng", fallbackLocation.getLongitude());
+                        res.put("accuracyMeters", Math.round(fallbackLocation.getAccuracy()));
+                        call.resolve(res);
+                    } else {
+                        call.reject("Standortdienst konnte nicht gestartet werden.");
+                    }
+                    return;
+                }
+
                 timeoutHandler.postDelayed(() -> {
                     if (settled[0]) return;
                     settled[0] = true;
@@ -1503,9 +1598,9 @@ public class TaktWerkNativePlugin extends Plugin {
                         res.put("accuracyMeters", Math.round(fallbackLocation.getAccuracy()));
                         call.resolve(res);
                     } else {
-                        call.reject("Standort-Timeout (kein GPS-Signal gefunden).");
+                        call.reject("Standort-Timeout (kein GPS- oder Netzwerksignal gefunden).");
                     }
-                }, 9000L);
+                }, 12_000L);
             } catch (Exception e) {
                 call.reject(e.getMessage() != null ? e.getMessage() : "Standort konnte nicht ermittelt werden.");
             }

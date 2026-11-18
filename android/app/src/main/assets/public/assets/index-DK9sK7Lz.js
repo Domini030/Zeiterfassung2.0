@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-Dr4rzMpl.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-B15ZTtJ4.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-ClwVaONP.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-tHKFIk9-.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -13044,6 +13044,26 @@ var FileText = createLucideIcon("file-text", [
 	["path", {
 		d: "M16 17H8",
 		key: "z1uh3a"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var History = createLucideIcon("history", [
+	["path", {
+		d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8",
+		key: "1357e3"
+	}],
+	["path", {
+		d: "M3 3v5h5",
+		key: "1xhq8a"
+	}],
+	["path", {
+		d: "M12 7v5l4 2",
+		key: "1fdv2h"
 	}]
 ]);
 /**
@@ -14146,6 +14166,191 @@ var X$1 = createLucideIcon("x", [["path", {
 	d: "m6 6 12 12",
 	key: "d8bk6v"
 }]]);
+// src/utils/activityProgress.ts
+var tasks = [];
+var listeners = /* @__PURE__ */ new Set();
+var seq = 0;
+function emit() {
+	const snapshot = [...tasks];
+	for (const fn of listeners) fn(snapshot);
+}
+function startActivity(label, progress = null, detail) {
+	seq += 1;
+	const id = `act_${Date.now()}_${seq}`;
+	tasks = [...tasks, {
+		id,
+		label,
+		detail,
+		progress: progress === null ? null : Math.max(0, Math.min(100, Math.round(progress))),
+		startedAt: Date.now()
+	}];
+	emit();
+	return id;
+}
+function updateActivity(id, patch) {
+	let changed = false;
+	tasks = tasks.map((t) => {
+		if (t.id !== id) return t;
+		changed = true;
+		return {
+			...t,
+			label: patch.label !== void 0 ? patch.label : t.label,
+			detail: patch.detail !== void 0 ? patch.detail : t.detail,
+			progress: patch.progress === void 0 ? t.progress : patch.progress === null ? null : Math.max(0, Math.min(100, Math.round(patch.progress)))
+		};
+	});
+	if (changed) emit();
+}
+function finishActivity(id) {
+	const next = tasks.filter((t) => t.id !== id);
+	if (next.length !== tasks.length) {
+		tasks = next;
+		emit();
+	}
+}
+async function trackActivity(label, fn, initialProgress = null, initialDetail) {
+	const id = startActivity(label, initialProgress, initialDetail);
+	try {
+		return await fn((progress, detail, nextLabel) => {
+			updateActivity(id, {
+				progress,
+				detail,
+				label: nextLabel
+			});
+		});
+	} finally {
+		finishActivity(id);
+	}
+}
+function useActivityProgress() {
+	const [current, setCurrent] = (0, import_react.useState)(() => [...tasks]);
+	(0, import_react.useEffect)(() => {
+		const handler = (next) => setCurrent(next);
+		listeners.add(handler);
+		setCurrent([...tasks]);
+		return () => {
+			listeners.delete(handler);
+		};
+	}, []);
+	return current;
+}
+// node_modules/react/cjs/react-jsx-runtime.production.js
+/**
+* @license React
+* react-jsx-runtime.production.js
+*
+* Copyright (c) Meta Platforms, Inc. and affiliates.
+*
+* This source code is licensed under the MIT license found in the
+* LICENSE file in the root directory of this source tree.
+*/
+var require_react_jsx_runtime_production = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
+	var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
+	function jsxProd(type, config, maybeKey) {
+		var key = null;
+		void 0 !== maybeKey && (key = "" + maybeKey);
+		void 0 !== config.key && (key = "" + config.key);
+		if ("key" in config) {
+			maybeKey = {};
+			for (var propName in config) "key" !== propName && (maybeKey[propName] = config[propName]);
+		} else maybeKey = config;
+		config = maybeKey.ref;
+		return {
+			$$typeof: REACT_ELEMENT_TYPE,
+			type,
+			key,
+			ref: void 0 !== config ? config : null,
+			props: maybeKey
+		};
+	}
+	exports.Fragment = REACT_FRAGMENT_TYPE;
+	exports.jsx = jsxProd;
+	exports.jsxs = jsxProd;
+}));
+// src/components/ActivityProgressOverlay.tsx
+var import_jsx_runtime = (/* @__PURE__ */ __commonJSMin(((exports, module) => {
+	module.exports = require_react_jsx_runtime_production();
+})))();
+function ActivityProgressOverlay() {
+	const tasks = useActivityProgress();
+	if (tasks.length === 0) return null;
+	const primary = tasks[tasks.length - 1];
+	const isDeterminate = typeof primary.progress === "number";
+	const pct = isDeterminate ? Math.max(3, Math.min(100, primary.progress ?? 0)) : 0;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		"aria-hidden": "true",
+		className: "no-print pointer-events-none fixed inset-x-0 top-0 z-[95] h-1 overflow-hidden bg-slate-200/80 dark:bg-[#241a3d]",
+		children: isDeterminate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+			viewBox: "0 0 100 4",
+			preserveAspectRatio: "none",
+			className: "block h-full w-full",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+				x: "0",
+				y: "0",
+				width: pct,
+				height: "4",
+				className: "fill-blue-700 dark:fill-violet-500 transition-all duration-200"
+			})
+		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-full w-1/3 rounded-full bg-blue-700 dark:bg-violet-500 tw-progress-indeterminate" })
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		role: "status",
+		"aria-live": "polite",
+		className: "no-print fixed bottom-4 left-4 right-4 z-[86] sm:left-auto sm:right-5 sm:w-80 rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 shadow-2xl backdrop-blur-md dark:border-[#3b2d5e] dark:bg-[#19122c]/95 tw-popup-enter",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "flex items-start gap-3",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-violet-500/20 dark:text-violet-300",
+				children: isDeterminate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CloudUpload, { className: "h-4 w-4 animate-pulse" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-4 w-4 animate-spin" })
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "min-w-0 flex-1 space-y-1.5",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "truncate text-xs font-semibold text-slate-900 dark:text-slate-100",
+							children: primary.label
+						}), isDeterminate ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "shrink-0 font-mono text-[11px] font-bold tabular-nums text-blue-700 dark:text-violet-300",
+							children: [Math.round(primary.progress ?? 0), " %"]
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "shrink-0 text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:text-violet-300/70",
+							children: "Läuft…"
+						})]
+					}),
+					primary.detail && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "truncate text-[11px] text-slate-500 dark:text-slate-400",
+						children: primary.detail
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-[#2a2045]",
+						children: isDeterminate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+							viewBox: "0 0 100 6",
+							preserveAspectRatio: "none",
+							className: "block h-full w-full",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+								x: "0",
+								y: "0",
+								width: pct,
+								height: "6",
+								rx: "3",
+								className: "fill-blue-700 dark:fill-violet-500 transition-all duration-200"
+							})
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-full w-2/5 rounded-full bg-blue-700 dark:bg-violet-500 tw-progress-indeterminate" })
+					}),
+					tasks.length > 1 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+						className: "text-[10px] font-medium text-slate-400 dark:text-violet-300/60",
+						children: [
+							"+",
+							tasks.length - 1,
+							" weitere Aktion(en) aktiv"
+						]
+					})
+				]
+			})]
+		})
+	})] });
+}
 // src/utils/format.ts
 function formatCurrency(amount) {
 	return new Intl.NumberFormat("de-DE", {
@@ -34971,7 +35176,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-Dr4rzMpl.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-B15ZTtJ4.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -41725,47 +41930,8 @@ async function downloadFilteredReportPdf(db, options = {}) {
 async function shareFilteredReportPdf(db, options = {}) {
 	await shareOrSavePdfDoc(buildFilteredReportPdf(db, options), `TaktWerk-Auswertung-${toInputDate()}.pdf`);
 }
-// node_modules/react/cjs/react-jsx-runtime.production.js
-/**
-* @license React
-* react-jsx-runtime.production.js
-*
-* Copyright (c) Meta Platforms, Inc. and affiliates.
-*
-* This source code is licensed under the MIT license found in the
-* LICENSE file in the root directory of this source tree.
-*/
-var require_react_jsx_runtime_production = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
-	var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
-	function jsxProd(type, config, maybeKey) {
-		var key = null;
-		void 0 !== maybeKey && (key = "" + maybeKey);
-		void 0 !== config.key && (key = "" + config.key);
-		if ("key" in config) {
-			maybeKey = {};
-			for (var propName in config) "key" !== propName && (maybeKey[propName] = config[propName]);
-		} else maybeKey = config;
-		config = maybeKey.ref;
-		return {
-			$$typeof: REACT_ELEMENT_TYPE,
-			type,
-			key,
-			ref: void 0 !== config ? config : null,
-			props: maybeKey
-		};
-	}
-	exports.Fragment = REACT_FRAGMENT_TYPE;
-	exports.jsx = jsxProd;
-	exports.jsxs = jsxProd;
-}));
-// node_modules/react/jsx-runtime.js
-var require_jsx_runtime = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	module.exports = require_react_jsx_runtime_production();
-}));
 // src/components/InfoHintPopup.tsx
 var import_react_dom = require_react_dom();
-var import_jsx_runtime = require_jsx_runtime();
 var InfoHintPopup = ({ text, title, size = "md", className = "" }) => {
 	const [open, setOpen] = (0, import_react.useState)(false);
 	(0, import_react.useEffect)(() => {
@@ -42957,15 +43123,21 @@ function toIcsUtcString(iso) {
 	return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
 }
 function buildIcsEvent(appointment) {
+	const uid = appointment.uid || `${appointment.id}@taktwerk.app`;
+	const startDate = new Date(appointment.startTime);
+	const safeStartMs = Number.isNaN(startDate.getTime()) ? Date.now() : startDate.getTime();
+	const rawEndDate = new Date(appointment.endTime);
+	const rawEndMs = Number.isNaN(rawEndDate.getTime()) ? safeStartMs + 6e4 : rawEndDate.getTime();
+	const safeEndMs = rawEndMs > safeStartMs ? rawEndMs : safeStartMs + 6e4;
 	const lines = [
 		"BEGIN:VCALENDAR",
 		"VERSION:2.0",
 		"PRODID:-//TaktWerk//DE",
 		"BEGIN:VEVENT",
-		`UID:${appointment.uid || `${appointment.id}@taktwerk.app`}`,
+		`UID:${uid}`,
 		`DTSTAMP:${toIcsUtcString((/* @__PURE__ */ new Date()).toISOString())}`,
-		`DTSTART:${toIcsUtcString(appointment.startTime)}`,
-		`DTEND:${toIcsUtcString(appointment.endTime)}`,
+		`DTSTART:${toIcsUtcString(new Date(safeStartMs).toISOString())}`,
+		`DTEND:${toIcsUtcString(new Date(safeEndMs).toISOString())}`,
 		`SUMMARY:${escapeIcsText(appointment.title || "TaktWerk Termin")}`
 	];
 	if (appointment.location) lines.push(`LOCATION:${escapeIcsText(appointment.location)}`);
@@ -64198,8 +64370,12 @@ function isBackupDue(db) {
 	if (cfg.frequency === "monthly") return ageDays >= 28;
 	return ageDays >= 7;
 }
+function toBackupTimestamp(date = /* @__PURE__ */ new Date()) {
+	const pad = (n) => String(n).padStart(2, "0");
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}_${pad(date.getHours())}-${pad(date.getMinutes())}-${pad(date.getSeconds())}`;
+}
 async function generateBackupArtifacts(db, formats) {
-	const stamp = toInputDate();
+	const stamp = toBackupTimestamp();
 	const files = [];
 	if (formats.includes("json")) files.push({
 		filename: `taktwerk-backup-${stamp}.json`,
@@ -64601,128 +64777,154 @@ async function apiClearNextcloudConfig() {
 	return toPublicNc(empty);
 }
 async function apiSyncNextcloud(direction, force = false) {
-	if (shouldUseRemoteServer()) {
-		const res = await fetch(apiUrl("/api/nextcloud/sync"), {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				direction,
-				force
-			})
-		});
-		const data = await res.json();
-		if (res.status === 409 && data.conflict && data.remoteUpdatedAt) throw new NextcloudConflictError(data.error || "Konflikt mit neueren Nextcloud-Daten.", data.remoteUpdatedAt);
-		if (!res.ok || !data.nextcloud) throw new Error(data.error || "Nextcloud-Synchronisation fehlgeschlagen.");
-		return {
-			db: data.db ? normalizeDatabase(data.db) : void 0,
-			nextcloud: data.nextcloud
-		};
-	}
-	const cfg = readNativeNc();
-	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
-	if (direction === "pull") {
-		const remoteDb = await nativePullNextcloudOptional(cfg);
-		if (!remoteDb) throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
-		const normalized = normalizeDatabase(remoteDb);
-		writeNativeDb(normalized);
+	return trackActivity(direction === "push" ? "Datenbank wird auf Nextcloud hochgeladen…" : "Datenbank wird von Nextcloud geladen…", async (update) => {
+		update(20, "Verbindung zu Nextcloud…");
+		if (shouldUseRemoteServer()) {
+			update(45, direction === "push" ? "Übertrage Datenstand…" : "Lade Datenstand…");
+			const res = await fetch(apiUrl("/api/nextcloud/sync"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					direction,
+					force
+				})
+			});
+			update(80, "Verarbeite Antwort…");
+			const data = await res.json();
+			if (res.status === 409 && data.conflict && data.remoteUpdatedAt) throw new NextcloudConflictError(data.error || "Konflikt mit neueren Nextcloud-Daten.", data.remoteUpdatedAt);
+			if (!res.ok || !data.nextcloud) throw new Error(data.error || "Nextcloud-Synchronisation fehlgeschlagen.");
+			update(100, "Abgeschlossen");
+			return {
+				db: data.db ? normalizeDatabase(data.db) : void 0,
+				nextcloud: data.nextcloud
+			};
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
+		if (direction === "pull") {
+			update(50, "Lade taktwerk-db.json via WebDAV…");
+			const remoteDb = await nativePullNextcloudOptional(cfg);
+			if (!remoteDb) throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
+			update(85, "Speichere lokal…");
+			const normalized = normalizeDatabase(remoteDb);
+			writeNativeDb(normalized);
+			cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
+			cfg.lastKnownRemoteUpdatedAt = normalized.updatedAt || cfg.lastSyncAt;
+			cfg.lastSyncError = null;
+			writeNativeNc(cfg);
+			update(100, "Fertig");
+			return {
+				db: normalized,
+				nextcloud: toPublicNc(cfg)
+			};
+		}
+		const localDb = readNativeDb();
+		if (!force) {
+			update(40, "Prüfe Remote-Stand auf Konflikte…");
+			const remoteDb = await nativePullNextcloudOptional(cfg).catch(() => null);
+			if (remoteDb?.updatedAt) {
+				const remoteMs = new Date(remoteDb.updatedAt).getTime();
+				const knownMs = cfg.lastKnownRemoteUpdatedAt ? new Date(cfg.lastKnownRemoteUpdatedAt).getTime() : 0;
+				const localMs = new Date(localDb.updatedAt).getTime();
+				if (Number.isFinite(remoteMs) && remoteMs > knownMs + 1e3 && remoteMs > localMs + 1e3) throw new NextcloudConflictError("Auf Nextcloud liegt bereits ein neuerer Stand von einem anderen Gerät. Bitte zuerst \"Von Nextcloud laden\" oder das Überschreiben bestätigen.", remoteDb.updatedAt);
+			}
+		}
+		update(70, "Lade taktwerk-db.json via WebDAV hoch…");
+		await nativePushNextcloud(cfg, localDb);
 		cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
-		cfg.lastKnownRemoteUpdatedAt = normalized.updatedAt || cfg.lastSyncAt;
+		cfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
 		cfg.lastSyncError = null;
 		writeNativeNc(cfg);
+		update(100, "Fertig");
 		return {
-			db: normalized,
+			db: localDb,
 			nextcloud: toPublicNc(cfg)
 		};
-	}
-	const localDb = readNativeDb();
-	if (!force) {
-		const remoteDb = await nativePullNextcloudOptional(cfg).catch(() => null);
-		if (remoteDb?.updatedAt) {
-			const remoteMs = new Date(remoteDb.updatedAt).getTime();
-			const knownMs = cfg.lastKnownRemoteUpdatedAt ? new Date(cfg.lastKnownRemoteUpdatedAt).getTime() : 0;
-			const localMs = new Date(localDb.updatedAt).getTime();
-			if (Number.isFinite(remoteMs) && remoteMs > knownMs + 1e3 && remoteMs > localMs + 1e3) throw new NextcloudConflictError("Auf Nextcloud liegt bereits ein neuerer Stand von einem anderen Gerät. Bitte zuerst \"Von Nextcloud laden\" oder das Überschreiben bestätigen.", remoteDb.updatedAt);
-		}
-	}
-	await nativePushNextcloud(cfg, localDb);
-	cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
-	cfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
-	cfg.lastSyncError = null;
-	writeNativeNc(cfg);
-	return {
-		db: localDb,
-		nextcloud: toPublicNc(cfg)
-	};
+	}, 10);
 }
 async function apiUploadInvoicePdf(filename, pdfBase64) {
-	if (shouldUseRemoteServer()) {
-		const res = await fetch(apiUrl("/api/nextcloud/upload-invoice"), {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				filename,
-				pdfBase64
-			})
+	return trackActivity("PDF wird auf Nextcloud hochgeladen…", async (update) => {
+		update(30, filename);
+		if (shouldUseRemoteServer()) {
+			const res = await fetch(apiUrl("/api/nextcloud/upload-invoice"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					filename,
+					pdfBase64
+				})
+			});
+			update(85, "Prüfe Bestätigung…");
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.error || "Upload fehlgeschlagen.");
+			update(100, "Hochgeladen");
+			return {
+				path: data.path || filename,
+				uploadedAt: data.uploadedAt || (/* @__PURE__ */ new Date()).toISOString()
+			};
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist nicht konfiguriert.");
+		const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, "_");
+		const folderUrls = buildWebDavFolderUrls(cfg, "Rechnungen");
+		const fileUrl = buildWebDavFileUrl(cfg, `Rechnungen/${safeFilename}`);
+		update(60, `${cfg.folder}/Rechnungen/${safeFilename}`);
+		await TaktWerkNative.webdavUploadPdf({
+			folderUrls,
+			fileUrl,
+			username: cfg.username,
+			appPassword: cfg.appPassword,
+			base64: pdfBase64
 		});
-		const data = await res.json();
-		if (!res.ok) throw new Error(data.error || "Upload fehlgeschlagen.");
+		update(100, "Hochgeladen");
 		return {
-			path: data.path || filename,
-			uploadedAt: data.uploadedAt || (/* @__PURE__ */ new Date()).toISOString()
+			path: `${cfg.folder}/Rechnungen/${safeFilename}`,
+			uploadedAt: (/* @__PURE__ */ new Date()).toISOString()
 		};
-	}
-	const cfg = readNativeNc();
-	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist nicht konfiguriert.");
-	const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, "_");
-	const folderUrls = buildWebDavFolderUrls(cfg, "Rechnungen");
-	const fileUrl = buildWebDavFileUrl(cfg, `Rechnungen/${safeFilename}`);
-	await TaktWerkNative.webdavUploadPdf({
-		folderUrls,
-		fileUrl,
-		username: cfg.username,
-		appPassword: cfg.appPassword,
-		base64: pdfBase64
-	});
-	return {
-		path: `${cfg.folder}/Rechnungen/${safeFilename}`,
-		uploadedAt: (/* @__PURE__ */ new Date()).toISOString()
-	};
+	}, 15, filename);
 }
 async function apiUploadInvoiceTextFile(filename, content, contentType = "application/xml; charset=utf-8") {
-	if (shouldUseRemoteServer()) {
-		const res = await fetch(apiUrl("/api/nextcloud/upload-file"), {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				filename,
-				content,
-				contentType
-			})
+	return trackActivity("Datei wird auf Nextcloud hochgeladen…", async (update) => {
+		update(30, filename);
+		if (shouldUseRemoteServer()) {
+			const res = await fetch(apiUrl("/api/nextcloud/upload-file"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					filename,
+					content,
+					contentType
+				})
+			});
+			update(85, "Prüfe Bestätigung…");
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.error || "Datei-Upload fehlgeschlagen.");
+			update(100, "Hochgeladen");
+			return {
+				path: data.path || filename,
+				uploadedAt: data.uploadedAt || (/* @__PURE__ */ new Date()).toISOString()
+			};
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist nicht konfiguriert.");
+		const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, "_");
+		const folderUrls = buildWebDavFolderUrls(cfg, "Rechnungen");
+		const fileUrl = buildWebDavFileUrl(cfg, `Rechnungen/${safeFilename}`);
+		update(60, `${cfg.folder}/Rechnungen/${safeFilename}`);
+		await TaktWerkNative.webdavUploadFile({
+			folderUrls,
+			fileUrl,
+			username: cfg.username,
+			appPassword: cfg.appPassword,
+			contentType,
+			content
 		});
-		const data = await res.json();
-		if (!res.ok) throw new Error(data.error || "Datei-Upload fehlgeschlagen.");
+		update(100, "Hochgeladen");
 		return {
-			path: data.path || filename,
-			uploadedAt: data.uploadedAt || (/* @__PURE__ */ new Date()).toISOString()
+			path: `${cfg.folder}/Rechnungen/${safeFilename}`,
+			uploadedAt: (/* @__PURE__ */ new Date()).toISOString()
 		};
-	}
-	const cfg = readNativeNc();
-	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist nicht konfiguriert.");
-	const safeFilename = filename.replace(/[^a-zA-Z0-9_.-]/g, "_");
-	const folderUrls = buildWebDavFolderUrls(cfg, "Rechnungen");
-	const fileUrl = buildWebDavFileUrl(cfg, `Rechnungen/${safeFilename}`);
-	await TaktWerkNative.webdavUploadFile({
-		folderUrls,
-		fileUrl,
-		username: cfg.username,
-		appPassword: cfg.appPassword,
-		contentType,
-		content
-	});
-	return {
-		path: `${cfg.folder}/Rechnungen/${safeFilename}`,
-		uploadedAt: (/* @__PURE__ */ new Date()).toISOString()
-	};
+	}, 15, filename);
 }
 async function apiDeleteNextcloudInvoiceFiles(invoiceNumber) {
 	const cleaned = invoiceNumber.trim();
@@ -64753,29 +64955,34 @@ async function apiDeleteNextcloudInvoiceFiles(invoiceNumber) {
 }
 async function apiScanReceiptWithAi(imageDataUrl) {
 	if (!shouldUseRemoteServer()) throw new Error("Für den KI-Belegscanner bitte in \"Nextcloud & Setup\" eine Server-URL verbinden oder Belegdaten manuell eingeben.");
-	const match = /^data:([^;]+);base64,(.+)$/.exec(imageDataUrl);
-	const mimeType = match?.[1] || "image/jpeg";
-	const imageBase64 = match?.[2] || imageDataUrl;
-	const res = await fetch(apiUrl("/api/receipts/scan"), {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({
-			imageBase64,
-			mimeType
-		})
-	});
-	const data = await res.json();
-	if (!res.ok) throw new Error(data.error || "KI-Belegauswertung fehlgeschlagen.");
-	return {
-		vendor: data.vendor || "",
-		date: data.date || (/* @__PURE__ */ new Date()).toISOString().slice(0, 10),
-		description: data.description || "",
-		category: data.category || "Sonstiges",
-		netAmount: typeof data.netAmount === "number" ? data.netAmount : 0,
-		grossAmount: typeof data.grossAmount === "number" ? data.grossAmount : 0,
-		taxRate: data.taxRate === 7 || data.taxRate === 0 ? data.taxRate : 19,
-		notes: data.notes || ""
-	};
+	return trackActivity("Beleg wird analysiert…", async (update) => {
+		update(25, "Belegbild wird übertragen…");
+		const match = /^data:([^;]+);base64,(.+)$/.exec(imageDataUrl);
+		const mimeType = match?.[1] || "image/jpeg";
+		const imageBase64 = match?.[2] || imageDataUrl;
+		const res = await fetch(apiUrl("/api/receipts/scan"), {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				imageBase64,
+				mimeType
+			})
+		});
+		update(85, "Werte Beträge & Datum aus…");
+		const data = await res.json();
+		if (!res.ok) throw new Error(data.error || "KI-Belegauswertung fehlgeschlagen.");
+		update(100, "Beleg erkannt");
+		return {
+			vendor: data.vendor || "",
+			date: data.date || (/* @__PURE__ */ new Date()).toISOString().slice(0, 10),
+			description: data.description || "",
+			category: data.category || "Sonstiges",
+			netAmount: typeof data.netAmount === "number" ? data.netAmount : 0,
+			grossAmount: typeof data.grossAmount === "number" ? data.grossAmount : 0,
+			taxRate: data.taxRate === 7 || data.taxRate === 0 ? data.taxRate : 19,
+			notes: data.notes || ""
+		};
+	}, 15);
 }
 function triggerNfcHaptic(pattern) {
 	if (isNativeCapacitor()) {
@@ -64843,139 +65050,176 @@ async function syncActiveTimerNotification(timer, customerName) {
 }
 async function apiUploadNextcloudFile(options) {
 	const subFolder = options.subFolder || "Backups";
-	if (shouldUseRemoteServer()) {
-		const res = await fetch(apiUrl("/api/nextcloud/upload-backup"), {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				subFolder,
-				filename: options.filename,
-				contentOrBase64: options.contentOrBase64,
-				isBinary: options.isBinary,
-				contentType: options.contentType
-			})
+	const runUpload = async (update) => {
+		update?.(30, `${subFolder}/${options.filename}`);
+		if (shouldUseRemoteServer()) {
+			const res = await fetch(apiUrl("/api/nextcloud/upload-backup"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					subFolder,
+					filename: options.filename,
+					contentOrBase64: options.contentOrBase64,
+					isBinary: options.isBinary,
+					contentType: options.contentType
+				})
+			});
+			update?.(85, "Prüfe Server-Antwort…");
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.error || "Backup-Upload fehlgeschlagen.");
+			update?.(100, "Hochgeladen");
+			return {
+				path: data.path || `${subFolder}/${options.filename}`,
+				uploadedAt: data.uploadedAt || (/* @__PURE__ */ new Date()).toISOString()
+			};
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist nicht konfiguriert.");
+		const safeFilename = options.filename.replace(/[^a-zA-Z0-9_.-]/g, "_");
+		const folderUrls = buildWebDavFolderUrls(cfg, subFolder);
+		const fileUrl = buildWebDavFileUrl(cfg, `${subFolder}/${safeFilename}`);
+		update?.(60, `${cfg.folder}/${subFolder}/${safeFilename}`);
+		if (options.isBinary) await TaktWerkNative.webdavUploadBinary({
+			folderUrls,
+			fileUrl,
+			username: cfg.username,
+			appPassword: cfg.appPassword,
+			contentType: options.contentType,
+			base64: options.contentOrBase64
 		});
-		const data = await res.json();
-		if (!res.ok) throw new Error(data.error || "Backup-Upload fehlgeschlagen.");
+		else await TaktWerkNative.webdavUploadFile({
+			folderUrls,
+			fileUrl,
+			username: cfg.username,
+			appPassword: cfg.appPassword,
+			contentType: options.contentType,
+			content: options.contentOrBase64
+		});
+		update?.(100, "Hochgeladen");
 		return {
-			path: data.path || `${subFolder}/${options.filename}`,
-			uploadedAt: data.uploadedAt || (/* @__PURE__ */ new Date()).toISOString()
+			path: `${cfg.folder}/${subFolder}/${safeFilename}`,
+			uploadedAt: (/* @__PURE__ */ new Date()).toISOString()
 		};
-	}
-	const cfg = readNativeNc();
-	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist nicht konfiguriert.");
-	const safeFilename = options.filename.replace(/[^a-zA-Z0-9_.-]/g, "_");
-	const folderUrls = buildWebDavFolderUrls(cfg, subFolder);
-	const fileUrl = buildWebDavFileUrl(cfg, `${subFolder}/${safeFilename}`);
-	if (options.isBinary) await TaktWerkNative.webdavUploadBinary({
-		folderUrls,
-		fileUrl,
-		username: cfg.username,
-		appPassword: cfg.appPassword,
-		contentType: options.contentType,
-		base64: options.contentOrBase64
-	});
-	else await TaktWerkNative.webdavUploadFile({
-		folderUrls,
-		fileUrl,
-		username: cfg.username,
-		appPassword: cfg.appPassword,
-		contentType: options.contentType,
-		content: options.contentOrBase64
-	});
-	return {
-		path: `${cfg.folder}/${subFolder}/${safeFilename}`,
-		uploadedAt: (/* @__PURE__ */ new Date()).toISOString()
 	};
+	if (options.silentProgress) return runUpload();
+	return trackActivity("Datei wird auf Nextcloud hochgeladen…", (update) => runUpload(update), 15, options.filename);
 }
 async function apiRunMultiFormatBackup(db, formats, options) {
-	const artifacts = await generateBackupArtifacts(db, formats);
-	let uploadedCount = 0;
-	let downloadedCount = 0;
-	const errors = [];
-	for (const file of artifacts) {
-		if (options.uploadToNextcloud) try {
-			await apiUploadNextcloudFile({
-				subFolder: "Backups",
-				filename: file.filename,
-				contentOrBase64: file.data,
-				isBinary: file.isBinary,
-				contentType: file.mimeType
-			});
-			uploadedCount += 1;
-		} catch (err) {
-			errors.push(`${file.filename}: ${err instanceof Error ? err.message : "Upload fehlgeschlagen"}`);
+	return trackActivity("Multi-Format-Backup wird erstellt…", async (update) => {
+		update(10, "Erzeuge Exportdateien…");
+		const artifacts = await generateBackupArtifacts(db, formats);
+		let uploadedCount = 0;
+		let downloadedCount = 0;
+		const errors = [];
+		const totalSteps = artifacts.length * ((options.uploadToNextcloud ? 1 : 0) + (options.localDownload ? 1 : 0));
+		let completedSteps = 0;
+		const advanceStep = (detail, nextLabel) => {
+			completedSteps += 1;
+			update(totalSteps > 0 ? Math.min(98, 15 + Math.round(completedSteps / totalSteps * 82)) : 95, detail, nextLabel);
+		};
+		for (let i = 0; i < artifacts.length; i += 1) {
+			const file = artifacts[i];
+			if (options.uploadToNextcloud) {
+				update(totalSteps > 0 ? Math.min(95, 15 + Math.round(completedSteps / totalSteps * 82)) : 40, `Datei ${i + 1}/${artifacts.length}: ${file.filename}`, "Backup wird auf Nextcloud hochgeladen…");
+				try {
+					await apiUploadNextcloudFile({
+						subFolder: "Backups",
+						filename: file.filename,
+						contentOrBase64: file.data,
+						isBinary: file.isBinary,
+						contentType: file.mimeType,
+						silentProgress: true
+					});
+					uploadedCount += 1;
+				} catch (err) {
+					errors.push(`${file.filename}: ${err instanceof Error ? err.message : "Upload fehlgeschlagen"}`);
+				}
+				advanceStep(`Hochgeladen: ${file.filename}`);
+			}
+			if (options.localDownload) {
+				if (file.isBinary) await downloadOrShareBinaryFile(file.filename, file.data, file.mimeType);
+				else await downloadOrShareTextFile(file.filename, file.data, file.mimeType);
+				downloadedCount += 1;
+				advanceStep(`Lokal gesichert: ${file.filename}`, "Backup wird gespeichert…");
+			}
 		}
-		if (options.localDownload) {
-			if (file.isBinary) await downloadOrShareBinaryFile(file.filename, file.data, file.mimeType);
-			else await downloadOrShareTextFile(file.filename, file.data, file.mimeType);
-			downloadedCount += 1;
-		}
-	}
-	if (options.uploadToNextcloud && uploadedCount === 0 && errors.length > 0) throw new Error(errors[0]);
-	const parts = [];
-	if (uploadedCount > 0) parts.push(`${uploadedCount} Datei(en) nach Nextcloud/Backups`);
-	if (downloadedCount > 0) parts.push(`${downloadedCount} Datei(en) lokal gesichert`);
-	const summary = parts.length > 0 ? parts.join(" · ") : "Keine Formate ausgewählt";
-	return {
-		uploadedCount,
-		downloadedCount,
-		summary
-	};
+		if (options.uploadToNextcloud && uploadedCount === 0 && errors.length > 0) throw new Error(errors[0]);
+		update(100, "Backup abgeschlossen");
+		const parts = [];
+		if (uploadedCount > 0) parts.push(`${uploadedCount} Datei(en) nach Nextcloud/Backups`);
+		if (downloadedCount > 0) parts.push(`${downloadedCount} Datei(en) lokal gesichert`);
+		const summary = parts.length > 0 ? parts.join(" · ") : "Keine Formate ausgewählt";
+		return {
+			uploadedCount,
+			downloadedCount,
+			summary
+		};
+	}, 5, `${formats.length} Format(e)`);
 }
 async function apiDiscoverNextcloudCalendars() {
-	if (shouldUseRemoteServer()) {
-		const res = await fetch(apiUrl("/api/nextcloud/caldav/discover"), {
-			method: "POST",
-			headers: { "Content-Type": "application/json" }
-		});
-		const data = await res.json();
-		if (!res.ok || !data.xml) throw new Error(data.error || "Nextcloud-Kalender konnten nicht abgerufen werden.");
-		return parseCalDavCalendarsXml(data.xml, data.baseOrigin || "");
-	}
-	const cfg = readNativeNc();
-	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
-	const baseUrl = cfg.url.trim().replace(/\/+$/, "").replace(/\/remote\.php\/.*$/, "");
-	const homeUrl = `${baseUrl}/remote.php/dav/calendars/${encodeURIComponent(cfg.username)}/`;
-	const res = await TaktWerkNative.caldavRequest({
-		method: "PROPFIND",
-		url: homeUrl,
-		username: cfg.username,
-		appPassword: cfg.appPassword,
-		depth: "1",
-		contentType: "application/xml; charset=utf-8",
-		body: `<?xml version="1.0" encoding="utf-8" ?>
+	return trackActivity("Suche Nextcloud-Kalender…", async (update) => {
+		update(35, "CalDAV PROPFIND…");
+		if (shouldUseRemoteServer()) {
+			const res = await fetch(apiUrl("/api/nextcloud/caldav/discover"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" }
+			});
+			update(80, "Lese Kalenderliste…");
+			const data = await res.json();
+			if (!res.ok || !data.xml) throw new Error(data.error || "Nextcloud-Kalender konnten nicht abgerufen werden.");
+			update(100);
+			return parseCalDavCalendarsXml(data.xml, data.baseOrigin || "");
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
+		const baseUrl = cfg.url.trim().replace(/\/+$/, "").replace(/\/remote\.php\/.*$/, "");
+		const homeUrl = `${baseUrl}/remote.php/dav/calendars/${encodeURIComponent(cfg.username)}/`;
+		const res = await TaktWerkNative.caldavRequest({
+			method: "PROPFIND",
+			url: homeUrl,
+			username: cfg.username,
+			appPassword: cfg.appPassword,
+			depth: "1",
+			contentType: "application/xml; charset=utf-8",
+			body: `<?xml version="1.0" encoding="utf-8" ?>
 <d:propfind xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
   <d:prop>
     <d:displayname />
     <d:resourcetype />
   </d:prop>
 </d:propfind>`
-	});
-	if (res.status !== 207 && (res.status < 200 || res.status >= 300)) throw new Error(`CalDAV PROPFIND fehlgeschlagen (HTTP ${res.status}).`);
-	const origin = new URL(baseUrl).origin;
-	return parseCalDavCalendarsXml(res.body, origin);
+		});
+		update(85, "Lese Kalenderliste…");
+		if (res.status !== 207 && (res.status < 200 || res.status >= 300)) throw new Error(`CalDAV PROPFIND fehlgeschlagen (HTTP ${res.status}).`);
+		const origin = new URL(baseUrl).origin;
+		update(100);
+		return parseCalDavCalendarsXml(res.body, origin);
+	}, 15);
 }
 async function apiFetchNextcloudCalendarEvents(calendarUrl, calendarName) {
-	const startIso = (/* @__PURE__ */ new Date(Date.now() - 2592e6)).toISOString();
-	const endIso = new Date(Date.now() + 7776e6).toISOString();
-	if (shouldUseRemoteServer()) {
-		const res = await fetch(apiUrl("/api/nextcloud/caldav/events"), {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				calendarUrl,
-				startIso,
-				endIso
-			})
-		});
-		const data = await res.json();
-		if (!res.ok || !data.xml) throw new Error(data.error || "Termine konnten nicht aus Nextcloud geladen werden.");
-		return parseCalDavCalendarDataXml(data.xml, calendarName);
-	}
-	const cfg = readNativeNc();
-	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
-	const reportBody = `<?xml version="1.0" encoding="utf-8" ?>
+	return trackActivity("Lade Nextcloud-Kalendertermine…", async (update) => {
+		const startIso = (/* @__PURE__ */ new Date(Date.now() - 2592e6)).toISOString();
+		const endIso = new Date(Date.now() + 7776e6).toISOString();
+		update(35, calendarName || "CalDAV-Synchronisation");
+		if (shouldUseRemoteServer()) {
+			const res = await fetch(apiUrl("/api/nextcloud/caldav/events"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					calendarUrl,
+					startIso,
+					endIso
+				})
+			});
+			update(80, "Verarbeite Termine…");
+			const data = await res.json();
+			if (!res.ok || !data.xml) throw new Error(data.error || "Termine konnten nicht aus Nextcloud geladen werden.");
+			update(100);
+			return parseCalDavCalendarDataXml(data.xml, calendarName);
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
+		const reportBody = `<?xml version="1.0" encoding="utf-8" ?>
 <c:calendar-query xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">
   <d:prop>
     <d:getetag />
@@ -64989,52 +65233,60 @@ async function apiFetchNextcloudCalendarEvents(calendarUrl, calendarName) {
     </c:comp-filter>
   </c:filter>
 </c:calendar-query>`;
-	const target = calendarUrl.endsWith("/") ? calendarUrl : `${calendarUrl}/`;
-	const res = await TaktWerkNative.caldavRequest({
-		method: "REPORT",
-		url: target,
-		username: cfg.username,
-		appPassword: cfg.appPassword,
-		depth: "1",
-		contentType: "application/xml; charset=utf-8",
-		body: reportBody
-	});
-	if (res.status !== 207 && (res.status < 200 || res.status >= 300)) throw new Error(`CalDAV REPORT fehlgeschlagen (HTTP ${res.status}).`);
-	return parseCalDavCalendarDataXml(res.body, calendarName);
+		const target = calendarUrl.endsWith("/") ? calendarUrl : `${calendarUrl}/`;
+		const res = await TaktWerkNative.caldavRequest({
+			method: "REPORT",
+			url: target,
+			username: cfg.username,
+			appPassword: cfg.appPassword,
+			depth: "1",
+			contentType: "application/xml; charset=utf-8",
+			body: reportBody
+		});
+		update(80, "Verarbeite Termine…");
+		if (res.status !== 207 && (res.status < 200 || res.status >= 300)) throw new Error(`CalDAV REPORT fehlgeschlagen (HTTP ${res.status}).`);
+		update(100);
+		return parseCalDavCalendarDataXml(res.body, calendarName);
+	}, 15);
 }
 async function apiPushNextcloudCalendarEvent(calendarUrl, appointment) {
-	const uid = appointment.uid || `${appointment.id}@taktwerk.app`;
-	const icsContent = buildIcsEvent({
-		...appointment,
-		uid
-	});
-	if (shouldUseRemoteServer()) {
-		const res = await fetch(apiUrl("/api/nextcloud/caldav/push"), {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				calendarUrl,
-				uid,
-				icsContent
-			})
+	return trackActivity("Übertrage Termin in Nextcloud-Kalender…", async (update) => {
+		const uid = appointment.uid || `${appointment.id}@taktwerk.app`;
+		const icsContent = buildIcsEvent({
+			...appointment,
+			uid
 		});
-		const data = await res.json();
-		if (!res.ok) throw new Error(data.error || "Termin konnte nicht in Nextcloud gespeichert werden.");
-		return;
-	}
-	const cfg = readNativeNc();
-	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
-	const safeUid = uid.replace(/[^a-zA-Z0-9@._-]/g, "_");
-	const eventUrl = `${calendarUrl.replace(/\/+$/, "")}/${encodeURIComponent(safeUid)}.ics`;
-	const res = await TaktWerkNative.caldavRequest({
-		method: "PUT",
-		url: eventUrl,
-		username: cfg.username,
-		appPassword: cfg.appPassword,
-		contentType: "text/calendar; charset=utf-8",
-		body: icsContent
-	});
-	if (res.status < 200 || res.status >= 300) throw new Error(`CalDAV PUT fehlgeschlagen (HTTP ${res.status}).`);
+		update(40, appointment.title);
+		if (shouldUseRemoteServer()) {
+			const res = await fetch(apiUrl("/api/nextcloud/caldav/push"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					calendarUrl,
+					uid,
+					icsContent
+				})
+			});
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.error || "Termin konnte nicht in Nextcloud gespeichert werden.");
+			update(100, "Synchronisiert");
+			return;
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
+		const safeUid = uid.replace(/[^a-zA-Z0-9@._-]/g, "_");
+		const eventUrl = `${calendarUrl.replace(/\/+$/, "")}/${encodeURIComponent(safeUid)}.ics`;
+		const res = await TaktWerkNative.caldavRequest({
+			method: "PUT",
+			url: eventUrl,
+			username: cfg.username,
+			appPassword: cfg.appPassword,
+			contentType: "text/calendar; charset=utf-8",
+			body: icsContent
+		});
+		if (res.status < 200 || res.status >= 300) throw new Error(`CalDAV PUT fehlgeschlagen (HTTP ${res.status}).`);
+		update(100, "Synchronisiert");
+	}, 20, appointment.title);
 }
 async function playNativeReminderTone(preset, systemSoundUri) {
 	if (!isNativeCapacitor()) return;
@@ -65694,6 +65946,149 @@ function CalendarView({ company, customers, products, timeEntries, invoices, cal
 				})]
 			})
 		]
+	});
+}
+// src/components/ConfirmActionDialog.tsx
+function ConfirmActionDialog({ dialog, onCancel }) {
+	(0, import_react.useEffect)(() => {
+		if (!dialog) return;
+		const onKeyDown = (e) => {
+			if (e.key === "Escape") onCancel();
+		};
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, [dialog, onCancel]);
+	if (!dialog) return null;
+	const isWarning = dialog.tone === "warning";
+	const content = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		role: "dialog",
+		"aria-modal": "true",
+		"aria-labelledby": "confirm-action-title",
+		className: "no-print fixed inset-0 z-[96] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs",
+		onClick: onCancel,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			onClick: (e) => e.stopPropagation(),
+			className: "w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl dark:border-[#3b2d5e] dark:bg-[#19122c] tw-popup-enter",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-start gap-3.5",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: `mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${isWarning ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" : "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-300"}`,
+						children: isWarning ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-5 w-5" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-5 w-5" })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "min-w-0 flex-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							id: "confirm-action-title",
+							className: "font-display text-base font-bold text-slate-900 dark:text-slate-100",
+							children: dialog.title
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300",
+							children: dialog.message
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: onCancel,
+						"aria-label": "Dialog schließen",
+						className: "rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-200 cursor-pointer",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
+					})
+				]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "mt-5 flex flex-wrap justify-end gap-2.5 border-t border-slate-100 pt-4 dark:border-[#2e2349]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					type: "button",
+					onClick: onCancel,
+					className: "rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+					children: "Abbrechen"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					type: "button",
+					onClick: () => {
+						const fn = dialog.onConfirm;
+						onCancel();
+						fn();
+					},
+					className: `inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold text-white cursor-pointer ${isWarning ? "bg-amber-600 hover:bg-amber-700 dark:bg-amber-600 dark:hover:bg-amber-500" : "bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-500"}`,
+					children: [!isWarning && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" }), dialog.confirmLabel || "Löschen"]
+				})]
+			})]
+		})
+	});
+	return typeof document !== "undefined" ? (0, import_react_dom.createPortal)(content, document.body) : content;
+}
+function UndoDeleteBanner({ undo, onDismiss }) {
+	const [nowMs, setNowMs] = (0, import_react.useState)(() => Date.now());
+	(0, import_react.useEffect)(() => {
+		if (!undo) return;
+		setNowMs(Date.now());
+		const timer = window.setInterval(() => {
+			const t = Date.now();
+			setNowMs(t);
+			if (t >= undo.expiresAt) onDismiss();
+		}, 120);
+		return () => window.clearInterval(timer);
+	}, [undo, onDismiss]);
+	if (!undo) return null;
+	const remainingMs = Math.max(0, undo.expiresAt - nowMs);
+	const remainingSec = Math.ceil(remainingMs / 1e3);
+	const pct = Math.max(0, Math.min(100, remainingMs / undo.durationMs * 100));
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		role: "status",
+		"aria-live": "polite",
+		className: "no-print fixed bottom-4 left-1/2 z-[88] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-700/80 bg-slate-900/95 text-white shadow-2xl backdrop-blur-md dark:border-violet-500/40 dark:bg-[#1d1433]/95 tw-popup-enter",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "flex items-center justify-between gap-3 px-4 py-3",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "min-w-0 flex-1",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "truncate text-xs font-semibold text-white",
+					children: undo.label
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+					className: "text-[11px] text-slate-300 dark:text-violet-200/75",
+					children: [
+						"Noch ",
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "font-mono font-semibold tabular-nums",
+							children: [remainingSec, "s"]
+						}),
+						" zum Rückgängig machen"
+					]
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-center gap-1.5 shrink-0",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					type: "button",
+					onClick: () => {
+						const fn = undo.onUndo;
+						onDismiss();
+						fn();
+					},
+					className: "inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-violet-500 cursor-pointer",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RotateCcw, { className: "h-3.5 w-3.5" }), "Rückgängig"]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					type: "button",
+					onClick: onDismiss,
+					"aria-label": "Rückgängig-Hinweis schließen",
+					className: "rounded-lg p-1.5 text-slate-400 hover:bg-white/10 hover:text-white cursor-pointer",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3.5 w-3.5" })
+				})]
+			})]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "h-1 w-full bg-white/10",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+				viewBox: "0 0 100 4",
+				preserveAspectRatio: "none",
+				className: "block h-full w-full",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+					x: "0",
+					y: "0",
+					width: pct,
+					height: "4",
+					className: "fill-violet-400 transition-all duration-100"
+				})
+			})
+		})]
 	});
 }
 // src/utils/geolocation.ts
@@ -73710,7 +74105,6 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 	};
 	const handleDeleteGeoRule = (id) => {
 		onSaveGeoFenceRules(geoFenceRules.filter((r) => r.id !== id));
-		onNotify("Ortsabhängigkeit entfernt.");
 	};
 	const geoRulesByCustomer = (0, import_react.useMemo)(() => {
 		const map = /* @__PURE__ */ new Map();
@@ -74098,39 +74492,42 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
 						children: "Lege deinen ersten Kunden an oder lade Beispieldaten unter „Nextcloud & Setup“."
 					})]
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "overflow-x-auto",
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "max-h-[365px] overflow-y-auto overflow-x-auto",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
 						className: "w-full text-left text-sm",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-							className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Nr."
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Firma & Kontakt"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Adresse"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Offene Zeiten"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Offener Betrag"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Aktionen"
-								})
-							]
-						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+							className: "sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								className: "border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Nr."
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Firma & Kontakt"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Adresse"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Offene Zeiten"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Offener Betrag"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Aktionen"
+									})
+								]
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
 							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
 							children: filtered.map((c) => {
 								const st = statsByCustomer.get(c.id);
@@ -74216,7 +74613,14 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 							})
 						})]
 					})
-				})]
+				}), filtered.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "border-t border-slate-200 bg-slate-50/80 px-4 py-2 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
+					children: [
+						"Zeigt 5 sichtbar · insgesamt ",
+						filtered.length,
+						" Kunden (nach oben & unten scrollbar)"
+					]
+				})] })]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GeoFenceRuleModal, {
 				open: geoModalOpen,
@@ -76144,7 +76548,6 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 	const [showPreviewMenu, setShowPreviewMenu] = (0, import_react.useState)(false);
 	const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = (0, import_react.useState)(null);
 	const [uploadingId, setUploadingId] = (0, import_react.useState)(null);
-	const [confirmDeleteId, setConfirmDeleteId] = (0, import_react.useState)(null);
 	const [signatureModalOpen, setSignatureModalOpen] = (0, import_react.useState)(false);
 	const [documentType, setDocumentType] = (0, import_react.useState)("invoice");
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
@@ -76200,6 +76603,14 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 			cancelled = true;
 		};
 	}, [previewInvoice, company]);
+	(0, import_react.useEffect)(() => {
+		if (!previewInvoice) return;
+		const latest = invoices.find((inv) => inv.id === previewInvoice.id);
+		if (!latest) {
+			setShowPreviewMenu(false);
+			setPreviewInvoice(null);
+		} else if (latest !== previewInvoice) setPreviewInvoice(latest);
+	}, [invoices, previewInvoice]);
 	(0, import_react.useEffect)(() => {
 		if (!preselectedDraft) return;
 		setDocumentType("invoice");
@@ -77373,39 +77784,42 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
 						children: archiveFilter === "archived" ? "Archiviere bezahlte oder abgeschlossene Rechnungen über das Archiv-Symbol in der Tabelle." : "Erfasse Arbeitszeiten für einen Kunden oder erstelle ein Angebot mit einem Klick."
 					})]
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "overflow-x-auto",
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "max-h-[385px] overflow-y-auto overflow-x-auto",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
 						className: "w-full text-left text-sm",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-							className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Nr. / Typ"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Kunde"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Datum / Fällig"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Status"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Betrag (Brutto)"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Aktionen"
-								})
-							]
-						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+							className: "sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								className: "border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Nr. / Typ"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Kunde"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Datum / Fällig"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Status"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Betrag (Brutto)"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Aktionen"
+									})
+								]
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
 							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
 							children: filteredInvoices.map((inv) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
 								onClick: () => setPreviewInvoice(inv),
@@ -77554,27 +77968,13 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 													className: "inline-flex h-8 w-8 items-center justify-center rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
 													children: inv.isArchived ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArchiveRestore, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "h-4 w-4" })
 												}),
-												confirmDeleteId === inv.id ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 dark:border-red-900/60 dark:bg-red-950/60",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => {
-															onDeleteInvoice(inv.id);
-															setConfirmDeleteId(null);
-															if (previewInvoice?.id === inv.id) setPreviewInvoice(null);
-														},
-														className: "text-[11px] font-semibold text-red-700 hover:underline dark:text-red-300 cursor-pointer whitespace-nowrap",
-														children: "Löschen (Zeiten bleiben)"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => setConfirmDeleteId(null),
-														className: "text-[11px] text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 cursor-pointer",
-														children: "×"
-													})]
-												}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 													type: "button",
-													onClick: () => setConfirmDeleteId(inv.id),
-													title: "Rechnung löschen (Arbeitszeiten bleiben erhalten)",
+													onClick: () => {
+														onDeleteInvoice(inv.id);
+														if (previewInvoice?.id === inv.id) setPreviewInvoice(null);
+													},
+													title: "Dokument löschen (Arbeitszeiten bleiben erhalten)",
 													className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
 													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
 												})
@@ -77585,7 +77985,14 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 							}, inv.id))
 						})]
 					})
-				})]
+				}), filteredInvoices.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "border-t border-slate-200 bg-slate-50/80 px-4 py-2 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
+					children: [
+						"Zeigt 5 sichtbar · insgesamt ",
+						filteredInvoices.length,
+						" Dokumente (nach oben & unten scrollbar)"
+					]
+				})] })]
 			}),
 			previewInvoice && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				role: "dialog",
@@ -77768,21 +78175,14 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 										type: "button",
-										onClick: () => {
-											if (confirmDeleteId === previewInvoice.id) {
-												onDeleteInvoice(previewInvoice.id);
-												setConfirmDeleteId(null);
-												setPreviewInvoice(null);
-											} else setConfirmDeleteId(previewInvoice.id);
-										},
+										onClick: () => onDeleteInvoice(previewInvoice.id),
 										title: "Dokument löschen (Arbeitszeiten bleiben erhalten)",
-										className: `inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium cursor-pointer ${confirmDeleteId === previewInvoice.id ? "border-red-300 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/60 dark:text-red-300" : "border-slate-200 text-red-600 hover:bg-red-50 dark:border-[#3b2d5e] dark:text-red-400 dark:hover:bg-red-950/40"}`,
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" }), confirmDeleteId === previewInvoice.id ? "Wirklich löschen? (Zeiten bleiben)" : "Löschen"]
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-[#3b2d5e] dark:text-red-400 dark:hover:bg-red-950/40 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" }), "Löschen"]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 										type: "button",
 										onClick: () => {
-											setConfirmDeleteId(null);
 											setShowPreviewMenu(false);
 											setPreviewInvoice(null);
 										},
@@ -78416,6 +78816,126 @@ async function showWebReminderNotification(title, body) {
 		});
 	} catch {}
 }
+// src/utils/backupVersions.ts
+var INDEX_KEY = "taktwerk_backup_versions_index_v1";
+var SNAP_PREFIX = "taktwerk_backup_version_snap_v1_";
+var DEFAULT_MAX_VERSIONS = 10;
+function readIndex() {
+	try {
+		const raw = localStorage.getItem(INDEX_KEY);
+		if (!raw) return [];
+		const parsed = JSON.parse(raw);
+		if (!Array.isArray(parsed)) return [];
+		return parsed.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+	} catch {
+		return [];
+	}
+}
+function writeIndex(list) {
+	try {
+		localStorage.setItem(INDEX_KEY, JSON.stringify(list));
+	} catch {}
+}
+function listBackupVersions() {
+	return readIndex();
+}
+function loadBackupVersionSnapshot(id) {
+	try {
+		const raw = localStorage.getItem(`${SNAP_PREFIX}${id}`);
+		if (!raw) return null;
+		return validateImportedDatabase(raw);
+	} catch {
+		return null;
+	}
+}
+function deleteBackupVersion(id) {
+	try {
+		localStorage.removeItem(`${SNAP_PREFIX}${id}`);
+	} catch {}
+	const next = readIndex().filter((entry) => entry.id !== id);
+	writeIndex(next);
+	return next;
+}
+async function downloadBackupVersion(entry) {
+	const raw = localStorage.getItem(`${SNAP_PREFIX}${entry.id}`);
+	if (!raw) return false;
+	await downloadOrShareTextFile(entry.filename, raw, "application/json; charset=utf-8");
+	return true;
+}
+async function createBackupVersion(db, options = {}) {
+	const maxVersions = Math.max(2, Math.min(50, options.maxVersions ?? DEFAULT_MAX_VERSIONS));
+	const now = /* @__PURE__ */ new Date();
+	const filename = `taktwerk-backup-${toBackupTimestamp(now)}${options.label ? `-${options.label.trim().replace(/[^a-zA-Z0-9_-]+/g, "_").slice(0, 24)}` : ""}.json`;
+	const id = createId("bkv");
+	const json = JSON.stringify(db, null, 2);
+	const sizeBytes = new Blob([json]).size;
+	return trackActivity(options.uploadToNextcloud ? "Backup-Version wird erstellt & hochgeladen…" : "Backup-Version wird erstellt…", async (update) => {
+		update(20, filename);
+		let list = readIndex();
+		while (list.length >= maxVersions) {
+			const oldest = list[list.length - 1];
+			if (!oldest) break;
+			try {
+				localStorage.removeItem(`${SNAP_PREFIX}${oldest.id}`);
+			} catch {}
+			list = list.slice(0, -1);
+		}
+		let savedLocally = false;
+		while (!savedLocally) try {
+			localStorage.setItem(`${SNAP_PREFIX}${id}`, json);
+			savedLocally = true;
+		} catch {
+			const oldest = list[list.length - 1];
+			if (!oldest) throw new Error("Lokaler Speicher voll — bitte lösche ältere Backup-Versionen oder speichere direkt als JSON-Datei.");
+			try {
+				localStorage.removeItem(`${SNAP_PREFIX}${oldest.id}`);
+			} catch {}
+			list = list.slice(0, -1);
+		}
+		update(55, "Lokaler Snapshot gespeichert");
+		let nextcloudPath;
+		let uploadError;
+		if (options.uploadToNextcloud) {
+			update(70, `Upload nach Nextcloud/Backups/Versionen/${filename}`);
+			try {
+				nextcloudPath = (await apiUploadNextcloudFile({
+					subFolder: "Backups/Versionen",
+					filename,
+					contentOrBase64: json,
+					isBinary: false,
+					contentType: "application/json; charset=utf-8",
+					silentProgress: true
+				})).path;
+			} catch (err) {
+				uploadError = err instanceof Error ? err.message : "Upload der Backup-Version nach Nextcloud fehlgeschlagen.";
+			}
+		}
+		update(95, "Versionsliste aktualisieren");
+		const entry = {
+			id,
+			label: options.label?.trim() || (options.source === "auto" ? "Automatisches Backup" : options.source === "pre-restore" ? "Sicherung vor Wiederherstellung" : "Manuelle Sicherung"),
+			createdAt: now.toISOString(),
+			filename,
+			sizeBytes,
+			source: options.source ?? "manual",
+			nextcloudPath,
+			counts: {
+				timeEntries: db.timeEntries.length,
+				invoices: db.invoices.length,
+				customers: db.customers.length,
+				products: db.products.length
+			}
+		};
+		const updatedList = [entry, ...list];
+		writeIndex(updatedList);
+		update(100, "Fertig");
+		return {
+			entry,
+			versions: updatedList,
+			uploadError
+		};
+	}, 10, filename);
+}
 // src/components/NextcloudSettingsView.tsx
 var UI_ACCENTS = [
 	{
@@ -78557,6 +79077,11 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 	const [discoveredCalendars, setDiscoveredCalendars] = (0, import_react.useState)([]);
 	const [discoveringCalendars, setDiscoveringCalendars] = (0, import_react.useState)(false);
 	const [runningBackup, setRunningBackup] = (0, import_react.useState)(false);
+	const [backupVersions, setBackupVersions] = (0, import_react.useState)(() => listBackupVersions());
+	const [newVersionLabel, setNewVersionLabel] = (0, import_react.useState)("");
+	const [versionUploadNextcloud, setVersionUploadNextcloud] = (0, import_react.useState)(true);
+	const [creatingVersion, setCreatingVersion] = (0, import_react.useState)(false);
+	const [localConfirm, setLocalConfirm] = (0, import_react.useState)(null);
 	const [deviceSounds, setDeviceSounds] = (0, import_react.useState)([]);
 	const [deviceSoundsType, setDeviceSoundsType] = (0, import_react.useState)("notification");
 	const [loadingDeviceSounds, setLoadingDeviceSounds] = (0, import_react.useState)(false);
@@ -78864,6 +79389,13 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 				uploadToNextcloud: autoBackup.uploadToNextcloud && nextcloud.configured,
 				localDownload: autoBackup.localDownload
 			});
+			const verRes = await createBackupVersion(db, {
+				label: "Multi-Format-Backup",
+				source: "auto",
+				maxVersions: autoBackup.maxBackupVersions ?? 10,
+				uploadToNextcloud: false
+			}).catch(() => null);
+			if (verRes) setBackupVersions(verRes.versions);
 			const nowIso = (/* @__PURE__ */ new Date()).toISOString();
 			const updatedCompany = {
 				...companyForm,
@@ -78881,6 +79413,58 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 		} finally {
 			setRunningBackup(false);
 		}
+	};
+	const handleCreateBackupVersion = async () => {
+		setCreatingVersion(true);
+		try {
+			const res = await createBackupVersion(db, {
+				label: newVersionLabel.trim() || void 0,
+				source: "manual",
+				maxVersions: autoBackup.maxBackupVersions ?? 10,
+				uploadToNextcloud: versionUploadNextcloud && nextcloud.configured
+			});
+			setBackupVersions(res.versions);
+			setNewVersionLabel("");
+			if (res.uploadError) onNotify(`Backup-Version lokal gespeichert, aber Nextcloud-Upload fehlgeschlagen: ${res.uploadError}`, true);
+			else if (res.entry.nextcloudPath) onNotify(`Backup-Version „${res.entry.label}“ lokal & auf Nextcloud gesichert.`);
+			else onNotify(`Backup-Version „${res.entry.label}“ gespeichert.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Backup-Version konnte nicht angelegt werden.", true);
+		} finally {
+			setCreatingVersion(false);
+		}
+	};
+	const handleRestoreBackupVersion = (entry) => {
+		const snapshot = loadBackupVersionSnapshot(entry.id);
+		if (!snapshot) {
+			onNotify("Backup-Daten dieser Version konnten nicht mehr gelesen werden.", true);
+			return;
+		}
+		onImportDatabase(snapshot);
+		setTimeout(() => setBackupVersions(listBackupVersions()), 400);
+	};
+	const handleDownloadBackupVersion = async (entry) => {
+		try {
+			if (!await downloadBackupVersion(entry)) {
+				onNotify("Snapshot-Daten nicht gefunden.", true);
+				return;
+			}
+			onNotify(`Backup-Version „${entry.label}“ exportiert.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Download der Backup-Version fehlgeschlagen.", true);
+		}
+	};
+	const handleDeleteBackupVersion = (entry) => {
+		setLocalConfirm({
+			title: "Backup-Version löschen?",
+			message: `Soll die Backup-Version „${entry.label}“ (${formatDateTimeDE(entry.createdAt)}) wirklich aus dem lokalen Speicher gelöscht werden?`,
+			confirmLabel: "Version löschen",
+			onConfirm: () => {
+				const next = deleteBackupVersion(entry.id);
+				setBackupVersions(next);
+				onNotify(`Backup-Version „${entry.label}“ gelöscht.`);
+			}
+		});
 	};
 	const previewReminderTone = (preset, customUri) => {
 		const uriToPlay = customUri ?? companyForm.timerReminderSystemSoundUri;
@@ -79115,7 +79699,6 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 	};
 	const handleDeleteGeoRule = (id) => {
 		onSaveGeoFenceRules(geoFenceRules.filter((r) => r.id !== id));
-		onNotify("Ortsregel gelöscht.");
 	};
 	const handleExportTimeCsv = async () => {
 		try {
@@ -81079,6 +81662,216 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 								className: "flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "flex items-start gap-2.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(History, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: [
+												"Backup-Versionen (",
+												backupVersions.length,
+												")"
+											]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "Mehrere Backup-Versionen",
+											text: "Lege beliebig viele benannte Sicherungsstände mit Zeitstempel an (z. B. vor Monatsabschluss oder Preisänderung). Jede Version kann einzeln wiederhergestellt oder als JSON heruntergeladen werden."
+										})]
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2 shrink-0",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-xs text-slate-500 dark:text-slate-400",
+										children: "Max. Versionen:"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										size: "sm",
+										className: "w-24",
+										ariaLabel: "Maximale Anzahl Backup-Versionen",
+										value: String(autoBackup.maxBackupVersions ?? 10),
+										onChange: (val) => updateAutoBackup({ maxBackupVersions: Math.max(2, Number(val) || 10) }),
+										options: [
+											{
+												value: "5",
+												label: "5"
+											},
+											{
+												value: "10",
+												label: "10"
+											},
+											{
+												value: "20",
+												label: "20"
+											},
+											{
+												value: "50",
+												label: "50"
+											}
+										]
+									})]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-col gap-3 sm:flex-row sm:items-end",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "min-w-0 flex-1",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Bezeichnung der neuen Backup-Version (optional)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "text",
+										value: newVersionLabel,
+										onChange: (e) => setNewVersionLabel(e.target.value),
+										placeholder: "z. B. Vor Monatsabschluss oder Stand Q4",
+										className: inputClass
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => void handleCreateBackupVersion(),
+									disabled: creatingVersion,
+									className: "inline-flex items-center justify-center gap-1.5 rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white disabled:opacity-50 whitespace-nowrap shrink-0 cursor-pointer",
+									children: [creatingVersion ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), creatingVersion ? "Erstelle Version…" : "Neue Backup-Version anlegen"]
+								})]
+							}),
+							nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: versionUploadNextcloud,
+									onChange: (e) => setVersionUploadNextcloud(e.target.checked),
+									className: "h-4 w-4 rounded border-slate-300 accent-violet-600"
+								}), "Neue Version zusätzlich in Nextcloud (/Backups/Versionen) mit Zeitstempel sichern"]
+							}),
+							backupVersions.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "rounded-lg border border-dashed border-slate-200 px-4 py-6 text-center text-xs text-slate-500 dark:border-[#3b2d5e] dark:text-slate-400",
+								children: "Noch keine Backup-Versionen gespeichert. Klicke oben auf „Neue Backup-Version anlegen“, um deinen ersten Snapshot zu erstellen."
+							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "overflow-hidden rounded-xl border border-slate-200 dark:border-[#2e2349]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "max-h-[325px] overflow-y-auto overflow-x-auto",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+										className: "w-full text-left text-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+											className: "sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+												className: "border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "px-3.5 py-2.5",
+														children: "Version & Zeitpunkt"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "px-3.5 py-2.5",
+														children: "Umfang"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "px-3.5 py-2.5",
+														children: "Speicherort"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+														className: "px-3.5 py-2.5 text-right",
+														children: "Aktionen"
+													})
+												]
+											})
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+											className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
+											children: backupVersions.map((ver) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+												className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+														className: "px-3.5 py-2.5",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex flex-wrap items-center gap-1.5",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-medium text-slate-900 dark:text-slate-100",
+																children: ver.label
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-[#2a2045] dark:text-violet-300",
+																children: ver.source === "auto" ? "Auto" : ver.source === "pre-restore" ? "Sicherheit" : "Manuell"
+															})]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400",
+															children: [
+																formatDateTimeDE(ver.createdAt),
+																" ·",
+																" ",
+																Math.max(1, Math.round(ver.sizeBytes / 1024)),
+																" KB"
+															]
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+														className: "px-3.5 py-2.5 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap",
+														children: [
+															ver.counts.timeEntries,
+															" Zeiten · ",
+															ver.counts.invoices,
+															" Dok. ·",
+															" ",
+															ver.counts.customers,
+															" Kunden"
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+														className: "px-3.5 py-2.5 text-xs whitespace-nowrap",
+														children: ver.nextcloudPath ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+															className: "inline-flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cloud, { className: "h-3.5 w-3.5" }), "Lokal + Nextcloud"]
+														}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-slate-500 dark:text-slate-400",
+															children: "Lokal"
+														})
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+														className: "px-3.5 py-2.5",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center justify-end gap-1",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																	type: "button",
+																	onClick: () => handleRestoreBackupVersion(ver),
+																	title: "Diese Version wiederherstellen",
+																	className: "inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-violet-300 dark:hover:bg-[#2a2045] cursor-pointer",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RotateCcw, { className: "h-3 w-3" }), "Laden"]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	type: "button",
+																	onClick: () => void handleDownloadBackupVersion(ver),
+																	title: "Als JSON-Datei exportieren",
+																	className: "inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer",
+																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" })
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	type: "button",
+																	onClick: () => handleDeleteBackupVersion(ver),
+																	title: "Backup-Version löschen",
+																	className: "inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/50 dark:hover:text-red-400 cursor-pointer",
+																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+																})
+															]
+														})
+													})
+												]
+											}, ver.id))
+										})]
+									})
+								}), backupVersions.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "border-t border-slate-200 bg-slate-50/80 px-3.5 py-1.5 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
+									children: [
+										"Zeigt die letzten 5 sichtbar · insgesamt ",
+										backupVersions.length,
+										" Versionen (nach oben & unten scrollbar)"
+									]
+								})]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-start gap-2.5",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { className: "mt-0.5 h-5 w-5 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 										className: "flex items-center gap-1.5",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
@@ -81571,37 +82364,40 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 									geoFenceRules.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 										className: "text-xs text-slate-500 dark:text-slate-400",
 										children: "Noch keine Ortsregeln angelegt. Füge unten z. B. dein Büro oder einen Kundenstandort hinzu."
-									}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 										className: "overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "overflow-x-auto",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "max-h-[325px] overflow-y-auto overflow-x-auto",
 											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
 												className: "w-full text-left text-sm",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-													className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-3.5 py-2.5",
-															children: "Ort & Aufgabe"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-3.5 py-2.5",
-															children: "Kunde / Leistung"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-3.5 py-2.5",
-															children: "Radius & Adresse"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-3.5 py-2.5",
-															children: "Status"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-3.5 py-2.5 text-right",
-															children: "Aktionen"
-														})
-													]
-												}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+													className: "sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+														className: "border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+																className: "px-3.5 py-2.5",
+																children: "Ort & Aufgabe"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+																className: "px-3.5 py-2.5",
+																children: "Kunde / Leistung"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+																className: "px-3.5 py-2.5",
+																children: "Radius & Adresse"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+																className: "px-3.5 py-2.5",
+																children: "Status"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+																className: "px-3.5 py-2.5 text-right",
+																children: "Aktionen"
+															})
+														]
+													})
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
 													className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
 													children: geoFenceRules.map((rule) => {
 														const cust = db.customers.find((c) => c.id === rule.customerId);
@@ -81687,7 +82483,14 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 													})
 												})]
 											})
-										})
+										}), geoFenceRules.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "border-t border-slate-200 bg-slate-50/80 px-3.5 py-1.5 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
+											children: [
+												"Zeigt 5 sichtbar · insgesamt ",
+												geoFenceRules.length,
+												" Orte (nach oben & unten scrollbar)"
+											]
+										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 										ref: mapSectionRef,
@@ -82251,6 +83054,10 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 				onDelete: handleDeleteGeoRule,
 				onClose: () => setEditingGeoRule(null),
 				onNotify
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ConfirmActionDialog, {
+				dialog: localConfirm,
+				onCancel: () => setLocalConfirm(null)
 			})
 		]
 	});
@@ -83259,7 +84066,6 @@ function ProductsView({ company, customers, products, geoFenceRules = [], autoLo
 	};
 	const handleDeleteGeoRule = (id) => {
 		onSaveGeoFenceRules(geoFenceRules.filter((r) => r.id !== id));
-		onNotify("Ortsabhängigkeit entfernt.");
 	};
 	const geoRulesByProduct = (0, import_react.useMemo)(() => {
 		const map = /* @__PURE__ */ new Map();
@@ -83600,39 +84406,42 @@ function ProductsView({ company, customers, products, geoFenceRules = [], autoLo
 						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
 						children: "Lege Dienstleistungen mit Stundensätzen oder Zusatzprodukte für Rechnungen an."
 					})]
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "overflow-x-auto",
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "max-h-[365px] overflow-y-auto overflow-x-auto",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
 						className: "w-full text-left text-sm",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-							className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: skuLabel
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Bezeichnung & Beschreibung"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Typ & Kategorie"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Netto-Preis"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "MwSt."
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Aktionen"
-								})
-							]
-						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+							className: "sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								className: "border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: skuLabel
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Bezeichnung & Beschreibung"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Typ & Kategorie"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Netto-Preis"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "MwSt."
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Aktionen"
+									})
+								]
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
 							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
 							children: filtered.map((p) => {
 								const linkedGeoRules = geoRulesByProduct.get(p.id) ?? [];
@@ -83711,7 +84520,14 @@ function ProductsView({ company, customers, products, geoFenceRules = [], autoLo
 							})
 						})]
 					})
-				})]
+				}), filtered.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "border-t border-slate-200 bg-slate-50/80 px-4 py-2 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
+					children: [
+						"Zeigt 5 sichtbar · insgesamt ",
+						filtered.length,
+						" Produkte & Leistungen (nach oben & unten scrollbar)"
+					]
+				})] })]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GeoFenceRuleModal, {
 				open: geoModalOpen,
@@ -84778,7 +85594,7 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 			if (filterActivityType === "project" && (entry.entryType === "internal" || !entry.customerId)) return false;
 			if (filterActivityType === "internal" && entry.entryType !== "internal" && entry.customerId) return false;
 			return true;
-		}).sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
+		}).sort((a, b) => new Date(b.endTime || b.startTime).getTime() - new Date(a.endTime || a.startTime).getTime());
 	}, [
 		timeEntries,
 		filterCustomerId,
@@ -85797,43 +86613,46 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 						className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
 						children: "Starte oben den Live-Timer, scanne einen NFC-Tag oder trage Zeiten manuell nach."
 					})]
-				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "overflow-x-auto",
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "max-h-[375px] overflow-y-auto overflow-x-auto",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
 						className: "w-full text-left text-sm",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-							className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "w-10 px-4 py-3",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SquareCheckBig, { className: "h-4 w-4 text-slate-400 dark:text-violet-400/60" })
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Aufgabe & Zuordnung"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Zeitraum"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Dauer"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Nettowert"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3",
-									children: "Status"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-									className: "px-4 py-3 text-right",
-									children: "Aktionen"
-								})
-							]
-						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+							className: "sticky top-0 z-10 bg-slate-50 dark:bg-[#211936]",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								className: "border-b border-slate-200 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:text-violet-200/70",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "w-10 px-4 py-3",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SquareCheckBig, { className: "h-4 w-4 text-slate-400 dark:text-violet-400/60" })
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Aufgabe & Zuordnung"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Zeitraum"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Dauer"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Nettowert"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Status"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Aktionen"
+									})
+								]
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
 							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
 							children: filteredEntries.map((entry) => {
 								const isInternal = entry.entryType === "internal" || !entry.customerId;
@@ -85996,7 +86815,14 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 							})
 						})]
 					})
-				})]
+				}), filteredEntries.length > 5 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "border-t border-slate-200 bg-slate-50/80 px-4 py-2 text-center text-[11px] text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-400",
+					children: [
+						"Die letzten 5 beendeten Tätigkeiten sichtbar · insgesamt ",
+						filteredEntries.length,
+						" Einträge (nach oben & unten scrollbar)"
+					]
+				})] })]
 			})
 		]
 	});
@@ -86058,9 +86884,16 @@ function App() {
 	const [db, setDb] = (0, import_react.useState)(() => createEmptyDatabase());
 	const [nextcloud, setNextcloud] = (0, import_react.useState)(DEFAULT_NC_INFO);
 	const [loading, setLoading] = (0, import_react.useState)(true);
+	const [loadProgress, setLoadProgress] = (0, import_react.useState)({
+		pct: 15,
+		label: "TaktWerk wird gestartet…"
+	});
 	const [saving, setSaving] = (0, import_react.useState)(false);
 	const [elapsedSeconds, setElapsedSeconds] = (0, import_react.useState)(0);
 	const [toast, setToast] = (0, import_react.useState)(null);
+	const [confirmDialog, setConfirmDialog] = (0, import_react.useState)(null);
+	const [undoBanner, setUndoBanner] = (0, import_react.useState)(null);
+	const undoSideEffectTimerRef = (0, import_react.useRef)(null);
 	const [checkingGeoFence, setCheckingGeoFence] = (0, import_react.useState)(false);
 	const [invoiceDraft, setInvoiceDraft] = (0, import_react.useState)(null);
 	const [isWritingNfc, setIsWritingNfc] = (0, import_react.useState)(false);
@@ -86250,48 +87083,106 @@ function App() {
 			haptic: "start"
 		};
 	}, []);
-	const attachAutoLocationToTimer = (0, import_react.useCallback)((timerId) => {
-		if (!dbRef.current.company.autoCaptureLocation) return;
-		captureCurrentLocation().then((loc) => {
-			const current = dbRef.current;
-			if (!current.activeTimer || current.activeTimer.id !== timerId) return;
-			persistDb({
-				...current,
-				activeTimer: {
-					...current.activeTimer,
-					location: loc
+	const attachAutoLocationToTimer = (0, import_react.useCallback)((timerId, options) => {
+		if (!(options?.forceEnabled !== void 0 ? options.forceEnabled : Boolean(dbRef.current.company.autoCaptureLocation))) return;
+		const maxRetries = options?.retries ?? 1;
+		const attemptCapture = (attempt) => {
+			captureCurrentLocation().then((loc) => {
+				const current = dbRef.current;
+				if (current.activeTimer && current.activeTimer.id === timerId) {
+					persistDb({
+						...current,
+						activeTimer: {
+							...current.activeTimer,
+							location: loc
+						}
+					});
+					return;
+				}
+				if (options?.startedAtIso) {
+					const idx = current.timeEntries.findIndex((e) => e.startTime === options.startedAtIso && !e.location);
+					if (idx >= 0) {
+						const updatedEntries = current.timeEntries.map((e, i) => i === idx ? {
+							...e,
+							location: loc
+						} : e);
+						persistDb({
+							...current,
+							timeEntries: updatedEntries
+						});
+					}
+				}
+			}).catch(() => {
+				if (attempt < maxRetries) {
+					const delayMs = attempt === 0 ? 3500 : 6500;
+					window.setTimeout(() => {
+						const current = dbRef.current;
+						if (current.activeTimer && current.activeTimer.id === timerId && !current.activeTimer.location) attemptCapture(attempt + 1);
+					}, delayMs);
 				}
 			});
-		}).catch(() => {});
+		};
+		attemptCapture(0);
 	}, [persistDb]);
-	const pushFinishedEntryToNextcloudCalendar = (0, import_react.useCallback)((entry) => {
-		const calCfg = dbRef.current.company.calendarConfig;
-		if (!calCfg?.autoSyncTimeEntries || !calCfg.selectedCalendarUrl) return;
-		const custName = dbRef.current.customers.find((c) => c.id === entry.customerId)?.companyName ?? "";
+	const pushFinishedEntryToNextcloudCalendar = (0, import_react.useCallback)((entry, overrideDb) => {
+		const sourceDb = overrideDb ?? dbRef.current;
+		const calCfg = sourceDb.company.calendarConfig;
+		if (!calCfg?.autoSyncTimeEntries || !calCfg.selectedCalendarUrl?.trim()) return;
+		const isInternal = entry.entryType === "internal" || !entry.customerId;
+		const custName = !isInternal ? sourceDb.customers.find((c) => c.id === entry.customerId)?.companyName ?? "" : "";
+		const prodName = !isInternal ? sourceDb.products.find((p) => p.id === entry.productId)?.name ?? "" : "";
+		const summaryTitle = isInternal ? entry.internalCategory ? `${entry.title} (Intern · ${entry.internalCategory})` : `${entry.title} (Intern)` : custName ? `${entry.title} (${custName})` : entry.title;
+		const sourceLabel = entry.source === "manual" ? "Nachgetragen" : entry.source === "nfc" ? "NFC" : entry.source === "geo" ? "Ortsautomatik" : "Live-Timer";
+		const descParts = [];
+		if (isInternal) descParts.push(`Art: Interne Tätigkeit${entry.internalCategory ? ` (${entry.internalCategory})` : ""}`);
+		else {
+			if (custName) descParts.push(`Kunde: ${custName}`);
+			if (prodName) descParts.push(`Leistung: ${prodName}`);
+		}
+		descParts.push(`Erfassung: ${sourceLabel}`);
+		if (entry.notes?.trim()) descParts.push("", entry.notes.trim());
+		const startMs = new Date(entry.startTime).getTime();
+		const rawEndMs = new Date(entry.endTime).getTime();
+		const safeStartIso = Number.isNaN(startMs) ? (/* @__PURE__ */ new Date()).toISOString() : new Date(startMs).toISOString();
+		const minDurationMs = Math.max(6e4, (entry.durationSeconds || 60) * 1e3);
+		const safeEndIso = !Number.isNaN(rawEndMs) && rawEndMs > new Date(safeStartIso).getTime() ? new Date(rawEndMs).toISOString() : new Date(new Date(safeStartIso).getTime() + minDurationMs).toISOString();
 		const appt = {
 			id: entry.id,
 			uid: `${entry.id}@taktwerk.app`,
-			title: custName ? `${entry.title} (${custName})` : entry.title,
-			startTime: entry.startTime,
-			endTime: entry.endTime,
+			title: summaryTitle,
+			startTime: safeStartIso,
+			endTime: safeEndIso,
 			location: entry.location?.address ?? "",
-			description: entry.notes || "",
+			description: descParts.join("\n"),
 			calendarName: calCfg.selectedCalendarName,
 			source: "nextcloud",
-			customerId: entry.customerId,
-			productId: entry.productId
+			customerId: isInternal ? null : entry.customerId,
+			productId: isInternal ? null : entry.productId
 		};
-		apiPushNextcloudCalendarEvent(calCfg.selectedCalendarUrl, appt).catch(() => {});
-	}, []);
+		apiPushNextcloudCalendarEvent(calCfg.selectedCalendarUrl.trim(), appt).catch((err) => {
+			notify(`Nextcloud-Kalender-Übernahme fehlgeschlagen: ${err instanceof Error ? err.message : "Verbindung prüfen"}`, true);
+		});
+	}, [notify]);
 	(0, import_react.useEffect)(() => {
 		let active = true;
 		(async () => {
 			try {
+				setLoadProgress({
+					pct: 22,
+					label: "Datenbank & Einstellungen werden geladen…"
+				});
 				const data = await apiLoadDb();
 				if (!active) return;
+				setLoadProgress({
+					pct: 55,
+					label: "Prüfe Start-Aktionen & NFC-Auslöser…"
+				});
 				let loadedDb = data.db ?? createEmptyDatabase();
+				dbRef.current = loadedDb;
 				setNextcloud(data.nextcloud);
 				let sectionOverridden = false;
+				let coldStartedTimer = null;
+				let coldFinishedEntry = null;
 				if (!deepLinkHandledRef.current) {
 					deepLinkHandledRef.current = true;
 					let incomingNfc = "";
@@ -86305,19 +87196,41 @@ function App() {
 							const extracted = extractTagIdFromPayload(launch.url);
 							if (extracted && extracted !== launch.url) incomingNfc = extracted;
 						}
+						if (!incomingNfc) {
+							const pendingNfc = await TaktWerkNative.getPendingLaunchNfc().catch(() => ({
+								uidHex: null,
+								payloads: []
+							}));
+							for (const raw of pendingNfc?.payloads ?? []) {
+								const candidate = extractTagIdFromPayload(raw);
+								if (candidate) {
+									incomingNfc = candidate;
+									break;
+								}
+							}
+							if (!incomingNfc && pendingNfc?.uidHex) incomingNfc = pendingNfc.uidHex;
+						}
 					}
 					if (incomingNfc) {
+						setLoadProgress({
+							pct: 72,
+							label: "NFC-Aufgabe wird ausgeführt…"
+						});
 						lastNfcTriggerRef.current = {
 							code: incomingNfc,
 							at: Date.now()
 						};
+						const prevTimer = loadedDb.activeTimer;
+						const prevEntryCount = loadedDb.timeEntries.length;
 						const result = triggerNfcOnDb(loadedDb, incomingNfc);
 						loadedDb = result.nextDb;
+						dbRef.current = loadedDb;
 						triggerNfcHaptic(result.haptic);
 						notify(result.message, result.isError);
 						if (!result.isError) {
 							await apiSaveDb(loadedDb);
-							if (loadedDb.activeTimer) attachAutoLocationToTimer(loadedDb.activeTimer.id);
+							if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) coldFinishedEntry = loadedDb.timeEntries[0];
+							if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
 						} else {
 							setPendingScannedUid({
 								uid: incomingNfc,
@@ -86332,18 +87245,35 @@ function App() {
 							tagUid: null
 						}));
 						if (widgetAction?.action === "trigger" && widgetAction.tagUid) {
+							const prevTimer = loadedDb.activeTimer;
+							const prevEntryCount = loadedDb.timeEntries.length;
 							const result = triggerNfcOnDb(loadedDb, widgetAction.tagUid);
 							loadedDb = result.nextDb;
+							dbRef.current = loadedDb;
 							triggerNfcHaptic(result.haptic);
 							notify(result.message, result.isError);
-							if (!result.isError) await apiSaveDb(loadedDb);
+							if (!result.isError) {
+								await apiSaveDb(loadedDb);
+								if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) coldFinishedEntry = loadedDb.timeEntries[0];
+								if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
+							}
 						}
 					}
 				}
 				if (!sectionOverridden && loadedDb.company.defaultStartSection) setSection(loadedDb.company.defaultStartSection);
+				setLoadProgress({
+					pct: 88,
+					label: "Oberfläche & Widgets werden synchronisiert…"
+				});
 				dbRef.current = loadedDb;
 				setDb(loadedDb);
 				syncNativeWidgetState(loadedDb);
+				if (coldStartedTimer) attachAutoLocationToTimer(coldStartedTimer.id, {
+					forceEnabled: Boolean(loadedDb.company.autoCaptureLocation),
+					retries: 2,
+					startedAtIso: coldStartedTimer.startTime
+				});
+				if (coldFinishedEntry) pushFinishedEntryToNextcloudCalendar(coldFinishedEntry, loadedDb);
 				if (data.nextcloud.configured) apiCheckNextcloudRemote().then((check) => {
 					if (active && check.hasNewerRemote && check.remoteUpdatedAt) setRemoteNewerAt(check.remoteUpdatedAt);
 				});
@@ -86355,6 +87285,12 @@ function App() {
 						localDownload: backupCfg.localDownload
 					}).then((res) => {
 						if (!active) return;
+						createBackupVersion(loadedDb, {
+							label: "Automatisches Backup",
+							source: "auto",
+							maxVersions: backupCfg.maxBackupVersions ?? 10,
+							uploadToNextcloud: false
+						}).catch(() => {});
 						const current = dbRef.current;
 						const nextWithStamp = {
 							...current,
@@ -86371,6 +87307,10 @@ function App() {
 						notify(`Automatisches Backup abgeschlossen (${res.summary}).`);
 					}).catch(() => {});
 				}
+				setLoadProgress({
+					pct: 100,
+					label: "Bereit"
+				});
 			} catch (err) {
 				notify(err instanceof Error ? err.message : "Verbindung zum Server fehlgeschlagen.", true);
 			} finally {
@@ -86384,6 +87324,7 @@ function App() {
 		attachAutoLocationToTimer,
 		notify,
 		persistDb,
+		pushFinishedEntryToNextcloudCalendar,
 		triggerNfcOnDb
 	]);
 	const handleGlobalNfcCode = (0, import_react.useCallback)((rawCode) => {
@@ -86397,6 +87338,7 @@ function App() {
 			at: now
 		};
 		const prevTimer = dbRef.current.activeTimer;
+		const prevEntryCount = dbRef.current.timeEntries.length;
 		const result = triggerNfcOnDb(dbRef.current, clean);
 		triggerNfcHaptic(result.haptic);
 		if (result.isError) {
@@ -86410,8 +87352,12 @@ function App() {
 		}
 		persistDb(result.nextDb);
 		notify(result.message);
-		if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id);
-		else if (!result.nextDb.activeTimer && result.nextDb.timeEntries[0]) pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0]);
+		if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
+		if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
+			forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
+			retries: 2,
+			startedAtIso: result.nextDb.activeTimer.startTime
+		});
 	}, [
 		attachAutoLocationToTimer,
 		navigateToSection,
@@ -86626,13 +87572,18 @@ function App() {
 			internalCategory: isInternal ? payload.internalCategory || "Sonstiges" : void 0,
 			location: payload.location ?? null
 		};
-		persistDb({
+		const nextDb = {
 			...currentDb,
 			timeEntries: nextTimeEntries,
 			activeTimer: timer
-		});
+		};
+		persistDb(nextDb);
 		notify(stoppedPreviousTitle ? `"${stoppedPreviousTitle}" gespeichert · Gestartet: ${timer.title}` : `Timer gestartet: ${timer.title}`);
-		if (!payload.location) attachAutoLocationToTimer(timer.id);
+		if (!payload.location) attachAutoLocationToTimer(timer.id, {
+			forceEnabled: Boolean(nextDb.company.autoCaptureLocation),
+			retries: 1,
+			startedAtIso: timer.startTime
+		});
 	};
 	const handleUpdateActiveTimerNotes = (0, import_react.useCallback)((notes) => {
 		const current = dbRef.current;
@@ -86695,12 +87646,13 @@ function App() {
 			createdAt: now.toISOString()
 		};
 		cancelNativeTimerReminder();
-		persistDb({
+		const nextDb = {
 			...currentDb,
 			activeTimer: null,
 			timeEntries: [entry, ...currentDb.timeEntries]
-		});
-		pushFinishedEntryToNextcloudCalendar(entry);
+		};
+		persistDb(nextDb);
+		pushFinishedEntryToNextcloudCalendar(entry, nextDb);
 		notify(isInternal ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).` : travelCostNet && travelCostNet > 0 ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.` : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`);
 	}, [
 		notify,
@@ -86888,60 +87840,134 @@ function App() {
 	const handleOpenNotificationSettings = (0, import_react.useCallback)(async () => {
 		await openNativeNotificationSettings();
 	}, []);
-	const handleDiscardTimer = () => {
-		if (!db.activeTimer) return;
-		persistDb({
-			...db,
-			activeTimer: null
+	const scheduleUndoableDelete = (0, import_react.useCallback)((prevDb, nextDb, undoLabel, deferredSideEffect) => {
+		if (undoSideEffectTimerRef.current !== null) {
+			window.clearTimeout(undoSideEffectTimerRef.current);
+			undoSideEffectTimerRef.current = null;
+		}
+		const durationMs = 8e3;
+		const now = Date.now();
+		persistDb(nextDb);
+		if (deferredSideEffect) undoSideEffectTimerRef.current = window.setTimeout(() => {
+			undoSideEffectTimerRef.current = null;
+			deferredSideEffect();
+		}, 8150);
+		setUndoBanner({
+			id: now,
+			label: undoLabel,
+			durationMs,
+			expiresAt: now + durationMs,
+			onUndo: () => {
+				if (undoSideEffectTimerRef.current !== null) {
+					window.clearTimeout(undoSideEffectTimerRef.current);
+					undoSideEffectTimerRef.current = null;
+				}
+				persistDb(prevDb);
+				notify("Löschvorgang rückgängig gemacht.");
+			}
 		});
-		notify("Laufender Timer verworfen.");
+	}, [notify, persistDb]);
+	const requestConfirmDelete = (0, import_react.useCallback)((options) => {
+		setConfirmDialog({
+			title: options.title,
+			message: options.message,
+			confirmLabel: options.confirmLabel ?? "Löschen",
+			tone: options.tone ?? "danger",
+			onConfirm: options.onConfirm
+		});
+	}, []);
+	const handleDiscardTimer = () => {
+		const currentDb = dbRef.current;
+		if (!currentDb.activeTimer) return;
+		const timerTitle = currentDb.activeTimer.title;
+		requestConfirmDelete({
+			title: "Laufenden Timer verwerfen?",
+			message: `Die aktuell laufende Aufgabe „${timerTitle}“ wird ohne Speicherung verworfen. Du kannst sie danach noch 8 Sekunden lang wiederherstellen.`,
+			confirmLabel: "Timer verwerfen",
+			tone: "warning",
+			onConfirm: () => {
+				const latest = dbRef.current;
+				if (!latest.activeTimer) return;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					activeTimer: null
+				}, `Timer „${latest.activeTimer.title}“ verworfen`);
+			}
+		});
 	};
 	const handleAddManualEntry = (entry) => {
-		persistDb({
-			...db,
-			timeEntries: [entry, ...db.timeEntries]
-		});
+		const currentDb = dbRef.current;
+		const nextDb = {
+			...currentDb,
+			timeEntries: [entry, ...currentDb.timeEntries]
+		};
+		persistDb(nextDb);
+		pushFinishedEntryToNextcloudCalendar(entry, nextDb);
 		notify("Zeiteintrag gespeichert.");
 	};
 	const handleUpdateEntry = (updatedEntry) => {
-		persistDb({
-			...db,
-			timeEntries: db.timeEntries.map((e) => e.id === updatedEntry.id ? updatedEntry : e)
-		});
+		const currentDb = dbRef.current;
+		const nextDb = {
+			...currentDb,
+			timeEntries: currentDb.timeEntries.map((e) => e.id === updatedEntry.id ? updatedEntry : e)
+		};
+		persistDb(nextDb);
+		pushFinishedEntryToNextcloudCalendar(updatedEntry, nextDb);
 		notify("Zeiteintrag aktualisiert.");
 	};
 	const handleDeleteEntry = (id) => {
-		persistDb({
-			...db,
-			timeEntries: db.timeEntries.filter((e) => e.id !== id)
+		const target = dbRef.current.timeEntries.find((e) => e.id === id);
+		if (!target) return;
+		requestConfirmDelete({
+			title: "Tätigkeit wirklich löschen?",
+			message: `Soll die erfasste Tätigkeit „${target.title}“ (${formatDuration(target.durationSeconds)}) wirklich gelöscht werden?`,
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					timeEntries: latest.timeEntries.filter((e) => e.id !== id)
+				}, `Tätigkeit „${target.title}“ gelöscht`);
+			}
 		});
 	};
 	const handleToggleBillable = (id) => {
 		persistDb({
-			...db,
-			timeEntries: db.timeEntries.map((e) => e.id === id ? {
+			...dbRef.current,
+			timeEntries: dbRef.current.timeEntries.map((e) => e.id === id ? {
 				...e,
 				billable: !e.billable
 			} : e)
 		});
 	};
 	const handleSaveNfcTask = (task) => {
-		const nextTasks = db.nfcTasks.some((t) => t.id === task.id) ? db.nfcTasks.map((t) => t.id === task.id ? task : t) : [task, ...db.nfcTasks];
+		const currentDb = dbRef.current;
+		const nextTasks = currentDb.nfcTasks.some((t) => t.id === task.id) ? currentDb.nfcTasks.map((t) => t.id === task.id ? task : t) : [task, ...currentDb.nfcTasks];
 		persistDb({
-			...db,
+			...currentDb,
 			nfcTasks: nextTasks
 		});
 		notify(`NFC-Aufgabe "${task.title}" gespeichert.`);
 	};
 	const handleDeleteNfcTask = (id) => {
-		persistDb({
-			...db,
-			nfcTasks: db.nfcTasks.filter((t) => t.id !== id)
+		const target = dbRef.current.nfcTasks.find((t) => t.id === id);
+		if (!target) return;
+		requestConfirmDelete({
+			title: "NFC-Aufgabe wirklich löschen?",
+			message: `Soll die NFC-Aufgabe „${target.title}“ (Tag ${target.tagUid}) wirklich gelöscht werden?`,
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					nfcTasks: latest.nfcTasks.filter((t) => t.id !== id)
+				}, `NFC-Aufgabe „${target.title}“ gelöscht`);
+			}
 		});
 	};
 	const handleTriggerNfcTag = (tagUid) => {
-		const prevTimer = db.activeTimer;
-		const result = triggerNfcOnDb(db, tagUid);
+		const currentDb = dbRef.current;
+		const prevTimer = currentDb.activeTimer;
+		const prevEntryCount = currentDb.timeEntries.length;
+		const result = triggerNfcOnDb(currentDb, tagUid);
 		triggerNfcHaptic(result.haptic);
 		if (result.isError) {
 			notify(result.message, true);
@@ -86949,45 +87975,87 @@ function App() {
 		}
 		persistDb(result.nextDb);
 		notify(result.message);
-		if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id);
-		else if (!result.nextDb.activeTimer && result.nextDb.timeEntries[0]) pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0]);
+		if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
+		if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
+			forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
+			retries: 2,
+			startedAtIso: result.nextDb.activeTimer.startTime
+		});
 	};
 	const handleSaveCustomer = (customer) => {
-		const nextCustomers = db.customers.some((c) => c.id === customer.id) ? db.customers.map((c) => c.id === customer.id ? customer : c) : [...db.customers, customer];
+		const currentDb = dbRef.current;
+		const nextCustomers = currentDb.customers.some((c) => c.id === customer.id) ? currentDb.customers.map((c) => c.id === customer.id ? customer : c) : [...currentDb.customers, customer];
 		persistDb({
-			...db,
+			...currentDb,
 			customers: nextCustomers
 		});
 		notify(`Kunde "${customer.companyName}" gespeichert.`);
 	};
 	const handleDeleteCustomer = (id) => {
-		persistDb({
-			...db,
-			customers: db.customers.filter((c) => c.id !== id)
+		const target = dbRef.current.customers.find((c) => c.id === id);
+		if (!target) return;
+		requestConfirmDelete({
+			title: "Kunde wirklich löschen?",
+			message: `Soll der Kunde „${target.companyName}“ (${target.customerNumber}) wirklich gelöscht werden?`,
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					customers: latest.customers.filter((c) => c.id !== id)
+				}, `Kunde „${target.companyName}“ gelöscht`);
+			}
 		});
 	};
 	const handleSaveProduct = (product, incrementSkuSequence = false) => {
-		const nextProducts = db.products.some((p) => p.id === product.id) ? db.products.map((p) => p.id === product.id ? product : p) : [...db.products, product];
+		const currentDb = dbRef.current;
+		const nextProducts = currentDb.products.some((p) => p.id === product.id) ? currentDb.products.map((p) => p.id === product.id ? product : p) : [...currentDb.products, product];
 		const nextCompany = incrementSkuSequence ? {
-			...db.company,
-			nextProductSequence: (db.company.nextProductSequence || 1) + 1
-		} : db.company;
+			...currentDb.company,
+			nextProductSequence: (currentDb.company.nextProductSequence || 1) + 1
+		} : currentDb.company;
 		persistDb({
-			...db,
+			...currentDb,
 			company: nextCompany,
 			products: nextProducts
 		});
 		notify(`Artikel "${product.name}" gespeichert.`);
 	};
 	const handleDeleteProduct = (id) => {
-		persistDb({
-			...db,
-			products: db.products.filter((p) => p.id !== id)
+		const target = dbRef.current.products.find((p) => p.id === id);
+		if (!target) return;
+		requestConfirmDelete({
+			title: "Produkt / Leistung wirklich löschen?",
+			message: `Soll „${target.name}“ (${target.sku}) wirklich aus dem Katalog gelöscht werden?`,
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					products: latest.products.filter((p) => p.id !== id)
+				}, `Artikel „${target.name}“ gelöscht`);
+			}
 		});
 	};
 	const handleSaveCalendarEvents = (events) => {
+		const currentDb = dbRef.current;
+		const prevEvents = currentDb.calendarEvents ?? [];
+		const removed = prevEvents.filter((ev) => !events.some((next) => next.id === ev.id));
+		if (removed.length > 0 && events.length < prevEvents.length && removed.length <= 3) {
+			const removedNames = removed.map((r) => `„${r.title}“`).join(", ");
+			requestConfirmDelete({
+				title: removed.length === 1 ? "Termin wirklich löschen?" : "Termine wirklich löschen?",
+				message: `Soll ${removedNames} wirklich aus dem Kalender entfernt werden?`,
+				onConfirm: () => {
+					const latest = dbRef.current;
+					scheduleUndoableDelete(latest, {
+						...latest,
+						calendarEvents: events
+					}, removed.length === 1 ? `Termin „${removed[0].title}“ gelöscht` : `${removed.length} Termine gelöscht`);
+				}
+			});
+			return;
+		}
 		persistDb({
-			...dbRef.current,
+			...currentDb,
 			calendarEvents: events
 		});
 	};
@@ -87089,15 +88157,23 @@ function App() {
 		notify(`Abnahme-Unterschrift für Dokument gespeichert.`);
 	};
 	const handleDeleteSignature = (invoiceId) => {
-		const currentDb = dbRef.current;
-		persistDb({
-			...currentDb,
-			invoices: currentDb.invoices.map((inv) => inv.id === invoiceId ? {
-				...inv,
-				signature: void 0
-			} : inv)
+		const target = dbRef.current.invoices.find((inv) => inv.id === invoiceId);
+		if (!target?.signature) return;
+		requestConfirmDelete({
+			title: "Unterschrift entfernen?",
+			message: `Soll die gespeicherte Abnahme-Unterschrift für ${target.invoiceNumber} wirklich gelöscht werden?`,
+			confirmLabel: "Entfernen",
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					invoices: latest.invoices.map((inv) => inv.id === invoiceId ? {
+						...inv,
+						signature: void 0
+					} : inv)
+				}, `Unterschrift für ${target.invoiceNumber} entfernt`);
+			}
 		});
-		notify("Unterschrift entfernt.");
 	};
 	const handleToggleArchiveInvoice = (invoiceId) => {
 		const currentDb = dbRef.current;
@@ -87116,25 +88192,35 @@ function App() {
 		notify(willArchive ? `${docLabel} ${target.invoiceNumber} archiviert.` : `${docLabel} ${target.invoiceNumber} aus dem Archiv wiederhergestellt.`);
 	};
 	const handleDeleteInvoice = (invoiceId) => {
-		const currentDb = dbRef.current;
-		const target = currentDb.invoices.find((inv) => inv.id === invoiceId);
-		persistDb({
-			...currentDb,
-			timeEntries: currentDb.timeEntries.map((entry) => ({
-				...entry,
-				billedInvoiceId: entry.billedInvoiceId === invoiceId ? null : entry.billedInvoiceId,
-				travelBilledInvoiceId: entry.travelBilledInvoiceId === invoiceId ? null : entry.travelBilledInvoiceId
-			})),
-			expenses: (currentDb.expenses ?? []).map((exp) => exp.billedInvoiceId === invoiceId ? {
-				...exp,
-				billedInvoiceId: null
-			} : exp),
-			invoices: currentDb.invoices.filter((inv) => inv.id !== invoiceId)
+		const target = dbRef.current.invoices.find((inv) => inv.id === invoiceId);
+		if (!target) return;
+		const docLabel = target.documentType === "quote" ? "Angebot" : "Rechnung";
+		requestConfirmDelete({
+			title: `${docLabel} wirklich löschen?`,
+			message: `Soll ${docLabel} ${target.invoiceNumber} (${target.customerSnapshot.companyName}) wirklich gelöscht werden? Verknüpfte Zeiten & Belege bleiben als offen erhalten.`,
+			onConfirm: () => {
+				const latest = dbRef.current;
+				const nextDb = {
+					...latest,
+					timeEntries: latest.timeEntries.map((entry) => ({
+						...entry,
+						billedInvoiceId: entry.billedInvoiceId === invoiceId ? null : entry.billedInvoiceId,
+						travelBilledInvoiceId: entry.travelBilledInvoiceId === invoiceId ? null : entry.travelBilledInvoiceId
+					})),
+					expenses: (latest.expenses ?? []).map((exp) => exp.billedInvoiceId === invoiceId ? {
+						...exp,
+						billedInvoiceId: null
+					} : exp),
+					invoices: latest.invoices.filter((inv) => inv.id !== invoiceId)
+				};
+				const cleanupNextcloud = nextcloud.configured ? () => {
+					apiDeleteNextcloudInvoiceFiles(target.invoiceNumber).then((res) => {
+						if (res.deletedCount > 0) notify(`Dokument ${target.invoiceNumber} auch auf Nextcloud gelöscht (${res.deletedCount} Datei(en)).`);
+					}).catch(() => {});
+				} : void 0;
+				scheduleUndoableDelete(latest, nextDb, `${docLabel} ${target.invoiceNumber} gelöscht`, cleanupNextcloud);
+			}
 		});
-		if (target && nextcloud.configured) apiDeleteNextcloudInvoiceFiles(target.invoiceNumber).then((res) => {
-			if (res.deletedCount > 0) notify(`Dokument ${target.invoiceNumber} lokal & auf Nextcloud gelöscht (${res.deletedCount} Datei(en)).`);
-		}).catch(() => {});
-		notify("Dokument gelöscht. Verknüpfte Zeiten & Belege bleiben als offen erhalten.");
 	};
 	const handleAddExpense = (expense) => {
 		const currentDb = dbRef.current;
@@ -87153,12 +88239,19 @@ function App() {
 		notify(`Beleg "${expense.vendor}" aktualisiert.`);
 	};
 	const handleDeleteExpense = (id) => {
-		const currentDb = dbRef.current;
-		persistDb({
-			...currentDb,
-			expenses: (currentDb.expenses ?? []).filter((e) => e.id !== id)
+		const target = (dbRef.current.expenses ?? []).find((e) => e.id === id);
+		if (!target) return;
+		requestConfirmDelete({
+			title: "Beleg wirklich löschen?",
+			message: `Soll der Beleg „${target.vendor}“ (${target.date}) wirklich gelöscht werden?`,
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					expenses: (latest.expenses ?? []).filter((e) => e.id !== id)
+				}, `Beleg „${target.vendor}“ gelöscht`);
+			}
 		});
-		notify("Beleg gelöscht.");
 	};
 	const handleUploadExpenseReceipt = async (expense) => {
 		if (!nextcloud.configured || !expense.receiptImageDataUrl) return;
@@ -87198,12 +88291,19 @@ function App() {
 		notify(`Fixkosten-Eintrag "${item.vendor}" aktualisiert.`);
 	};
 	const handleDeleteRecurringExpense = (id) => {
-		const currentDb = dbRef.current;
-		persistDb({
-			...currentDb,
-			recurringExpenses: (currentDb.recurringExpenses ?? []).filter((r) => r.id !== id)
+		const target = (dbRef.current.recurringExpenses ?? []).find((r) => r.id === id);
+		if (!target) return;
+		requestConfirmDelete({
+			title: "Wiederkehrende Fixkosten löschen?",
+			message: `Soll der Fixkosten-Eintrag „${target.vendor}“ wirklich gelöscht werden?`,
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					recurringExpenses: (latest.recurringExpenses ?? []).filter((r) => r.id !== id)
+				}, `Fixkosten „${target.vendor}“ gelöscht`);
+			}
 		});
-		notify("Wiederkehrende Ausgabe gelöscht.");
 	};
 	const handleBookRecurringExpense = (id) => {
 		const currentDb = dbRef.current;
@@ -87297,12 +88397,19 @@ function App() {
 		notify(`Wartungsvertrag "${tpl.title}" gespeichert.`);
 	};
 	const handleDeleteRecurringTemplate = (id) => {
-		const currentDb = dbRef.current;
-		persistDb({
-			...currentDb,
-			recurringInvoices: (currentDb.recurringInvoices ?? []).filter((t) => t.id !== id)
+		const target = (dbRef.current.recurringInvoices ?? []).find((t) => t.id === id);
+		if (!target) return;
+		requestConfirmDelete({
+			title: "Wartungsvertrag wirklich löschen?",
+			message: `Soll der Wartungsvertrag „${target.title}“ wirklich gelöscht werden?`,
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					recurringInvoices: (latest.recurringInvoices ?? []).filter((t) => t.id !== id)
+				}, `Wartungsvertrag „${target.title}“ gelöscht`);
+			}
 		});
-		notify("Wartungsvertrag gelöscht.");
 	};
 	const generateInvoiceForTemplateObject = (sourceDb, tpl, seqOffset = 0) => {
 		const cust = sourceDb.customers.find((c) => c.id === tpl.customerId);
@@ -87429,6 +88536,23 @@ function App() {
 	};
 	const handleSaveGeoFenceRules = (rules) => {
 		const currentDb = dbRef.current;
+		const prevRules = currentDb.geoFenceRules ?? [];
+		const removed = prevRules.filter((r) => !rules.some((next) => next.id === r.id));
+		if (removed.length > 0 && rules.length < prevRules.length) {
+			const removedNames = removed.map((r) => `„${r.name}“`).join(", ");
+			requestConfirmDelete({
+				title: removed.length === 1 ? "Ortsregel wirklich löschen?" : "Ortsregeln wirklich löschen?",
+				message: `Soll ${removedNames} wirklich entfernt werden?`,
+				onConfirm: () => {
+					const latest = dbRef.current;
+					scheduleUndoableDelete(latest, {
+						...latest,
+						geoFenceRules: rules
+					}, removed.length === 1 ? `Ortsregel „${removed[0].name}“ gelöscht` : `${removed.length} Ortsregeln gelöscht`);
+				}
+			});
+			return;
+		}
 		persistDb({
 			...currentDb,
 			geoFenceRules: rules
@@ -87466,12 +88590,27 @@ function App() {
 		}
 	};
 	const handleImportDatabase = (importedDb) => {
-		persistDb(importedDb);
-		notify("Backup erfolgreich wiederhergestellt.");
+		const currentDb = dbRef.current;
+		requestConfirmDelete({
+			title: "Backup wiederherstellen?",
+			message: "Der aktuelle Datenstand wird durch das ausgewählte Backup ersetzt. Vorher wird automatisch eine Sicherungsversion angelegt und du kannst den Schritt 8 Sekunden lang rückgängig machen.",
+			confirmLabel: "Jetzt wiederherstellen",
+			tone: "warning",
+			onConfirm: () => {
+				const latest = dbRef.current;
+				createBackupVersion(latest, {
+					label: "Vor Wiederherstellung",
+					source: "pre-restore",
+					maxVersions: latest.company.autoBackup?.maxBackupVersions ?? 10,
+					uploadToNextcloud: false
+				}).catch(() => {});
+				scheduleUndoableDelete(currentDb, importedDb, "Backup wiederhergestellt");
+			}
+		});
 	};
 	const handleSaveCompany = (company) => {
 		persistDb({
-			...db,
+			...dbRef.current,
 			company
 		});
 		notify("Einstellungen & Firmendaten gespeichert.");
@@ -87482,9 +88621,15 @@ function App() {
 		notify("Beispieldaten (Kunden, Produkte, NFC-Tags, Zeiten & Rechnung) geladen.");
 	};
 	const handleResetEmpty = () => {
-		const empty = createEmptyDatabase();
-		persistDb(empty);
-		notify("Datenbank zurückgesetzt.");
+		requestConfirmDelete({
+			title: "Datenbank wirklich leeren?",
+			message: "Alle Kunden, Produkte, Tätigkeiten, Rechnungen und Regeln werden zurückgesetzt. Du kannst dies 8 Sekunden lang rückgängig machen.",
+			confirmLabel: "Datenbank leeren",
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, createEmptyDatabase(), "Datenbank geleert");
+			}
+		});
 	};
 	const openTimeCount = (0, import_react.useMemo)(() => db.timeEntries.filter((e) => e.billable && !e.billedInvoiceId).length, [db.timeEntries]);
 	const unpaidInvoiceCount = (0, import_react.useMemo)(() => db.invoices.filter((i) => !i.isArchived && (i.status === "Entwurf" || i.status === "Gesendet")).length, [db.invoices]);
@@ -87596,362 +88741,408 @@ function App() {
 		onTouchStart: handleTouchStart,
 		onTouchEnd: handleTouchEnd,
 		className: "min-h-screen overflow-x-clip bg-slate-50 text-slate-900 dark:bg-[#0e0a18] dark:text-slate-100 flex flex-col",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "flex-1 lg:flex",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sidebar, {
-				activeSection: section,
-				sectionTitle: SECTION_TITLES[section],
-				onSelectSection: navigateToSection,
-				nextcloud,
-				openTimeCount,
-				unpaidInvoiceCount,
-				dueRecurringCount,
-				activeTimer: db.activeTimer,
-				elapsedSeconds,
-				recentQuickTasks,
-				onQuickStartTask: handleQuickStartFromHeader,
-				onStopTimer: handleStopTimer,
-				theme,
-				onToggleTheme: toggleTheme
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex min-w-0 flex-1 flex-col",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
-						className: "no-print hidden lg:flex sticky top-0 z-30 h-16 items-center justify-between gap-4 border-b border-slate-200/90 bg-white/95 px-6 backdrop-blur-md dark:border-[#2e2349] dark:bg-[#171126]/95",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-2 text-sm min-w-0",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex-1 lg:flex",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sidebar, {
+					activeSection: section,
+					sectionTitle: SECTION_TITLES[section],
+					onSelectSection: navigateToSection,
+					nextcloud,
+					openTimeCount,
+					unpaidInvoiceCount,
+					dueRecurringCount,
+					activeTimer: db.activeTimer,
+					elapsedSeconds,
+					recentQuickTasks,
+					onQuickStartTask: handleQuickStartFromHeader,
+					onStopTimer: handleStopTimer,
+					theme,
+					onToggleTheme: toggleTheme
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex min-w-0 flex-1 flex-col",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
+							className: "no-print hidden lg:flex sticky top-0 z-30 h-16 items-center justify-between gap-4 border-b border-slate-200/90 bg-white/95 px-6 backdrop-blur-md dark:border-[#2e2349] dark:bg-[#171126]/95",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-2 text-sm min-w-0",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-slate-400 dark:text-violet-300/60",
+										children: "TaktWerk"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-slate-300 dark:text-violet-400/40",
+										children: "/"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "truncate font-medium text-slate-900 dark:text-slate-100",
+										children: SECTION_TITLES[section]
+									})
+								]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-3 shrink-0",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PWAInstallButton, {}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(QuickStartMenu, {
+										recentTasks: recentQuickTasks,
+										activeTimer: db.activeTimer,
+										onStartTask: handleQuickStartFromHeader,
+										onOpenTracker: () => navigateToSection("tracker")
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: toggleTheme,
+										title: theme === "dark" ? "Zum Hellmodus wechseln" : "Zum Dunkelmodus wechseln",
+										"aria-label": theme === "dark" ? "Zum Hellmodus wechseln" : "Zum Dunkelmodus wechseln",
+										className: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200 dark:hover:bg-[#2a2045] cursor-pointer",
+										children: theme === "dark" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sun, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Moon, { className: "h-4 w-4" })
+									}),
+									db.activeTimer ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: handleStopTimer,
+										className: "inline-flex items-center gap-2 rounded-lg ui-accent-btn px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3.5 w-3.5 fill-current" }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "font-mono tabular-nums",
+												children: formatDuration(elapsedSeconds)
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Stoppen" })
+										]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => navigateToSection("invoices"),
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Rechnung erstellen" })]
+									})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => navigateToSection("invoices"),
+										className: "inline-flex items-center gap-1.5 rounded-lg ui-accent-active px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Rechnung erstellen" })]
+									})
+								]
+							})]
+						}),
+						toast && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							role: "status",
+							"aria-live": "polite",
+							className: `no-print fixed top-16 lg:top-4 left-1/2 -translate-x-1/2 z-[80] w-[calc(100%-2rem)] max-w-md rounded-2xl border backdrop-blur-md shadow-2xl px-4 py-3 tw-popup-enter flex items-start gap-3 ${toast.isError ? "border-red-300/80 bg-red-50/90 text-red-950 dark:border-red-700/70 dark:bg-[#2a121b]/90 dark:text-red-100" : "border-violet-200/90 bg-white/85 text-slate-900 dark:border-violet-500/40 dark:bg-[#19122c]/85 dark:text-slate-100"}`,
 							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-slate-400 dark:text-violet-300/60",
-									children: "TaktWerk"
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: `mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${toast.isError ? "bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300" : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300" : "bg-violet-100 text-violet-700 dark:bg-violet-900/60 dark:text-violet-300"}`,
+									children: toast.isError ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "h-4 w-4" }) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Info, { className: "h-4 w-4" })
 								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-slate-300 dark:text-violet-400/40",
-									children: "/"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "truncate font-medium text-slate-900 dark:text-slate-100",
-									children: SECTION_TITLES[section]
-								})
-							]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-3 shrink-0",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PWAInstallButton, {}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(QuickStartMenu, {
-									recentTasks: recentQuickTasks,
-									activeTimer: db.activeTimer,
-									onStartTask: handleQuickStartFromHeader,
-									onOpenTracker: () => navigateToSection("tracker")
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "min-w-0 flex-1",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-[11px] font-bold uppercase tracking-wider opacity-70",
+										children: toast.isError ? "Achtung" : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? "Gespeichert" : "Hinweis"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-sm font-medium leading-snug",
+										children: toast.text
+									})]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 									type: "button",
-									onClick: toggleTheme,
-									title: theme === "dark" ? "Zum Hellmodus wechseln" : "Zum Dunkelmodus wechseln",
-									"aria-label": theme === "dark" ? "Zum Hellmodus wechseln" : "Zum Dunkelmodus wechseln",
-									className: "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200 dark:hover:bg-[#2a2045] cursor-pointer",
-									children: theme === "dark" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sun, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Moon, { className: "h-4 w-4" })
-								}),
-								db.activeTimer ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: handleStopTimer,
-									className: "inline-flex items-center gap-2 rounded-lg ui-accent-btn px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3.5 w-3.5 fill-current" }),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "font-mono tabular-nums",
-											children: formatDuration(elapsedSeconds)
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Stoppen" })
-									]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: () => navigateToSection("invoices"),
-									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Rechnung erstellen" })]
-								})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: () => navigateToSection("invoices"),
-									className: "inline-flex items-center gap-1.5 rounded-lg ui-accent-active px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Rechnung erstellen" })]
+									onClick: () => setToast(null),
+									"aria-label": "Meldung schließen",
+									className: "mt-0.5 rounded-lg p-1 opacity-60 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/10 cursor-pointer",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
 								})
 							]
-						})]
-					}),
-					toast && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						role: "status",
-						"aria-live": "polite",
-						className: `no-print fixed top-16 lg:top-4 left-1/2 -translate-x-1/2 z-[80] w-[calc(100%-2rem)] max-w-md rounded-2xl border backdrop-blur-md shadow-2xl px-4 py-3 tw-popup-enter flex items-start gap-3 ${toast.isError ? "border-red-300/80 bg-red-50/90 text-red-950 dark:border-red-700/70 dark:bg-[#2a121b]/90 dark:text-red-100" : "border-violet-200/90 bg-white/85 text-slate-900 dark:border-violet-500/40 dark:bg-[#19122c]/85 dark:text-slate-100"}`,
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: `mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${toast.isError ? "bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300" : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300" : "bg-violet-100 text-violet-700 dark:bg-violet-900/60 dark:text-violet-300"}`,
-								children: toast.isError ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "h-4 w-4" }) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Info, { className: "h-4 w-4" })
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "min-w-0 flex-1",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: "text-[11px] font-bold uppercase tracking-wider opacity-70",
-									children: toast.isError ? "Achtung" : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? "Gespeichert" : "Hinweis"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: "text-sm font-medium leading-snug",
-									children: toast.text
-								})]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => setToast(null),
-								"aria-label": "Meldung schließen",
-								className: "mt-0.5 rounded-lg p-1 opacity-60 hover:bg-black/5 hover:opacity-100 dark:hover:bg-white/10 cursor-pointer",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
-							})
-						]
-					}, toast.id),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
-						className: "mx-auto w-full max-w-6xl flex-1 p-4 sm:p-6",
-						children: [
-							remoteNewerAt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "no-print mb-5 flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-									"In deiner Nextcloud liegt ein neuerer Datenstand (",
-									formatDateTimeDE(remoteNewerAt),
-									") von einem anderen Gerät."
-								] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-2 shrink-0",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-										type: "button",
-										onClick: () => void handleSyncFromNextcloud(),
-										className: "rounded-md bg-amber-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-900 dark:bg-amber-600 dark:hover:bg-amber-500 cursor-pointer",
-										children: "Jetzt von Nextcloud laden"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-										type: "button",
-										onClick: () => setRemoteNewerAt(null),
-										className: "rounded-md border border-amber-300 px-2.5 py-1.5 text-xs font-medium hover:bg-amber-100 dark:border-amber-800 dark:hover:bg-amber-900/40 cursor-pointer",
-										children: "Später"
+						}, toast.id),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+							className: "mx-auto w-full max-w-6xl flex-1 p-4 sm:p-6",
+							children: [
+								remoteNewerAt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "no-print mb-5 flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+										"In deiner Nextcloud liegt ein neuerer Datenstand (",
+										formatDateTimeDE(remoteNewerAt),
+										") von einem anderen Gerät."
+									] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2 shrink-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => void handleSyncFromNextcloud(),
+											className: "rounded-md bg-amber-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-900 dark:bg-amber-600 dark:hover:bg-amber-500 cursor-pointer",
+											children: "Jetzt von Nextcloud laden"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setRemoteNewerAt(null),
+											className: "rounded-md border border-amber-300 px-2.5 py-1.5 text-xs font-medium hover:bg-amber-100 dark:border-amber-800 dark:hover:bg-amber-900/40 cursor-pointer",
+											children: "Später"
+										})]
 									})]
-								})]
-							}),
-							!loading && isEmptyWorkspace && section === "tracker" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "mb-6 flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126] sm:flex-row sm:items-center sm:justify-between",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "space-y-1",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-										children: "Willkommen bei TaktWerk"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-xs text-slate-500 dark:text-slate-400",
-										children: "Starte mit leeren Listen oder lade Beispieldaten, um Kunden, NFC-Aufgaben, Zeiterfassung und Rechnungsexport direkt auszuprobieren."
+								}),
+								!loading && isEmptyWorkspace && section === "tracker" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mb-6 flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126] sm:flex-row sm:items-center sm:justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: "Willkommen bei TaktWerk"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-xs text-slate-500 dark:text-slate-400",
+											children: "Starte mit leeren Listen oder lade Beispieldaten, um Kunden, NFC-Aufgaben, Zeiterfassung und Rechnungsexport direkt auszuprobieren."
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap gap-2 shrink-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: () => navigateToSection("settings"),
+											className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cloud, { className: "h-3.5 w-3.5" }), "Nextcloud verbinden"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: handleLoadSampleData,
+											className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3.5 w-3.5 fill-current" }), "Beispieldaten laden"]
+										})]
 									})]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap gap-2 shrink-0",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: () => navigateToSection("settings"),
-										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Cloud, { className: "h-3.5 w-3.5" }), "Nextcloud verbinden"]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: handleLoadSampleData,
-										className: "inline-flex items-center gap-1.5 rounded-lg bg-blue-700 px-3.5 py-2 text-xs font-semibold text-white hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3.5 w-3.5 fill-current" }), "Beispieldaten laden"]
-									})]
-								})]
-							}),
-							loading ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "space-y-4",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-28 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-64 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" })]
-							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-								section === "tracker" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimeTrackerView, {
-									company: db.company,
-									customers: db.customers,
-									products: db.products,
-									nfcTasks: db.nfcTasks,
-									timeEntries: db.timeEntries,
-									invoices: db.invoices,
-									calendarEvents: db.calendarEvents ?? [],
-									activeTimer: db.activeTimer,
-									elapsedSeconds,
-									onStartTimer: handleStartTimer,
-									onUpdateActiveTimerNotes: handleUpdateActiveTimerNotes,
-									onUpdateActiveTimerLocation: handleUpdateActiveTimerLocation,
-									onPauseTimer: handlePauseTimer,
-									onResumeTimer: handleResumeTimer,
-									onStopTimer: handleStopTimer,
-									onDiscardTimer: handleDiscardTimer,
-									onAddManualEntry: handleAddManualEntry,
-									onUpdateEntry: handleUpdateEntry,
-									onDeleteEntry: handleDeleteEntry,
-									onToggleBillable: handleToggleBillable,
-									onCreateInvoiceFromEntries: (custId, entryIds) => {
-										setInvoiceDraft({
-											customerId: custId,
-											entryIds
-										});
-										navigateToSection("invoices");
-									},
-									onNavigate: (target) => navigateToSection(target),
-									onNotify: notify,
-									notificationStatus,
-									onRequestNotificationPermission: handleRequestNotificationPermission,
-									onOpenNotificationSettings: handleOpenNotificationSettings,
-									onCheckGeoFenceNow: () => void evaluateGeoFenceRules(true),
-									checkingGeoFence,
-									geoFenceRuleCount: (db.geoFenceRules ?? []).filter((r) => r.enabled).length
 								}),
-								section === "calendar" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarView, {
-									company: db.company,
-									customers: db.customers,
-									products: db.products,
-									timeEntries: db.timeEntries,
-									invoices: db.invoices,
-									calendarEvents: db.calendarEvents ?? [],
-									nextcloud,
-									onSaveCalendarEvents: handleSaveCalendarEvents,
-									onStartTimerFromAppointment: (payload) => {
-										handleStartTimer({
-											customerId: payload.customerId,
-											productId: payload.productId,
-											title: payload.title,
-											notes: payload.notes,
-											source: "timer"
-										});
-										navigateToSection("tracker");
-									},
-									onNavigateSettings: () => navigateToSection("settings"),
-									onNotify: notify
-								}),
-								section === "analytics" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnalyticsView, {
-									customers: db.customers,
-									products: db.products,
-									timeEntries: db.timeEntries,
-									expenses: db.expenses ?? [],
-									recurringExpenses: db.recurringExpenses ?? [],
-									db,
-									onNotify: notify
-								}),
-								section === "nfc" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NfcTasksView, {
-									customers: db.customers,
-									products: db.products,
-									internalCategories: db.company.internalCategories ?? [],
-									nfcTasks: db.nfcTasks,
-									activeTimer: db.activeTimer,
-									incomingUnknownTag: pendingScannedUid,
-									onConsumeIncomingUnknownTag: () => setPendingScannedUid(null),
-									onWritingStateChange: setIsWritingNfc,
-									onSaveTask: handleSaveNfcTask,
-									onDeleteTask: handleDeleteNfcTask,
-									onTriggerTag: handleTriggerNfcTag
-								}),
-								section === "customers" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CustomersView, {
-									customers: db.customers,
-									products: db.products,
-									timeEntries: db.timeEntries,
-									invoices: db.invoices,
-									categories: db.company.customerCategories ?? [],
-									geoFenceRules: db.geoFenceRules ?? [],
-									autoLocationStartEnabled: Boolean(db.company.autoLocationStartEnabled),
-									theme,
-									onSaveCustomer: handleSaveCustomer,
-									onDeleteCustomer: handleDeleteCustomer,
-									onSaveGeoFenceRules: handleSaveGeoFenceRules,
-									onNotify: notify,
-									onCreateInvoiceForCustomer: (custId) => {
-										setInvoiceDraft({
-											customerId: custId,
-											entryIds: []
-										});
-										navigateToSection("invoices");
-									}
-								}),
-								section === "products" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProductsView, {
-									company: db.company,
-									customers: db.customers,
-									products: db.products,
-									geoFenceRules: db.geoFenceRules ?? [],
-									autoLocationStartEnabled: Boolean(db.company.autoLocationStartEnabled),
-									theme,
-									onSaveProduct: handleSaveProduct,
-									onDeleteProduct: handleDeleteProduct,
-									onSaveGeoFenceRules: handleSaveGeoFenceRules,
-									onNotify: notify
-								}),
-								section === "invoices" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InvoicesView, {
-									company: db.company,
-									customers: db.customers,
-									products: db.products,
-									timeEntries: db.timeEntries,
-									expenses: db.expenses ?? [],
-									invoices: db.invoices,
-									nextcloud,
-									preselectedDraft: invoiceDraft,
-									onClearPreselectedDraft: () => setInvoiceDraft(null),
-									onCreateInvoice: handleCreateInvoice,
-									onUpdateInvoice: handleUpdateInvoice,
-									onUpdateInvoiceStatus: handleUpdateInvoiceStatus,
-									onMarkInvoiceUploaded: handleMarkInvoiceUploaded,
-									onSaveSignature: handleSaveSignature,
-									onDeleteSignature: handleDeleteSignature,
-									onToggleArchiveInvoice: handleToggleArchiveInvoice,
-									onDeleteInvoice: handleDeleteInvoice,
-									onNotify: notify
-								}),
-								section === "expenses" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExpensesView, {
-									expenses: db.expenses ?? [],
-									recurringExpenses: db.recurringExpenses ?? [],
-									customers: db.customers,
-									expenseCategories: db.company.expenseCategories ?? [],
-									nextcloudConfigured: nextcloud.configured,
-									onAddExpense: handleAddExpense,
-									onUpdateExpense: handleUpdateExpense,
-									onDeleteExpense: handleDeleteExpense,
-									onUploadExpenseReceipt: handleUploadExpenseReceipt,
-									onAddRecurringExpense: handleAddRecurringExpense,
-									onUpdateRecurringExpense: handleUpdateRecurringExpense,
-									onDeleteRecurringExpense: handleDeleteRecurringExpense,
-									onBookRecurringExpense: handleBookRecurringExpense,
-									onBookAllDueRecurringExpenses: handleBookAllDueRecurringExpenses,
-									onNotify: (msg, tone) => notify(msg, tone === "warning")
-								}),
-								section === "recurring" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RecurringInvoicesView, {
-									templates: db.recurringInvoices ?? [],
-									customers: db.customers,
-									products: db.products,
-									company: db.company,
-									onSaveTemplate: handleSaveRecurringTemplate,
-									onDeleteTemplate: handleDeleteRecurringTemplate,
-									onGenerateFromTemplate: handleGenerateInvoiceFromTemplate,
-									onGenerateAllDue: handleGenerateAllDueRecurring
-								}),
-								section === "settings" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NextcloudSettingsView, {
-									db,
-									nextcloud,
-									company: db.company,
-									geoFenceRules: db.geoFenceRules ?? [],
-									pushConflictAt,
-									onDismissConflict: () => setPushConflictAt(null),
-									onRefreshConfig: setNextcloud,
-									onSyncFromNextcloud: handleSyncFromNextcloud,
-									onSyncToNextcloud: handleSyncToNextcloud,
-									onSaveCompany: handleSaveCompany,
-									onSaveGeoFenceRules: handleSaveGeoFenceRules,
-									onCheckGeoFenceNow: () => void evaluateGeoFenceRules(true),
-									checkingGeoFence,
-									onImportDatabase: handleImportDatabase,
-									onLoadSampleData: handleLoadSampleData,
-									onResetEmpty: handleResetEmpty,
-									onNotify: notify,
-									theme
+								loading ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "space-y-4",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-[#2e2349] dark:bg-[#171126]",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center justify-between gap-3",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "font-display text-sm font-semibold text-slate-900 dark:text-slate-100",
+													children: "TaktWerk wird geladen"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
+													children: loadProgress.label
+												})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "font-mono text-sm font-bold tabular-nums text-blue-700 dark:text-violet-300",
+													children: [loadProgress.pct, " %"]
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-[#2a2045]",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+													viewBox: "0 0 100 8",
+													preserveAspectRatio: "none",
+													className: "block h-full w-full",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+														x: "0",
+														y: "0",
+														width: Math.max(6, Math.min(100, loadProgress.pct)),
+														height: "8",
+														rx: "4",
+														className: "fill-blue-700 dark:fill-violet-500 transition-all duration-300"
+													})
+												})
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-28 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-56 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" })
+									]
+								}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+									section === "tracker" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TimeTrackerView, {
+										company: db.company,
+										customers: db.customers,
+										products: db.products,
+										nfcTasks: db.nfcTasks,
+										timeEntries: db.timeEntries,
+										invoices: db.invoices,
+										calendarEvents: db.calendarEvents ?? [],
+										activeTimer: db.activeTimer,
+										elapsedSeconds,
+										onStartTimer: handleStartTimer,
+										onUpdateActiveTimerNotes: handleUpdateActiveTimerNotes,
+										onUpdateActiveTimerLocation: handleUpdateActiveTimerLocation,
+										onPauseTimer: handlePauseTimer,
+										onResumeTimer: handleResumeTimer,
+										onStopTimer: handleStopTimer,
+										onDiscardTimer: handleDiscardTimer,
+										onAddManualEntry: handleAddManualEntry,
+										onUpdateEntry: handleUpdateEntry,
+										onDeleteEntry: handleDeleteEntry,
+										onToggleBillable: handleToggleBillable,
+										onCreateInvoiceFromEntries: (custId, entryIds) => {
+											setInvoiceDraft({
+												customerId: custId,
+												entryIds
+											});
+											navigateToSection("invoices");
+										},
+										onNavigate: (target) => navigateToSection(target),
+										onNotify: notify,
+										notificationStatus,
+										onRequestNotificationPermission: handleRequestNotificationPermission,
+										onOpenNotificationSettings: handleOpenNotificationSettings,
+										onCheckGeoFenceNow: () => void evaluateGeoFenceRules(true),
+										checkingGeoFence,
+										geoFenceRuleCount: (db.geoFenceRules ?? []).filter((r) => r.enabled).length
+									}),
+									section === "calendar" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarView, {
+										company: db.company,
+										customers: db.customers,
+										products: db.products,
+										timeEntries: db.timeEntries,
+										invoices: db.invoices,
+										calendarEvents: db.calendarEvents ?? [],
+										nextcloud,
+										onSaveCalendarEvents: handleSaveCalendarEvents,
+										onStartTimerFromAppointment: (payload) => {
+											handleStartTimer({
+												customerId: payload.customerId,
+												productId: payload.productId,
+												title: payload.title,
+												notes: payload.notes,
+												source: "timer"
+											});
+											navigateToSection("tracker");
+										},
+										onNavigateSettings: () => navigateToSection("settings"),
+										onNotify: notify
+									}),
+									section === "analytics" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnalyticsView, {
+										customers: db.customers,
+										products: db.products,
+										timeEntries: db.timeEntries,
+										expenses: db.expenses ?? [],
+										recurringExpenses: db.recurringExpenses ?? [],
+										db,
+										onNotify: notify
+									}),
+									section === "nfc" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NfcTasksView, {
+										customers: db.customers,
+										products: db.products,
+										internalCategories: db.company.internalCategories ?? [],
+										nfcTasks: db.nfcTasks,
+										activeTimer: db.activeTimer,
+										incomingUnknownTag: pendingScannedUid,
+										onConsumeIncomingUnknownTag: () => setPendingScannedUid(null),
+										onWritingStateChange: setIsWritingNfc,
+										onSaveTask: handleSaveNfcTask,
+										onDeleteTask: handleDeleteNfcTask,
+										onTriggerTag: handleTriggerNfcTag
+									}),
+									section === "customers" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CustomersView, {
+										customers: db.customers,
+										products: db.products,
+										timeEntries: db.timeEntries,
+										invoices: db.invoices,
+										categories: db.company.customerCategories ?? [],
+										geoFenceRules: db.geoFenceRules ?? [],
+										autoLocationStartEnabled: Boolean(db.company.autoLocationStartEnabled),
+										theme,
+										onSaveCustomer: handleSaveCustomer,
+										onDeleteCustomer: handleDeleteCustomer,
+										onSaveGeoFenceRules: handleSaveGeoFenceRules,
+										onNotify: notify,
+										onCreateInvoiceForCustomer: (custId) => {
+											setInvoiceDraft({
+												customerId: custId,
+												entryIds: []
+											});
+											navigateToSection("invoices");
+										}
+									}),
+									section === "products" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProductsView, {
+										company: db.company,
+										customers: db.customers,
+										products: db.products,
+										geoFenceRules: db.geoFenceRules ?? [],
+										autoLocationStartEnabled: Boolean(db.company.autoLocationStartEnabled),
+										theme,
+										onSaveProduct: handleSaveProduct,
+										onDeleteProduct: handleDeleteProduct,
+										onSaveGeoFenceRules: handleSaveGeoFenceRules,
+										onNotify: notify
+									}),
+									section === "invoices" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InvoicesView, {
+										company: db.company,
+										customers: db.customers,
+										products: db.products,
+										timeEntries: db.timeEntries,
+										expenses: db.expenses ?? [],
+										invoices: db.invoices,
+										nextcloud,
+										preselectedDraft: invoiceDraft,
+										onClearPreselectedDraft: () => setInvoiceDraft(null),
+										onCreateInvoice: handleCreateInvoice,
+										onUpdateInvoice: handleUpdateInvoice,
+										onUpdateInvoiceStatus: handleUpdateInvoiceStatus,
+										onMarkInvoiceUploaded: handleMarkInvoiceUploaded,
+										onSaveSignature: handleSaveSignature,
+										onDeleteSignature: handleDeleteSignature,
+										onToggleArchiveInvoice: handleToggleArchiveInvoice,
+										onDeleteInvoice: handleDeleteInvoice,
+										onNotify: notify
+									}),
+									section === "expenses" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExpensesView, {
+										expenses: db.expenses ?? [],
+										recurringExpenses: db.recurringExpenses ?? [],
+										customers: db.customers,
+										expenseCategories: db.company.expenseCategories ?? [],
+										nextcloudConfigured: nextcloud.configured,
+										onAddExpense: handleAddExpense,
+										onUpdateExpense: handleUpdateExpense,
+										onDeleteExpense: handleDeleteExpense,
+										onUploadExpenseReceipt: handleUploadExpenseReceipt,
+										onAddRecurringExpense: handleAddRecurringExpense,
+										onUpdateRecurringExpense: handleUpdateRecurringExpense,
+										onDeleteRecurringExpense: handleDeleteRecurringExpense,
+										onBookRecurringExpense: handleBookRecurringExpense,
+										onBookAllDueRecurringExpenses: handleBookAllDueRecurringExpenses,
+										onNotify: (msg, tone) => notify(msg, tone === "warning")
+									}),
+									section === "recurring" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RecurringInvoicesView, {
+										templates: db.recurringInvoices ?? [],
+										customers: db.customers,
+										products: db.products,
+										company: db.company,
+										onSaveTemplate: handleSaveRecurringTemplate,
+										onDeleteTemplate: handleDeleteRecurringTemplate,
+										onGenerateFromTemplate: handleGenerateInvoiceFromTemplate,
+										onGenerateAllDue: handleGenerateAllDueRecurring
+									}),
+									section === "settings" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NextcloudSettingsView, {
+										db,
+										nextcloud,
+										company: db.company,
+										geoFenceRules: db.geoFenceRules ?? [],
+										pushConflictAt,
+										onDismissConflict: () => setPushConflictAt(null),
+										onRefreshConfig: setNextcloud,
+										onSyncFromNextcloud: handleSyncFromNextcloud,
+										onSyncToNextcloud: handleSyncToNextcloud,
+										onSaveCompany: handleSaveCompany,
+										onSaveGeoFenceRules: handleSaveGeoFenceRules,
+										onCheckGeoFenceNow: () => void evaluateGeoFenceRules(true),
+										checkingGeoFence,
+										onImportDatabase: handleImportDatabase,
+										onLoadSampleData: handleLoadSampleData,
+										onResetEmpty: handleResetEmpty,
+										onNotify: notify,
+										theme
+									})
+								] }),
+								saving && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "sr-only",
+									"aria-live": "polite",
+									children: "Speichert..."
 								})
-							] }),
-							saving && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "sr-only",
-								"aria-live": "polite",
-								children: "Speichert..."
-							})
-						]
-					})
-				]
-			})]
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(OfflineIndicator, {})]
+							]
+						})
+					]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ActivityProgressOverlay, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ConfirmActionDialog, {
+				dialog: confirmDialog,
+				onCancel: () => setConfirmDialog(null)
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(UndoDeleteBanner, {
+				undo: undoBanner,
+				onDismiss: () => setUndoBanner(null)
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(OfflineIndicator, {})
+		]
 	});
 }
 // src/main.tsx

@@ -202,6 +202,8 @@ export interface TaktWerkNativePluginInterface {
 
   cancelNfcWrite(): Promise<void>;
 
+  getPendingLaunchNfc(): Promise<{ uidHex?: string | null; payloads?: string[] }>;
+
   addListener(
     eventName: 'nfcTagScanned',
     listenerFunc: (event: NativeNfcScannedEvent) => void

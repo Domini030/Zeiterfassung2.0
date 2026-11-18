@@ -335,6 +335,23 @@ export interface AutoBackupConfig {
   localDownload: boolean;
   lastRunAt: string | null;
   lastRunSummary?: string | null;
+  maxBackupVersions?: number;
+}
+
+export interface BackupVersionEntry {
+  id: string;
+  label: string;
+  createdAt: string;
+  filename: string;
+  sizeBytes: number;
+  source: 'manual' | 'auto' | 'pre-restore';
+  nextcloudPath?: string;
+  counts: {
+    timeEntries: number;
+    invoices: number;
+    customers: number;
+    products: number;
+  };
 }
 
 export interface NextcloudCalendarConfig {

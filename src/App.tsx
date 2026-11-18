@@ -12,8 +12,15 @@ import {
   X,
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ActivityProgressOverlay } from './components/ActivityProgressOverlay';
 import { AnalyticsView } from './components/AnalyticsView';
 import { CalendarView } from './components/CalendarView';
+import {
+  ConfirmActionDialog,
+  UndoDeleteBanner,
+  type ConfirmDialogState,
+  type UndoBannerState,
+} from './components/ConfirmActionDialog';
 import { CustomersView } from './components/CustomersView';
 import { ExpensesView } from './components/ExpensesView';
 import { InvoicesView } from './components/InvoicesView';
@@ -70,6 +77,7 @@ import {
   syncNativeWidgetState,
   triggerNfcHaptic,
 } from './utils/apiClient';
+import { createBackupVersion } from './utils/backupVersions';
 import { isBackupDue } from './utils/exportBackup';
 import {
   addDaysISO,
@@ -154,11 +162,18 @@ export default function App() {
   const [db, setDb] = useState<AppDatabase>(() => createEmptyDatabase());
   const [nextcloud, setNextcloud] = useState<NextcloudConfigInfo>(DEFAULT_NC_INFO);
   const [loading, setLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState<{ pct: number; label: string }>({
+    pct: 15,
+    label: 'TaktWerk wird gestartet…',
+  });
   const [saving, setSaving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [toast, setToast] = useState<{ text: string; isError: boolean; id: number } | null>(
     null
   );
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialogState | null>(null);
+  const [undoBanner, setUndoBanner] = useState<UndoBannerState | null>(null);
+  const undoSideEffectTimerRef = useRef<number | null>(null);
   const [checkingGeoFence, setCheckingGeoFence] = useState(false);
   const [invoiceDraft, setInvoiceDraft] = useState<{
     customerId: string;
@@ -429,49 +444,148 @@ export default function App() {
   );
 
   const attachAutoLocationToTimer = useCallback(
-    (timerId: string) => {
-      if (!dbRef.current.company.autoCaptureLocation) return;
-      void captureCurrentLocation()
-        .then((loc) => {
-          const current = dbRef.current;
-          if (!current.activeTimer || current.activeTimer.id !== timerId) return;
-          void persistDb({
-            ...current,
-            activeTimer: {
-              ...current.activeTimer,
-              location: loc,
-            },
+    (
+      timerId: string,
+      options?: { forceEnabled?: boolean; retries?: number; startedAtIso?: string }
+    ) => {
+      const enabled =
+        options?.forceEnabled !== undefined
+          ? options.forceEnabled
+          : Boolean(dbRef.current.company.autoCaptureLocation);
+      if (!enabled) return;
+
+      const maxRetries = options?.retries ?? 1;
+      const attemptCapture = (attempt: number) => {
+        void captureCurrentLocation()
+          .then((loc) => {
+            const current = dbRef.current;
+            if (current.activeTimer && current.activeTimer.id === timerId) {
+              void persistDb({
+                ...current,
+                activeTimer: {
+                  ...current.activeTimer,
+                  location: loc,
+                },
+              });
+              return;
+            }
+            // If timer was stopped quickly during cold-start GPS warmup, patch matching just-saved entry
+            if (options?.startedAtIso) {
+              const idx = current.timeEntries.findIndex(
+                (e) => e.startTime === options.startedAtIso && !e.location
+              );
+              if (idx >= 0) {
+                const updatedEntries = current.timeEntries.map((e, i) =>
+                  i === idx ? { ...e, location: loc } : e
+                );
+                void persistDb({
+                  ...current,
+                  timeEntries: updatedEntries,
+                });
+              }
+            }
+          })
+          .catch(() => {
+            if (attempt < maxRetries) {
+              const delayMs = attempt === 0 ? 3500 : 6500;
+              window.setTimeout(() => {
+                const current = dbRef.current;
+                if (
+                  current.activeTimer &&
+                  current.activeTimer.id === timerId &&
+                  !current.activeTimer.location
+                ) {
+                  attemptCapture(attempt + 1);
+                }
+              }, delayMs);
+            }
           });
-        })
-        .catch(() => {
-          // Best-effort GPS capture: never block timer
-        });
+      };
+
+      attemptCapture(0);
     },
     [persistDb]
   );
 
   const pushFinishedEntryToNextcloudCalendar = useCallback(
-    (entry: TimeEntry) => {
-      const calCfg = dbRef.current.company.calendarConfig;
-      if (!calCfg?.autoSyncTimeEntries || !calCfg.selectedCalendarUrl) return;
-      const custName =
-        dbRef.current.customers.find((c) => c.id === entry.customerId)?.companyName ?? '';
+    (entry: TimeEntry, overrideDb?: AppDatabase) => {
+      const sourceDb = overrideDb ?? dbRef.current;
+      const calCfg = sourceDb.company.calendarConfig;
+      if (!calCfg?.autoSyncTimeEntries || !calCfg.selectedCalendarUrl?.trim()) return;
+
+      const isInternal = entry.entryType === 'internal' || !entry.customerId;
+      const custName = !isInternal
+        ? sourceDb.customers.find((c) => c.id === entry.customerId)?.companyName ?? ''
+        : '';
+      const prodName = !isInternal
+        ? sourceDb.products.find((p) => p.id === entry.productId)?.name ?? ''
+        : '';
+
+      const summaryTitle = isInternal
+        ? entry.internalCategory
+          ? `${entry.title} (Intern · ${entry.internalCategory})`
+          : `${entry.title} (Intern)`
+        : custName
+          ? `${entry.title} (${custName})`
+          : entry.title;
+
+      const sourceLabel =
+        entry.source === 'manual'
+          ? 'Nachgetragen'
+          : entry.source === 'nfc'
+            ? 'NFC'
+            : entry.source === 'geo'
+              ? 'Ortsautomatik'
+              : 'Live-Timer';
+
+      const descParts: string[] = [];
+      if (isInternal) {
+        descParts.push(
+          `Art: Interne Tätigkeit${entry.internalCategory ? ` (${entry.internalCategory})` : ''}`
+        );
+      } else {
+        if (custName) descParts.push(`Kunde: ${custName}`);
+        if (prodName) descParts.push(`Leistung: ${prodName}`);
+      }
+      descParts.push(`Erfassung: ${sourceLabel}`);
+      if (entry.notes?.trim()) {
+        descParts.push('', entry.notes.trim());
+      }
+
+      const startMs = new Date(entry.startTime).getTime();
+      const rawEndMs = new Date(entry.endTime).getTime();
+      const safeStartIso = Number.isNaN(startMs)
+        ? new Date().toISOString()
+        : new Date(startMs).toISOString();
+      const minDurationMs = Math.max(60_000, (entry.durationSeconds || 60) * 1000);
+      const safeEndIso =
+        !Number.isNaN(rawEndMs) && rawEndMs > new Date(safeStartIso).getTime()
+          ? new Date(rawEndMs).toISOString()
+          : new Date(new Date(safeStartIso).getTime() + minDurationMs).toISOString();
+
       const appt: CalendarAppointment = {
         id: entry.id,
         uid: `${entry.id}@taktwerk.app`,
-        title: custName ? `${entry.title} (${custName})` : entry.title,
-        startTime: entry.startTime,
-        endTime: entry.endTime,
+        title: summaryTitle,
+        startTime: safeStartIso,
+        endTime: safeEndIso,
         location: entry.location?.address ?? '',
-        description: entry.notes || '',
+        description: descParts.join('\n'),
         calendarName: calCfg.selectedCalendarName,
         source: 'nextcloud',
-        customerId: entry.customerId,
-        productId: entry.productId,
+        customerId: isInternal ? null : entry.customerId,
+        productId: isInternal ? null : entry.productId,
       };
-      void apiPushNextcloudCalendarEvent(calCfg.selectedCalendarUrl, appt).catch(() => {});
+      void apiPushNextcloudCalendarEvent(calCfg.selectedCalendarUrl.trim(), appt).catch((err) => {
+        notify(
+          `Nextcloud-Kalender-Übernahme fehlgeschlagen: ${
+            err instanceof Error ? err.message : 'Verbindung prüfen'
+          }`,
+          true
+        );
+      });
     },
-    []
+    [notify]
   );
 
   // Initial Load + URL Deep-Link (?nfc=<tagId> or Capacitor taktwerk://nfc/<tagId>)
@@ -479,12 +593,17 @@ export default function App() {
     let active = true;
     (async () => {
       try {
+        setLoadProgress({ pct: 22, label: 'Datenbank & Einstellungen werden geladen…' });
         const data = await apiLoadDb();
         if (!active) return;
 
+        setLoadProgress({ pct: 55, label: 'Prüfe Start-Aktionen & NFC-Auslöser…' });
         let loadedDb = data.db ?? createEmptyDatabase();
+        dbRef.current = loadedDb;
         setNextcloud(data.nextcloud);
         let sectionOverridden = false;
+        let coldStartedTimer: ActiveTimer | null = null;
+        let coldFinishedEntry: TimeEntry | null = null;
 
         if (!deepLinkHandledRef.current) {
           deepLinkHandledRef.current = true;
@@ -503,18 +622,42 @@ export default function App() {
                 incomingNfc = extracted;
               }
             }
+            // Fallback for cold-start Android NFC intents where getLaunchUrl() is empty (e.g. UID-only tags)
+            if (!incomingNfc) {
+              const pendingNfc = await TaktWerkNative.getPendingLaunchNfc().catch(() => ({
+                uidHex: null,
+                payloads: [],
+              }));
+              for (const raw of pendingNfc?.payloads ?? []) {
+                const candidate = extractTagIdFromPayload(raw);
+                if (candidate) {
+                  incomingNfc = candidate;
+                  break;
+                }
+              }
+              if (!incomingNfc && pendingNfc?.uidHex) {
+                incomingNfc = pendingNfc.uidHex;
+              }
+            }
           }
 
           if (incomingNfc) {
+            setLoadProgress({ pct: 72, label: 'NFC-Aufgabe wird ausgeführt…' });
             lastNfcTriggerRef.current = { code: incomingNfc, at: Date.now() };
+            const prevTimer = loadedDb.activeTimer;
+            const prevEntryCount = loadedDb.timeEntries.length;
             const result = triggerNfcOnDb(loadedDb, incomingNfc);
             loadedDb = result.nextDb;
+            dbRef.current = loadedDb;
             triggerNfcHaptic(result.haptic);
             notify(result.message, result.isError);
             if (!result.isError) {
               await apiSaveDb(loadedDb);
-              if (loadedDb.activeTimer) {
-                attachAutoLocationToTimer(loadedDb.activeTimer.id);
+              if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) {
+                coldFinishedEntry = loadedDb.timeEntries[0];
+              }
+              if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) {
+                coldStartedTimer = loadedDb.activeTimer;
               }
             } else {
               setPendingScannedUid({ uid: incomingNfc, at: Date.now() });
@@ -526,12 +669,21 @@ export default function App() {
               () => ({ action: null, tagUid: null })
             );
             if (widgetAction?.action === 'trigger' && widgetAction.tagUid) {
+              const prevTimer = loadedDb.activeTimer;
+              const prevEntryCount = loadedDb.timeEntries.length;
               const result = triggerNfcOnDb(loadedDb, widgetAction.tagUid);
               loadedDb = result.nextDb;
+              dbRef.current = loadedDb;
               triggerNfcHaptic(result.haptic);
               notify(result.message, result.isError);
               if (!result.isError) {
                 await apiSaveDb(loadedDb);
+                if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) {
+                  coldFinishedEntry = loadedDb.timeEntries[0];
+                }
+                if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) {
+                  coldStartedTimer = loadedDb.activeTimer;
+                }
               }
             }
           }
@@ -541,9 +693,22 @@ export default function App() {
           setSection(loadedDb.company.defaultStartSection);
         }
 
+        setLoadProgress({ pct: 88, label: 'Oberfläche & Widgets werden synchronisiert…' });
         dbRef.current = loadedDb;
         setDb(loadedDb);
         void syncNativeWidgetState(loadedDb);
+
+        // Run cold-start location capture & CalDAV sync AFTER dbRef.current is committed
+        if (coldStartedTimer) {
+          attachAutoLocationToTimer(coldStartedTimer.id, {
+            forceEnabled: Boolean(loadedDb.company.autoCaptureLocation),
+            retries: 2,
+            startedAtIso: coldStartedTimer.startTime,
+          });
+        }
+        if (coldFinishedEntry) {
+          pushFinishedEntryToNextcloudCalendar(coldFinishedEntry, loadedDb);
+        }
 
         if (data.nextcloud.configured) {
           void apiCheckNextcloudRemote().then((check) => {
@@ -563,6 +728,12 @@ export default function App() {
           })
             .then((res) => {
               if (!active) return;
+              void createBackupVersion(loadedDb, {
+                label: 'Automatisches Backup',
+                source: 'auto',
+                maxVersions: backupCfg.maxBackupVersions ?? 10,
+                uploadToNextcloud: false,
+              }).catch(() => {});
               const current = dbRef.current;
               const nextWithStamp: AppDatabase = {
                 ...current,
@@ -582,6 +753,7 @@ export default function App() {
               // Silent fallback if offline at startup
             });
         }
+        setLoadProgress({ pct: 100, label: 'Bereit' });
       } catch (err) {
         notify(
           err instanceof Error ? err.message : 'Verbindung zum Server fehlgeschlagen.',
@@ -594,7 +766,13 @@ export default function App() {
     return () => {
       active = false;
     };
-  }, [attachAutoLocationToTimer, notify, persistDb, triggerNfcOnDb]);
+  }, [
+    attachAutoLocationToTimer,
+    notify,
+    persistDb,
+    pushFinishedEntryToNextcloudCalendar,
+    triggerNfcOnDb,
+  ]);
 
   const handleGlobalNfcCode = useCallback(
     (rawCode: string) => {
@@ -608,6 +786,7 @@ export default function App() {
       lastNfcTriggerRef.current = { code: clean, at: now };
 
       const prevTimer = dbRef.current.activeTimer;
+      const prevEntryCount = dbRef.current.timeEntries.length;
       const result = triggerNfcOnDb(dbRef.current, clean);
       triggerNfcHaptic(result.haptic);
       if (result.isError) {
@@ -622,10 +801,15 @@ export default function App() {
       void persistDb(result.nextDb);
       notify(result.message);
 
+      if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) {
+        pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
+      }
       if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) {
-        attachAutoLocationToTimer(result.nextDb.activeTimer.id);
-      } else if (!result.nextDb.activeTimer && result.nextDb.timeEntries[0]) {
-        pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0]);
+        attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
+          forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
+          retries: 2,
+          startedAtIso: result.nextDb.activeTimer.startTime,
+        });
       }
     },
     [
@@ -914,14 +1098,19 @@ export default function App() {
       internalCategory: isInternal ? (payload.internalCategory || 'Sonstiges') : undefined,
       location: payload.location ?? null,
     };
-    void persistDb({ ...currentDb, timeEntries: nextTimeEntries, activeTimer: timer });
+    const nextDb: AppDatabase = { ...currentDb, timeEntries: nextTimeEntries, activeTimer: timer };
+    void persistDb(nextDb);
     notify(
       stoppedPreviousTitle
         ? `"${stoppedPreviousTitle}" gespeichert · Gestartet: ${timer.title}`
         : `Timer gestartet: ${timer.title}`
     );
     if (!payload.location) {
-      attachAutoLocationToTimer(timer.id);
+      attachAutoLocationToTimer(timer.id, {
+        forceEnabled: Boolean(nextDb.company.autoCaptureLocation),
+        retries: 1,
+        startedAtIso: timer.startTime,
+      });
     }
   };
 
@@ -1011,12 +1200,13 @@ export default function App() {
       createdAt: now.toISOString(),
     };
     void cancelNativeTimerReminder();
-    void persistDb({
+    const nextDb: AppDatabase = {
       ...currentDb,
       activeTimer: null,
       timeEntries: [entry, ...currentDb.timeEntries],
-    });
-    pushFinishedEntryToNextcloudCalendar(entry);
+    };
+    void persistDb(nextDb);
+    pushFinishedEntryToNextcloudCalendar(entry, nextDb);
     notify(
       isInternal
         ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).`
@@ -1268,62 +1458,168 @@ export default function App() {
     await openNativeNotificationSettings();
   }, []);
 
+  const scheduleUndoableDelete = useCallback(
+    (
+      prevDb: AppDatabase,
+      nextDb: AppDatabase,
+      undoLabel: string,
+      deferredSideEffect?: () => void
+    ) => {
+      if (undoSideEffectTimerRef.current !== null) {
+        window.clearTimeout(undoSideEffectTimerRef.current);
+        undoSideEffectTimerRef.current = null;
+      }
+      const durationMs = 8000;
+      const now = Date.now();
+      void persistDb(nextDb);
+
+      if (deferredSideEffect) {
+        undoSideEffectTimerRef.current = window.setTimeout(() => {
+          undoSideEffectTimerRef.current = null;
+          deferredSideEffect();
+        }, durationMs + 150);
+      }
+
+      setUndoBanner({
+        id: now,
+        label: undoLabel,
+        durationMs,
+        expiresAt: now + durationMs,
+        onUndo: () => {
+          if (undoSideEffectTimerRef.current !== null) {
+            window.clearTimeout(undoSideEffectTimerRef.current);
+            undoSideEffectTimerRef.current = null;
+          }
+          void persistDb(prevDb);
+          notify('Löschvorgang rückgängig gemacht.');
+        },
+      });
+    },
+    [notify, persistDb]
+  );
+
+  const requestConfirmDelete = useCallback(
+    (options: {
+      title: string;
+      message: string;
+      confirmLabel?: string;
+      tone?: 'danger' | 'warning';
+      onConfirm: () => void;
+    }) => {
+      setConfirmDialog({
+        title: options.title,
+        message: options.message,
+        confirmLabel: options.confirmLabel ?? 'Löschen',
+        tone: options.tone ?? 'danger',
+        onConfirm: options.onConfirm,
+      });
+    },
+    []
+  );
+
   const handleDiscardTimer = () => {
-    if (!db.activeTimer) return;
-    void persistDb({ ...db, activeTimer: null });
-    notify('Laufender Timer verworfen.');
+    const currentDb = dbRef.current;
+    if (!currentDb.activeTimer) return;
+    const timerTitle = currentDb.activeTimer.title;
+    requestConfirmDelete({
+      title: 'Laufenden Timer verwerfen?',
+      message: `Die aktuell laufende Aufgabe „${timerTitle}“ wird ohne Speicherung verworfen. Du kannst sie danach noch 8 Sekunden lang wiederherstellen.`,
+      confirmLabel: 'Timer verwerfen',
+      tone: 'warning',
+      onConfirm: () => {
+        const latest = dbRef.current;
+        if (!latest.activeTimer) return;
+        scheduleUndoableDelete(
+          latest,
+          { ...latest, activeTimer: null },
+          `Timer „${latest.activeTimer.title}“ verworfen`
+        );
+      },
+    });
   };
 
   const handleAddManualEntry = (entry: TimeEntry) => {
-    void persistDb({ ...db, timeEntries: [entry, ...db.timeEntries] });
+    const currentDb = dbRef.current;
+    const nextDb: AppDatabase = {
+      ...currentDb,
+      timeEntries: [entry, ...currentDb.timeEntries],
+    };
+    void persistDb(nextDb);
+    pushFinishedEntryToNextcloudCalendar(entry, nextDb);
     notify('Zeiteintrag gespeichert.');
   };
 
   const handleUpdateEntry = (updatedEntry: TimeEntry) => {
-    void persistDb({
-      ...db,
-      timeEntries: db.timeEntries.map((e) =>
+    const currentDb = dbRef.current;
+    const nextDb: AppDatabase = {
+      ...currentDb,
+      timeEntries: currentDb.timeEntries.map((e) =>
         e.id === updatedEntry.id ? updatedEntry : e
       ),
-    });
+    };
+    void persistDb(nextDb);
+    pushFinishedEntryToNextcloudCalendar(updatedEntry, nextDb);
     notify('Zeiteintrag aktualisiert.');
   };
 
   const handleDeleteEntry = (id: string) => {
-    void persistDb({
-      ...db,
-      timeEntries: db.timeEntries.filter((e) => e.id !== id),
+    const target = dbRef.current.timeEntries.find((e) => e.id === id);
+    if (!target) return;
+    requestConfirmDelete({
+      title: 'Tätigkeit wirklich löschen?',
+      message: `Soll die erfasste Tätigkeit „${target.title}“ (${formatDuration(target.durationSeconds)}) wirklich gelöscht werden?`,
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          { ...latest, timeEntries: latest.timeEntries.filter((e) => e.id !== id) },
+          `Tätigkeit „${target.title}“ gelöscht`
+        );
+      },
     });
   };
 
   const handleToggleBillable = (id: string) => {
     void persistDb({
-      ...db,
-      timeEntries: db.timeEntries.map((e) =>
+      ...dbRef.current,
+      timeEntries: dbRef.current.timeEntries.map((e) =>
         e.id === id ? { ...e, billable: !e.billable } : e
       ),
     });
   };
 
   const handleSaveNfcTask = (task: NfcTask) => {
-    const exists = db.nfcTasks.some((t) => t.id === task.id);
+    const currentDb = dbRef.current;
+    const exists = currentDb.nfcTasks.some((t) => t.id === task.id);
     const nextTasks = exists
-      ? db.nfcTasks.map((t) => (t.id === task.id ? task : t))
-      : [task, ...db.nfcTasks];
-    void persistDb({ ...db, nfcTasks: nextTasks });
+      ? currentDb.nfcTasks.map((t) => (t.id === task.id ? task : t))
+      : [task, ...currentDb.nfcTasks];
+    void persistDb({ ...currentDb, nfcTasks: nextTasks });
     notify(`NFC-Aufgabe "${task.title}" gespeichert.`);
   };
 
   const handleDeleteNfcTask = (id: string) => {
-    void persistDb({
-      ...db,
-      nfcTasks: db.nfcTasks.filter((t) => t.id !== id),
+    const target = dbRef.current.nfcTasks.find((t) => t.id === id);
+    if (!target) return;
+    requestConfirmDelete({
+      title: 'NFC-Aufgabe wirklich löschen?',
+      message: `Soll die NFC-Aufgabe „${target.title}“ (Tag ${target.tagUid}) wirklich gelöscht werden?`,
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          { ...latest, nfcTasks: latest.nfcTasks.filter((t) => t.id !== id) },
+          `NFC-Aufgabe „${target.title}“ gelöscht`
+        );
+      },
     });
   };
 
   const handleTriggerNfcTag = (tagUid: string) => {
-    const prevTimer = db.activeTimer;
-    const result = triggerNfcOnDb(db, tagUid);
+    const currentDb = dbRef.current;
+    const prevTimer = currentDb.activeTimer;
+    const prevEntryCount = currentDb.timeEntries.length;
+    const result = triggerNfcOnDb(currentDb, tagUid);
     triggerNfcHaptic(result.haptic);
     if (result.isError) {
       notify(result.message, true);
@@ -1331,53 +1627,99 @@ export default function App() {
     }
     void persistDb(result.nextDb);
     notify(result.message);
+    if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) {
+      pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
+    }
     if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) {
-      attachAutoLocationToTimer(result.nextDb.activeTimer.id);
-    } else if (!result.nextDb.activeTimer && result.nextDb.timeEntries[0]) {
-      pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0]);
+      attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
+        forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
+        retries: 2,
+        startedAtIso: result.nextDb.activeTimer.startTime,
+      });
     }
   };
 
   const handleSaveCustomer = (customer: Customer) => {
-    const exists = db.customers.some((c) => c.id === customer.id);
+    const currentDb = dbRef.current;
+    const exists = currentDb.customers.some((c) => c.id === customer.id);
     const nextCustomers = exists
-      ? db.customers.map((c) => (c.id === customer.id ? customer : c))
-      : [...db.customers, customer];
-    void persistDb({ ...db, customers: nextCustomers });
+      ? currentDb.customers.map((c) => (c.id === customer.id ? customer : c))
+      : [...currentDb.customers, customer];
+    void persistDb({ ...currentDb, customers: nextCustomers });
     notify(`Kunde "${customer.companyName}" gespeichert.`);
   };
 
   const handleDeleteCustomer = (id: string) => {
-    void persistDb({
-      ...db,
-      customers: db.customers.filter((c) => c.id !== id),
+    const target = dbRef.current.customers.find((c) => c.id === id);
+    if (!target) return;
+    requestConfirmDelete({
+      title: 'Kunde wirklich löschen?',
+      message: `Soll der Kunde „${target.companyName}“ (${target.customerNumber}) wirklich gelöscht werden?`,
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          { ...latest, customers: latest.customers.filter((c) => c.id !== id) },
+          `Kunde „${target.companyName}“ gelöscht`
+        );
+      },
     });
   };
 
   const handleSaveProduct = (product: Product, incrementSkuSequence = false) => {
-    const exists = db.products.some((p) => p.id === product.id);
+    const currentDb = dbRef.current;
+    const exists = currentDb.products.some((p) => p.id === product.id);
     const nextProducts = exists
-      ? db.products.map((p) => (p.id === product.id ? product : p))
-      : [...db.products, product];
+      ? currentDb.products.map((p) => (p.id === product.id ? product : p))
+      : [...currentDb.products, product];
     const nextCompany = incrementSkuSequence
       ? {
-          ...db.company,
-          nextProductSequence: (db.company.nextProductSequence || 1) + 1,
+          ...currentDb.company,
+          nextProductSequence: (currentDb.company.nextProductSequence || 1) + 1,
         }
-      : db.company;
-    void persistDb({ ...db, company: nextCompany, products: nextProducts });
+      : currentDb.company;
+    void persistDb({ ...currentDb, company: nextCompany, products: nextProducts });
     notify(`Artikel "${product.name}" gespeichert.`);
   };
 
   const handleDeleteProduct = (id: string) => {
-    void persistDb({
-      ...db,
-      products: db.products.filter((p) => p.id !== id),
+    const target = dbRef.current.products.find((p) => p.id === id);
+    if (!target) return;
+    requestConfirmDelete({
+      title: 'Produkt / Leistung wirklich löschen?',
+      message: `Soll „${target.name}“ (${target.sku}) wirklich aus dem Katalog gelöscht werden?`,
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          { ...latest, products: latest.products.filter((p) => p.id !== id) },
+          `Artikel „${target.name}“ gelöscht`
+        );
+      },
     });
   };
 
   const handleSaveCalendarEvents = (events: CalendarAppointment[]) => {
-    void persistDb({ ...dbRef.current, calendarEvents: events });
+    const currentDb = dbRef.current;
+    const prevEvents = currentDb.calendarEvents ?? [];
+    const removed = prevEvents.filter((ev) => !events.some((next) => next.id === ev.id));
+    if (removed.length > 0 && events.length < prevEvents.length && removed.length <= 3) {
+      const removedNames = removed.map((r) => `„${r.title}“`).join(', ');
+      requestConfirmDelete({
+        title: removed.length === 1 ? 'Termin wirklich löschen?' : 'Termine wirklich löschen?',
+        message: `Soll ${removedNames} wirklich aus dem Kalender entfernt werden?`,
+        onConfirm: () => {
+          const latest = dbRef.current;
+          scheduleUndoableDelete(
+            latest,
+            { ...latest, calendarEvents: events },
+            removed.length === 1 ? `Termin „${removed[0].title}“ gelöscht` : `${removed.length} Termine gelöscht`
+          );
+        },
+      });
+      return;
+    }
+    void persistDb({ ...currentDb, calendarEvents: events });
   };
 
   const handleCreateInvoice = (
@@ -1512,14 +1854,26 @@ export default function App() {
   };
 
   const handleDeleteSignature = (invoiceId: string) => {
-    const currentDb = dbRef.current;
-    void persistDb({
-      ...currentDb,
-      invoices: currentDb.invoices.map((inv) =>
-        inv.id === invoiceId ? { ...inv, signature: undefined } : inv
-      ),
+    const target = dbRef.current.invoices.find((inv) => inv.id === invoiceId);
+    if (!target?.signature) return;
+    requestConfirmDelete({
+      title: 'Unterschrift entfernen?',
+      message: `Soll die gespeicherte Abnahme-Unterschrift für ${target.invoiceNumber} wirklich gelöscht werden?`,
+      confirmLabel: 'Entfernen',
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          {
+            ...latest,
+            invoices: latest.invoices.map((inv) =>
+              inv.id === invoiceId ? { ...inv, signature: undefined } : inv
+            ),
+          },
+          `Unterschrift für ${target.invoiceNumber} entfernt`
+        );
+      },
     });
-    notify('Unterschrift entfernt.');
   };
 
   const handleToggleArchiveInvoice = (invoiceId: string) => {
@@ -1548,41 +1902,54 @@ export default function App() {
   };
 
   const handleDeleteInvoice = (invoiceId: string) => {
-    const currentDb = dbRef.current;
-    const target = currentDb.invoices.find((inv) => inv.id === invoiceId);
+    const target = dbRef.current.invoices.find((inv) => inv.id === invoiceId);
+    if (!target) return;
+    const docLabel = target.documentType === 'quote' ? 'Angebot' : 'Rechnung';
+    requestConfirmDelete({
+      title: `${docLabel} wirklich löschen?`,
+      message: `Soll ${docLabel} ${target.invoiceNumber} (${target.customerSnapshot.companyName}) wirklich gelöscht werden? Verknüpfte Zeiten & Belege bleiben als offen erhalten.`,
+      onConfirm: () => {
+        const latest = dbRef.current;
+        const nextDb: AppDatabase = {
+          ...latest,
+          timeEntries: latest.timeEntries.map((entry) => ({
+            ...entry,
+            billedInvoiceId:
+              entry.billedInvoiceId === invoiceId ? null : entry.billedInvoiceId,
+            travelBilledInvoiceId:
+              entry.travelBilledInvoiceId === invoiceId
+                ? null
+                : entry.travelBilledInvoiceId,
+          })),
+          expenses: (latest.expenses ?? []).map((exp) =>
+            exp.billedInvoiceId === invoiceId ? { ...exp, billedInvoiceId: null } : exp
+          ),
+          invoices: latest.invoices.filter((inv) => inv.id !== invoiceId),
+        };
 
-    void persistDb({
-      ...currentDb,
-      timeEntries: currentDb.timeEntries.map((entry) => ({
-        ...entry,
-        billedInvoiceId:
-          entry.billedInvoiceId === invoiceId ? null : entry.billedInvoiceId,
-        travelBilledInvoiceId:
-          entry.travelBilledInvoiceId === invoiceId
-            ? null
-            : entry.travelBilledInvoiceId,
-      })),
-      expenses: (currentDb.expenses ?? []).map((exp) =>
-        exp.billedInvoiceId === invoiceId ? { ...exp, billedInvoiceId: null } : exp
-      ),
-      invoices: currentDb.invoices.filter((inv) => inv.id !== invoiceId),
+        const cleanupNextcloud =
+          nextcloud.configured
+            ? () => {
+                void apiDeleteNextcloudInvoiceFiles(target.invoiceNumber)
+                  .then((res) => {
+                    if (res.deletedCount > 0) {
+                      notify(
+                        `Dokument ${target.invoiceNumber} auch auf Nextcloud gelöscht (${res.deletedCount} Datei(en)).`
+                      );
+                    }
+                  })
+                  .catch(() => {});
+              }
+            : undefined;
+
+        scheduleUndoableDelete(
+          latest,
+          nextDb,
+          `${docLabel} ${target.invoiceNumber} gelöscht`,
+          cleanupNextcloud
+        );
+      },
     });
-
-    if (target && nextcloud.configured) {
-      void apiDeleteNextcloudInvoiceFiles(target.invoiceNumber)
-        .then((res) => {
-          if (res.deletedCount > 0) {
-            notify(
-              `Dokument ${target.invoiceNumber} lokal & auf Nextcloud gelöscht (${res.deletedCount} Datei(en)).`
-            );
-          }
-        })
-        .catch(() => {
-          // Local deletion already succeeded; Nextcloud cleanup may retry manually if offline
-        });
-    }
-
-    notify('Dokument gelöscht. Verknüpfte Zeiten & Belege bleiben als offen erhalten.');
   };
 
   const handleAddExpense = (expense: Expense) => {
@@ -1606,12 +1973,23 @@ export default function App() {
   };
 
   const handleDeleteExpense = (id: string) => {
-    const currentDb = dbRef.current;
-    void persistDb({
-      ...currentDb,
-      expenses: (currentDb.expenses ?? []).filter((e) => e.id !== id),
+    const target = (dbRef.current.expenses ?? []).find((e) => e.id === id);
+    if (!target) return;
+    requestConfirmDelete({
+      title: 'Beleg wirklich löschen?',
+      message: `Soll der Beleg „${target.vendor}“ (${target.date}) wirklich gelöscht werden?`,
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          {
+            ...latest,
+            expenses: (latest.expenses ?? []).filter((e) => e.id !== id),
+          },
+          `Beleg „${target.vendor}“ gelöscht`
+        );
+      },
     });
-    notify('Beleg gelöscht.');
   };
 
   const handleUploadExpenseReceipt = async (expense: Expense) => {
@@ -1659,12 +2037,23 @@ export default function App() {
   };
 
   const handleDeleteRecurringExpense = (id: string) => {
-    const currentDb = dbRef.current;
-    void persistDb({
-      ...currentDb,
-      recurringExpenses: (currentDb.recurringExpenses ?? []).filter((r) => r.id !== id),
+    const target = (dbRef.current.recurringExpenses ?? []).find((r) => r.id === id);
+    if (!target) return;
+    requestConfirmDelete({
+      title: 'Wiederkehrende Fixkosten löschen?',
+      message: `Soll der Fixkosten-Eintrag „${target.vendor}“ wirklich gelöscht werden?`,
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          {
+            ...latest,
+            recurringExpenses: (latest.recurringExpenses ?? []).filter((r) => r.id !== id),
+          },
+          `Fixkosten „${target.vendor}“ gelöscht`
+        );
+      },
     });
-    notify('Wiederkehrende Ausgabe gelöscht.');
   };
 
   const handleBookRecurringExpense = (id: string) => {
@@ -1766,12 +2155,23 @@ export default function App() {
   };
 
   const handleDeleteRecurringTemplate = (id: string) => {
-    const currentDb = dbRef.current;
-    void persistDb({
-      ...currentDb,
-      recurringInvoices: (currentDb.recurringInvoices ?? []).filter((t) => t.id !== id),
+    const target = (dbRef.current.recurringInvoices ?? []).find((t) => t.id === id);
+    if (!target) return;
+    requestConfirmDelete({
+      title: 'Wartungsvertrag wirklich löschen?',
+      message: `Soll der Wartungsvertrag „${target.title}“ wirklich gelöscht werden?`,
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          {
+            ...latest,
+            recurringInvoices: (latest.recurringInvoices ?? []).filter((t) => t.id !== id),
+          },
+          `Wartungsvertrag „${target.title}“ gelöscht`
+        );
+      },
     });
-    notify('Wartungsvertrag gelöscht.');
   };
 
   const generateInvoiceForTemplateObject = (
@@ -1938,6 +2338,26 @@ export default function App() {
 
   const handleSaveGeoFenceRules = (rules: GeoFenceRule[]) => {
     const currentDb = dbRef.current;
+    const prevRules = currentDb.geoFenceRules ?? [];
+    const removed = prevRules.filter((r) => !rules.some((next) => next.id === r.id));
+    if (removed.length > 0 && rules.length < prevRules.length) {
+      const removedNames = removed.map((r) => `„${r.name}“`).join(', ');
+      requestConfirmDelete({
+        title: removed.length === 1 ? 'Ortsregel wirklich löschen?' : 'Ortsregeln wirklich löschen?',
+        message: `Soll ${removedNames} wirklich entfernt werden?`,
+        onConfirm: () => {
+          const latest = dbRef.current;
+          scheduleUndoableDelete(
+            latest,
+            { ...latest, geoFenceRules: rules },
+            removed.length === 1
+              ? `Ortsregel „${removed[0].name}“ gelöscht`
+              : `${removed.length} Ortsregeln gelöscht`
+          );
+        },
+      });
+      return;
+    }
     void persistDb({ ...currentDb, geoFenceRules: rules });
   };
 
@@ -1981,12 +2401,32 @@ export default function App() {
   };
 
   const handleImportDatabase = (importedDb: AppDatabase) => {
-    void persistDb(importedDb);
-    notify('Backup erfolgreich wiederhergestellt.');
+    const currentDb = dbRef.current;
+    requestConfirmDelete({
+      title: 'Backup wiederherstellen?',
+      message:
+        'Der aktuelle Datenstand wird durch das ausgewählte Backup ersetzt. Vorher wird automatisch eine Sicherungsversion angelegt und du kannst den Schritt 8 Sekunden lang rückgängig machen.',
+      confirmLabel: 'Jetzt wiederherstellen',
+      tone: 'warning',
+      onConfirm: () => {
+        const latest = dbRef.current;
+        void createBackupVersion(latest, {
+          label: 'Vor Wiederherstellung',
+          source: 'pre-restore',
+          maxVersions: latest.company.autoBackup?.maxBackupVersions ?? 10,
+          uploadToNextcloud: false,
+        }).catch(() => {});
+        scheduleUndoableDelete(
+          currentDb,
+          importedDb,
+          'Backup wiederhergestellt'
+        );
+      },
+    });
   };
 
   const handleSaveCompany = (company: CompanyProfile) => {
-    void persistDb({ ...db, company });
+    void persistDb({ ...dbRef.current, company });
     notify('Einstellungen & Firmendaten gespeichert.');
   };
 
@@ -1997,9 +2437,20 @@ export default function App() {
   };
 
   const handleResetEmpty = () => {
-    const empty = createEmptyDatabase();
-    void persistDb(empty);
-    notify('Datenbank zurückgesetzt.');
+    requestConfirmDelete({
+      title: 'Datenbank wirklich leeren?',
+      message:
+        'Alle Kunden, Produkte, Tätigkeiten, Rechnungen und Regeln werden zurückgesetzt. Du kannst dies 8 Sekunden lang rückgängig machen.',
+      confirmLabel: 'Datenbank leeren',
+      onConfirm: () => {
+        const latest = dbRef.current;
+        scheduleUndoableDelete(
+          latest,
+          createEmptyDatabase(),
+          'Datenbank geleert'
+        );
+      },
+    });
   };
 
   const openTimeCount = useMemo(
@@ -2393,8 +2844,39 @@ export default function App() {
 
           {loading ? (
             <div className="space-y-4">
+              <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-[#2e2349] dark:bg-[#171126]">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="font-display text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      TaktWerk wird geladen
+                    </p>
+                    <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                      {loadProgress.label}
+                    </p>
+                  </div>
+                  <span className="font-mono text-sm font-bold tabular-nums text-blue-700 dark:text-violet-300">
+                    {loadProgress.pct} %
+                  </span>
+                </div>
+                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-[#2a2045]">
+                  <svg
+                    viewBox="0 0 100 8"
+                    preserveAspectRatio="none"
+                    className="block h-full w-full"
+                  >
+                    <rect
+                      x="0"
+                      y="0"
+                      width={Math.max(6, Math.min(100, loadProgress.pct))}
+                      height="8"
+                      rx="4"
+                      className="fill-blue-700 dark:fill-violet-500 transition-all duration-300"
+                    />
+                  </svg>
+                </div>
+              </div>
               <div className="h-28 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" />
-              <div className="h-64 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" />
+              <div className="h-56 animate-pulse rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]" />
             </div>
           ) : (
             <>
@@ -2613,6 +3095,15 @@ export default function App() {
         </main>
         </div>
       </div>
+      <ActivityProgressOverlay />
+      <ConfirmActionDialog
+        dialog={confirmDialog}
+        onCancel={() => setConfirmDialog(null)}
+      />
+      <UndoDeleteBanner
+        undo={undoBanner}
+        onDismiss={() => setUndoBanner(null)}
+      />
       <OfflineIndicator />
     </div>
   );

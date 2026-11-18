@@ -154,6 +154,19 @@ html[data-ui-density="compact"] .space-y-6 > :not(:last-child) {
   animation: twPopupIn 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes twProgressSweep {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(280%);
+  }
+}
+
+.tw-progress-indeterminate {
+  animation: twProgressSweep 1.25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 .tw-osm-map {
   z-index: 0;
 }
