@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-CegyW_E2.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-USuqRtdl.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-D2boogPl.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-HJg4IYQl.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -12322,6 +12322,64 @@ var Building2 = createLucideIcon("building-2", [
 	["path", {
 		d: "M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16",
 		key: "16ra0t"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Calculator = createLucideIcon("calculator", [
+	["rect", {
+		width: "16",
+		height: "20",
+		x: "4",
+		y: "2",
+		rx: "2",
+		key: "1nb95v"
+	}],
+	["line", {
+		x1: "8",
+		x2: "16",
+		y1: "6",
+		y2: "6",
+		key: "x4nwl0"
+	}],
+	["line", {
+		x1: "16",
+		x2: "16",
+		y1: "14",
+		y2: "18",
+		key: "wjye3r"
+	}],
+	["path", {
+		d: "M16 10h.01",
+		key: "1m94wz"
+	}],
+	["path", {
+		d: "M12 10h.01",
+		key: "1nrarc"
+	}],
+	["path", {
+		d: "M8 10h.01",
+		key: "19clt8"
+	}],
+	["path", {
+		d: "M12 14h.01",
+		key: "1etili"
+	}],
+	["path", {
+		d: "M8 14h.01",
+		key: "6423bh"
+	}],
+	["path", {
+		d: "M12 18h.01",
+		key: "mhygvu"
+	}],
+	["path", {
+		d: "M8 18h.01",
+		key: "lrp35t"
 	}]
 ]);
 /**
@@ -12694,6 +12752,30 @@ var Cloud = createLucideIcon("cloud", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Coffee = createLucideIcon("coffee", [
+	["path", {
+		d: "M10 2v2",
+		key: "7u0qdc"
+	}],
+	["path", {
+		d: "M14 2v2",
+		key: "6buw04"
+	}],
+	["path", {
+		d: "M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1",
+		key: "pwadti"
+	}],
+	["path", {
+		d: "M6 2v2",
+		key: "colzsn"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Compass = createLucideIcon("compass", [["path", {
 	d: "m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z",
 	key: "9ktpf1"
@@ -12792,6 +12874,26 @@ var Database = createLucideIcon("database", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Delete = createLucideIcon("delete", [
+	["path", {
+		d: "M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z",
+		key: "1yo7s0"
+	}],
+	["path", {
+		d: "m12 9 6 6",
+		key: "anjzzh"
+	}],
+	["path", {
+		d: "m18 9-6 6",
+		key: "1fp51s"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Download = createLucideIcon("download", [
 	["path", {
 		d: "M12 15V3",
@@ -12819,6 +12921,26 @@ var Eraser = createLucideIcon("eraser", [["path", {
 	d: "m5.082 11.09 8.828 8.828",
 	key: "1wx5vj"
 }]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var ExternalLink = createLucideIcon("external-link", [
+	["path", {
+		d: "M15 3h6v6",
+		key: "1q9fwt"
+	}],
+	["path", {
+		d: "M10 14 21 3",
+		key: "gplh6r"
+	}],
+	["path", {
+		d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",
+		key: "a6xqqp"
+	}]
+]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -13052,6 +13174,87 @@ var FileText = createLucideIcon("file-text", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var FileUp = createLucideIcon("file-up", [
+	["path", {
+		d: "M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",
+		key: "1rqfz7"
+	}],
+	["path", {
+		d: "M14 2v4a2 2 0 0 0 2 2h4",
+		key: "tnqrlb"
+	}],
+	["path", {
+		d: "M12 12v6",
+		key: "3ahymv"
+	}],
+	["path", {
+		d: "m15 15-3-3-3 3",
+		key: "15xj92"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Fingerprint = createLucideIcon("fingerprint", [
+	["path", {
+		d: "M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4",
+		key: "1nerag"
+	}],
+	["path", {
+		d: "M14 13.12c0 2.38 0 6.38-1 8.88",
+		key: "o46ks0"
+	}],
+	["path", {
+		d: "M17.29 21.02c.12-.6.43-2.3.5-3.02",
+		key: "ptglia"
+	}],
+	["path", {
+		d: "M2 12a10 10 0 0 1 18-6",
+		key: "ydlgp0"
+	}],
+	["path", {
+		d: "M2 16h.01",
+		key: "1gqxmh"
+	}],
+	["path", {
+		d: "M21.8 16c.2-2 .131-5.354 0-6",
+		key: "drycrb"
+	}],
+	["path", {
+		d: "M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2",
+		key: "1tidbn"
+	}],
+	["path", {
+		d: "M8.65 22c.21-.66.45-1.32.57-2",
+		key: "13wd9y"
+	}],
+	["path", {
+		d: "M9 6.8a6 6 0 0 1 9 5.2v2",
+		key: "1fr1j5"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Gauge = createLucideIcon("gauge", [["path", {
+	d: "m12 14 4-4",
+	key: "9kzdfg"
+}], ["path", {
+	d: "M3.34 19a10 10 0 1 1 17.32 0",
+	key: "19p75a"
+}]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var History = createLucideIcon("history", [
 	["path", {
 		d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8",
@@ -13116,6 +13319,38 @@ var Info = createLucideIcon("info", [
 	["path", {
 		d: "M12 8h.01",
 		key: "e9boi3"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Landmark = createLucideIcon("landmark", [
+	["path", {
+		d: "M10 18v-7",
+		key: "wt116b"
+	}],
+	["path", {
+		d: "M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z",
+		key: "1m329m"
+	}],
+	["path", {
+		d: "M14 18v-7",
+		key: "vav6t3"
+	}],
+	["path", {
+		d: "M18 18v-7",
+		key: "aexdmj"
+	}],
+	["path", {
+		d: "M3 22h18",
+		key: "8prr45"
+	}],
+	["path", {
+		d: "M6 18v-7",
+		key: "1ivflk"
 	}]
 ]);
 /**
@@ -13196,6 +13431,41 @@ var LocateFixed = createLucideIcon("locate-fixed", [
 		key: "1v7zrd"
 	}]
 ]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Lock = createLucideIcon("lock", [["rect", {
+	width: "18",
+	height: "11",
+	x: "3",
+	y: "11",
+	rx: "2",
+	ry: "2",
+	key: "1w4ew1"
+}], ["path", {
+	d: "M7 11V7a5 5 0 0 1 10 0v4",
+	key: "fwvmzm"
+}]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Mail = createLucideIcon("mail", [["path", {
+	d: "m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7",
+	key: "132q7q"
+}], ["rect", {
+	x: "2",
+	y: "4",
+	width: "20",
+	height: "16",
+	rx: "2",
+	key: "izxlao"
+}]]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -13863,6 +14133,19 @@ var Share = createLucideIcon("share", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var ShieldCheck = createLucideIcon("shield-check", [["path", {
+	d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+	key: "oel41y"
+}], ["path", {
+	d: "m9 12 2 2 4-4",
+	key: "dzmm74"
+}]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Smartphone = createLucideIcon("smartphone", [["rect", {
 	width: "14",
 	height: "20",
@@ -14031,6 +14314,32 @@ var Trash2 = createLucideIcon("trash-2", [
 		key: "e791ji"
 	}]
 ]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var TrendingDown = createLucideIcon("trending-down", [["path", {
+	d: "M16 17h6v-6",
+	key: "t6n2it"
+}], ["path", {
+	d: "m22 17-8.5-8.5-5 5L2 7",
+	key: "x473p"
+}]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var TrendingUp = createLucideIcon("trending-up", [["path", {
+	d: "M16 7h6v6",
+	key: "box55l"
+}], ["path", {
+	d: "m22 7-8.5 8.5-5-5L2 17",
+	key: "1t1m79"
+}]]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -35192,7 +35501,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-CegyW_E2.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-USuqRtdl.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -41467,6 +41776,61 @@ function buildTimesheetPdf(title, customer, entries, company, subtitle) {
 	doc.setTextColor(100, 116, 139);
 	doc.text("Ort, Datum", marginLeft, y + 4.5);
 	doc.text("Unterschrift / Leistungsbestätigung Kunde", 125, y + 4.5);
+	const photoItems = [];
+	for (const entry of sorted) if (entry.photos && entry.photos.length > 0) {
+		for (const ph of entry.photos) if (ph.dataUrl && ph.dataUrl.startsWith("data:image/")) photoItems.push({
+			entry,
+			dataUrl: ph.dataUrl,
+			caption: ph.caption,
+			capturedAt: ph.capturedAt
+		});
+	}
+	if (photoItems.length > 0) {
+		doc.addPage();
+		let py = 20;
+		doc.setFont(font, "bold");
+		doc.setFontSize(13);
+		doc.setTextColor(accentR, accentG, accentB);
+		doc.text(`Fotodokumentation der Einsätze (${photoItems.length})`, marginLeft, py);
+		py += 8;
+		const cardW = 81;
+		const imgH = 52;
+		const cardH = 70;
+		photoItems.forEach((item, idx) => {
+			const col = idx % 2;
+			if (col === 0 && py + cardH > 272) {
+				doc.addPage();
+				py = 20;
+			}
+			const x = marginLeft + col * 89;
+			doc.setDrawColor(226, 232, 240);
+			doc.setFillColor(248, 250, 252);
+			doc.roundedRect(x, py, cardW, cardH, 2, 2, "FD");
+			try {
+				const format = item.dataUrl.includes("image/png") ? "PNG" : "JPEG";
+				doc.addImage(item.dataUrl, format, x + 2, py + 2, 77, imgH, void 0, "FAST");
+			} catch {
+				doc.setFont(font, "normal");
+				doc.setFontSize(8);
+				doc.setTextColor(148, 163, 184);
+				doc.text("Foto konnte nicht eingebettet werden", x + 4, py + imgH / 2);
+			}
+			doc.setFont(font, "bold");
+			doc.setFontSize(8);
+			doc.setTextColor(15, 23, 42);
+			const headerTxt = doc.splitTextToSize(`${formatDateDE(item.entry.startTime)} · ${item.entry.title}`, 75)[0];
+			doc.text(headerTxt || "", x + 3, py + imgH + 6.5);
+			doc.setFont(font, "normal");
+			doc.setFontSize(7.5);
+			doc.setTextColor(100, 116, 139);
+			const subText = [item.caption, item.entry.location?.address].filter(Boolean).join(" · ");
+			if (subText) {
+				const subLine = doc.splitTextToSize(subText, 75)[0];
+				doc.text(subLine || "", x + 3, py + imgH + 11.5);
+			}
+			if (col === 1 || idx === photoItems.length - 1) py += 76;
+		});
+	}
 	drawFooter(doc, company, font);
 	return doc;
 }
@@ -41637,6 +42001,9 @@ async function shareInvoicePdf(invoice, company) {
 }
 async function downloadPaymentReminderPdf(invoice, company) {
 	await openOrSavePdfDoc(await buildPaymentReminderPdf(invoice, company), `Zahlungserinnerung-${invoice.invoiceNumber}.pdf`);
+}
+async function getPaymentReminderPdfBase64(invoice, company) {
+	return docToBase64(await buildPaymentReminderPdf(invoice, company));
 }
 function getAcceptanceProtocolPdfBase64(invoice, company) {
 	return docToBase64(buildAcceptanceProtocolPdf(invoice, company));
@@ -42002,1244 +42369,3113 @@ var InfoHintPopup = ({ text, title, size = "md", className = "" }) => {
 		})
 	}), document.body)] });
 };
-// src/components/ThemedSelect.tsx
-function ThemedSelect({ value, onChange, options, placeholder = "Bitte wählen...", disabled = false, className = "", size = "md", ariaLabel }) {
-	const [open, setOpen] = (0, import_react.useState)(false);
-	const rootRef = (0, import_react.useRef)(null);
-	const listId = (0, import_react.useId)();
-	(0, import_react.useEffect)(() => {
-		if (!open) return;
-		const handlePointerDown = (e) => {
-			if (rootRef.current && !rootRef.current.contains(e.target)) setOpen(false);
-		};
-		const handleKeyDown = (e) => {
-			if (e.key === "Escape") setOpen(false);
-		};
-		document.addEventListener("mousedown", handlePointerDown);
-		document.addEventListener("touchstart", handlePointerDown);
-		document.addEventListener("keydown", handleKeyDown);
-		return () => {
-			document.removeEventListener("mousedown", handlePointerDown);
-			document.removeEventListener("touchstart", handlePointerDown);
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [open]);
-	const selected = (0, import_react.useMemo)(() => options.find((opt) => opt.value === value), [options, value]);
-	const paddingClass = size === "sm" ? "px-2.5 py-1.5 text-xs" : "px-3 py-2 text-sm";
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		ref: rootRef,
-		className: `relative ${className}`,
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-			type: "button",
-			disabled,
-			"aria-haspopup": "listbox",
-			"aria-expanded": open,
-			"aria-controls": listId,
-			"aria-label": ariaLabel,
-			onClick: () => !disabled && setOpen((prev) => !prev),
-			className: `flex w-full items-center justify-between gap-2 rounded-lg border bg-white text-left transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-[#211936] cursor-pointer ${paddingClass} ${open ? "ui-accent-ring border-violet-500 ring-2 dark:border-violet-400" : "border-slate-300 text-slate-900 hover:border-slate-400 dark:border-[#3b2d5e] dark:text-slate-100 dark:hover:border-violet-500/70"}`,
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-				className: `truncate ${selected ? "font-medium text-slate-900 dark:text-slate-100" : "text-slate-400 dark:text-slate-500"}`,
-				children: selected ? selected.label : placeholder
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: `h-4 w-4 shrink-0 text-slate-400 transition-transform dark:text-violet-300/70 ${open ? "rotate-180" : ""}` })]
-		}), open && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
-			id: listId,
-			role: "listbox",
-			className: "absolute left-0 right-0 z-50 mt-1.5 max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white/95 p-1 shadow-xl backdrop-blur-md dark:border-[#3b2d5e] dark:bg-[#1e1730]/95",
-			children: options.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
-				className: "px-3 py-2 text-xs text-slate-500 dark:text-slate-400",
-				children: "Keine Einträge verfügbar"
-			}) : options.map((opt) => {
-				const isSelected = opt.value === value;
-				return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
-					role: "option",
-					"aria-selected": isSelected,
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-						type: "button",
-						onClick: () => {
-							onChange(opt.value);
-							setOpen(false);
-						},
-						className: `flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors cursor-pointer ${isSelected ? "ui-accent-selected font-semibold" : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045]"}`,
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-							className: "min-w-0 flex-1",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "block truncate",
-								children: opt.label
-							}), opt.hint && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "block truncate text-[11px] opacity-70",
-								children: opt.hint
-							})]
-						}), isSelected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3.5 w-3.5 shrink-0" })]
-					})
-				}, opt.value);
-			})
-		})]
-	});
-}
-function CategoryPicker({ value, onChange, categories, placeholder = "Kategorie wählen oder eingeben..." }) {
-	const [open, setOpen] = (0, import_react.useState)(false);
-	const [customDraft, setCustomDraft] = (0, import_react.useState)("");
-	const rootRef = (0, import_react.useRef)(null);
-	(0, import_react.useEffect)(() => {
-		if (!open) return;
-		const handlePointerDown = (e) => {
-			if (rootRef.current && !rootRef.current.contains(e.target)) setOpen(false);
-		};
-		const handleKeyDown = (e) => {
-			if (e.key === "Escape") setOpen(false);
-		};
-		document.addEventListener("mousedown", handlePointerDown);
-		document.addEventListener("touchstart", handlePointerDown);
-		document.addEventListener("keydown", handleKeyDown);
-		return () => {
-			document.removeEventListener("mousedown", handlePointerDown);
-			document.removeEventListener("touchstart", handlePointerDown);
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [open]);
-	const applyCustom = () => {
-		const trimmed = customDraft.trim();
-		if (!trimmed) return;
-		onChange(trimmed);
-		setCustomDraft("");
-		setOpen(false);
-	};
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		ref: rootRef,
-		className: "relative",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: `flex items-center gap-1 rounded-lg border bg-white px-3 py-1.5 transition-colors dark:bg-[#211936] ${open ? "ui-accent-ring border-violet-500 ring-2 dark:border-violet-400" : "border-slate-300 hover:border-slate-400 dark:border-[#3b2d5e] dark:hover:border-violet-500/70"}`,
-			children: [
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tag, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-violet-300/70" }),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-					type: "text",
-					value,
-					onFocus: () => setOpen(true),
-					onChange: (e) => onChange(e.target.value),
-					placeholder,
-					className: "min-w-0 flex-1 bg-transparent py-0.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
-				}),
-				value && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-					type: "button",
-					onClick: () => onChange(""),
-					"aria-label": "Kategorie leeren",
-					className: "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-200 cursor-pointer",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3.5 w-3.5" })
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-					type: "button",
-					onClick: () => setOpen((prev) => !prev),
-					"aria-label": "Kategorieliste öffnen",
-					"aria-expanded": open,
-					className: "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 dark:text-violet-300/80 dark:hover:bg-[#2a2045] cursor-pointer",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: `h-4 w-4 transition-transform ${open ? "rotate-180" : ""}` })
-				})
-			]
-		}), open && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "absolute left-0 right-0 z-50 mt-1.5 rounded-xl border border-slate-200 bg-white/95 p-1.5 shadow-xl backdrop-blur-md dark:border-[#3b2d5e] dark:bg-[#1e1730]/95",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "max-h-48 overflow-y-auto space-y-0.5",
-				children: [categories.map((cat) => {
-					const isSelected = value.trim() === cat;
-					return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-						type: "button",
-						onClick: () => {
-							onChange(cat);
-							setOpen(false);
-						},
-						className: `flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors cursor-pointer ${isSelected ? "ui-accent-selected font-semibold" : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045]"}`,
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "truncate",
-							children: cat
-						}), isSelected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3.5 w-3.5 shrink-0" })]
-					}, cat);
-				}), categories.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "px-3 py-2 text-xs text-slate-500 dark:text-slate-400",
-					children: "Noch keine Kategorien hinterlegt"
-				})]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "mt-1.5 flex items-center gap-1.5 border-t border-slate-200 pt-1.5 dark:border-[#3b2d5e]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-					type: "text",
-					value: customDraft,
-					onChange: (e) => setCustomDraft(e.target.value),
-					onKeyDown: (e) => {
-						if (e.key === "Enter") {
-							e.preventDefault();
-							applyCustom();
+/*!
+
+JSZip v3.10.2 - A JavaScript class for generating and reading zip files
+<http://stuartk.com/jszip>
+
+(c) 2009-2016 Stuart Knightley <stuart [at] stuartk.com>
+Dual licenced under the MIT license or GPLv3. See https://raw.github.com/Stuk/jszip/main/LICENSE.markdown.
+
+JSZip uses the library pako released under the MIT license :
+https://github.com/nodeca/pako/blob/main/LICENSE
+*/
+// node_modules/xlsx/xlsx.mjs
+var import_jszip_min = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
+	(function(e) {
+		if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
+		else if ("function" == typeof define && define.amd) define([], e);
+		else ("undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this).JSZip = e();
+	})(function() {
+		return function s(a, o, h) {
+			function u(r, e) {
+				if (!o[r]) {
+					if (!a[r]) {
+						var t = "function" == typeof __require && __require;
+						if (!e && t) return t(r, !0);
+						if (l) return l(r, !0);
+						var n = /* @__PURE__ */ new Error("Cannot find module '" + r + "'");
+						throw n.code = "MODULE_NOT_FOUND", n;
+					}
+					var i = o[r] = { exports: {} };
+					a[r][0].call(i.exports, function(e) {
+						var t = a[r][1][e];
+						return u(t || e);
+					}, i, i.exports, s, a, o, h);
+				}
+				return o[r].exports;
+			}
+			for (var l = "function" == typeof __require && __require, e = 0; e < h.length; e++) u(h[e]);
+			return u;
+		}({
+			1: [function(e, t, r) {
+				"use strict";
+				var d = e("./utils"), c = e("./support"), p = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+				r.encode = function(e) {
+					for (var t, r, n, i, s, a, o, h = [], u = 0, l = e.length, f = l, c = "string" !== d.getTypeOf(e); u < e.length;) f = l - u, n = c ? (t = e[u++], r = u < l ? e[u++] : 0, u < l ? e[u++] : 0) : (t = e.charCodeAt(u++), r = u < l ? e.charCodeAt(u++) : 0, u < l ? e.charCodeAt(u++) : 0), i = t >> 2, s = (3 & t) << 4 | r >> 4, a = 1 < f ? (15 & r) << 2 | n >> 6 : 64, o = 2 < f ? 63 & n : 64, h.push(p.charAt(i) + p.charAt(s) + p.charAt(a) + p.charAt(o));
+					return h.join("");
+				}, r.decode = function(e) {
+					var t, r, n, i, s, a, o = 0, h = 0, u = "data:";
+					if (e.substr(0, u.length) === u) throw new Error("Invalid base64 input, it looks like a data url.");
+					var l, f = 3 * (e = e.replace(/[^A-Za-z0-9+/=]/g, "")).length / 4;
+					if (e.charAt(e.length - 1) === p.charAt(64) && f--, e.charAt(e.length - 2) === p.charAt(64) && f--, f % 1 != 0) throw new Error("Invalid base64 input, bad content length.");
+					for (l = c.uint8array ? new Uint8Array(0 | f) : new Array(0 | f); o < e.length;) t = p.indexOf(e.charAt(o++)) << 2 | (i = p.indexOf(e.charAt(o++))) >> 4, r = (15 & i) << 4 | (s = p.indexOf(e.charAt(o++))) >> 2, n = (3 & s) << 6 | (a = p.indexOf(e.charAt(o++))), l[h++] = t, 64 !== s && (l[h++] = r), 64 !== a && (l[h++] = n);
+					return l;
+				};
+			}, {
+				"./support": 30,
+				"./utils": 32
+			}],
+			2: [function(e, t, r) {
+				"use strict";
+				var n = e("./external"), i = e("./stream/DataWorker"), s = e("./stream/Crc32Probe"), a = e("./stream/DataLengthProbe");
+				function o(e, t, r, n, i) {
+					this.compressedSize = e, this.uncompressedSize = t, this.crc32 = r, this.compression = n, this.compressedContent = i;
+				}
+				o.prototype = {
+					getContentWorker: function() {
+						var e = new i(n.Promise.resolve(this.compressedContent)).pipe(this.compression.uncompressWorker()).pipe(new a("data_length")), t = this;
+						return e.on("end", function() {
+							if (this.streamInfo.data_length !== t.uncompressedSize) throw new Error("Bug : uncompressed data size mismatch");
+						}), e;
+					},
+					getCompressedWorker: function() {
+						return new i(n.Promise.resolve(this.compressedContent)).withStreamInfo("compressedSize", this.compressedSize).withStreamInfo("uncompressedSize", this.uncompressedSize).withStreamInfo("crc32", this.crc32).withStreamInfo("compression", this.compression);
+					}
+				}, o.createWorkerFrom = function(e, t, r) {
+					return e.pipe(new s()).pipe(new a("uncompressedSize")).pipe(t.compressWorker(r)).pipe(new a("compressedSize")).withStreamInfo("compression", t);
+				}, t.exports = o;
+			}, {
+				"./external": 6,
+				"./stream/Crc32Probe": 25,
+				"./stream/DataLengthProbe": 26,
+				"./stream/DataWorker": 27
+			}],
+			3: [function(e, t, r) {
+				"use strict";
+				var n = e("./stream/GenericWorker");
+				r.STORE = {
+					magic: "\0\0",
+					compressWorker: function() {
+						return new n("STORE compression");
+					},
+					uncompressWorker: function() {
+						return new n("STORE decompression");
+					}
+				}, r.DEFLATE = e("./flate");
+			}, {
+				"./flate": 7,
+				"./stream/GenericWorker": 28
+			}],
+			4: [function(e, t, r) {
+				"use strict";
+				var n = e("./utils");
+				var o = function() {
+					for (var e, t = [], r = 0; r < 256; r++) {
+						e = r;
+						for (var n = 0; n < 8; n++) e = 1 & e ? 3988292384 ^ e >>> 1 : e >>> 1;
+						t[r] = e;
+					}
+					return t;
+				}();
+				t.exports = function(e, t) {
+					return void 0 !== e && e.length ? "string" !== n.getTypeOf(e) ? function(e, t, r, n) {
+						var i = o, s = n + r;
+						e ^= -1;
+						for (var a = n; a < s; a++) e = e >>> 8 ^ i[255 & (e ^ t[a])];
+						return -1 ^ e;
+					}(0 | t, e, e.length, 0) : function(e, t, r, n) {
+						var i = o, s = n + r;
+						e ^= -1;
+						for (var a = n; a < s; a++) e = e >>> 8 ^ i[255 & (e ^ t.charCodeAt(a))];
+						return -1 ^ e;
+					}(0 | t, e, e.length, 0) : 0;
+				};
+			}, { "./utils": 32 }],
+			5: [function(e, t, r) {
+				"use strict";
+				r.base64 = !1, r.binary = !1, r.dir = !1, r.createFolders = !0, r.date = null, r.compression = null, r.compressionOptions = null, r.comment = null, r.unixPermissions = null, r.dosPermissions = null;
+			}, {}],
+			6: [function(e, t, r) {
+				"use strict";
+				var n = null;
+				n = "undefined" != typeof Promise ? Promise : e("lie"), t.exports = { Promise: n };
+			}, { lie: 37 }],
+			7: [function(e, t, r) {
+				"use strict";
+				var n = "undefined" != typeof Uint8Array && "undefined" != typeof Uint16Array && "undefined" != typeof Uint32Array, i = e("pako"), s = e("./utils"), a = e("./stream/GenericWorker"), o = n ? "uint8array" : "array";
+				function h(e, t) {
+					a.call(this, "FlateWorker/" + e), this._pako = null, this._pakoAction = e, this._pakoOptions = t, this.meta = {};
+				}
+				r.magic = "\b\0", s.inherits(h, a), h.prototype.processChunk = function(e) {
+					this.meta = e.meta, null === this._pako && this._createPako(), this._pako.push(s.transformTo(o, e.data), !1);
+				}, h.prototype.flush = function() {
+					a.prototype.flush.call(this), null === this._pako && this._createPako(), this._pako.push([], !0);
+				}, h.prototype.cleanUp = function() {
+					a.prototype.cleanUp.call(this), this._pako = null;
+				}, h.prototype._createPako = function() {
+					this._pako = new i[this._pakoAction]({
+						raw: !0,
+						level: this._pakoOptions.level || -1
+					});
+					var t = this;
+					this._pako.onData = function(e) {
+						t.push({
+							data: e,
+							meta: t.meta
+						});
+					};
+				}, r.compressWorker = function(e) {
+					return new h("Deflate", e);
+				}, r.uncompressWorker = function() {
+					return new h("Inflate", {});
+				};
+			}, {
+				"./stream/GenericWorker": 28,
+				"./utils": 32,
+				pako: 38
+			}],
+			8: [function(e, t, r) {
+				"use strict";
+				function A(e, t) {
+					var r, n = "";
+					for (r = 0; r < t; r++) n += String.fromCharCode(255 & e), e >>>= 8;
+					return n;
+				}
+				function n(e, t, r, n, i, s) {
+					var a, o, h = e.file, u = e.compression, l = s !== O.utf8encode, f = I.transformTo("string", s(h.name)), c = I.transformTo("string", O.utf8encode(h.name)), d = h.comment, p = I.transformTo("string", s(d)), m = I.transformTo("string", O.utf8encode(d)), _ = c.length !== h.name.length, g = m.length !== d.length, b = "", v = "", y = "", w = h.dir, k = h.date, x = {
+						crc32: 0,
+						compressedSize: 0,
+						uncompressedSize: 0
+					};
+					t && !r || (x.crc32 = e.crc32, x.compressedSize = e.compressedSize, x.uncompressedSize = e.uncompressedSize);
+					var S = 0;
+					t && (S |= 8), l || !_ && !g || (S |= 2048);
+					var z = 0, C = 0;
+					w && (z |= 16), "UNIX" === i ? (C = 798, z |= function(e, t) {
+						var r = e;
+						return e || (r = t ? 16893 : 33204), (65535 & r) << 16;
+					}(h.unixPermissions, w)) : (C = 20, z |= function(e) {
+						return 63 & (e || 0);
+					}(h.dosPermissions)), a = k.getUTCHours(), a <<= 6, a |= k.getUTCMinutes(), a <<= 5, a |= k.getUTCSeconds() / 2, o = k.getUTCFullYear() - 1980, o <<= 4, o |= k.getUTCMonth() + 1, o <<= 5, o |= k.getUTCDate(), _ && (v = A(1, 1) + A(B(f), 4) + c, b += "up" + A(v.length, 2) + v), g && (y = A(1, 1) + A(B(p), 4) + m, b += "uc" + A(y.length, 2) + y);
+					var E = "";
+					return E += "\n\0", E += A(S, 2), E += u.magic, E += A(a, 2), E += A(o, 2), E += A(x.crc32, 4), E += A(x.compressedSize, 4), E += A(x.uncompressedSize, 4), E += A(f.length, 2), E += A(b.length, 2), {
+						fileRecord: R.LOCAL_FILE_HEADER + E + f + b,
+						dirRecord: R.CENTRAL_FILE_HEADER + A(C, 2) + E + A(p.length, 2) + "\0\0\0\0" + A(z, 4) + A(n, 4) + f + b + p
+					};
+				}
+				var I = e("../utils"), i = e("../stream/GenericWorker"), O = e("../utf8"), B = e("../crc32"), R = e("../signature");
+				function s(e, t, r, n) {
+					i.call(this, "ZipFileWorker"), this.bytesWritten = 0, this.zipComment = t, this.zipPlatform = r, this.encodeFileName = n, this.streamFiles = e, this.accumulate = !1, this.contentBuffer = [], this.dirRecords = [], this.currentSourceOffset = 0, this.entriesCount = 0, this.currentFile = null, this._sources = [];
+				}
+				I.inherits(s, i), s.prototype.push = function(e) {
+					var t = e.meta.percent || 0, r = this.entriesCount, n = this._sources.length;
+					this.accumulate ? this.contentBuffer.push(e) : (this.bytesWritten += e.data.length, i.prototype.push.call(this, {
+						data: e.data,
+						meta: {
+							currentFile: this.currentFile,
+							percent: r ? (t + 100 * (r - n - 1)) / r : 100
+						}
+					}));
+				}, s.prototype.openedSource = function(e) {
+					this.currentSourceOffset = this.bytesWritten, this.currentFile = e.file.name;
+					var t = this.streamFiles && !e.file.dir;
+					if (t) {
+						var r = n(e, t, !1, this.currentSourceOffset, this.zipPlatform, this.encodeFileName);
+						this.push({
+							data: r.fileRecord,
+							meta: { percent: 0 }
+						});
+					} else this.accumulate = !0;
+				}, s.prototype.closedSource = function(e) {
+					this.accumulate = !1;
+					var t = this.streamFiles && !e.file.dir, r = n(e, t, !0, this.currentSourceOffset, this.zipPlatform, this.encodeFileName);
+					if (this.dirRecords.push(r.dirRecord), t) this.push({
+						data: function(e) {
+							return R.DATA_DESCRIPTOR + A(e.crc32, 4) + A(e.compressedSize, 4) + A(e.uncompressedSize, 4);
+						}(e),
+						meta: { percent: 100 }
+					});
+					else for (this.push({
+						data: r.fileRecord,
+						meta: { percent: 0 }
+					}); this.contentBuffer.length;) this.push(this.contentBuffer.shift());
+					this.currentFile = null;
+				}, s.prototype.flush = function() {
+					for (var e = this.bytesWritten, t = 0; t < this.dirRecords.length; t++) this.push({
+						data: this.dirRecords[t],
+						meta: { percent: 100 }
+					});
+					var r = this.bytesWritten - e, n = function(e, t, r, n, i) {
+						var s = I.transformTo("string", i(n));
+						return R.CENTRAL_DIRECTORY_END + "\0\0\0\0" + A(e, 2) + A(e, 2) + A(t, 4) + A(r, 4) + A(s.length, 2) + s;
+					}(this.dirRecords.length, r, e, this.zipComment, this.encodeFileName);
+					this.push({
+						data: n,
+						meta: { percent: 100 }
+					});
+				}, s.prototype.prepareNextSource = function() {
+					this.previous = this._sources.shift(), this.openedSource(this.previous.streamInfo), this.isPaused ? this.previous.pause() : this.previous.resume();
+				}, s.prototype.registerPrevious = function(e) {
+					this._sources.push(e);
+					var t = this;
+					return e.on("data", function(e) {
+						t.processChunk(e);
+					}), e.on("end", function() {
+						t.closedSource(t.previous.streamInfo), t._sources.length ? t.prepareNextSource() : t.end();
+					}), e.on("error", function(e) {
+						t.error(e);
+					}), this;
+				}, s.prototype.resume = function() {
+					return !!i.prototype.resume.call(this) && (!this.previous && this._sources.length ? (this.prepareNextSource(), !0) : this.previous || this._sources.length || this.generatedError ? void 0 : (this.end(), !0));
+				}, s.prototype.error = function(e) {
+					var t = this._sources;
+					if (!i.prototype.error.call(this, e)) return !1;
+					for (var r = 0; r < t.length; r++) try {
+						t[r].error(e);
+					} catch (e) {}
+					return !0;
+				}, s.prototype.lock = function() {
+					i.prototype.lock.call(this);
+					for (var e = this._sources, t = 0; t < e.length; t++) e[t].lock();
+				}, t.exports = s;
+			}, {
+				"../crc32": 4,
+				"../signature": 23,
+				"../stream/GenericWorker": 28,
+				"../utf8": 31,
+				"../utils": 32
+			}],
+			9: [function(e, t, r) {
+				"use strict";
+				var u = e("../compressions"), n = e("./ZipFileWorker");
+				r.generateWorker = function(e, a, t) {
+					var o = new n(a.streamFiles, t, a.platform, a.encodeFileName), h = 0;
+					try {
+						e.forEach(function(e, t) {
+							h++;
+							var r = function(e, t) {
+								var r = e || t, n = u[r];
+								if (!n) throw new Error(r + " is not a valid compression method !");
+								return n;
+							}(t.options.compression, a.compression), n = t.options.compressionOptions || a.compressionOptions || {}, i = t.dir, s = t.date;
+							t._compressWorker(r, n).withStreamInfo("file", {
+								name: e,
+								dir: i,
+								date: s,
+								comment: t.comment || "",
+								unixPermissions: t.unixPermissions,
+								dosPermissions: t.dosPermissions
+							}).pipe(o);
+						}), o.entriesCount = h;
+					} catch (e) {
+						o.error(e);
+					}
+					return o;
+				};
+			}, {
+				"../compressions": 3,
+				"./ZipFileWorker": 8
+			}],
+			10: [function(e, t, r) {
+				"use strict";
+				function n() {
+					if (!(this instanceof n)) return new n();
+					if (arguments.length) throw new Error("The constructor with parameters has been removed in JSZip 3.0, please check the upgrade guide.");
+					this.files = Object.create(null), this.comment = null, this.root = "", this.clone = function() {
+						var e = new n();
+						for (var t in this) "function" != typeof this[t] && (e[t] = this[t]);
+						return e;
+					};
+				}
+				(n.prototype = e("./object")).loadAsync = e("./load"), n.support = e("./support"), n.defaults = e("./defaults"), n.version = "3.10.2", n.loadAsync = function(e, t) {
+					return new n().loadAsync(e, t);
+				}, n.external = e("./external"), t.exports = n;
+			}, {
+				"./defaults": 5,
+				"./external": 6,
+				"./load": 11,
+				"./object": 15,
+				"./support": 30
+			}],
+			11: [function(e, t, r) {
+				"use strict";
+				var u = e("./utils"), i = e("./external"), n = e("./utf8"), s = e("./zipEntries"), a = e("./stream/Crc32Probe"), l = e("./nodejsUtils");
+				function f(n) {
+					return new i.Promise(function(e, t) {
+						var r = n.decompressed.getContentWorker().pipe(new a());
+						r.on("error", function(e) {
+							t(e);
+						}).on("end", function() {
+							r.streamInfo.crc32 !== n.decompressed.crc32 ? t(/* @__PURE__ */ new Error("Corrupted zip : CRC32 mismatch")) : e();
+						}).resume();
+					});
+				}
+				t.exports = function(e, o) {
+					var h = this;
+					return o = u.extend(o || {}, {
+						base64: !1,
+						checkCRC32: !1,
+						optimizedBinaryString: !1,
+						createFolders: !1,
+						decodeFileName: n.utf8decode
+					}), l.isNode && l.isStream(e) ? i.Promise.reject(/* @__PURE__ */ new Error("JSZip can't accept a stream when loading a zip file.")) : u.prepareContent("the loaded zip file", e, !0, o.optimizedBinaryString, o.base64).then(function(e) {
+						var t = new s(o);
+						return t.load(e), t;
+					}).then(function(e) {
+						var t = [i.Promise.resolve(e)], r = e.files;
+						if (o.checkCRC32) for (var n = 0; n < r.length; n++) t.push(f(r[n]));
+						return i.Promise.all(t);
+					}).then(function(e) {
+						for (var t = e.shift(), r = t.files, n = 0; n < r.length; n++) {
+							var i = r[n], s = i.fileNameStr, a = u.resolve(i.fileNameStr);
+							h.file(a, i.decompressed, {
+								binary: !0,
+								optimizedBinaryString: !0,
+								date: i.date,
+								dir: i.dir,
+								comment: i.fileCommentStr.length ? i.fileCommentStr : null,
+								unixPermissions: i.unixPermissions,
+								dosPermissions: i.dosPermissions,
+								createFolders: o.createFolders
+							}), i.dir || (h.file(a).unsafeOriginalName = s);
+						}
+						return t.zipComment.length && (h.comment = t.zipComment), h;
+					});
+				};
+			}, {
+				"./external": 6,
+				"./nodejsUtils": 14,
+				"./stream/Crc32Probe": 25,
+				"./utf8": 31,
+				"./utils": 32,
+				"./zipEntries": 33
+			}],
+			12: [function(e, t, r) {
+				"use strict";
+				var n = e("../utils"), i = e("../stream/GenericWorker");
+				function s(e, t) {
+					i.call(this, "Nodejs stream input adapter for " + e), this._upstreamEnded = !1, this._bindStream(t);
+				}
+				n.inherits(s, i), s.prototype._bindStream = function(e) {
+					var t = this;
+					(this._stream = e).pause(), e.on("data", function(e) {
+						t.push({
+							data: e,
+							meta: { percent: 0 }
+						});
+					}).on("error", function(e) {
+						t.isPaused ? this.generatedError = e : t.error(e);
+					}).on("end", function() {
+						t.isPaused ? t._upstreamEnded = !0 : t.end();
+					});
+				}, s.prototype.pause = function() {
+					return !!i.prototype.pause.call(this) && (this._stream.pause(), !0);
+				}, s.prototype.resume = function() {
+					return !!i.prototype.resume.call(this) && (this._upstreamEnded ? this.end() : this._stream.resume(), !0);
+				}, t.exports = s;
+			}, {
+				"../stream/GenericWorker": 28,
+				"../utils": 32
+			}],
+			13: [function(e, t, r) {
+				"use strict";
+				var i = e("readable-stream").Readable;
+				function n(e, t, r) {
+					i.call(this, t), this._helper = e;
+					var n = this;
+					e.on("data", function(e, t) {
+						n.push(e) || n._helper.pause(), r && r(t);
+					}).on("error", function(e) {
+						n.emit("error", e);
+					}).on("end", function() {
+						n.push(null);
+					});
+				}
+				e("../utils").inherits(n, i), n.prototype._read = function() {
+					this._helper.resume();
+				}, t.exports = n;
+			}, {
+				"../utils": 32,
+				"readable-stream": 16
+			}],
+			14: [function(e, t, r) {
+				"use strict";
+				t.exports = {
+					isNode: "undefined" != typeof Buffer,
+					newBufferFrom: function(e, t) {
+						if (Buffer.from && Buffer.from !== Uint8Array.from) return Buffer.from(e, t);
+						if ("number" == typeof e) throw new Error("The \"data\" argument must not be a number");
+						return new Buffer(e, t);
+					},
+					allocBuffer: function(e) {
+						if (Buffer.alloc) return Buffer.alloc(e);
+						var t = new Buffer(e);
+						return t.fill(0), t;
+					},
+					isBuffer: function(e) {
+						return Buffer.isBuffer(e);
+					},
+					isStream: function(e) {
+						return e && "function" == typeof e.on && "function" == typeof e.pause && "function" == typeof e.resume;
+					}
+				};
+			}, {}],
+			15: [function(e, t, r) {
+				"use strict";
+				function s(e, t, r) {
+					var n, i = u.getTypeOf(t), s = u.extend(r || {}, f);
+					s.date = s.date || /* @__PURE__ */ new Date(), null !== s.compression && (s.compression = s.compression.toUpperCase()), "string" == typeof s.unixPermissions && (s.unixPermissions = parseInt(s.unixPermissions, 8)), s.unixPermissions && 16384 & s.unixPermissions && (s.dir = !0), s.dosPermissions && 16 & s.dosPermissions && (s.dir = !0), s.dir && (e = g(e)), s.createFolders && (n = _(e)) && b.call(this, n, !0);
+					var a = "string" === i && !1 === s.binary && !1 === s.base64;
+					r && void 0 !== r.binary || (s.binary = !a), (t instanceof c && 0 === t.uncompressedSize || s.dir || !t || 0 === t.length) && (s.base64 = !1, s.binary = !0, t = "", s.compression = "STORE", i = "string");
+					var o = null;
+					o = t instanceof c || t instanceof l ? t : p.isNode && p.isStream(t) ? new m(e, t) : u.prepareContent(e, t, s.binary, s.optimizedBinaryString, s.base64);
+					var h = new d(e, o, s);
+					this.files[e] = h;
+				}
+				var i = e("./utf8"), u = e("./utils"), l = e("./stream/GenericWorker"), a = e("./stream/StreamHelper"), f = e("./defaults"), c = e("./compressedObject"), d = e("./zipObject"), o = e("./generate"), p = e("./nodejsUtils"), m = e("./nodejs/NodejsStreamInputAdapter"), _ = function(e) {
+					"/" === e.slice(-1) && (e = e.substring(0, e.length - 1));
+					var t = e.lastIndexOf("/");
+					return 0 < t ? e.substring(0, t) : "";
+				}, g = function(e) {
+					return "/" !== e.slice(-1) && (e += "/"), e;
+				}, b = function(e, t) {
+					return t = void 0 !== t ? t : f.createFolders, e = g(e), this.files[e] || s.call(this, e, null, {
+						dir: !0,
+						createFolders: t
+					}), this.files[e];
+				};
+				function h(e) {
+					return "[object RegExp]" === Object.prototype.toString.call(e);
+				}
+				t.exports = {
+					load: function() {
+						throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
+					},
+					forEach: function(e) {
+						var t, r, n;
+						for (t in this.files) n = this.files[t], (r = t.slice(this.root.length, t.length)) && t.slice(0, this.root.length) === this.root && e(r, n);
+					},
+					filter: function(r) {
+						var n = [];
+						return this.forEach(function(e, t) {
+							r(e, t) && n.push(t);
+						}), n;
+					},
+					file: function(e, t, r) {
+						if (1 !== arguments.length) return e = this.root + e, s.call(this, e, t, r), this;
+						if (h(e)) {
+							var n = e;
+							return this.filter(function(e, t) {
+								return !t.dir && n.test(e);
+							});
+						}
+						var i = this.files[this.root + e];
+						return i && !i.dir ? i : null;
+					},
+					folder: function(r) {
+						if (!r) return this;
+						if (h(r)) return this.filter(function(e, t) {
+							return t.dir && r.test(e);
+						});
+						var e = this.root + r, t = b.call(this, e), n = this.clone();
+						return n.root = t.name, n;
+					},
+					remove: function(r) {
+						r = this.root + r;
+						var e = this.files[r];
+						if (e || ("/" !== r.slice(-1) && (r += "/"), e = this.files[r]), e && !e.dir) delete this.files[r];
+						else for (var t = this.filter(function(e, t) {
+							return t.name.slice(0, r.length) === r;
+						}), n = 0; n < t.length; n++) delete this.files[t[n].name];
+						return this;
+					},
+					generate: function() {
+						throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
+					},
+					generateInternalStream: function(e) {
+						var t, r = {};
+						try {
+							if ((r = u.extend(e || {}, {
+								streamFiles: !1,
+								compression: "STORE",
+								compressionOptions: null,
+								type: "",
+								platform: "DOS",
+								comment: null,
+								mimeType: "application/zip",
+								encodeFileName: i.utf8encode
+							})).type = r.type.toLowerCase(), r.compression = r.compression.toUpperCase(), "binarystring" === r.type && (r.type = "string"), !r.type) throw new Error("No output type specified.");
+							u.checkSupport(r.type), "darwin" !== r.platform && "freebsd" !== r.platform && "linux" !== r.platform && "sunos" !== r.platform || (r.platform = "UNIX"), "win32" === r.platform && (r.platform = "DOS");
+							var n = r.comment || this.comment || "";
+							t = o.generateWorker(this, r, n);
+						} catch (e) {
+							(t = new l("error")).error(e);
+						}
+						return new a(t, r.type || "string", r.mimeType);
+					},
+					generateAsync: function(e, t) {
+						return this.generateInternalStream(e).accumulate(t);
+					},
+					generateNodeStream: function(e, t) {
+						return (e = e || {}).type || (e.type = "nodebuffer"), this.generateInternalStream(e).toNodejsStream(t);
+					}
+				};
+			}, {
+				"./compressedObject": 2,
+				"./defaults": 5,
+				"./generate": 9,
+				"./nodejs/NodejsStreamInputAdapter": 12,
+				"./nodejsUtils": 14,
+				"./stream/GenericWorker": 28,
+				"./stream/StreamHelper": 29,
+				"./utf8": 31,
+				"./utils": 32,
+				"./zipObject": 35
+			}],
+			16: [function(e, t, r) {
+				"use strict";
+				t.exports = e("stream");
+			}, { stream: void 0 }],
+			17: [function(e, t, r) {
+				"use strict";
+				var n = e("./DataReader");
+				function i(e) {
+					n.call(this, e);
+					for (var t = 0; t < this.data.length; t++) e[t] = 255 & e[t];
+				}
+				e("../utils").inherits(i, n), i.prototype.byteAt = function(e) {
+					return this.data[this.zero + e];
+				}, i.prototype.lastIndexOfSignature = function(e) {
+					for (var t = e.charCodeAt(0), r = e.charCodeAt(1), n = e.charCodeAt(2), i = e.charCodeAt(3), s = this.length - 4; 0 <= s; --s) if (this.data[s] === t && this.data[s + 1] === r && this.data[s + 2] === n && this.data[s + 3] === i) return s - this.zero;
+					return -1;
+				}, i.prototype.readAndCheckSignature = function(e) {
+					var t = e.charCodeAt(0), r = e.charCodeAt(1), n = e.charCodeAt(2), i = e.charCodeAt(3), s = this.readData(4);
+					return t === s[0] && r === s[1] && n === s[2] && i === s[3];
+				}, i.prototype.readData = function(e) {
+					if (this.checkOffset(e), 0 === e) return [];
+					var t = this.data.slice(this.zero + this.index, this.zero + this.index + e);
+					return this.index += e, t;
+				}, t.exports = i;
+			}, {
+				"../utils": 32,
+				"./DataReader": 18
+			}],
+			18: [function(e, t, r) {
+				"use strict";
+				var n = e("../utils");
+				function i(e) {
+					this.data = e, this.length = e.length, this.index = 0, this.zero = 0;
+				}
+				i.prototype = {
+					checkOffset: function(e) {
+						this.checkIndex(this.index + e);
+					},
+					checkIndex: function(e) {
+						if (this.length < this.zero + e || e < 0) throw new Error("End of data reached (data length = " + this.length + ", asked index = " + e + "). Corrupted zip ?");
+					},
+					setIndex: function(e) {
+						this.checkIndex(e), this.index = e;
+					},
+					skip: function(e) {
+						this.setIndex(this.index + e);
+					},
+					byteAt: function() {},
+					readInt: function(e) {
+						var t, r = 0;
+						for (this.checkOffset(e), t = this.index + e - 1; t >= this.index; t--) r = (r << 8) + this.byteAt(t);
+						return this.index += e, r;
+					},
+					readString: function(e) {
+						return n.transformTo("string", this.readData(e));
+					},
+					readData: function() {},
+					lastIndexOfSignature: function() {},
+					readAndCheckSignature: function() {},
+					readDate: function() {
+						var e = this.readInt(4);
+						return new Date(Date.UTC(1980 + (e >> 25 & 127), (e >> 21 & 15) - 1, e >> 16 & 31, e >> 11 & 31, e >> 5 & 63, (31 & e) << 1));
+					}
+				}, t.exports = i;
+			}, { "../utils": 32 }],
+			19: [function(e, t, r) {
+				"use strict";
+				var n = e("./Uint8ArrayReader");
+				function i(e) {
+					n.call(this, e);
+				}
+				e("../utils").inherits(i, n), i.prototype.readData = function(e) {
+					this.checkOffset(e);
+					var t = this.data.slice(this.zero + this.index, this.zero + this.index + e);
+					return this.index += e, t;
+				}, t.exports = i;
+			}, {
+				"../utils": 32,
+				"./Uint8ArrayReader": 21
+			}],
+			20: [function(e, t, r) {
+				"use strict";
+				var n = e("./DataReader");
+				function i(e) {
+					n.call(this, e);
+				}
+				e("../utils").inherits(i, n), i.prototype.byteAt = function(e) {
+					return this.data.charCodeAt(this.zero + e);
+				}, i.prototype.lastIndexOfSignature = function(e) {
+					return this.data.lastIndexOf(e) - this.zero;
+				}, i.prototype.readAndCheckSignature = function(e) {
+					return e === this.readData(4);
+				}, i.prototype.readData = function(e) {
+					this.checkOffset(e);
+					var t = this.data.slice(this.zero + this.index, this.zero + this.index + e);
+					return this.index += e, t;
+				}, t.exports = i;
+			}, {
+				"../utils": 32,
+				"./DataReader": 18
+			}],
+			21: [function(e, t, r) {
+				"use strict";
+				var n = e("./ArrayReader");
+				function i(e) {
+					n.call(this, e);
+				}
+				e("../utils").inherits(i, n), i.prototype.readData = function(e) {
+					if (this.checkOffset(e), 0 === e) return /* @__PURE__ */ new Uint8Array(0);
+					var t = this.data.subarray(this.zero + this.index, this.zero + this.index + e);
+					return this.index += e, t;
+				}, t.exports = i;
+			}, {
+				"../utils": 32,
+				"./ArrayReader": 17
+			}],
+			22: [function(e, t, r) {
+				"use strict";
+				var n = e("../utils"), i = e("../support"), s = e("./ArrayReader"), a = e("./StringReader"), o = e("./NodeBufferReader"), h = e("./Uint8ArrayReader");
+				t.exports = function(e) {
+					var t = n.getTypeOf(e);
+					return n.checkSupport(t), "string" !== t || i.uint8array ? "nodebuffer" === t ? new o(e) : i.uint8array ? new h(n.transformTo("uint8array", e)) : new s(n.transformTo("array", e)) : new a(e);
+				};
+			}, {
+				"../support": 30,
+				"../utils": 32,
+				"./ArrayReader": 17,
+				"./NodeBufferReader": 19,
+				"./StringReader": 20,
+				"./Uint8ArrayReader": 21
+			}],
+			23: [function(e, t, r) {
+				"use strict";
+				r.LOCAL_FILE_HEADER = "PK", r.CENTRAL_FILE_HEADER = "PK", r.CENTRAL_DIRECTORY_END = "PK", r.ZIP64_CENTRAL_DIRECTORY_LOCATOR = "PK\x07", r.ZIP64_CENTRAL_DIRECTORY_END = "PK", r.DATA_DESCRIPTOR = "PK\x07\b";
+			}, {}],
+			24: [function(e, t, r) {
+				"use strict";
+				var n = e("./GenericWorker"), i = e("../utils");
+				function s(e) {
+					n.call(this, "ConvertWorker to " + e), this.destType = e;
+				}
+				i.inherits(s, n), s.prototype.processChunk = function(e) {
+					this.push({
+						data: i.transformTo(this.destType, e.data),
+						meta: e.meta
+					});
+				}, t.exports = s;
+			}, {
+				"../utils": 32,
+				"./GenericWorker": 28
+			}],
+			25: [function(e, t, r) {
+				"use strict";
+				var n = e("./GenericWorker"), i = e("../crc32");
+				function s() {
+					n.call(this, "Crc32Probe"), this.withStreamInfo("crc32", 0);
+				}
+				e("../utils").inherits(s, n), s.prototype.processChunk = function(e) {
+					this.streamInfo.crc32 = i(e.data, this.streamInfo.crc32 || 0), this.push(e);
+				}, t.exports = s;
+			}, {
+				"../crc32": 4,
+				"../utils": 32,
+				"./GenericWorker": 28
+			}],
+			26: [function(e, t, r) {
+				"use strict";
+				var n = e("../utils"), i = e("./GenericWorker");
+				function s(e) {
+					i.call(this, "DataLengthProbe for " + e), this.propName = e, this.withStreamInfo(e, 0);
+				}
+				n.inherits(s, i), s.prototype.processChunk = function(e) {
+					if (e) {
+						var t = this.streamInfo[this.propName] || 0;
+						this.streamInfo[this.propName] = t + e.data.length;
+					}
+					i.prototype.processChunk.call(this, e);
+				}, t.exports = s;
+			}, {
+				"../utils": 32,
+				"./GenericWorker": 28
+			}],
+			27: [function(e, t, r) {
+				"use strict";
+				var n = e("../utils"), i = e("./GenericWorker");
+				function s(e) {
+					i.call(this, "DataWorker");
+					var t = this;
+					this.dataIsReady = !1, this.index = 0, this.max = 0, this.data = null, this.type = "", this._tickScheduled = !1, e.then(function(e) {
+						t.dataIsReady = !0, t.data = e, t.max = e && e.length || 0, t.type = n.getTypeOf(e), t.isPaused || t._tickAndRepeat();
+					}, function(e) {
+						t.error(e);
+					});
+				}
+				n.inherits(s, i), s.prototype.cleanUp = function() {
+					i.prototype.cleanUp.call(this), this.data = null;
+				}, s.prototype.resume = function() {
+					return !!i.prototype.resume.call(this) && (!this._tickScheduled && this.dataIsReady && (this._tickScheduled = !0, n.delay(this._tickAndRepeat, [], this)), !0);
+				}, s.prototype._tickAndRepeat = function() {
+					this._tickScheduled = !1, this.isPaused || this.isFinished || (this._tick(), this.isFinished || (n.delay(this._tickAndRepeat, [], this), this._tickScheduled = !0));
+				}, s.prototype._tick = function() {
+					if (this.isPaused || this.isFinished) return !1;
+					var e = null, t = Math.min(this.max, this.index + 16384);
+					if (this.index >= this.max) return this.end();
+					switch (this.type) {
+						case "string":
+							e = this.data.substring(this.index, t);
+							break;
+						case "uint8array":
+							e = this.data.subarray(this.index, t);
+							break;
+						case "array":
+						case "nodebuffer": e = this.data.slice(this.index, t);
+					}
+					return this.index = t, this.push({
+						data: e,
+						meta: { percent: this.max ? this.index / this.max * 100 : 0 }
+					});
+				}, t.exports = s;
+			}, {
+				"../utils": 32,
+				"./GenericWorker": 28
+			}],
+			28: [function(e, t, r) {
+				"use strict";
+				function n(e) {
+					this.name = e || "default", this.streamInfo = {}, this.generatedError = null, this.extraStreamInfo = {}, this.isPaused = !0, this.isFinished = !1, this.isLocked = !1, this._listeners = {
+						data: [],
+						end: [],
+						error: []
+					}, this.previous = null;
+				}
+				n.prototype = {
+					push: function(e) {
+						this.emit("data", e);
+					},
+					end: function() {
+						if (this.isFinished) return !1;
+						this.flush();
+						try {
+							this.emit("end"), this.cleanUp(), this.isFinished = !0;
+						} catch (e) {
+							this.emit("error", e);
+						}
+						return !0;
+					},
+					error: function(e) {
+						return !this.isFinished && (this.isPaused ? this.generatedError = e : (this.isFinished = !0, this.emit("error", e), this.previous && this.previous.error(e), this.cleanUp()), !0);
+					},
+					on: function(e, t) {
+						return this._listeners[e].push(t), this;
+					},
+					cleanUp: function() {
+						this.streamInfo = this.generatedError = this.extraStreamInfo = null, this._listeners = [];
+					},
+					emit: function(e, t) {
+						if (this._listeners[e]) for (var r = 0; r < this._listeners[e].length; r++) this._listeners[e][r].call(this, t);
+					},
+					pipe: function(e) {
+						return e.registerPrevious(this);
+					},
+					registerPrevious: function(e) {
+						if (this.isLocked) throw new Error("The stream '" + this + "' has already been used.");
+						this.streamInfo = e.streamInfo, this.mergeStreamInfo(), this.previous = e;
+						var t = this;
+						return e.on("data", function(e) {
+							t.processChunk(e);
+						}), e.on("end", function() {
+							t.end();
+						}), e.on("error", function(e) {
+							t.error(e);
+						}), this;
+					},
+					pause: function() {
+						return !this.isPaused && !this.isFinished && (this.isPaused = !0, this.previous && this.previous.pause(), !0);
+					},
+					resume: function() {
+						if (!this.isPaused || this.isFinished) return !1;
+						var e = this.isPaused = !1;
+						return this.generatedError && (this.error(this.generatedError), e = !0), this.previous && this.previous.resume(), !e;
+					},
+					flush: function() {},
+					processChunk: function(e) {
+						this.push(e);
+					},
+					withStreamInfo: function(e, t) {
+						return this.extraStreamInfo[e] = t, this.mergeStreamInfo(), this;
+					},
+					mergeStreamInfo: function() {
+						for (var e in this.extraStreamInfo) Object.prototype.hasOwnProperty.call(this.extraStreamInfo, e) && (this.streamInfo[e] = this.extraStreamInfo[e]);
+					},
+					lock: function() {
+						if (this.isLocked) throw new Error("The stream '" + this + "' has already been used.");
+						this.isLocked = !0, this.previous && this.previous.lock();
+					},
+					toString: function() {
+						var e = "Worker " + this.name;
+						return this.previous ? this.previous + " -> " + e : e;
+					}
+				}, t.exports = n;
+			}, {}],
+			29: [function(e, t, r) {
+				"use strict";
+				var h = e("../utils"), i = e("./ConvertWorker"), s = e("./GenericWorker"), u = e("../base64"), n = e("../support"), a = e("../external"), o = null;
+				if (n.nodestream) try {
+					o = e("../nodejs/NodejsStreamOutputAdapter");
+				} catch (e) {}
+				function l(e, o) {
+					return new a.Promise(function(t, r) {
+						var n = [], i = e._internalType, s = e._outputType, a = e._mimeType;
+						e.on("data", function(e, t) {
+							n.push(e), o && o(t);
+						}).on("error", function(e) {
+							n = [], r(e);
+						}).on("end", function() {
+							try {
+								t(function(e, t, r) {
+									switch (e) {
+										case "blob": return h.newBlob(h.transformTo("arraybuffer", t), r);
+										case "base64": return u.encode(t);
+										default: return h.transformTo(e, t);
+									}
+								}(s, function(e, t) {
+									var r, n = 0, i = null, s = 0;
+									for (r = 0; r < t.length; r++) s += t[r].length;
+									switch (e) {
+										case "string": return t.join("");
+										case "array": return Array.prototype.concat.apply([], t);
+										case "uint8array":
+											for (i = new Uint8Array(s), r = 0; r < t.length; r++) i.set(t[r], n), n += t[r].length;
+											return i;
+										case "nodebuffer": return Buffer.concat(t);
+										default: throw new Error("concat : unsupported type '" + e + "'");
+									}
+								}(i, n), a));
+							} catch (e) {
+								r(e);
+							}
+							n = [];
+						}).resume();
+					});
+				}
+				function f(e, t, r) {
+					var n = t;
+					switch (t) {
+						case "blob":
+						case "arraybuffer":
+							n = "uint8array";
+							break;
+						case "base64": n = "string";
+					}
+					try {
+						this._internalType = n, this._outputType = t, this._mimeType = r, h.checkSupport(n), this._worker = e.pipe(new i(n)), e.lock();
+					} catch (e) {
+						this._worker = new s("error"), this._worker.error(e);
+					}
+				}
+				f.prototype = {
+					accumulate: function(e) {
+						return l(this, e);
+					},
+					on: function(e, t) {
+						var r = this;
+						return "data" === e ? this._worker.on(e, function(e) {
+							t.call(r, e.data, e.meta);
+						}) : this._worker.on(e, function() {
+							h.delay(t, arguments, r);
+						}), this;
+					},
+					resume: function() {
+						return h.delay(this._worker.resume, [], this._worker), this;
+					},
+					pause: function() {
+						return this._worker.pause(), this;
+					},
+					toNodejsStream: function(e) {
+						if (h.checkSupport("nodestream"), "nodebuffer" !== this._outputType) throw new Error(this._outputType + " is not supported by this method");
+						return new o(this, { objectMode: "nodebuffer" !== this._outputType }, e);
+					}
+				}, t.exports = f;
+			}, {
+				"../base64": 1,
+				"../external": 6,
+				"../nodejs/NodejsStreamOutputAdapter": 13,
+				"../support": 30,
+				"../utils": 32,
+				"./ConvertWorker": 24,
+				"./GenericWorker": 28
+			}],
+			30: [function(e, t, r) {
+				"use strict";
+				if (r.base64 = !0, r.array = !0, r.string = !0, r.arraybuffer = "undefined" != typeof ArrayBuffer && "undefined" != typeof Uint8Array, r.nodebuffer = "undefined" != typeof Buffer, r.uint8array = "undefined" != typeof Uint8Array, "undefined" == typeof ArrayBuffer) r.blob = !1;
+				else {
+					var n = /* @__PURE__ */ new ArrayBuffer(0);
+					try {
+						r.blob = 0 === new Blob([n], { type: "application/zip" }).size;
+					} catch (e) {
+						try {
+							var i = new (self.BlobBuilder || self.WebKitBlobBuilder || self.MozBlobBuilder || self.MSBlobBuilder)();
+							i.append(n), r.blob = 0 === i.getBlob("application/zip").size;
+						} catch (e) {
+							r.blob = !1;
+						}
+					}
+				}
+				try {
+					r.nodestream = !!e("readable-stream").Readable;
+				} catch (e) {
+					r.nodestream = !1;
+				}
+			}, { "readable-stream": 16 }],
+			31: [function(e, t, s) {
+				"use strict";
+				for (var o = e("./utils"), h = e("./support"), r = e("./nodejsUtils"), n = e("./stream/GenericWorker"), u = new Array(256), i = 0; i < 256; i++) u[i] = 252 <= i ? 6 : 248 <= i ? 5 : 240 <= i ? 4 : 224 <= i ? 3 : 192 <= i ? 2 : 1;
+				u[254] = u[254] = 1;
+				function a() {
+					n.call(this, "utf-8 decode"), this.leftOver = null;
+				}
+				function l() {
+					n.call(this, "utf-8 encode");
+				}
+				s.utf8encode = function(e) {
+					return h.nodebuffer ? r.newBufferFrom(e, "utf-8") : function(e) {
+						var t, r, n, i, s, a = e.length, o = 0;
+						for (i = 0; i < a; i++) 55296 == (64512 & (r = e.charCodeAt(i))) && i + 1 < a && 56320 == (64512 & (n = e.charCodeAt(i + 1))) && (r = 65536 + (r - 55296 << 10) + (n - 56320), i++), o += r < 128 ? 1 : r < 2048 ? 2 : r < 65536 ? 3 : 4;
+						for (t = h.uint8array ? new Uint8Array(o) : new Array(o), i = s = 0; s < o; i++) 55296 == (64512 & (r = e.charCodeAt(i))) && i + 1 < a && 56320 == (64512 & (n = e.charCodeAt(i + 1))) && (r = 65536 + (r - 55296 << 10) + (n - 56320), i++), r < 128 ? t[s++] = r : (r < 2048 ? t[s++] = 192 | r >>> 6 : (r < 65536 ? t[s++] = 224 | r >>> 12 : (t[s++] = 240 | r >>> 18, t[s++] = 128 | r >>> 12 & 63), t[s++] = 128 | r >>> 6 & 63), t[s++] = 128 | 63 & r);
+						return t;
+					}(e);
+				}, s.utf8decode = function(e) {
+					return h.nodebuffer ? o.transformTo("nodebuffer", e).toString("utf-8") : function(e) {
+						var t, r, n, i, s = e.length, a = new Array(2 * s);
+						for (t = r = 0; t < s;) if ((n = e[t++]) < 128) a[r++] = n;
+						else if (4 < (i = u[n])) a[r++] = 65533, t += i - 1;
+						else {
+							for (n &= 2 === i ? 31 : 3 === i ? 15 : 7; 1 < i && t < s;) n = n << 6 | 63 & e[t++], i--;
+							1 < i ? a[r++] = 65533 : n < 65536 ? a[r++] = n : (n -= 65536, a[r++] = 55296 | n >> 10 & 1023, a[r++] = 56320 | 1023 & n);
+						}
+						return a.length !== r && (a.subarray ? a = a.subarray(0, r) : a.length = r), o.applyFromCharCode(a);
+					}(e = o.transformTo(h.uint8array ? "uint8array" : "array", e));
+				}, o.inherits(a, n), a.prototype.processChunk = function(e) {
+					var t = o.transformTo(h.uint8array ? "uint8array" : "array", e.data);
+					if (this.leftOver && this.leftOver.length) {
+						if (h.uint8array) {
+							var r = t;
+							(t = new Uint8Array(r.length + this.leftOver.length)).set(this.leftOver, 0), t.set(r, this.leftOver.length);
+						} else t = this.leftOver.concat(t);
+						this.leftOver = null;
+					}
+					var n = function(e, t) {
+						var r;
+						for ((t = t || e.length) > e.length && (t = e.length), r = t - 1; 0 <= r && 128 == (192 & e[r]);) r--;
+						return r < 0 ? t : 0 === r ? t : r + u[e[r]] > t ? r : t;
+					}(t), i = t;
+					n !== t.length && (h.uint8array ? (i = t.subarray(0, n), this.leftOver = t.subarray(n, t.length)) : (i = t.slice(0, n), this.leftOver = t.slice(n, t.length))), this.push({
+						data: s.utf8decode(i),
+						meta: e.meta
+					});
+				}, a.prototype.flush = function() {
+					this.leftOver && this.leftOver.length && (this.push({
+						data: s.utf8decode(this.leftOver),
+						meta: {}
+					}), this.leftOver = null);
+				}, s.Utf8DecodeWorker = a, o.inherits(l, n), l.prototype.processChunk = function(e) {
+					this.push({
+						data: s.utf8encode(e.data),
+						meta: e.meta
+					});
+				}, s.Utf8EncodeWorker = l;
+			}, {
+				"./nodejsUtils": 14,
+				"./stream/GenericWorker": 28,
+				"./support": 30,
+				"./utils": 32
+			}],
+			32: [function(e, t, a) {
+				"use strict";
+				var o = e("./support"), h = e("./base64"), r = e("./nodejsUtils"), u = e("./external");
+				function n(e) {
+					return e;
+				}
+				function l(e, t) {
+					for (var r = 0; r < e.length; ++r) t[r] = 255 & e.charCodeAt(r);
+					return t;
+				}
+				e("setimmediate"), a.newBlob = function(t, r) {
+					a.checkSupport("blob");
+					try {
+						return new Blob([t], { type: r });
+					} catch (e) {
+						try {
+							var n = new (self.BlobBuilder || self.WebKitBlobBuilder || self.MozBlobBuilder || self.MSBlobBuilder)();
+							return n.append(t), n.getBlob(r);
+						} catch (e) {
+							throw new Error("Bug : can't construct the Blob.");
+						}
+					}
+				};
+				var i = {
+					stringifyByChunk: function(e, t, r) {
+						var n = [], i = 0, s = e.length;
+						if (s <= r) return String.fromCharCode.apply(null, e);
+						for (; i < s;) "array" === t || "nodebuffer" === t ? n.push(String.fromCharCode.apply(null, e.slice(i, Math.min(i + r, s)))) : n.push(String.fromCharCode.apply(null, e.subarray(i, Math.min(i + r, s)))), i += r;
+						return n.join("");
+					},
+					stringifyByChar: function(e) {
+						for (var t = "", r = 0; r < e.length; r++) t += String.fromCharCode(e[r]);
+						return t;
+					},
+					applyCanBeUsed: {
+						uint8array: function() {
+							try {
+								return o.uint8array && 1 === String.fromCharCode.apply(null, /* @__PURE__ */ new Uint8Array(1)).length;
+							} catch (e) {
+								return !1;
+							}
+						}(),
+						nodebuffer: function() {
+							try {
+								return o.nodebuffer && 1 === String.fromCharCode.apply(null, r.allocBuffer(1)).length;
+							} catch (e) {
+								return !1;
+							}
+						}()
+					}
+				};
+				function s(e) {
+					var t = 65536, r = a.getTypeOf(e), n = !0;
+					if ("uint8array" === r ? n = i.applyCanBeUsed.uint8array : "nodebuffer" === r && (n = i.applyCanBeUsed.nodebuffer), n) for (; 1 < t;) try {
+						return i.stringifyByChunk(e, r, t);
+					} catch (e) {
+						t = Math.floor(t / 2);
+					}
+					return i.stringifyByChar(e);
+				}
+				function f(e, t) {
+					for (var r = 0; r < e.length; r++) t[r] = e[r];
+					return t;
+				}
+				a.applyFromCharCode = s;
+				var c = {};
+				c.string = {
+					string: n,
+					array: function(e) {
+						return l(e, new Array(e.length));
+					},
+					arraybuffer: function(e) {
+						return c.string.uint8array(e).buffer;
+					},
+					uint8array: function(e) {
+						return l(e, new Uint8Array(e.length));
+					},
+					nodebuffer: function(e) {
+						return l(e, r.allocBuffer(e.length));
+					}
+				}, c.array = {
+					string: s,
+					array: n,
+					arraybuffer: function(e) {
+						return new Uint8Array(e).buffer;
+					},
+					uint8array: function(e) {
+						return new Uint8Array(e);
+					},
+					nodebuffer: function(e) {
+						return r.newBufferFrom(e);
+					}
+				}, c.arraybuffer = {
+					string: function(e) {
+						return s(new Uint8Array(e));
+					},
+					array: function(e) {
+						return f(new Uint8Array(e), new Array(e.byteLength));
+					},
+					arraybuffer: n,
+					uint8array: function(e) {
+						return new Uint8Array(e);
+					},
+					nodebuffer: function(e) {
+						return r.newBufferFrom(new Uint8Array(e));
+					}
+				}, c.uint8array = {
+					string: s,
+					array: function(e) {
+						return f(e, new Array(e.length));
+					},
+					arraybuffer: function(e) {
+						return e.buffer;
+					},
+					uint8array: n,
+					nodebuffer: function(e) {
+						return r.newBufferFrom(e);
+					}
+				}, c.nodebuffer = {
+					string: s,
+					array: function(e) {
+						return f(e, new Array(e.length));
+					},
+					arraybuffer: function(e) {
+						return c.nodebuffer.uint8array(e).buffer;
+					},
+					uint8array: function(e) {
+						return f(e, new Uint8Array(e.length));
+					},
+					nodebuffer: n
+				}, a.transformTo = function(e, t) {
+					if (t = t || "", !e) return t;
+					a.checkSupport(e);
+					return c[a.getTypeOf(t)][e](t);
+				}, a.resolve = function(e) {
+					for (var t = e.split("/"), r = [], n = 0; n < t.length; n++) {
+						var i = t[n];
+						"." === i || "" === i && 0 !== n && n !== t.length - 1 || (".." === i ? r.pop() : r.push(i));
+					}
+					return r.join("/");
+				}, a.getTypeOf = function(e) {
+					if ("string" == typeof e) return "string";
+					var t = Object.prototype.toString.call(e);
+					return "[object Array]" === t ? "array" : o.nodebuffer && r.isBuffer(e) ? "nodebuffer" : o.uint8array && "[object Uint8Array]" === t ? "uint8array" : o.arraybuffer && "[object ArrayBuffer]" === t ? "arraybuffer" : void 0;
+				}, a.checkSupport = function(e) {
+					if (!o[e.toLowerCase()]) throw new Error(e + " is not supported by this platform");
+				}, a.MAX_VALUE_16BITS = 65535, a.MAX_VALUE_32BITS = -1, a.pretty = function(e) {
+					var t, r, n = "";
+					for (r = 0; r < (e || "").length; r++) n += "\\x" + ((t = e.charCodeAt(r)) < 16 ? "0" : "") + t.toString(16).toUpperCase();
+					return n;
+				}, a.delay = function(e, t, r) {
+					setImmediate(function() {
+						e.apply(r || null, t || []);
+					});
+				}, a.inherits = function(e, t) {
+					function r() {}
+					r.prototype = t.prototype, e.prototype = new r();
+				}, a.extend = function() {
+					var e, t, r = {};
+					for (e = 0; e < arguments.length; e++) for (t in arguments[e]) Object.prototype.hasOwnProperty.call(arguments[e], t) && void 0 === r[t] && (r[t] = arguments[e][t]);
+					return r;
+				}, a.prepareContent = function(r, e, n, i, s) {
+					return u.Promise.resolve(e).then(function(n) {
+						return o.blob && (n instanceof Blob || -1 !== ["[object File]", "[object Blob]"].indexOf(Object.prototype.toString.call(n))) ? void 0 !== Blob.prototype.arrayBuffer ? n.arrayBuffer() : "undefined" != typeof FileReader ? new u.Promise(function(t, r) {
+							var e = new FileReader();
+							e.onload = function(e) {
+								t(e.target.result);
+							}, e.onerror = function(e) {
+								r(e.target.error);
+							}, e.readAsArrayBuffer(n);
+						}) : u.Promise.reject(/* @__PURE__ */ new Error(r + " is a Blob, but we have no way of reading it.")) : n;
+					}).then(function(e) {
+						var t = a.getTypeOf(e);
+						return t ? ("arraybuffer" === t ? e = a.transformTo("uint8array", e) : "string" === t && (s ? e = h.decode(e) : n && !0 !== i && (e = function(e) {
+							return l(e, o.uint8array ? new Uint8Array(e.length) : new Array(e.length));
+						}(e))), e) : u.Promise.reject(/* @__PURE__ */ new Error("Can't read the data of '" + r + "'. Is it in a supported JavaScript type (String, Blob, ArrayBuffer, etc) ?"));
+					});
+				};
+			}, {
+				"./base64": 1,
+				"./external": 6,
+				"./nodejsUtils": 14,
+				"./support": 30,
+				setimmediate: 54
+			}],
+			33: [function(e, t, r) {
+				"use strict";
+				var n = e("./reader/readerFor"), i = e("./utils"), s = e("./signature"), a = e("./zipEntry"), o = e("./support");
+				function h(e) {
+					this.files = [], this.loadOptions = e;
+				}
+				h.prototype = {
+					checkSignature: function(e) {
+						if (!this.reader.readAndCheckSignature(e)) {
+							this.reader.index -= 4;
+							var t = this.reader.readString(4);
+							throw new Error("Corrupted zip or bug: unexpected signature (" + i.pretty(t) + ", expected " + i.pretty(e) + ")");
 						}
 					},
-					placeholder: "Neue Kategorie...",
-					className: "min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					type: "button",
-					onClick: applyCustom,
-					className: "inline-flex items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer shrink-0",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Übernehmen"]
-				})]
-			})]
-		})]
-	});
-}
-// src/components/AnalyticsView.tsx
-var INTERNAL_KEY = "__internal__";
-var INTERNAL_COLOR = "#d97706";
-var CHART_PALETTE = [
-	"#7c3aed",
-	"#2563eb",
-	"#059669",
-	"#d97706",
-	"#e11d48",
-	"#0891b2",
-	"#4f46e5",
-	"#65a30d"
-];
-function getLocalDateKey(iso) {
-	const d = new Date(iso);
-	if (Number.isNaN(d.getTime())) return iso.slice(0, 10);
-	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-function formatDayShort(dateKey) {
-	const parts = dateKey.split("-");
-	if (parts.length !== 3) return dateKey;
-	return `${parts[2]}.${parts[1]}.`;
-}
-function AnalyticsView({ customers, products, timeEntries, expenses = [], recurringExpenses = [], db, onNotify }) {
-	const [range, setRange] = (0, import_react.useState)("30d");
-	const [selectedCustomerId, setSelectedCustomerId] = (0, import_react.useState)("all");
-	const [selectedProductId, setSelectedProductId] = (0, import_react.useState)("all");
-	const [hoveredDayKey, setHoveredDayKey] = (0, import_react.useState)(null);
-	const [hoveredCustomerId, setHoveredCustomerId] = (0, import_react.useState)(null);
-	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
-	const productMap = (0, import_react.useMemo)(() => new Map(products.map((p) => [p.id, p])), [products]);
-	const customerColorMap = (0, import_react.useMemo)(() => {
-		const map = /* @__PURE__ */ new Map();
-		customers.forEach((c, idx) => {
-			map.set(c.id, CHART_PALETTE[idx % CHART_PALETTE.length]);
-		});
-		map.set(INTERNAL_KEY, INTERNAL_COLOR);
-		return map;
-	}, [customers]);
-	const productColorMap = (0, import_react.useMemo)(() => {
-		const map = /* @__PURE__ */ new Map();
-		products.forEach((p, idx) => {
-			map.set(p.id, CHART_PALETTE[(idx + 2) % CHART_PALETTE.length]);
-		});
-		return map;
-	}, [products]);
-	const filteredEntries = (0, import_react.useMemo)(() => {
-		const now = Date.now();
-		const cutoffMs = range === "7d" ? now - 6048e5 : range === "30d" ? now - 2592e6 : 0;
-		return timeEntries.filter((entry) => {
-			const isInternal = entry.entryType === "internal" || !entry.customerId;
-			if (selectedCustomerId === "internal_only") {
-				if (!isInternal) return false;
-			} else if (selectedCustomerId !== "all") {
-				if (isInternal || entry.customerId !== selectedCustomerId) return false;
-			}
-			if (selectedProductId !== "all" && entry.productId !== selectedProductId) return false;
-			if (cutoffMs > 0) {
-				const entryMs = new Date(entry.startTime).getTime();
-				if (!Number.isNaN(entryMs) && entryMs < cutoffMs) return false;
-			}
-			return true;
-		});
-	}, [
-		timeEntries,
-		range,
-		selectedCustomerId,
-		selectedProductId
-	]);
-	const kpis = (0, import_react.useMemo)(() => {
-		let totalSeconds = 0;
-		let billableSeconds = 0;
-		let internalSeconds = 0;
-		let totalRevenueNet = 0;
-		const activeCustIds = /* @__PURE__ */ new Set();
-		for (const e of filteredEntries) {
-			const isInternal = e.entryType === "internal" || !e.customerId;
-			totalSeconds += e.durationSeconds;
-			const hours = e.durationSeconds / 3600;
-			if (!isInternal && e.billable) {
-				billableSeconds += e.durationSeconds;
-				totalRevenueNet += hours * e.hourlyRateNet;
-			}
-			if (isInternal) internalSeconds += e.durationSeconds;
-			else if (e.customerId) activeCustIds.add(e.customerId);
-		}
-		const billableRatioPct = totalSeconds > 0 ? Math.round(billableSeconds / totalSeconds * 100) : 0;
-		return {
-			totalHours: totalSeconds / 3600,
-			billableHours: billableSeconds / 3600,
-			internalHours: internalSeconds / 3600,
-			billableRatioPct,
-			totalRevenueNet,
-			activeCustomers: activeCustIds.size,
-			entryCount: filteredEntries.length
-		};
-	}, [filteredEntries]);
-	const internalCategoryStats = (0, import_react.useMemo)(() => {
-		const map = /* @__PURE__ */ new Map();
-		for (const e of filteredEntries) {
-			if (!(e.entryType === "internal" || !e.customerId)) continue;
-			const cat = e.internalCategory || "Sonstige interne Arbeit";
-			const cur = map.get(cat) ?? {
-				label: cat,
-				seconds: 0,
-				count: 0
-			};
-			cur.seconds += e.durationSeconds;
-			cur.count += 1;
-			map.set(cat, cur);
-		}
-		return Array.from(map.values()).sort((a, b) => b.seconds - a.seconds);
-	}, [filteredEntries]);
-	const expenseSummary = (0, import_react.useMemo)(() => {
-		const now = Date.now();
-		const cutoffMs = range === "7d" ? now - 6048e5 : range === "30d" ? now - 2592e6 : 0;
-		const inRange = expenses.filter((exp) => {
-			if (cutoffMs === 0) return true;
-			const ms = (/* @__PURE__ */ new Date(`${exp.date}T12:00:00`)).getTime();
-			return Number.isNaN(ms) || ms >= cutoffMs;
-		});
-		return {
-			operatingNet: inRange.filter((e) => e.expenseType === "operating" || !e.customerId).reduce((acc, e) => acc + (e.netAmount || 0), 0),
-			totalExpenseNet: inRange.reduce((acc, e) => acc + (e.netAmount || 0), 0),
-			monthlyFixedNet: recurringExpenses.filter((r) => r.active).reduce((acc, r) => {
-				const factor = r.interval === "monthly" ? 1 : r.interval === "quarterly" ? 1 / 3 : 1 / 12;
-				return acc + (r.netAmount || 0) * factor;
-			}, 0),
-			count: inRange.length
-		};
-	}, [
-		expenses,
-		recurringExpenses,
-		range
-	]);
-	const handleQuickPdfExport = async () => {
-		if (!db) return;
-		const now = /* @__PURE__ */ new Date();
-		const startDate = range === "7d" ? toInputDate(/* @__PURE__ */ new Date(now.getTime() - 6048e5)) : range === "30d" ? toInputDate(/* @__PURE__ */ new Date(now.getTime() - 2592e6)) : void 0;
-		try {
-			await downloadFilteredReportPdf(db, {
-				title: "Grafischer Tätigkeits- & Auswertungsbericht",
-				startDate,
-				endDate: range === "all" ? void 0 : toInputDate(now),
-				customerId: selectedCustomerId,
-				productId: selectedProductId
-			});
-			onNotify?.("Grafische PDF-Auswertung erstellt.");
-		} catch (err) {
-			onNotify?.(err instanceof Error ? err.message : "PDF-Auswertung fehlgeschlagen.", true);
-		}
-	};
-	const customerStats = (0, import_react.useMemo)(() => {
-		const acc = /* @__PURE__ */ new Map();
-		for (const e of filteredEntries) {
-			const isInternal = e.entryType === "internal" || !e.customerId;
-			const key = isInternal ? INTERNAL_KEY : e.customerId;
-			const cust = !isInternal ? customerMap.get(e.customerId) : void 0;
-			const existing = acc.get(key) ?? {
-				customerId: key,
-				name: isInternal ? "Intern (nicht verrechenbar)" : cust?.companyName ?? "Unbekannter Kunde",
-				color: customerColorMap.get(key) ?? "#7c3aed",
-				seconds: 0,
-				revenueNet: 0,
-				entries: 0
-			};
-			existing.seconds += e.durationSeconds;
-			if (!isInternal && e.billable) existing.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
-			existing.entries += 1;
-			acc.set(key, existing);
-		}
-		return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
-	}, [
-		filteredEntries,
-		customerMap,
-		customerColorMap
-	]);
-	const productStats = (0, import_react.useMemo)(() => {
-		const acc = /* @__PURE__ */ new Map();
-		for (const e of filteredEntries) {
-			const isInternal = e.entryType === "internal" || !e.customerId;
-			const key = isInternal ? `int::${e.internalCategory || "Interne Tätigkeit"}` : e.productId;
-			const prod = !isInternal ? productMap.get(e.productId) : void 0;
-			const existing = acc.get(key) ?? {
-				productId: key,
-				name: isInternal ? `[Intern] ${e.internalCategory || "Interne Tätigkeit"}` : prod?.name ?? "Leistung",
-				color: isInternal ? INTERNAL_COLOR : productColorMap.get(e.productId) ?? "#2563eb",
-				seconds: 0,
-				revenueNet: 0,
-				entries: 0
-			};
-			existing.seconds += e.durationSeconds;
-			if (!isInternal && e.billable) existing.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
-			existing.entries += 1;
-			acc.set(key, existing);
-		}
-		return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
-	}, [
-		filteredEntries,
-		productMap,
-		productColorMap
-	]);
-	const dailySeries = (0, import_react.useMemo)(() => {
-		const dayMap = /* @__PURE__ */ new Map();
-		if (range === "7d" || range === "30d") {
-			const daysCount = range === "7d" ? 7 : 14;
-			for (let i = daysCount - 1; i >= 0; i--) {
-				const key = getLocalDateKey((/* @__PURE__ */ new Date(Date.now() - i * 86400 * 1e3)).toISOString());
-				dayMap.set(key, {
-					dateKey: key,
-					totalSeconds: 0,
-					revenueNet: 0,
-					byCustomer: /* @__PURE__ */ new Map()
-				});
-			}
-		}
-		for (const e of filteredEntries) {
-			const isInternal = e.entryType === "internal" || !e.customerId;
-			const custKey = isInternal ? INTERNAL_KEY : e.customerId;
-			const key = getLocalDateKey(e.startTime);
-			const bucket = dayMap.get(key) ?? {
-				dateKey: key,
-				totalSeconds: 0,
-				revenueNet: 0,
-				byCustomer: /* @__PURE__ */ new Map()
-			};
-			bucket.totalSeconds += e.durationSeconds;
-			if (!isInternal && e.billable) bucket.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
-			bucket.byCustomer.set(custKey, (bucket.byCustomer.get(custKey) ?? 0) + e.durationSeconds);
-			dayMap.set(key, bucket);
-		}
-		return Array.from(dayMap.values()).sort((a, b) => a.dateKey.localeCompare(b.dateKey)).slice(-16);
-	}, [filteredEntries, range]);
-	const maxDayHours = (0, import_react.useMemo)(() => {
-		const peak = dailySeries.reduce((max, d) => Math.max(max, d.totalSeconds / 3600), 0);
-		return Math.max(1, Math.ceil(peak));
-	}, [dailySeries]);
-	const matrixRows = (0, import_react.useMemo)(() => {
-		const grouped = /* @__PURE__ */ new Map();
-		for (const e of filteredEntries) {
-			const isInternal = e.entryType === "internal" || !e.customerId;
-			const custKey = isInternal ? INTERNAL_KEY : e.customerId;
-			const key = `${custKey}::${isInternal ? e.internalCategory || "Intern" : e.productId}`;
-			const cust = !isInternal ? customerMap.get(e.customerId) : void 0;
-			const prod = !isInternal ? productMap.get(e.productId) : void 0;
-			const item = grouped.get(key) ?? {
-				key,
-				customerName: isInternal ? "Intern (ohne Ertrag)" : cust?.companyName ?? "Unbekannter Kunde",
-				customerColor: customerColorMap.get(custKey) ?? "#7c3aed",
-				productName: isInternal ? e.internalCategory || "Interne Tätigkeit" : prod?.name ?? "Leistung",
-				hours: 0,
-				revenueNet: 0,
-				count: 0
-			};
-			const hrs = e.durationSeconds / 3600;
-			item.hours += hrs;
-			if (!isInternal && e.billable) item.revenueNet += hrs * e.hourlyRateNet;
-			item.count += 1;
-			grouped.set(key, item);
-		}
-		return Array.from(grouped.values()).sort((a, b) => b.hours - a.hours);
-	}, [
-		filteredEntries,
-		customerMap,
-		productMap,
-		customerColorMap
-	]);
-	const donutSegments = (0, import_react.useMemo)(() => {
-		const totalSeconds = customerStats.reduce((sum, c) => sum + c.seconds, 0);
-		if (totalSeconds <= 0) return [];
-		const circumference = 2 * Math.PI * 64;
-		let cumulative = 0;
-		return customerStats.map((c) => {
-			const fraction = c.seconds / totalSeconds;
-			const dashLength = fraction * circumference;
-			const dashOffset = -cumulative;
-			cumulative += dashLength;
-			return {
-				...c,
-				fraction,
-				dashArray: `${dashLength} ${circumference}`,
-				dashOffset
-			};
-		});
-	}, [customerStats]);
-	const activeDayDetail = (0, import_react.useMemo)(() => {
-		if (!hoveredDayKey) return null;
-		return dailySeries.find((d) => d.dateKey === hoveredDayKey) ?? null;
-	}, [hoveredDayKey, dailySeries]);
-	const maxProductSeconds = (0, import_react.useMemo)(() => productStats.reduce((m, p) => Math.max(m, p.seconds), 1), [productStats]);
-	const maxMatrixHours = (0, import_react.useMemo)(() => matrixRows.reduce((m, r) => Math.max(m, r.hours), 1), [matrixRows]);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: "space-y-6",
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex items-center gap-2",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
-						children: "Grafische Zeit- & Umsatzauswertung"
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
-						title: "Grafische Zeit- & Umsatzauswertung",
-						text: "Verteilung deiner erfassten Arbeitszeiten nach Tagen, Kunden und verknüpften Leistungen."
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "flex flex-wrap items-center gap-2",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "flex rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
-							children: [
-								{
-									id: "7d",
-									label: "7 Tage"
-								},
-								{
-									id: "30d",
-									label: "30 Tage"
-								},
-								{
-									id: "all",
-									label: "Gesamt"
+					isSignature: function(e, t) {
+						var r = this.reader.index;
+						this.reader.setIndex(e);
+						var n = this.reader.readString(4) === t;
+						return this.reader.setIndex(r), n;
+					},
+					readBlockEndOfCentral: function() {
+						this.diskNumber = this.reader.readInt(2), this.diskWithCentralDirStart = this.reader.readInt(2), this.centralDirRecordsOnThisDisk = this.reader.readInt(2), this.centralDirRecords = this.reader.readInt(2), this.centralDirSize = this.reader.readInt(4), this.centralDirOffset = this.reader.readInt(4), this.zipCommentLength = this.reader.readInt(2);
+						var e = this.reader.readData(this.zipCommentLength), t = o.uint8array ? "uint8array" : "array", r = i.transformTo(t, e);
+						this.zipComment = this.loadOptions.decodeFileName(r);
+					},
+					readBlockZip64EndOfCentral: function() {
+						this.zip64EndOfCentralSize = this.reader.readInt(8), this.reader.skip(4), this.diskNumber = this.reader.readInt(4), this.diskWithCentralDirStart = this.reader.readInt(4), this.centralDirRecordsOnThisDisk = this.reader.readInt(8), this.centralDirRecords = this.reader.readInt(8), this.centralDirSize = this.reader.readInt(8), this.centralDirOffset = this.reader.readInt(8), this.zip64ExtensibleData = {};
+						for (var e, t, r, n = this.zip64EndOfCentralSize - 44; 0 < n;) e = this.reader.readInt(2), t = this.reader.readInt(4), r = this.reader.readData(t), this.zip64ExtensibleData[e] = {
+							id: e,
+							length: t,
+							value: r
+						};
+					},
+					readBlockZip64EndOfCentralLocator: function() {
+						if (this.diskWithZip64CentralDirStart = this.reader.readInt(4), this.relativeOffsetEndOfZip64CentralDir = this.reader.readInt(8), this.disksCount = this.reader.readInt(4), 1 < this.disksCount) throw new Error("Multi-volumes zip are not supported");
+					},
+					readLocalFiles: function() {
+						var e = 0, t;
+						for (; e < this.files.length; e++) t = this.files[e], this.reader.setIndex(t.localHeaderOffset), this.checkSignature(s.LOCAL_FILE_HEADER), t.readLocalPart(this.reader), t.handleUTF8(), t.processAttributes();
+					},
+					readCentralDir: function() {
+						var e;
+						for (this.reader.setIndex(this.centralDirOffset); this.reader.readAndCheckSignature(s.CENTRAL_FILE_HEADER);) (e = new a({ zip64: this.zip64 }, this.loadOptions)).readCentralPart(this.reader), this.files.push(e);
+						if (this.centralDirRecords !== this.files.length && 0 !== this.centralDirRecords && 0 === this.files.length) throw new Error("Corrupted zip or bug: expected " + this.centralDirRecords + " records in central dir, got " + this.files.length);
+					},
+					readEndOfCentral: function() {
+						var e = this.reader.lastIndexOfSignature(s.CENTRAL_DIRECTORY_END);
+						if (e < 0) throw !this.isSignature(0, s.LOCAL_FILE_HEADER) ? /* @__PURE__ */ new Error("Can't find end of central directory : is this a zip file ? If it is, see https://stuk.github.io/jszip/documentation/howto/read_zip.html") : /* @__PURE__ */ new Error("Corrupted zip: can't find end of central directory");
+						this.reader.setIndex(e);
+						var t = e;
+						if (this.checkSignature(s.CENTRAL_DIRECTORY_END), this.readBlockEndOfCentral(), this.diskNumber === i.MAX_VALUE_16BITS || this.diskWithCentralDirStart === i.MAX_VALUE_16BITS || this.centralDirRecordsOnThisDisk === i.MAX_VALUE_16BITS || this.centralDirRecords === i.MAX_VALUE_16BITS || this.centralDirSize === i.MAX_VALUE_32BITS || this.centralDirOffset === i.MAX_VALUE_32BITS) {
+							if (this.zip64 = !0, (e = this.reader.lastIndexOfSignature(s.ZIP64_CENTRAL_DIRECTORY_LOCATOR)) < 0) throw new Error("Corrupted zip: can't find the ZIP64 end of central directory locator");
+							if (this.reader.setIndex(e), this.checkSignature(s.ZIP64_CENTRAL_DIRECTORY_LOCATOR), this.readBlockZip64EndOfCentralLocator(), !this.isSignature(this.relativeOffsetEndOfZip64CentralDir, s.ZIP64_CENTRAL_DIRECTORY_END) && (this.relativeOffsetEndOfZip64CentralDir = this.reader.lastIndexOfSignature(s.ZIP64_CENTRAL_DIRECTORY_END), this.relativeOffsetEndOfZip64CentralDir < 0)) throw new Error("Corrupted zip: can't find the ZIP64 end of central directory");
+							this.reader.setIndex(this.relativeOffsetEndOfZip64CentralDir), this.checkSignature(s.ZIP64_CENTRAL_DIRECTORY_END), this.readBlockZip64EndOfCentral();
+						}
+						var r = this.centralDirOffset + this.centralDirSize;
+						this.zip64 && (r += 20, r += 12 + this.zip64EndOfCentralSize);
+						var n = t - r;
+						if (0 < n) this.isSignature(t, s.CENTRAL_FILE_HEADER) || (this.reader.zero = n);
+						else if (n < 0) throw new Error("Corrupted zip: missing " + Math.abs(n) + " bytes.");
+					},
+					prepareReader: function(e) {
+						this.reader = n(e);
+					},
+					load: function(e) {
+						this.prepareReader(e), this.readEndOfCentral(), this.readCentralDir(), this.readLocalFiles();
+					}
+				}, t.exports = h;
+			}, {
+				"./reader/readerFor": 22,
+				"./signature": 23,
+				"./support": 30,
+				"./utils": 32,
+				"./zipEntry": 34
+			}],
+			34: [function(e, t, r) {
+				"use strict";
+				var n = e("./reader/readerFor"), s = e("./utils"), i = e("./compressedObject"), a = e("./crc32"), o = e("./utf8"), h = e("./compressions"), u = e("./support");
+				function l(e, t) {
+					this.options = e, this.loadOptions = t;
+				}
+				l.prototype = {
+					isEncrypted: function() {
+						return 1 == (1 & this.bitFlag);
+					},
+					useUTF8: function() {
+						return 2048 == (2048 & this.bitFlag);
+					},
+					readLocalPart: function(e) {
+						var t, r;
+						if (e.skip(22), this.fileNameLength = e.readInt(2), r = e.readInt(2), this.fileName = e.readData(this.fileNameLength), e.skip(r), -1 === this.compressedSize || -1 === this.uncompressedSize) throw new Error("Bug or corrupted zip : didn't get enough information from the central directory (compressedSize === -1 || uncompressedSize === -1)");
+						if (null === (t = function(e) {
+							for (var t in h) if (Object.prototype.hasOwnProperty.call(h, t) && h[t].magic === e) return h[t];
+							return null;
+						}(this.compressionMethod))) throw new Error("Corrupted zip : compression " + s.pretty(this.compressionMethod) + " unknown (inner file : " + s.transformTo("string", this.fileName) + ")");
+						this.decompressed = new i(this.compressedSize, this.uncompressedSize, this.crc32, t, e.readData(this.compressedSize));
+					},
+					readCentralPart: function(e) {
+						this.versionMadeBy = e.readInt(2), e.skip(2), this.bitFlag = e.readInt(2), this.compressionMethod = e.readString(2), this.date = e.readDate(), this.crc32 = e.readInt(4), this.compressedSize = e.readInt(4), this.uncompressedSize = e.readInt(4);
+						var t = e.readInt(2);
+						if (this.extraFieldsLength = e.readInt(2), this.fileCommentLength = e.readInt(2), this.diskNumberStart = e.readInt(2), this.internalFileAttributes = e.readInt(2), this.externalFileAttributes = e.readInt(4), this.localHeaderOffset = e.readInt(4), this.isEncrypted()) throw new Error("Encrypted zip are not supported");
+						e.skip(t), this.readExtraFields(e), this.parseZIP64ExtraField(e), this.fileComment = e.readData(this.fileCommentLength);
+					},
+					processAttributes: function() {
+						this.unixPermissions = null, this.dosPermissions = null;
+						var e = this.versionMadeBy >> 8;
+						this.dir = !!(16 & this.externalFileAttributes), 0 == e && (this.dosPermissions = 63 & this.externalFileAttributes), 3 == e && (this.unixPermissions = this.externalFileAttributes >> 16 & 65535), this.dir || "/" !== this.fileNameStr.slice(-1) || (this.dir = !0);
+					},
+					parseZIP64ExtraField: function() {
+						if (this.extraFields[1]) {
+							var e = n(this.extraFields[1].value);
+							this.uncompressedSize === s.MAX_VALUE_32BITS && (this.uncompressedSize = e.readInt(8)), this.compressedSize === s.MAX_VALUE_32BITS && (this.compressedSize = e.readInt(8)), this.localHeaderOffset === s.MAX_VALUE_32BITS && (this.localHeaderOffset = e.readInt(8)), this.diskNumberStart === s.MAX_VALUE_32BITS && (this.diskNumberStart = e.readInt(4));
+						}
+					},
+					readExtraFields: function(e) {
+						var t, r, n, i = e.index + this.extraFieldsLength;
+						for (this.extraFields || (this.extraFields = {}); e.index + 4 < i;) t = e.readInt(2), r = e.readInt(2), n = e.readData(r), this.extraFields[t] = {
+							id: t,
+							length: r,
+							value: n
+						};
+						e.setIndex(i);
+					},
+					handleUTF8: function() {
+						var e = u.uint8array ? "uint8array" : "array";
+						if (this.useUTF8()) this.fileNameStr = o.utf8decode(this.fileName), this.fileCommentStr = o.utf8decode(this.fileComment);
+						else {
+							var t = this.findExtraFieldUnicodePath();
+							if (null !== t) this.fileNameStr = t;
+							else {
+								var r = s.transformTo(e, this.fileName);
+								this.fileNameStr = this.loadOptions.decodeFileName(r);
+							}
+							var n = this.findExtraFieldUnicodeComment();
+							if (null !== n) this.fileCommentStr = n;
+							else {
+								var i = s.transformTo(e, this.fileComment);
+								this.fileCommentStr = this.loadOptions.decodeFileName(i);
+							}
+						}
+					},
+					findExtraFieldUnicodePath: function() {
+						var e = this.extraFields[28789];
+						if (e) {
+							var t = n(e.value);
+							return 1 !== t.readInt(1) ? null : a(this.fileName) !== t.readInt(4) ? null : o.utf8decode(t.readData(e.length - 5));
+						}
+						return null;
+					},
+					findExtraFieldUnicodeComment: function() {
+						var e = this.extraFields[25461];
+						if (e) {
+							var t = n(e.value);
+							return 1 !== t.readInt(1) ? null : a(this.fileComment) !== t.readInt(4) ? null : o.utf8decode(t.readData(e.length - 5));
+						}
+						return null;
+					}
+				}, t.exports = l;
+			}, {
+				"./compressedObject": 2,
+				"./compressions": 3,
+				"./crc32": 4,
+				"./reader/readerFor": 22,
+				"./support": 30,
+				"./utf8": 31,
+				"./utils": 32
+			}],
+			35: [function(e, t, r) {
+				"use strict";
+				function n(e, t, r) {
+					this.name = e, this.dir = r.dir, this.date = r.date, this.comment = r.comment, this.unixPermissions = r.unixPermissions, this.dosPermissions = r.dosPermissions, this._data = t, this._dataBinary = r.binary, this.options = {
+						compression: r.compression,
+						compressionOptions: r.compressionOptions
+					};
+				}
+				var s = e("./stream/StreamHelper"), i = e("./stream/DataWorker"), a = e("./utf8"), o = e("./compressedObject"), h = e("./stream/GenericWorker");
+				n.prototype = {
+					internalStream: function(e) {
+						var t = null, r = "string";
+						try {
+							if (!e) throw new Error("No output type specified.");
+							var n = "string" === (r = e.toLowerCase()) || "text" === r;
+							"binarystring" !== r && "text" !== r || (r = "string"), t = this._decompressWorker();
+							var i = !this._dataBinary;
+							i && !n && (t = t.pipe(new a.Utf8EncodeWorker())), !i && n && (t = t.pipe(new a.Utf8DecodeWorker()));
+						} catch (e) {
+							(t = new h("error")).error(e);
+						}
+						return new s(t, r, "");
+					},
+					async: function(e, t) {
+						return this.internalStream(e).accumulate(t);
+					},
+					nodeStream: function(e, t) {
+						return this.internalStream(e || "nodebuffer").toNodejsStream(t);
+					},
+					_compressWorker: function(e, t) {
+						if (this._data instanceof o && this._data.compression.magic === e.magic) return this._data.getCompressedWorker();
+						var r = this._decompressWorker();
+						return this._dataBinary || (r = r.pipe(new a.Utf8EncodeWorker())), o.createWorkerFrom(r, e, t);
+					},
+					_decompressWorker: function() {
+						return this._data instanceof o ? this._data.getContentWorker() : this._data instanceof h ? this._data : new i(this._data);
+					}
+				};
+				for (var u = [
+					"asText",
+					"asBinary",
+					"asNodeBuffer",
+					"asUint8Array",
+					"asArrayBuffer"
+				], l = function() {
+					throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
+				}, f = 0; f < u.length; f++) n.prototype[u[f]] = l;
+				t.exports = n;
+			}, {
+				"./compressedObject": 2,
+				"./stream/DataWorker": 27,
+				"./stream/GenericWorker": 28,
+				"./stream/StreamHelper": 29,
+				"./utf8": 31
+			}],
+			36: [function(e, l, t) {
+				(function(t) {
+					"use strict";
+					var r, n, e = t.MutationObserver || t.WebKitMutationObserver;
+					if (e) {
+						var i = 0, s = new e(u), a = t.document.createTextNode("");
+						s.observe(a, { characterData: !0 }), r = function() {
+							a.data = i = ++i % 2;
+						};
+					} else if (t.setImmediate || void 0 === t.MessageChannel) r = "document" in t && "onreadystatechange" in t.document.createElement("script") ? function() {
+						var e = t.document.createElement("script");
+						e.onreadystatechange = function() {
+							u(), e.onreadystatechange = null, e.parentNode.removeChild(e), e = null;
+						}, t.document.documentElement.appendChild(e);
+					} : function() {
+						setTimeout(u, 0);
+					};
+					else {
+						var o = new t.MessageChannel();
+						o.port1.onmessage = u, r = function() {
+							o.port2.postMessage(0);
+						};
+					}
+					var h = [];
+					function u() {
+						var e, t;
+						n = !0;
+						for (var r = h.length; r;) {
+							for (t = h, h = [], e = -1; ++e < r;) t[e]();
+							r = h.length;
+						}
+						n = !1;
+					}
+					l.exports = function(e) {
+						1 !== h.push(e) || n || r();
+					};
+				}).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
+			}, {}],
+			37: [function(e, t, r) {
+				"use strict";
+				var i = e("immediate");
+				function u() {}
+				var l = {}, s = ["REJECTED"], a = ["FULFILLED"], n = ["PENDING"];
+				function o(e) {
+					if ("function" != typeof e) throw new TypeError("resolver must be a function");
+					this.state = n, this.queue = [], this.outcome = void 0, e !== u && d(this, e);
+				}
+				function h(e, t, r) {
+					this.promise = e, "function" == typeof t && (this.onFulfilled = t, this.callFulfilled = this.otherCallFulfilled), "function" == typeof r && (this.onRejected = r, this.callRejected = this.otherCallRejected);
+				}
+				function f(t, r, n) {
+					i(function() {
+						var e;
+						try {
+							e = r(n);
+						} catch (e) {
+							return l.reject(t, e);
+						}
+						e === t ? l.reject(t, /* @__PURE__ */ new TypeError("Cannot resolve promise with itself")) : l.resolve(t, e);
+					});
+				}
+				function c(e) {
+					var t = e && e.then;
+					if (e && ("object" == typeof e || "function" == typeof e) && "function" == typeof t) return function() {
+						t.apply(e, arguments);
+					};
+				}
+				function d(t, e) {
+					var r = !1;
+					function n(e) {
+						r || (r = !0, l.reject(t, e));
+					}
+					function i(e) {
+						r || (r = !0, l.resolve(t, e));
+					}
+					var s = p(function() {
+						e(i, n);
+					});
+					"error" === s.status && n(s.value);
+				}
+				function p(e, t) {
+					var r = {};
+					try {
+						r.value = e(t), r.status = "success";
+					} catch (e) {
+						r.status = "error", r.value = e;
+					}
+					return r;
+				}
+				(t.exports = o).prototype.finally = function(t) {
+					if ("function" != typeof t) return this;
+					var r = this.constructor;
+					return this.then(function(e) {
+						return r.resolve(t()).then(function() {
+							return e;
+						});
+					}, function(e) {
+						return r.resolve(t()).then(function() {
+							throw e;
+						});
+					});
+				}, o.prototype.catch = function(e) {
+					return this.then(null, e);
+				}, o.prototype.then = function(e, t) {
+					if ("function" != typeof e && this.state === a || "function" != typeof t && this.state === s) return this;
+					var r = new this.constructor(u);
+					this.state !== n ? f(r, this.state === a ? e : t, this.outcome) : this.queue.push(new h(r, e, t));
+					return r;
+				}, h.prototype.callFulfilled = function(e) {
+					l.resolve(this.promise, e);
+				}, h.prototype.otherCallFulfilled = function(e) {
+					f(this.promise, this.onFulfilled, e);
+				}, h.prototype.callRejected = function(e) {
+					l.reject(this.promise, e);
+				}, h.prototype.otherCallRejected = function(e) {
+					f(this.promise, this.onRejected, e);
+				}, l.resolve = function(e, t) {
+					var r = p(c, t);
+					if ("error" === r.status) return l.reject(e, r.value);
+					var n = r.value;
+					if (n) d(e, n);
+					else {
+						e.state = a, e.outcome = t;
+						for (var i = -1, s = e.queue.length; ++i < s;) e.queue[i].callFulfilled(t);
+					}
+					return e;
+				}, l.reject = function(e, t) {
+					e.state = s, e.outcome = t;
+					for (var r = -1, n = e.queue.length; ++r < n;) e.queue[r].callRejected(t);
+					return e;
+				}, o.resolve = function(e) {
+					if (e instanceof this) return e;
+					return l.resolve(new this(u), e);
+				}, o.reject = function(e) {
+					var t = new this(u);
+					return l.reject(t, e);
+				}, o.all = function(e) {
+					var r = this;
+					if ("[object Array]" !== Object.prototype.toString.call(e)) return this.reject(/* @__PURE__ */ new TypeError("must be an array"));
+					var n = e.length, i = !1;
+					if (!n) return this.resolve([]);
+					var s = new Array(n), a = 0, t = -1, o = new this(u);
+					for (; ++t < n;) h(e[t], t);
+					return o;
+					function h(e, t) {
+						r.resolve(e).then(function(e) {
+							s[t] = e, ++a !== n || i || (i = !0, l.resolve(o, s));
+						}, function(e) {
+							i || (i = !0, l.reject(o, e));
+						});
+					}
+				}, o.race = function(e) {
+					var t = this;
+					if ("[object Array]" !== Object.prototype.toString.call(e)) return this.reject(/* @__PURE__ */ new TypeError("must be an array"));
+					var r = e.length, n = !1;
+					if (!r) return this.resolve([]);
+					var i = -1, s = new this(u);
+					for (; ++i < r;) a = e[i], t.resolve(a).then(function(e) {
+						n || (n = !0, l.resolve(s, e));
+					}, function(e) {
+						n || (n = !0, l.reject(s, e));
+					});
+					var a;
+					return s;
+				};
+			}, { immediate: 36 }],
+			38: [function(e, t, r) {
+				"use strict";
+				var n = {};
+				(0, e("./lib/utils/common").assign)(n, e("./lib/deflate"), e("./lib/inflate"), e("./lib/zlib/constants")), t.exports = n;
+			}, {
+				"./lib/deflate": 39,
+				"./lib/inflate": 40,
+				"./lib/utils/common": 41,
+				"./lib/zlib/constants": 44
+			}],
+			39: [function(e, t, r) {
+				"use strict";
+				var a = e("./zlib/deflate"), o = e("./utils/common"), h = e("./utils/strings"), i = e("./zlib/messages"), s = e("./zlib/zstream"), u = Object.prototype.toString, l = 0, f = -1, c = 0, d = 8;
+				function p(e) {
+					if (!(this instanceof p)) return new p(e);
+					this.options = o.assign({
+						level: f,
+						method: d,
+						chunkSize: 16384,
+						windowBits: 15,
+						memLevel: 8,
+						strategy: c,
+						to: ""
+					}, e || {});
+					var t = this.options;
+					t.raw && 0 < t.windowBits ? t.windowBits = -t.windowBits : t.gzip && 0 < t.windowBits && t.windowBits < 16 && (t.windowBits += 16), this.err = 0, this.msg = "", this.ended = !1, this.chunks = [], this.strm = new s(), this.strm.avail_out = 0;
+					var r = a.deflateInit2(this.strm, t.level, t.method, t.windowBits, t.memLevel, t.strategy);
+					if (r !== l) throw new Error(i[r]);
+					if (t.header && a.deflateSetHeader(this.strm, t.header), t.dictionary) {
+						var n = "string" == typeof t.dictionary ? h.string2buf(t.dictionary) : "[object ArrayBuffer]" === u.call(t.dictionary) ? new Uint8Array(t.dictionary) : t.dictionary;
+						if ((r = a.deflateSetDictionary(this.strm, n)) !== l) throw new Error(i[r]);
+						this._dict_set = !0;
+					}
+				}
+				function n(e, t) {
+					var r = new p(t);
+					if (r.push(e, !0), r.err) throw r.msg || i[r.err];
+					return r.result;
+				}
+				p.prototype.push = function(e, t) {
+					var r, n, i = this.strm, s = this.options.chunkSize;
+					if (this.ended) return !1;
+					n = t === ~~t ? t : !0 === t ? 4 : 0, "string" == typeof e ? i.input = h.string2buf(e) : "[object ArrayBuffer]" === u.call(e) ? i.input = new Uint8Array(e) : i.input = e, i.next_in = 0, i.avail_in = i.input.length;
+					do {
+						if (0 === i.avail_out && (i.output = new o.Buf8(s), i.next_out = 0, i.avail_out = s), 1 !== (r = a.deflate(i, n)) && r !== l) return this.onEnd(r), !(this.ended = !0);
+						0 !== i.avail_out && (0 !== i.avail_in || 4 !== n && 2 !== n) || ("string" === this.options.to ? this.onData(h.buf2binstring(o.shrinkBuf(i.output, i.next_out))) : this.onData(o.shrinkBuf(i.output, i.next_out)));
+					} while ((0 < i.avail_in || 0 === i.avail_out) && 1 !== r);
+					return 4 === n ? (r = a.deflateEnd(this.strm), this.onEnd(r), this.ended = !0, r === l) : 2 !== n || (this.onEnd(l), !(i.avail_out = 0));
+				}, p.prototype.onData = function(e) {
+					this.chunks.push(e);
+				}, p.prototype.onEnd = function(e) {
+					e === l && ("string" === this.options.to ? this.result = this.chunks.join("") : this.result = o.flattenChunks(this.chunks)), this.chunks = [], this.err = e, this.msg = this.strm.msg;
+				}, r.Deflate = p, r.deflate = n, r.deflateRaw = function(e, t) {
+					return (t = t || {}).raw = !0, n(e, t);
+				}, r.gzip = function(e, t) {
+					return (t = t || {}).gzip = !0, n(e, t);
+				};
+			}, {
+				"./utils/common": 41,
+				"./utils/strings": 42,
+				"./zlib/deflate": 46,
+				"./zlib/messages": 51,
+				"./zlib/zstream": 53
+			}],
+			40: [function(e, t, r) {
+				"use strict";
+				var c = e("./zlib/inflate"), d = e("./utils/common"), p = e("./utils/strings"), m = e("./zlib/constants"), n = e("./zlib/messages"), i = e("./zlib/zstream"), s = e("./zlib/gzheader"), _ = Object.prototype.toString;
+				function a(e) {
+					if (!(this instanceof a)) return new a(e);
+					this.options = d.assign({
+						chunkSize: 16384,
+						windowBits: 0,
+						to: ""
+					}, e || {});
+					var t = this.options;
+					t.raw && 0 <= t.windowBits && t.windowBits < 16 && (t.windowBits = -t.windowBits, 0 === t.windowBits && (t.windowBits = -15)), !(0 <= t.windowBits && t.windowBits < 16) || e && e.windowBits || (t.windowBits += 32), 15 < t.windowBits && t.windowBits < 48 && 0 == (15 & t.windowBits) && (t.windowBits |= 15), this.err = 0, this.msg = "", this.ended = !1, this.chunks = [], this.strm = new i(), this.strm.avail_out = 0;
+					var r = c.inflateInit2(this.strm, t.windowBits);
+					if (r !== m.Z_OK) throw new Error(n[r]);
+					this.header = new s(), c.inflateGetHeader(this.strm, this.header);
+				}
+				function o(e, t) {
+					var r = new a(t);
+					if (r.push(e, !0), r.err) throw r.msg || n[r.err];
+					return r.result;
+				}
+				a.prototype.push = function(e, t) {
+					var r, n, i, s, a, o, h = this.strm, u = this.options.chunkSize, l = this.options.dictionary, f = !1;
+					if (this.ended) return !1;
+					n = t === ~~t ? t : !0 === t ? m.Z_FINISH : m.Z_NO_FLUSH, "string" == typeof e ? h.input = p.binstring2buf(e) : "[object ArrayBuffer]" === _.call(e) ? h.input = new Uint8Array(e) : h.input = e, h.next_in = 0, h.avail_in = h.input.length;
+					do {
+						if (0 === h.avail_out && (h.output = new d.Buf8(u), h.next_out = 0, h.avail_out = u), (r = c.inflate(h, m.Z_NO_FLUSH)) === m.Z_NEED_DICT && l && (o = "string" == typeof l ? p.string2buf(l) : "[object ArrayBuffer]" === _.call(l) ? new Uint8Array(l) : l, r = c.inflateSetDictionary(this.strm, o)), r === m.Z_BUF_ERROR && !0 === f && (r = m.Z_OK, f = !1), r !== m.Z_STREAM_END && r !== m.Z_OK) return this.onEnd(r), !(this.ended = !0);
+						h.next_out && (0 !== h.avail_out && r !== m.Z_STREAM_END && (0 !== h.avail_in || n !== m.Z_FINISH && n !== m.Z_SYNC_FLUSH) || ("string" === this.options.to ? (i = p.utf8border(h.output, h.next_out), s = h.next_out - i, a = p.buf2string(h.output, i), h.next_out = s, h.avail_out = u - s, s && d.arraySet(h.output, h.output, i, s, 0), this.onData(a)) : this.onData(d.shrinkBuf(h.output, h.next_out)))), 0 === h.avail_in && 0 === h.avail_out && (f = !0);
+					} while ((0 < h.avail_in || 0 === h.avail_out) && r !== m.Z_STREAM_END);
+					return r === m.Z_STREAM_END && (n = m.Z_FINISH), n === m.Z_FINISH ? (r = c.inflateEnd(this.strm), this.onEnd(r), this.ended = !0, r === m.Z_OK) : n !== m.Z_SYNC_FLUSH || (this.onEnd(m.Z_OK), !(h.avail_out = 0));
+				}, a.prototype.onData = function(e) {
+					this.chunks.push(e);
+				}, a.prototype.onEnd = function(e) {
+					e === m.Z_OK && ("string" === this.options.to ? this.result = this.chunks.join("") : this.result = d.flattenChunks(this.chunks)), this.chunks = [], this.err = e, this.msg = this.strm.msg;
+				}, r.Inflate = a, r.inflate = o, r.inflateRaw = function(e, t) {
+					return (t = t || {}).raw = !0, o(e, t);
+				}, r.ungzip = o;
+			}, {
+				"./utils/common": 41,
+				"./utils/strings": 42,
+				"./zlib/constants": 44,
+				"./zlib/gzheader": 47,
+				"./zlib/inflate": 49,
+				"./zlib/messages": 51,
+				"./zlib/zstream": 53
+			}],
+			41: [function(e, t, r) {
+				"use strict";
+				var n = "undefined" != typeof Uint8Array && "undefined" != typeof Uint16Array && "undefined" != typeof Int32Array;
+				r.assign = function(e) {
+					for (var t = Array.prototype.slice.call(arguments, 1); t.length;) {
+						var r = t.shift();
+						if (r) {
+							if ("object" != typeof r) throw new TypeError(r + "must be non-object");
+							for (var n in r) r.hasOwnProperty(n) && (e[n] = r[n]);
+						}
+					}
+					return e;
+				}, r.shrinkBuf = function(e, t) {
+					return e.length === t ? e : e.subarray ? e.subarray(0, t) : (e.length = t, e);
+				};
+				var i = {
+					arraySet: function(e, t, r, n, i) {
+						if (t.subarray && e.subarray) e.set(t.subarray(r, r + n), i);
+						else for (var s = 0; s < n; s++) e[i + s] = t[r + s];
+					},
+					flattenChunks: function(e) {
+						var t = n = 0, r = e.length, n, i, s, a;
+						for (; t < r; t++) n += e[t].length;
+						for (a = new Uint8Array(n), t = i = 0, r = e.length; t < r; t++) s = e[t], a.set(s, i), i += s.length;
+						return a;
+					}
+				}, s = {
+					arraySet: function(e, t, r, n, i) {
+						for (var s = 0; s < n; s++) e[i + s] = t[r + s];
+					},
+					flattenChunks: function(e) {
+						return [].concat.apply([], e);
+					}
+				};
+				r.setTyped = function(e) {
+					e ? (r.Buf8 = Uint8Array, r.Buf16 = Uint16Array, r.Buf32 = Int32Array, r.assign(r, i)) : (r.Buf8 = Array, r.Buf16 = Array, r.Buf32 = Array, r.assign(r, s));
+				}, r.setTyped(n);
+			}, {}],
+			42: [function(e, t, r) {
+				"use strict";
+				var h = e("./common"), i = !0, s = !0;
+				try {
+					String.fromCharCode.apply(null, [0]);
+				} catch (e) {
+					i = !1;
+				}
+				try {
+					String.fromCharCode.apply(null, /* @__PURE__ */ new Uint8Array(1));
+				} catch (e) {
+					s = !1;
+				}
+				for (var u = new h.Buf8(256), n = 0; n < 256; n++) u[n] = 252 <= n ? 6 : 248 <= n ? 5 : 240 <= n ? 4 : 224 <= n ? 3 : 192 <= n ? 2 : 1;
+				function l(e, t) {
+					if (t < 65537 && (e.subarray && s || !e.subarray && i)) return String.fromCharCode.apply(null, h.shrinkBuf(e, t));
+					for (var r = "", n = 0; n < t; n++) r += String.fromCharCode(e[n]);
+					return r;
+				}
+				u[254] = u[254] = 1, r.string2buf = function(e) {
+					var t, r, n, i, s, a = e.length, o = 0;
+					for (i = 0; i < a; i++) 55296 == (64512 & (r = e.charCodeAt(i))) && i + 1 < a && 56320 == (64512 & (n = e.charCodeAt(i + 1))) && (r = 65536 + (r - 55296 << 10) + (n - 56320), i++), o += r < 128 ? 1 : r < 2048 ? 2 : r < 65536 ? 3 : 4;
+					for (t = new h.Buf8(o), i = s = 0; s < o; i++) 55296 == (64512 & (r = e.charCodeAt(i))) && i + 1 < a && 56320 == (64512 & (n = e.charCodeAt(i + 1))) && (r = 65536 + (r - 55296 << 10) + (n - 56320), i++), r < 128 ? t[s++] = r : (r < 2048 ? t[s++] = 192 | r >>> 6 : (r < 65536 ? t[s++] = 224 | r >>> 12 : (t[s++] = 240 | r >>> 18, t[s++] = 128 | r >>> 12 & 63), t[s++] = 128 | r >>> 6 & 63), t[s++] = 128 | 63 & r);
+					return t;
+				}, r.buf2binstring = function(e) {
+					return l(e, e.length);
+				}, r.binstring2buf = function(e) {
+					for (var t = new h.Buf8(e.length), r = 0, n = t.length; r < n; r++) t[r] = e.charCodeAt(r);
+					return t;
+				}, r.buf2string = function(e, t) {
+					var r, n, i, s, a = t || e.length, o = new Array(2 * a);
+					for (r = n = 0; r < a;) if ((i = e[r++]) < 128) o[n++] = i;
+					else if (4 < (s = u[i])) o[n++] = 65533, r += s - 1;
+					else {
+						for (i &= 2 === s ? 31 : 3 === s ? 15 : 7; 1 < s && r < a;) i = i << 6 | 63 & e[r++], s--;
+						1 < s ? o[n++] = 65533 : i < 65536 ? o[n++] = i : (i -= 65536, o[n++] = 55296 | i >> 10 & 1023, o[n++] = 56320 | 1023 & i);
+					}
+					return l(o, n);
+				}, r.utf8border = function(e, t) {
+					var r;
+					for ((t = t || e.length) > e.length && (t = e.length), r = t - 1; 0 <= r && 128 == (192 & e[r]);) r--;
+					return r < 0 ? t : 0 === r ? t : r + u[e[r]] > t ? r : t;
+				};
+			}, { "./common": 41 }],
+			43: [function(e, t, r) {
+				"use strict";
+				t.exports = function(e, t, r, n) {
+					for (var i = 65535 & e | 0, s = e >>> 16 & 65535 | 0, a = 0; 0 !== r;) {
+						for (r -= a = 2e3 < r ? 2e3 : r; s = s + (i = i + t[n++] | 0) | 0, --a;);
+						i %= 65521, s %= 65521;
+					}
+					return i | s << 16 | 0;
+				};
+			}, {}],
+			44: [function(e, t, r) {
+				"use strict";
+				t.exports = {
+					Z_NO_FLUSH: 0,
+					Z_PARTIAL_FLUSH: 1,
+					Z_SYNC_FLUSH: 2,
+					Z_FULL_FLUSH: 3,
+					Z_FINISH: 4,
+					Z_BLOCK: 5,
+					Z_TREES: 6,
+					Z_OK: 0,
+					Z_STREAM_END: 1,
+					Z_NEED_DICT: 2,
+					Z_ERRNO: -1,
+					Z_STREAM_ERROR: -2,
+					Z_DATA_ERROR: -3,
+					Z_BUF_ERROR: -5,
+					Z_NO_COMPRESSION: 0,
+					Z_BEST_SPEED: 1,
+					Z_BEST_COMPRESSION: 9,
+					Z_DEFAULT_COMPRESSION: -1,
+					Z_FILTERED: 1,
+					Z_HUFFMAN_ONLY: 2,
+					Z_RLE: 3,
+					Z_FIXED: 4,
+					Z_DEFAULT_STRATEGY: 0,
+					Z_BINARY: 0,
+					Z_TEXT: 1,
+					Z_UNKNOWN: 2,
+					Z_DEFLATED: 8
+				};
+			}, {}],
+			45: [function(e, t, r) {
+				"use strict";
+				var o = function() {
+					for (var e, t = [], r = 0; r < 256; r++) {
+						e = r;
+						for (var n = 0; n < 8; n++) e = 1 & e ? 3988292384 ^ e >>> 1 : e >>> 1;
+						t[r] = e;
+					}
+					return t;
+				}();
+				t.exports = function(e, t, r, n) {
+					var i = o, s = n + r;
+					e ^= -1;
+					for (var a = n; a < s; a++) e = e >>> 8 ^ i[255 & (e ^ t[a])];
+					return -1 ^ e;
+				};
+			}, {}],
+			46: [function(e, t, r) {
+				"use strict";
+				var h, c = e("../utils/common"), u = e("./trees"), d = e("./adler32"), p = e("./crc32"), n = e("./messages"), l = 0, f = 4, m = 0, _ = -2, g = -1, b = 4, i = 2, v = 8, y = 9, s = 286, a = 30, o = 19, w = 2 * s + 1, k = 15, x = 3, S = 258, z = S + x + 1, C = 42, E = 113, A = 1, I = 2, O = 3, B = 4;
+				function R(e, t) {
+					return e.msg = n[t], t;
+				}
+				function T(e) {
+					return (e << 1) - (4 < e ? 9 : 0);
+				}
+				function D(e) {
+					for (var t = e.length; 0 <= --t;) e[t] = 0;
+				}
+				function F(e) {
+					var t = e.state, r = t.pending;
+					r > e.avail_out && (r = e.avail_out), 0 !== r && (c.arraySet(e.output, t.pending_buf, t.pending_out, r, e.next_out), e.next_out += r, t.pending_out += r, e.total_out += r, e.avail_out -= r, t.pending -= r, 0 === t.pending && (t.pending_out = 0));
+				}
+				function N(e, t) {
+					u._tr_flush_block(e, 0 <= e.block_start ? e.block_start : -1, e.strstart - e.block_start, t), e.block_start = e.strstart, F(e.strm);
+				}
+				function U(e, t) {
+					e.pending_buf[e.pending++] = t;
+				}
+				function P(e, t) {
+					e.pending_buf[e.pending++] = t >>> 8 & 255, e.pending_buf[e.pending++] = 255 & t;
+				}
+				function L(e, t) {
+					var r, n, i = e.max_chain_length, s = e.strstart, a = e.prev_length, o = e.nice_match, h = e.strstart > e.w_size - z ? e.strstart - (e.w_size - z) : 0, u = e.window, l = e.w_mask, f = e.prev, c = e.strstart + S, d = u[s + a - 1], p = u[s + a];
+					e.prev_length >= e.good_match && (i >>= 2), o > e.lookahead && (o = e.lookahead);
+					do
+						if (u[(r = t) + a] === p && u[r + a - 1] === d && u[r] === u[s] && u[++r] === u[s + 1]) {
+							s += 2, r++;
+							do;
+							while (u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && s < c);
+							if (n = S - (c - s), s = c - S, a < n) {
+								if (e.match_start = t, o <= (a = n)) break;
+								d = u[s + a - 1], p = u[s + a];
+							}
+						}
+					while ((t = f[t & l]) > h && 0 != --i);
+					return a <= e.lookahead ? a : e.lookahead;
+				}
+				function j(e) {
+					var t, r, n, i, s, a, o, h, u, l, f = e.w_size;
+					do {
+						if (i = e.window_size - e.lookahead - e.strstart, e.strstart >= f + (f - z)) {
+							for (c.arraySet(e.window, e.window, f, f, 0), e.match_start -= f, e.strstart -= f, e.block_start -= f, t = r = e.hash_size; n = e.head[--t], e.head[t] = f <= n ? n - f : 0, --r;);
+							for (t = r = f; n = e.prev[--t], e.prev[t] = f <= n ? n - f : 0, --r;);
+							i += f;
+						}
+						if (0 === e.strm.avail_in) break;
+						if (a = e.strm, o = e.window, h = e.strstart + e.lookahead, u = i, l = void 0, l = a.avail_in, u < l && (l = u), r = 0 === l ? 0 : (a.avail_in -= l, c.arraySet(o, a.input, a.next_in, l, h), 1 === a.state.wrap ? a.adler = d(a.adler, o, l, h) : 2 === a.state.wrap && (a.adler = p(a.adler, o, l, h)), a.next_in += l, a.total_in += l, l), e.lookahead += r, e.lookahead + e.insert >= x) for (s = e.strstart - e.insert, e.ins_h = e.window[s], e.ins_h = (e.ins_h << e.hash_shift ^ e.window[s + 1]) & e.hash_mask; e.insert && (e.ins_h = (e.ins_h << e.hash_shift ^ e.window[s + x - 1]) & e.hash_mask, e.prev[s & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = s, s++, e.insert--, !(e.lookahead + e.insert < x)););
+					} while (e.lookahead < z && 0 !== e.strm.avail_in);
+				}
+				function Z(e, t) {
+					for (var r, n;;) {
+						if (e.lookahead < z) {
+							if (j(e), e.lookahead < z && t === l) return A;
+							if (0 === e.lookahead) break;
+						}
+						if (r = 0, e.lookahead >= x && (e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + x - 1]) & e.hash_mask, r = e.prev[e.strstart & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = e.strstart), 0 !== r && e.strstart - r <= e.w_size - z && (e.match_length = L(e, r)), e.match_length >= x) if (n = u._tr_tally(e, e.strstart - e.match_start, e.match_length - x), e.lookahead -= e.match_length, e.match_length <= e.max_lazy_match && e.lookahead >= x) {
+							for (e.match_length--; e.strstart++, e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + x - 1]) & e.hash_mask, r = e.prev[e.strstart & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = e.strstart, 0 != --e.match_length;);
+							e.strstart++;
+						} else e.strstart += e.match_length, e.match_length = 0, e.ins_h = e.window[e.strstart], e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + 1]) & e.hash_mask;
+						else n = u._tr_tally(e, 0, e.window[e.strstart]), e.lookahead--, e.strstart++;
+						if (n && (N(e, !1), 0 === e.strm.avail_out)) return A;
+					}
+					return e.insert = e.strstart < x - 1 ? e.strstart : x - 1, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : e.last_lit && (N(e, !1), 0 === e.strm.avail_out) ? A : I;
+				}
+				function W(e, t) {
+					for (var r, n, i;;) {
+						if (e.lookahead < z) {
+							if (j(e), e.lookahead < z && t === l) return A;
+							if (0 === e.lookahead) break;
+						}
+						if (r = 0, e.lookahead >= x && (e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + x - 1]) & e.hash_mask, r = e.prev[e.strstart & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = e.strstart), e.prev_length = e.match_length, e.prev_match = e.match_start, e.match_length = x - 1, 0 !== r && e.prev_length < e.max_lazy_match && e.strstart - r <= e.w_size - z && (e.match_length = L(e, r), e.match_length <= 5 && (1 === e.strategy || e.match_length === x && 4096 < e.strstart - e.match_start) && (e.match_length = x - 1)), e.prev_length >= x && e.match_length <= e.prev_length) {
+							for (i = e.strstart + e.lookahead - x, n = u._tr_tally(e, e.strstart - 1 - e.prev_match, e.prev_length - x), e.lookahead -= e.prev_length - 1, e.prev_length -= 2; ++e.strstart <= i && (e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + x - 1]) & e.hash_mask, r = e.prev[e.strstart & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = e.strstart), 0 != --e.prev_length;);
+							if (e.match_available = 0, e.match_length = x - 1, e.strstart++, n && (N(e, !1), 0 === e.strm.avail_out)) return A;
+						} else if (e.match_available) {
+							if ((n = u._tr_tally(e, 0, e.window[e.strstart - 1])) && N(e, !1), e.strstart++, e.lookahead--, 0 === e.strm.avail_out) return A;
+						} else e.match_available = 1, e.strstart++, e.lookahead--;
+					}
+					return e.match_available && (n = u._tr_tally(e, 0, e.window[e.strstart - 1]), e.match_available = 0), e.insert = e.strstart < x - 1 ? e.strstart : x - 1, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : e.last_lit && (N(e, !1), 0 === e.strm.avail_out) ? A : I;
+				}
+				function M(e, t, r, n, i) {
+					this.good_length = e, this.max_lazy = t, this.nice_length = r, this.max_chain = n, this.func = i;
+				}
+				function H() {
+					this.strm = null, this.status = 0, this.pending_buf = null, this.pending_buf_size = 0, this.pending_out = 0, this.pending = 0, this.wrap = 0, this.gzhead = null, this.gzindex = 0, this.method = v, this.last_flush = -1, this.w_size = 0, this.w_bits = 0, this.w_mask = 0, this.window = null, this.window_size = 0, this.prev = null, this.head = null, this.ins_h = 0, this.hash_size = 0, this.hash_bits = 0, this.hash_mask = 0, this.hash_shift = 0, this.block_start = 0, this.match_length = 0, this.prev_match = 0, this.match_available = 0, this.strstart = 0, this.match_start = 0, this.lookahead = 0, this.prev_length = 0, this.max_chain_length = 0, this.max_lazy_match = 0, this.level = 0, this.strategy = 0, this.good_match = 0, this.nice_match = 0, this.dyn_ltree = new c.Buf16(2 * w), this.dyn_dtree = new c.Buf16(2 * (2 * a + 1)), this.bl_tree = new c.Buf16(2 * (2 * o + 1)), D(this.dyn_ltree), D(this.dyn_dtree), D(this.bl_tree), this.l_desc = null, this.d_desc = null, this.bl_desc = null, this.bl_count = new c.Buf16(k + 1), this.heap = new c.Buf16(2 * s + 1), D(this.heap), this.heap_len = 0, this.heap_max = 0, this.depth = new c.Buf16(2 * s + 1), D(this.depth), this.l_buf = 0, this.lit_bufsize = 0, this.last_lit = 0, this.d_buf = 0, this.opt_len = 0, this.static_len = 0, this.matches = 0, this.insert = 0, this.bi_buf = 0, this.bi_valid = 0;
+				}
+				function G(e) {
+					var t;
+					return e && e.state ? (e.total_in = e.total_out = 0, e.data_type = i, (t = e.state).pending = 0, t.pending_out = 0, t.wrap < 0 && (t.wrap = -t.wrap), t.status = t.wrap ? C : E, e.adler = 2 === t.wrap ? 0 : 1, t.last_flush = l, u._tr_init(t), m) : R(e, _);
+				}
+				function K(e) {
+					var t = G(e);
+					return t === m && function(e) {
+						e.window_size = 2 * e.w_size, D(e.head), e.max_lazy_match = h[e.level].max_lazy, e.good_match = h[e.level].good_length, e.nice_match = h[e.level].nice_length, e.max_chain_length = h[e.level].max_chain, e.strstart = 0, e.block_start = 0, e.lookahead = 0, e.insert = 0, e.match_length = e.prev_length = x - 1, e.match_available = 0, e.ins_h = 0;
+					}(e.state), t;
+				}
+				function Y(e, t, r, n, i, s) {
+					if (!e) return _;
+					var a = 1;
+					if (t === g && (t = 6), n < 0 ? (a = 0, n = -n) : 15 < n && (a = 2, n -= 16), i < 1 || y < i || r !== v || n < 8 || 15 < n || t < 0 || 9 < t || s < 0 || b < s) return R(e, _);
+					8 === n && (n = 9);
+					var o = new H();
+					return (e.state = o).strm = e, o.wrap = a, o.gzhead = null, o.w_bits = n, o.w_size = 1 << o.w_bits, o.w_mask = o.w_size - 1, o.hash_bits = i + 7, o.hash_size = 1 << o.hash_bits, o.hash_mask = o.hash_size - 1, o.hash_shift = ~~((o.hash_bits + x - 1) / x), o.window = new c.Buf8(2 * o.w_size), o.head = new c.Buf16(o.hash_size), o.prev = new c.Buf16(o.w_size), o.lit_bufsize = 1 << i + 6, o.pending_buf_size = 4 * o.lit_bufsize, o.pending_buf = new c.Buf8(o.pending_buf_size), o.d_buf = 1 * o.lit_bufsize, o.l_buf = 3 * o.lit_bufsize, o.level = t, o.strategy = s, o.method = r, K(e);
+				}
+				h = [
+					new M(0, 0, 0, 0, function(e, t) {
+						var r = 65535;
+						for (r > e.pending_buf_size - 5 && (r = e.pending_buf_size - 5);;) {
+							if (e.lookahead <= 1) {
+								if (j(e), 0 === e.lookahead && t === l) return A;
+								if (0 === e.lookahead) break;
+							}
+							e.strstart += e.lookahead, e.lookahead = 0;
+							var n = e.block_start + r;
+							if ((0 === e.strstart || e.strstart >= n) && (e.lookahead = e.strstart - n, e.strstart = n, N(e, !1), 0 === e.strm.avail_out)) return A;
+							if (e.strstart - e.block_start >= e.w_size - z && (N(e, !1), 0 === e.strm.avail_out)) return A;
+						}
+						return e.insert = 0, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : (e.strstart > e.block_start && (N(e, !1), e.strm.avail_out), A);
+					}),
+					new M(4, 4, 8, 4, Z),
+					new M(4, 5, 16, 8, Z),
+					new M(4, 6, 32, 32, Z),
+					new M(4, 4, 16, 16, W),
+					new M(8, 16, 32, 32, W),
+					new M(8, 16, 128, 128, W),
+					new M(8, 32, 128, 256, W),
+					new M(32, 128, 258, 1024, W),
+					new M(32, 258, 258, 4096, W)
+				], r.deflateInit = function(e, t) {
+					return Y(e, t, v, 15, 8, 0);
+				}, r.deflateInit2 = Y, r.deflateReset = K, r.deflateResetKeep = G, r.deflateSetHeader = function(e, t) {
+					return e && e.state ? 2 !== e.state.wrap ? _ : (e.state.gzhead = t, m) : _;
+				}, r.deflate = function(e, t) {
+					var r, n, i, s;
+					if (!e || !e.state || 5 < t || t < 0) return e ? R(e, _) : _;
+					if (n = e.state, !e.output || !e.input && 0 !== e.avail_in || 666 === n.status && t !== f) return R(e, 0 === e.avail_out ? -5 : _);
+					if (n.strm = e, r = n.last_flush, n.last_flush = t, n.status === C) if (2 === n.wrap) e.adler = 0, U(n, 31), U(n, 139), U(n, 8), n.gzhead ? (U(n, (n.gzhead.text ? 1 : 0) + (n.gzhead.hcrc ? 2 : 0) + (n.gzhead.extra ? 4 : 0) + (n.gzhead.name ? 8 : 0) + (n.gzhead.comment ? 16 : 0)), U(n, 255 & n.gzhead.time), U(n, n.gzhead.time >> 8 & 255), U(n, n.gzhead.time >> 16 & 255), U(n, n.gzhead.time >> 24 & 255), U(n, 9 === n.level ? 2 : 2 <= n.strategy || n.level < 2 ? 4 : 0), U(n, 255 & n.gzhead.os), n.gzhead.extra && n.gzhead.extra.length && (U(n, 255 & n.gzhead.extra.length), U(n, n.gzhead.extra.length >> 8 & 255)), n.gzhead.hcrc && (e.adler = p(e.adler, n.pending_buf, n.pending, 0)), n.gzindex = 0, n.status = 69) : (U(n, 0), U(n, 0), U(n, 0), U(n, 0), U(n, 0), U(n, 9 === n.level ? 2 : 2 <= n.strategy || n.level < 2 ? 4 : 0), U(n, 3), n.status = E);
+					else {
+						var a = v + (n.w_bits - 8 << 4) << 8;
+						a |= (2 <= n.strategy || n.level < 2 ? 0 : n.level < 6 ? 1 : 6 === n.level ? 2 : 3) << 6, 0 !== n.strstart && (a |= 32), a += 31 - a % 31, n.status = E, P(n, a), 0 !== n.strstart && (P(n, e.adler >>> 16), P(n, 65535 & e.adler)), e.adler = 1;
+					}
+					if (69 === n.status) if (n.gzhead.extra) {
+						for (i = n.pending; n.gzindex < (65535 & n.gzhead.extra.length) && (n.pending !== n.pending_buf_size || (n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), F(e), i = n.pending, n.pending !== n.pending_buf_size));) U(n, 255 & n.gzhead.extra[n.gzindex]), n.gzindex++;
+						n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), n.gzindex === n.gzhead.extra.length && (n.gzindex = 0, n.status = 73);
+					} else n.status = 73;
+					if (73 === n.status) if (n.gzhead.name) {
+						i = n.pending;
+						do {
+							if (n.pending === n.pending_buf_size && (n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), F(e), i = n.pending, n.pending === n.pending_buf_size)) {
+								s = 1;
+								break;
+							}
+							s = n.gzindex < n.gzhead.name.length ? 255 & n.gzhead.name.charCodeAt(n.gzindex++) : 0, U(n, s);
+						} while (0 !== s);
+						n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), 0 === s && (n.gzindex = 0, n.status = 91);
+					} else n.status = 91;
+					if (91 === n.status) if (n.gzhead.comment) {
+						i = n.pending;
+						do {
+							if (n.pending === n.pending_buf_size && (n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), F(e), i = n.pending, n.pending === n.pending_buf_size)) {
+								s = 1;
+								break;
+							}
+							s = n.gzindex < n.gzhead.comment.length ? 255 & n.gzhead.comment.charCodeAt(n.gzindex++) : 0, U(n, s);
+						} while (0 !== s);
+						n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), 0 === s && (n.status = 103);
+					} else n.status = 103;
+					if (103 === n.status && (n.gzhead.hcrc ? (n.pending + 2 > n.pending_buf_size && F(e), n.pending + 2 <= n.pending_buf_size && (U(n, 255 & e.adler), U(n, e.adler >> 8 & 255), e.adler = 0, n.status = E)) : n.status = E), 0 !== n.pending) {
+						if (F(e), 0 === e.avail_out) return n.last_flush = -1, m;
+					} else if (0 === e.avail_in && T(t) <= T(r) && t !== f) return R(e, -5);
+					if (666 === n.status && 0 !== e.avail_in) return R(e, -5);
+					if (0 !== e.avail_in || 0 !== n.lookahead || t !== l && 666 !== n.status) {
+						var o = 2 === n.strategy ? function(e, t) {
+							for (var r;;) {
+								if (0 === e.lookahead && (j(e), 0 === e.lookahead)) {
+									if (t === l) return A;
+									break;
 								}
-							].map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => setRange(item.id),
-								className: `rounded-md px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${range === item.id ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
-								children: item.label
-							}, item.id))
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-							size: "sm",
-							value: selectedCustomerId,
-							onChange: setSelectedCustomerId,
-							ariaLabel: "Nach Kunde filtern",
-							className: "min-w-44",
-							options: [
-								{
-									value: "all",
-									label: "Alle Kunden & Intern"
-								},
-								{
-									value: "internal_only",
-									label: "Nur interne Tätigkeiten"
-								},
-								...customers.map((c) => ({
-									value: c.id,
-									label: c.companyName
-								}))
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-							size: "sm",
-							value: selectedProductId,
-							onChange: setSelectedProductId,
-							ariaLabel: "Nach Produkt filtern",
-							className: "min-w-44",
-							options: [{
-								value: "all",
-								label: "Alle Leistungen"
-							}, ...products.map((p) => ({
-								value: p.id,
-								label: p.name
-							}))]
-						}),
-						db && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => void handleQuickPdfExport(),
-							className: "inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileDown, { className: "h-3.5 w-3.5" }), "Grafik-PDF"]
-						})
-					]
-				})]
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Erfasste Arbeitszeit" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums",
-								children: [formatNumber(kpis.totalHours, 2), " Std."]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-								children: [
-									formatNumber(kpis.billableHours, 1),
-									"h Projekt · ",
-									formatNumber(kpis.internalHours, 1),
-									"h Intern"
-								]
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Abrechenbarer Wert (Netto)" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { className: "h-4 w-4 text-emerald-600 dark:text-emerald-400" })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums",
-								children: formatCurrency(kpis.totalRevenueNet)
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-								children: [
-									"Verrechenbare Quote: ",
-									kpis.billableRatioPct,
-									" %"
-								]
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Aktive Kunden" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Users, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums",
-								children: kpis.activeCustomers
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-								children: [
-									"Aus ",
-									kpis.entryCount,
-									" Zeiteinträgen gesamt"
-								]
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Ausgaben & Fixkosten (Netto)" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-4 w-4 text-amber-600 dark:text-amber-400" })]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums",
-								children: formatCurrency(expenseSummary.totalExpenseNet)
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-								children: [
-									"Ø Fixkosten: ",
-									formatCurrency(expenseSummary.monthlyFixedNet),
-									"/Monat"
-								]
-							})
-						]
-					})
-				]
-			}),
-			(kpis.internalHours > 0 || kpis.billableHours > 0) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex flex-wrap items-center justify-between gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-1.5",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-sm font-semibold text-slate-900 dark:text-slate-100",
-								children: "Verhältnis: Verrechenbare Aufträge vs. Interne Arbeiten"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
-								size: "sm",
-								title: "Verrechenbare vs. Interne Arbeiten",
-								text: "Übersicht über ertragbringende Projektzeit und interne Aufgaben (z. B. Kundenakquise, Studio-Reinigung)."
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "font-mono text-xs font-semibold text-slate-700 dark:text-slate-200",
-							children: [
-								kpis.billableRatioPct,
-								" % Verrechenbar · ",
-								100 - kpis.billableRatioPct,
-								" % Intern / Nicht verrechenbar"
-							]
-						})]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
-						viewBox: "0 0 400 14",
-						preserveAspectRatio: "none",
-						className: "mt-3 h-3.5 w-full overflow-hidden rounded-full",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-							x: "0",
-							y: "0",
-							width: "400",
-							height: "14",
-							rx: "7",
-							fill: "#d97706"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-							x: "0",
-							y: "0",
-							width: Math.round(kpis.billableRatioPct / 100 * 400),
-							height: "14",
-							rx: "7",
-							fill: "#7c3aed"
-						})]
-					}),
-					internalCategoryStats.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "mt-3 flex flex-wrap gap-2",
-						children: internalCategoryStats.map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50/70 px-2.5 py-1 text-xs text-amber-900 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-200",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "font-medium",
-								children: cat.label
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-								className: "font-mono font-semibold tabular-nums",
-								children: [formatNumber(cat.seconds / 3600, 2), " Std."]
-							})]
-						}, cat.label))
-					})
-				]
-			}),
-			filteredEntries.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "rounded-xl border border-slate-200 bg-white p-12 text-center dark:border-[#2e2349] dark:bg-[#171126]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "text-sm font-medium text-slate-700 dark:text-slate-300",
-					children: "Keine Zeiteinträge im gewählten Filter vorhanden."
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-					className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
-					children: "Wähle einen größeren Zeitraum oder erfasse Arbeitszeiten über Timer bzw. NFC-Tags."
-				})]
-			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-					className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-1.5",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "Zeitverlauf nach Tagen & Kunden"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
-								size: "sm",
-								title: "Zeitverlauf nach Tagen & Kunden",
-								text: "Gestapelte Stunden pro Tag, farblich nach Kunde aufgeschlüsselt (Tippen/Hover für Tagesdetails)."
-							})]
-						}), activeDayDetail && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs dark:border-[#3b2d5e] dark:bg-[#211936]",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-									className: "font-semibold text-slate-800 dark:text-slate-100",
-									children: [formatDayShort(activeDayDetail.dateKey), ":"]
-								}),
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-									className: "font-mono font-semibold text-blue-700 dark:text-violet-300",
-									children: [formatNumber(activeDayDetail.totalSeconds / 3600, 2), " Std."]
-								}),
-								" ",
-								"·",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "font-mono text-slate-600 dark:text-slate-300",
-									children: formatCurrency(activeDayDetail.revenueNet)
-								})
-							]
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "mt-5 overflow-x-auto",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
-							viewBox: "0 0 760 220",
-							className: "h-56 w-full min-w-[540px]",
-							role: "img",
-							"aria-label": "Säulendiagramm der erfassten Arbeitsstunden nach Tagen",
-							children: [[
-								0,
-								.25,
-								.5,
-								.75,
-								1
-							].map((step) => {
-								const yPos = 180 - step * 150;
-								const labelVal = Math.round(step * maxDayHours * 10) / 10;
-								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("line", {
-									x1: "44",
-									y1: yPos,
-									x2: "744",
-									y2: yPos,
-									className: "stroke-slate-200 dark:stroke-[#2e2349]",
-									strokeWidth: "1"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("text", {
-									x: "38",
-									y: yPos + 4,
-									textAnchor: "end",
-									className: "fill-slate-400 dark:fill-slate-500 text-[10px] font-mono",
-									children: [labelVal, "h"]
-								})] }, step);
-							}), dailySeries.map((day, idx) => {
-								const slotWidth = 700 / Math.max(1, dailySeries.length);
-								const barWidth = Math.min(34, Math.max(14, slotWidth * .62));
-								const barX = 44 + idx * slotWidth + (slotWidth - barWidth) / 2;
-								const segments = Array.from(day.byCustomer.entries()).sort((a, b) => b[1] - a[1]);
-								let currentTopY = 180;
-								const isHovered = hoveredDayKey === day.dateKey;
-								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", {
-									onMouseEnter: () => setHoveredDayKey(day.dateKey),
-									onMouseLeave: () => setHoveredDayKey(null),
-									onClick: () => setHoveredDayKey((prev) => prev === day.dateKey ? null : day.dateKey),
-									className: "cursor-pointer",
-									children: [
-										isHovered && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-											x: barX - 4,
-											y: 24,
-											width: barWidth + 8,
-											height: 158,
-											rx: "6",
-											className: "fill-slate-100 dark:fill-[#211936]"
-										}),
-										segments.map(([custId, secs]) => {
-											const segHours = secs / 3600;
-											const segHeight = Math.max(2, segHours / maxDayHours * 150);
-											currentTopY -= segHeight;
-											const fill = customerColorMap.get(custId) ?? "#7c3aed";
-											return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-												x: barX,
-												y: currentTopY,
-												width: barWidth,
-												height: segHeight,
-												rx: "3",
-												fill,
-												opacity: hoveredDayKey && !isHovered ? .55 : 1
-											}, custId);
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("text", {
-											x: barX + barWidth / 2,
-											y: 198,
-											textAnchor: "middle",
-											className: "fill-slate-500 dark:fill-slate-400 text-[10px] font-mono",
-											children: formatDayShort(day.dateKey)
-										})
-									]
-								}, day.dateKey);
-							})]
-						})
-					})]
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-					className: "grid grid-cols-1 gap-6 lg:grid-cols-12",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-1.5",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "Arbeitszeit & Umsatz nach Kunden"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
-								size: "sm",
-								title: "Arbeitszeit & Umsatz nach Kunden",
-								text: "Anteilige Zeitverteilung über alle aktiven Kunden."
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "mt-5 flex flex-col items-center gap-6 sm:flex-row",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "relative h-44 w-44 shrink-0",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
-									viewBox: "0 0 180 180",
-									className: "h-full w-full -rotate-90",
-									role: "img",
-									"aria-label": "Kreisdiagramm Arbeitszeit pro Kunde",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-										cx: "90",
-										cy: "90",
-										r: "64",
-										fill: "transparent",
-										className: "stroke-slate-100 dark:stroke-[#211936]",
-										strokeWidth: "22"
-									}), donutSegments.map((seg) => {
-										const dimmed = hoveredCustomerId !== null && hoveredCustomerId !== seg.customerId;
-										return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-											cx: "90",
-											cy: "90",
-											r: "64",
-											fill: "transparent",
-											stroke: seg.color,
-											strokeWidth: "22",
-											strokeDasharray: seg.dashArray,
-											strokeDashoffset: seg.dashOffset,
-											opacity: dimmed ? .35 : 1,
-											onMouseEnter: () => setHoveredCustomerId(seg.customerId),
-											onMouseLeave: () => setHoveredCustomerId(null),
-											className: "transition-opacity cursor-pointer"
-										}, seg.customerId);
-									})]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-										className: "font-mono text-lg font-bold text-slate-900 dark:text-slate-100 tabular-nums",
-										children: [formatNumber(kpis.totalHours, 1), "h"]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "text-[11px] text-slate-500 dark:text-slate-400",
-										children: "Gesamt"
-									})]
-								})]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "w-full flex-1 space-y-2.5",
-								children: donutSegments.map((seg) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									onMouseEnter: () => setHoveredCustomerId(seg.customerId),
-									onMouseLeave: () => setHoveredCustomerId(null),
-									className: "flex items-center justify-between gap-3 rounded-lg border border-slate-100 px-3 py-2 text-xs transition-colors hover:bg-slate-50 dark:border-[#2e2349] dark:hover:bg-[#211936]/70",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex items-center gap-2 min-w-0",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
-											viewBox: "0 0 12 12",
-											className: "h-3 w-3 shrink-0",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-												cx: "6",
-												cy: "6",
-												r: "5",
-												fill: seg.color
-											})
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "truncate font-medium text-slate-800 dark:text-slate-100",
-											children: seg.name
-										})]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "text-right font-mono tabular-nums shrink-0",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-												className: "font-semibold text-slate-900 dark:text-slate-100",
-												children: [formatNumber(seg.seconds / 3600, 2), "h"]
-											}),
-											" ",
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-												className: "text-slate-400 dark:text-slate-500",
-												children: [
-													"(",
-													Math.round(seg.fraction * 100),
-													"%)"
-												]
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "text-[11px] text-slate-500 dark:text-violet-300/80",
-												children: formatCurrency(seg.revenueNet)
-											})
-										]
-									})]
-								}, seg.customerId))
-							})]
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-1.5",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "Arbeitszeit nach Produkten & Leistungen"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
-								size: "sm",
-								title: "Arbeitszeit nach Produkten & Leistungen",
-								text: "Welche Leistungen die meiste Arbeitszeit und den höchsten Umsatz erzeugen."
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "mt-5 space-y-4",
-							children: productStats.map((prod) => {
-								const barWidth = Math.max(4, Math.round(prod.seconds / maxProductSeconds * 100)) / 100 * 240;
-								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "space-y-1.5",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex items-baseline justify-between gap-3 text-xs",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "truncate font-medium text-slate-800 dark:text-slate-100",
-											children: prod.name
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: "font-mono tabular-nums text-slate-600 dark:text-slate-300 shrink-0",
-											children: [
-												formatNumber(prod.seconds / 3600, 2),
-												" Std. ·",
-												" ",
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-													className: "text-slate-900 dark:text-violet-300",
-													children: formatCurrency(prod.revenueNet)
-												})
-											]
-										})]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
-										viewBox: "0 0 240 10",
-										preserveAspectRatio: "none",
-										className: "h-2.5 w-full overflow-hidden rounded-full",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-											x: "0",
-											y: "0",
-											width: "240",
-											height: "10",
-											rx: "5",
-											className: "fill-slate-100 dark:fill-[#211936]"
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-											x: "0",
-											y: "0",
-											width: barWidth,
-											height: "10",
-											rx: "5",
-											fill: prod.color
-										})]
-									})]
-								}, prod.productId);
-							})
-						})]
-					})]
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-					className: "rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center gap-2 border-b border-slate-200 px-6 py-4 dark:border-[#2e2349]",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-1.5",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "Kunde × Produkt Verknüpfung"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
-								size: "sm",
-								title: "Kunde × Produkt Verknüpfung",
-								text: "Aufschlüsselung, welcher Kunde welche Leistung in welchem Umfang genutzt hat."
-							})]
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "overflow-x-auto",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
-							className: "w-full text-left text-sm",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-								className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-										className: "px-6 py-3",
-										children: "Kunde"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-										className: "px-4 py-3",
-										children: "Produkt / Leistung"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-										className: "px-4 py-3 w-48",
-										children: "Anteil"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-										className: "px-4 py-3 text-right",
-										children: "Buchungen"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-										className: "px-4 py-3 text-right",
-										children: "Stunden"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-										className: "px-6 py-3 text-right",
-										children: "Umsatz (Netto)"
-									})
-								]
-							}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
-								className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
-								children: matrixRows.map((row) => {
-									const barW = Math.max(10, Math.round(row.hours / maxMatrixHours * 160));
-									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-										className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-												className: "px-6 py-3 font-medium text-slate-900 dark:text-slate-100",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-center gap-2",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
-														viewBox: "0 0 10 10",
-														className: "h-2.5 w-2.5 shrink-0",
-														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
-															cx: "5",
-															cy: "5",
-															r: "4",
-															fill: row.customerColor
-														})
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: row.customerName })]
-												})
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-												className: "px-4 py-3 text-slate-700 dark:text-slate-300",
-												children: row.productName
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-												className: "px-4 py-3",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
-													viewBox: "0 0 160 8",
-													preserveAspectRatio: "none",
-													className: "h-2 w-full rounded-full",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-														x: "0",
-														y: "0",
-														width: "160",
-														height: "8",
-														rx: "4",
-														className: "fill-slate-100 dark:fill-[#211936]"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
-														x: "0",
-														y: "0",
-														width: barW,
-														height: "8",
-														rx: "4",
-														fill: row.customerColor
-													})]
-												})
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-												className: "px-4 py-3 text-right font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums",
-												children: row.count
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
-												className: "px-4 py-3 text-right font-mono text-sm font-medium text-slate-900 dark:text-slate-100 tabular-nums",
-												children: [formatNumber(row.hours, 2), " Std."]
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-												className: "px-6 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-violet-300 tabular-nums",
-												children: formatCurrency(row.revenueNet)
-											})
-										]
-									}, row.key);
-								})
-							})]
-						})
-					})]
-				})
-			] })
-		]
+								if (e.match_length = 0, r = u._tr_tally(e, 0, e.window[e.strstart]), e.lookahead--, e.strstart++, r && (N(e, !1), 0 === e.strm.avail_out)) return A;
+							}
+							return e.insert = 0, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : e.last_lit && (N(e, !1), 0 === e.strm.avail_out) ? A : I;
+						}(n, t) : 3 === n.strategy ? function(e, t) {
+							for (var r, n, i, s, a = e.window;;) {
+								if (e.lookahead <= S) {
+									if (j(e), e.lookahead <= S && t === l) return A;
+									if (0 === e.lookahead) break;
+								}
+								if (e.match_length = 0, e.lookahead >= x && 0 < e.strstart && (n = a[i = e.strstart - 1]) === a[++i] && n === a[++i] && n === a[++i]) {
+									s = e.strstart + S;
+									do;
+									while (n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && i < s);
+									e.match_length = S - (s - i), e.match_length > e.lookahead && (e.match_length = e.lookahead);
+								}
+								if (e.match_length >= x ? (r = u._tr_tally(e, 1, e.match_length - x), e.lookahead -= e.match_length, e.strstart += e.match_length, e.match_length = 0) : (r = u._tr_tally(e, 0, e.window[e.strstart]), e.lookahead--, e.strstart++), r && (N(e, !1), 0 === e.strm.avail_out)) return A;
+							}
+							return e.insert = 0, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : e.last_lit && (N(e, !1), 0 === e.strm.avail_out) ? A : I;
+						}(n, t) : h[n.level].func(n, t);
+						if (o !== O && o !== B || (n.status = 666), o === A || o === O) return 0 === e.avail_out && (n.last_flush = -1), m;
+						if (o === I && (1 === t ? u._tr_align(n) : 5 !== t && (u._tr_stored_block(n, 0, 0, !1), 3 === t && (D(n.head), 0 === n.lookahead && (n.strstart = 0, n.block_start = 0, n.insert = 0))), F(e), 0 === e.avail_out)) return n.last_flush = -1, m;
+					}
+					return t !== f ? m : n.wrap <= 0 ? 1 : (2 === n.wrap ? (U(n, 255 & e.adler), U(n, e.adler >> 8 & 255), U(n, e.adler >> 16 & 255), U(n, e.adler >> 24 & 255), U(n, 255 & e.total_in), U(n, e.total_in >> 8 & 255), U(n, e.total_in >> 16 & 255), U(n, e.total_in >> 24 & 255)) : (P(n, e.adler >>> 16), P(n, 65535 & e.adler)), F(e), 0 < n.wrap && (n.wrap = -n.wrap), 0 !== n.pending ? m : 1);
+				}, r.deflateEnd = function(e) {
+					var t;
+					return e && e.state ? (t = e.state.status) !== C && 69 !== t && 73 !== t && 91 !== t && 103 !== t && t !== E && 666 !== t ? R(e, _) : (e.state = null, t === E ? R(e, -3) : m) : _;
+				}, r.deflateSetDictionary = function(e, t) {
+					var r, n, i, s, a, o, h, u, l = t.length;
+					if (!e || !e.state) return _;
+					if (2 === (s = (r = e.state).wrap) || 1 === s && r.status !== C || r.lookahead) return _;
+					for (1 === s && (e.adler = d(e.adler, t, l, 0)), r.wrap = 0, l >= r.w_size && (0 === s && (D(r.head), r.strstart = 0, r.block_start = 0, r.insert = 0), u = new c.Buf8(r.w_size), c.arraySet(u, t, l - r.w_size, r.w_size, 0), t = u, l = r.w_size), a = e.avail_in, o = e.next_in, h = e.input, e.avail_in = l, e.next_in = 0, e.input = t, j(r); r.lookahead >= x;) {
+						for (n = r.strstart, i = r.lookahead - (x - 1); r.ins_h = (r.ins_h << r.hash_shift ^ r.window[n + x - 1]) & r.hash_mask, r.prev[n & r.w_mask] = r.head[r.ins_h], r.head[r.ins_h] = n, n++, --i;);
+						r.strstart = n, r.lookahead = x - 1, j(r);
+					}
+					return r.strstart += r.lookahead, r.block_start = r.strstart, r.insert = r.lookahead, r.lookahead = 0, r.match_length = r.prev_length = x - 1, r.match_available = 0, e.next_in = o, e.input = h, e.avail_in = a, r.wrap = s, m;
+				}, r.deflateInfo = "pako deflate (from Nodeca project)";
+			}, {
+				"../utils/common": 41,
+				"./adler32": 43,
+				"./crc32": 45,
+				"./messages": 51,
+				"./trees": 52
+			}],
+			47: [function(e, t, r) {
+				"use strict";
+				t.exports = function() {
+					this.text = 0, this.time = 0, this.xflags = 0, this.os = 0, this.extra = null, this.extra_len = 0, this.name = "", this.comment = "", this.hcrc = 0, this.done = !1;
+				};
+			}, {}],
+			48: [function(e, t, r) {
+				"use strict";
+				t.exports = function(e, t) {
+					var r = e.state, n = e.next_in, i, s, a, o, h, u, l, f, c, d, p, m, _, g, b, v, y, w, k, x, S, z = e.input, C;
+					i = n + (e.avail_in - 5), s = e.next_out, C = e.output, a = s - (t - e.avail_out), o = s + (e.avail_out - 257), h = r.dmax, u = r.wsize, l = r.whave, f = r.wnext, c = r.window, d = r.hold, p = r.bits, m = r.lencode, _ = r.distcode, g = (1 << r.lenbits) - 1, b = (1 << r.distbits) - 1;
+					e: do {
+						p < 15 && (d += z[n++] << p, p += 8, d += z[n++] << p, p += 8), v = m[d & g];
+						t: for (;;) {
+							if (d >>>= y = v >>> 24, p -= y, 0 === (y = v >>> 16 & 255)) C[s++] = 65535 & v;
+							else {
+								if (!(16 & y)) {
+									if (0 == (64 & y)) {
+										v = m[(65535 & v) + (d & (1 << y) - 1)];
+										continue t;
+									}
+									if (32 & y) {
+										r.mode = 12;
+										break e;
+									}
+									e.msg = "invalid literal/length code", r.mode = 30;
+									break e;
+								}
+								w = 65535 & v, (y &= 15) && (p < y && (d += z[n++] << p, p += 8), w += d & (1 << y) - 1, d >>>= y, p -= y), p < 15 && (d += z[n++] << p, p += 8, d += z[n++] << p, p += 8), v = _[d & b];
+								r: for (;;) {
+									if (d >>>= y = v >>> 24, p -= y, !(16 & (y = v >>> 16 & 255))) {
+										if (0 == (64 & y)) {
+											v = _[(65535 & v) + (d & (1 << y) - 1)];
+											continue r;
+										}
+										e.msg = "invalid distance code", r.mode = 30;
+										break e;
+									}
+									if (k = 65535 & v, p < (y &= 15) && (d += z[n++] << p, (p += 8) < y && (d += z[n++] << p, p += 8)), h < (k += d & (1 << y) - 1)) {
+										e.msg = "invalid distance too far back", r.mode = 30;
+										break e;
+									}
+									if (d >>>= y, p -= y, (y = s - a) < k) {
+										if (l < (y = k - y) && r.sane) {
+											e.msg = "invalid distance too far back", r.mode = 30;
+											break e;
+										}
+										if (S = c, (x = 0) === f) {
+											if (x += u - y, y < w) {
+												for (w -= y; C[s++] = c[x++], --y;);
+												x = s - k, S = C;
+											}
+										} else if (f < y) {
+											if (x += u + f - y, (y -= f) < w) {
+												for (w -= y; C[s++] = c[x++], --y;);
+												if (x = 0, f < w) {
+													for (w -= y = f; C[s++] = c[x++], --y;);
+													x = s - k, S = C;
+												}
+											}
+										} else if (x += f - y, y < w) {
+											for (w -= y; C[s++] = c[x++], --y;);
+											x = s - k, S = C;
+										}
+										for (; 2 < w;) C[s++] = S[x++], C[s++] = S[x++], C[s++] = S[x++], w -= 3;
+										w && (C[s++] = S[x++], 1 < w && (C[s++] = S[x++]));
+									} else {
+										for (x = s - k; C[s++] = C[x++], C[s++] = C[x++], C[s++] = C[x++], 2 < (w -= 3););
+										w && (C[s++] = C[x++], 1 < w && (C[s++] = C[x++]));
+									}
+									break;
+								}
+							}
+							break;
+						}
+					} while (n < i && s < o);
+					n -= w = p >> 3, d &= (1 << (p -= w << 3)) - 1, e.next_in = n, e.next_out = s, e.avail_in = n < i ? i - n + 5 : 5 - (n - i), e.avail_out = s < o ? o - s + 257 : 257 - (s - o), r.hold = d, r.bits = p;
+				};
+			}, {}],
+			49: [function(e, t, r) {
+				"use strict";
+				var I = e("../utils/common"), O = e("./adler32"), B = e("./crc32"), R = e("./inffast"), T = e("./inftrees"), D = 1, F = 2, N = 0, U = -2, P = 1, n = 852, i = 592;
+				function L(e) {
+					return (e >>> 24 & 255) + (e >>> 8 & 65280) + ((65280 & e) << 8) + ((255 & e) << 24);
+				}
+				function s() {
+					this.mode = 0, this.last = !1, this.wrap = 0, this.havedict = !1, this.flags = 0, this.dmax = 0, this.check = 0, this.total = 0, this.head = null, this.wbits = 0, this.wsize = 0, this.whave = 0, this.wnext = 0, this.window = null, this.hold = 0, this.bits = 0, this.length = 0, this.offset = 0, this.extra = 0, this.lencode = null, this.distcode = null, this.lenbits = 0, this.distbits = 0, this.ncode = 0, this.nlen = 0, this.ndist = 0, this.have = 0, this.next = null, this.lens = new I.Buf16(320), this.work = new I.Buf16(288), this.lendyn = null, this.distdyn = null, this.sane = 0, this.back = 0, this.was = 0;
+				}
+				function a(e) {
+					var t;
+					return e && e.state ? (t = e.state, e.total_in = e.total_out = t.total = 0, e.msg = "", t.wrap && (e.adler = 1 & t.wrap), t.mode = P, t.last = 0, t.havedict = 0, t.dmax = 32768, t.head = null, t.hold = 0, t.bits = 0, t.lencode = t.lendyn = new I.Buf32(n), t.distcode = t.distdyn = new I.Buf32(i), t.sane = 1, t.back = -1, N) : U;
+				}
+				function o(e) {
+					var t;
+					return e && e.state ? ((t = e.state).wsize = 0, t.whave = 0, t.wnext = 0, a(e)) : U;
+				}
+				function h(e, t) {
+					var r, n;
+					return e && e.state ? (n = e.state, t < 0 ? (r = 0, t = -t) : (r = 1 + (t >> 4), t < 48 && (t &= 15)), t && (t < 8 || 15 < t) ? U : (null !== n.window && n.wbits !== t && (n.window = null), n.wrap = r, n.wbits = t, o(e))) : U;
+				}
+				function u(e, t) {
+					var r, n;
+					return e ? (n = new s(), (e.state = n).window = null, (r = h(e, t)) !== N && (e.state = null), r) : U;
+				}
+				var l, f, c = !0;
+				function j(e) {
+					if (c) {
+						var t;
+						for (l = new I.Buf32(512), f = new I.Buf32(32), t = 0; t < 144;) e.lens[t++] = 8;
+						for (; t < 256;) e.lens[t++] = 9;
+						for (; t < 280;) e.lens[t++] = 7;
+						for (; t < 288;) e.lens[t++] = 8;
+						for (T(D, e.lens, 0, 288, l, 0, e.work, { bits: 9 }), t = 0; t < 32;) e.lens[t++] = 5;
+						T(F, e.lens, 0, 32, f, 0, e.work, { bits: 5 }), c = !1;
+					}
+					e.lencode = l, e.lenbits = 9, e.distcode = f, e.distbits = 5;
+				}
+				function Z(e, t, r, n) {
+					var i, s = e.state;
+					return null === s.window && (s.wsize = 1 << s.wbits, s.wnext = 0, s.whave = 0, s.window = new I.Buf8(s.wsize)), n >= s.wsize ? (I.arraySet(s.window, t, r - s.wsize, s.wsize, 0), s.wnext = 0, s.whave = s.wsize) : (n < (i = s.wsize - s.wnext) && (i = n), I.arraySet(s.window, t, r - n, i, s.wnext), (n -= i) ? (I.arraySet(s.window, t, r - n, n, 0), s.wnext = n, s.whave = s.wsize) : (s.wnext += i, s.wnext === s.wsize && (s.wnext = 0), s.whave < s.wsize && (s.whave += i))), 0;
+				}
+				r.inflateReset = o, r.inflateReset2 = h, r.inflateResetKeep = a, r.inflateInit = function(e) {
+					return u(e, 15);
+				}, r.inflateInit2 = u, r.inflate = function(e, t) {
+					var r, n, i, s, a, o, h, u, l, f, c, d, p, m, _, g, b, v, y, w, k, x, S, z, C = 0, E = new I.Buf8(4), A = [
+						16,
+						17,
+						18,
+						0,
+						8,
+						7,
+						9,
+						6,
+						10,
+						5,
+						11,
+						4,
+						12,
+						3,
+						13,
+						2,
+						14,
+						1,
+						15
+					];
+					if (!e || !e.state || !e.output || !e.input && 0 !== e.avail_in) return U;
+					12 === (r = e.state).mode && (r.mode = 13), a = e.next_out, i = e.output, h = e.avail_out, s = e.next_in, n = e.input, o = e.avail_in, u = r.hold, l = r.bits, f = o, c = h, x = N;
+					e: for (;;) switch (r.mode) {
+						case P:
+							if (0 === r.wrap) {
+								r.mode = 13;
+								break;
+							}
+							for (; l < 16;) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							if (2 & r.wrap && 35615 === u) {
+								E[r.check = 0] = 255 & u, E[1] = u >>> 8 & 255, r.check = B(r.check, E, 2, 0), l = u = 0, r.mode = 2;
+								break;
+							}
+							if (r.flags = 0, r.head && (r.head.done = !1), !(1 & r.wrap) || (((255 & u) << 8) + (u >> 8)) % 31) {
+								e.msg = "incorrect header check", r.mode = 30;
+								break;
+							}
+							if (8 != (15 & u)) {
+								e.msg = "unknown compression method", r.mode = 30;
+								break;
+							}
+							if (l -= 4, k = 8 + (15 & (u >>>= 4)), 0 === r.wbits) r.wbits = k;
+							else if (k > r.wbits) {
+								e.msg = "invalid window size", r.mode = 30;
+								break;
+							}
+							r.dmax = 1 << k, e.adler = r.check = 1, r.mode = 512 & u ? 10 : 12, l = u = 0;
+							break;
+						case 2:
+							for (; l < 16;) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							if (r.flags = u, 8 != (255 & r.flags)) {
+								e.msg = "unknown compression method", r.mode = 30;
+								break;
+							}
+							if (57344 & r.flags) {
+								e.msg = "unknown header flags set", r.mode = 30;
+								break;
+							}
+							r.head && (r.head.text = u >> 8 & 1), 512 & r.flags && (E[0] = 255 & u, E[1] = u >>> 8 & 255, r.check = B(r.check, E, 2, 0)), l = u = 0, r.mode = 3;
+						case 3:
+							for (; l < 32;) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							r.head && (r.head.time = u), 512 & r.flags && (E[0] = 255 & u, E[1] = u >>> 8 & 255, E[2] = u >>> 16 & 255, E[3] = u >>> 24 & 255, r.check = B(r.check, E, 4, 0)), l = u = 0, r.mode = 4;
+						case 4:
+							for (; l < 16;) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							r.head && (r.head.xflags = 255 & u, r.head.os = u >> 8), 512 & r.flags && (E[0] = 255 & u, E[1] = u >>> 8 & 255, r.check = B(r.check, E, 2, 0)), l = u = 0, r.mode = 5;
+						case 5:
+							if (1024 & r.flags) {
+								for (; l < 16;) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								r.length = u, r.head && (r.head.extra_len = u), 512 & r.flags && (E[0] = 255 & u, E[1] = u >>> 8 & 255, r.check = B(r.check, E, 2, 0)), l = u = 0;
+							} else r.head && (r.head.extra = null);
+							r.mode = 6;
+						case 6:
+							if (1024 & r.flags && (o < (d = r.length) && (d = o), d && (r.head && (k = r.head.extra_len - r.length, r.head.extra || (r.head.extra = new Array(r.head.extra_len)), I.arraySet(r.head.extra, n, s, d, k)), 512 & r.flags && (r.check = B(r.check, n, d, s)), o -= d, s += d, r.length -= d), r.length)) break e;
+							r.length = 0, r.mode = 7;
+						case 7:
+							if (2048 & r.flags) {
+								if (0 === o) break e;
+								for (d = 0; k = n[s + d++], r.head && k && r.length < 65536 && (r.head.name += String.fromCharCode(k)), k && d < o;);
+								if (512 & r.flags && (r.check = B(r.check, n, d, s)), o -= d, s += d, k) break e;
+							} else r.head && (r.head.name = null);
+							r.length = 0, r.mode = 8;
+						case 8:
+							if (4096 & r.flags) {
+								if (0 === o) break e;
+								for (d = 0; k = n[s + d++], r.head && k && r.length < 65536 && (r.head.comment += String.fromCharCode(k)), k && d < o;);
+								if (512 & r.flags && (r.check = B(r.check, n, d, s)), o -= d, s += d, k) break e;
+							} else r.head && (r.head.comment = null);
+							r.mode = 9;
+						case 9:
+							if (512 & r.flags) {
+								for (; l < 16;) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								if (u !== (65535 & r.check)) {
+									e.msg = "header crc mismatch", r.mode = 30;
+									break;
+								}
+								l = u = 0;
+							}
+							r.head && (r.head.hcrc = r.flags >> 9 & 1, r.head.done = !0), e.adler = r.check = 0, r.mode = 12;
+							break;
+						case 10:
+							for (; l < 32;) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							e.adler = r.check = L(u), l = u = 0, r.mode = 11;
+						case 11:
+							if (0 === r.havedict) return e.next_out = a, e.avail_out = h, e.next_in = s, e.avail_in = o, r.hold = u, r.bits = l, 2;
+							e.adler = r.check = 1, r.mode = 12;
+						case 12: if (5 === t || 6 === t) break e;
+						case 13:
+							if (r.last) {
+								u >>>= 7 & l, l -= 7 & l, r.mode = 27;
+								break;
+							}
+							for (; l < 3;) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							switch (r.last = 1 & u, l -= 1, 3 & (u >>>= 1)) {
+								case 0:
+									r.mode = 14;
+									break;
+								case 1:
+									if (j(r), r.mode = 20, 6 !== t) break;
+									u >>>= 2, l -= 2;
+									break e;
+								case 2:
+									r.mode = 17;
+									break;
+								case 3: e.msg = "invalid block type", r.mode = 30;
+							}
+							u >>>= 2, l -= 2;
+							break;
+						case 14:
+							for (u >>>= 7 & l, l -= 7 & l; l < 32;) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							if ((65535 & u) != (u >>> 16 ^ 65535)) {
+								e.msg = "invalid stored block lengths", r.mode = 30;
+								break;
+							}
+							if (r.length = 65535 & u, l = u = 0, r.mode = 15, 6 === t) break e;
+						case 15: r.mode = 16;
+						case 16:
+							if (d = r.length) {
+								if (o < d && (d = o), h < d && (d = h), 0 === d) break e;
+								I.arraySet(i, n, s, d, a), o -= d, s += d, h -= d, a += d, r.length -= d;
+								break;
+							}
+							r.mode = 12;
+							break;
+						case 17:
+							for (; l < 14;) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							if (r.nlen = 257 + (31 & u), u >>>= 5, l -= 5, r.ndist = 1 + (31 & u), u >>>= 5, l -= 5, r.ncode = 4 + (15 & u), u >>>= 4, l -= 4, 286 < r.nlen || 30 < r.ndist) {
+								e.msg = "too many length or distance symbols", r.mode = 30;
+								break;
+							}
+							r.have = 0, r.mode = 18;
+						case 18:
+							for (; r.have < r.ncode;) {
+								for (; l < 3;) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								r.lens[A[r.have++]] = 7 & u, u >>>= 3, l -= 3;
+							}
+							for (; r.have < 19;) r.lens[A[r.have++]] = 0;
+							if (r.lencode = r.lendyn, r.lenbits = 7, S = { bits: r.lenbits }, x = T(0, r.lens, 0, 19, r.lencode, 0, r.work, S), r.lenbits = S.bits, x) {
+								e.msg = "invalid code lengths set", r.mode = 30;
+								break;
+							}
+							r.have = 0, r.mode = 19;
+						case 19:
+							for (; r.have < r.nlen + r.ndist;) {
+								for (; g = (C = r.lencode[u & (1 << r.lenbits) - 1]) >>> 16 & 255, b = 65535 & C, !((_ = C >>> 24) <= l);) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								if (b < 16) u >>>= _, l -= _, r.lens[r.have++] = b;
+								else {
+									if (16 === b) {
+										for (z = _ + 2; l < z;) {
+											if (0 === o) break e;
+											o--, u += n[s++] << l, l += 8;
+										}
+										if (u >>>= _, l -= _, 0 === r.have) {
+											e.msg = "invalid bit length repeat", r.mode = 30;
+											break;
+										}
+										k = r.lens[r.have - 1], d = 3 + (3 & u), u >>>= 2, l -= 2;
+									} else if (17 === b) {
+										for (z = _ + 3; l < z;) {
+											if (0 === o) break e;
+											o--, u += n[s++] << l, l += 8;
+										}
+										l -= _, k = 0, d = 3 + (7 & (u >>>= _)), u >>>= 3, l -= 3;
+									} else {
+										for (z = _ + 7; l < z;) {
+											if (0 === o) break e;
+											o--, u += n[s++] << l, l += 8;
+										}
+										l -= _, k = 0, d = 11 + (127 & (u >>>= _)), u >>>= 7, l -= 7;
+									}
+									if (r.have + d > r.nlen + r.ndist) {
+										e.msg = "invalid bit length repeat", r.mode = 30;
+										break;
+									}
+									for (; d--;) r.lens[r.have++] = k;
+								}
+							}
+							if (30 === r.mode) break;
+							if (0 === r.lens[256]) {
+								e.msg = "invalid code -- missing end-of-block", r.mode = 30;
+								break;
+							}
+							if (r.lenbits = 9, S = { bits: r.lenbits }, x = T(D, r.lens, 0, r.nlen, r.lencode, 0, r.work, S), r.lenbits = S.bits, x) {
+								e.msg = "invalid literal/lengths set", r.mode = 30;
+								break;
+							}
+							if (r.distbits = 6, r.distcode = r.distdyn, S = { bits: r.distbits }, x = T(F, r.lens, r.nlen, r.ndist, r.distcode, 0, r.work, S), r.distbits = S.bits, x) {
+								e.msg = "invalid distances set", r.mode = 30;
+								break;
+							}
+							if (r.mode = 20, 6 === t) break e;
+						case 20: r.mode = 21;
+						case 21:
+							if (6 <= o && 258 <= h) {
+								e.next_out = a, e.avail_out = h, e.next_in = s, e.avail_in = o, r.hold = u, r.bits = l, R(e, c), a = e.next_out, i = e.output, h = e.avail_out, s = e.next_in, n = e.input, o = e.avail_in, u = r.hold, l = r.bits, 12 === r.mode && (r.back = -1);
+								break;
+							}
+							for (r.back = 0; g = (C = r.lencode[u & (1 << r.lenbits) - 1]) >>> 16 & 255, b = 65535 & C, !((_ = C >>> 24) <= l);) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							if (g && 0 == (240 & g)) {
+								for (v = _, y = g, w = b; g = (C = r.lencode[w + ((u & (1 << v + y) - 1) >> v)]) >>> 16 & 255, b = 65535 & C, !(v + (_ = C >>> 24) <= l);) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								u >>>= v, l -= v, r.back += v;
+							}
+							if (u >>>= _, l -= _, r.back += _, r.length = b, 0 === g) {
+								r.mode = 26;
+								break;
+							}
+							if (32 & g) {
+								r.back = -1, r.mode = 12;
+								break;
+							}
+							if (64 & g) {
+								e.msg = "invalid literal/length code", r.mode = 30;
+								break;
+							}
+							r.extra = 15 & g, r.mode = 22;
+						case 22:
+							if (r.extra) {
+								for (z = r.extra; l < z;) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								r.length += u & (1 << r.extra) - 1, u >>>= r.extra, l -= r.extra, r.back += r.extra;
+							}
+							r.was = r.length, r.mode = 23;
+						case 23:
+							for (; g = (C = r.distcode[u & (1 << r.distbits) - 1]) >>> 16 & 255, b = 65535 & C, !((_ = C >>> 24) <= l);) {
+								if (0 === o) break e;
+								o--, u += n[s++] << l, l += 8;
+							}
+							if (0 == (240 & g)) {
+								for (v = _, y = g, w = b; g = (C = r.distcode[w + ((u & (1 << v + y) - 1) >> v)]) >>> 16 & 255, b = 65535 & C, !(v + (_ = C >>> 24) <= l);) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								u >>>= v, l -= v, r.back += v;
+							}
+							if (u >>>= _, l -= _, r.back += _, 64 & g) {
+								e.msg = "invalid distance code", r.mode = 30;
+								break;
+							}
+							r.offset = b, r.extra = 15 & g, r.mode = 24;
+						case 24:
+							if (r.extra) {
+								for (z = r.extra; l < z;) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								r.offset += u & (1 << r.extra) - 1, u >>>= r.extra, l -= r.extra, r.back += r.extra;
+							}
+							if (r.offset > r.dmax) {
+								e.msg = "invalid distance too far back", r.mode = 30;
+								break;
+							}
+							r.mode = 25;
+						case 25:
+							if (0 === h) break e;
+							if (d = c - h, r.offset > d) {
+								if ((d = r.offset - d) > r.whave && r.sane) {
+									e.msg = "invalid distance too far back", r.mode = 30;
+									break;
+								}
+								p = d > r.wnext ? (d -= r.wnext, r.wsize - d) : r.wnext - d, d > r.length && (d = r.length), m = r.window;
+							} else m = i, p = a - r.offset, d = r.length;
+							for (h < d && (d = h), h -= d, r.length -= d; i[a++] = m[p++], --d;);
+							0 === r.length && (r.mode = 21);
+							break;
+						case 26:
+							if (0 === h) break e;
+							i[a++] = r.length, h--, r.mode = 21;
+							break;
+						case 27:
+							if (r.wrap) {
+								for (; l < 32;) {
+									if (0 === o) break e;
+									o--, u |= n[s++] << l, l += 8;
+								}
+								if (c -= h, e.total_out += c, r.total += c, c && (e.adler = r.check = r.flags ? B(r.check, i, c, a - c) : O(r.check, i, c, a - c)), c = h, (r.flags ? u : L(u)) !== r.check) {
+									e.msg = "incorrect data check", r.mode = 30;
+									break;
+								}
+								l = u = 0;
+							}
+							r.mode = 28;
+						case 28:
+							if (r.wrap && r.flags) {
+								for (; l < 32;) {
+									if (0 === o) break e;
+									o--, u += n[s++] << l, l += 8;
+								}
+								if (u !== (4294967295 & r.total)) {
+									e.msg = "incorrect length check", r.mode = 30;
+									break;
+								}
+								l = u = 0;
+							}
+							r.mode = 29;
+						case 29:
+							x = 1;
+							break e;
+						case 30:
+							x = -3;
+							break e;
+						case 31: return -4;
+						default: return U;
+					}
+					return e.next_out = a, e.avail_out = h, e.next_in = s, e.avail_in = o, r.hold = u, r.bits = l, (r.wsize || c !== e.avail_out && r.mode < 30 && (r.mode < 27 || 4 !== t)) && Z(e, e.output, e.next_out, c - e.avail_out) ? (r.mode = 31, -4) : (f -= e.avail_in, c -= e.avail_out, e.total_in += f, e.total_out += c, r.total += c, r.wrap && c && (e.adler = r.check = r.flags ? B(r.check, i, c, e.next_out - c) : O(r.check, i, c, e.next_out - c)), e.data_type = r.bits + (r.last ? 64 : 0) + (12 === r.mode ? 128 : 0) + (20 === r.mode || 15 === r.mode ? 256 : 0), (0 == f && 0 === c || 4 === t) && x === N && (x = -5), x);
+				}, r.inflateEnd = function(e) {
+					if (!e || !e.state) return U;
+					var t = e.state;
+					return t.window && (t.window = null), e.state = null, N;
+				}, r.inflateGetHeader = function(e, t) {
+					var r;
+					return e && e.state ? 0 == (2 & (r = e.state).wrap) ? U : ((r.head = t).done = !1, N) : U;
+				}, r.inflateSetDictionary = function(e, t) {
+					var r, n = t.length;
+					return e && e.state ? 0 !== (r = e.state).wrap && 11 !== r.mode ? U : 11 === r.mode && O(1, t, n, 0) !== r.check ? -3 : Z(e, t, n, n) ? (r.mode = 31, -4) : (r.havedict = 1, N) : U;
+				}, r.inflateInfo = "pako inflate (from Nodeca project)";
+			}, {
+				"../utils/common": 41,
+				"./adler32": 43,
+				"./crc32": 45,
+				"./inffast": 48,
+				"./inftrees": 50
+			}],
+			50: [function(e, t, r) {
+				"use strict";
+				var D = e("../utils/common"), F = [
+					3,
+					4,
+					5,
+					6,
+					7,
+					8,
+					9,
+					10,
+					11,
+					13,
+					15,
+					17,
+					19,
+					23,
+					27,
+					31,
+					35,
+					43,
+					51,
+					59,
+					67,
+					83,
+					99,
+					115,
+					131,
+					163,
+					195,
+					227,
+					258,
+					0,
+					0
+				], N = [
+					16,
+					16,
+					16,
+					16,
+					16,
+					16,
+					16,
+					16,
+					17,
+					17,
+					17,
+					17,
+					18,
+					18,
+					18,
+					18,
+					19,
+					19,
+					19,
+					19,
+					20,
+					20,
+					20,
+					20,
+					21,
+					21,
+					21,
+					21,
+					16,
+					72,
+					78
+				], U = [
+					1,
+					2,
+					3,
+					4,
+					5,
+					7,
+					9,
+					13,
+					17,
+					25,
+					33,
+					49,
+					65,
+					97,
+					129,
+					193,
+					257,
+					385,
+					513,
+					769,
+					1025,
+					1537,
+					2049,
+					3073,
+					4097,
+					6145,
+					8193,
+					12289,
+					16385,
+					24577,
+					0,
+					0
+				], P = [
+					16,
+					16,
+					16,
+					16,
+					17,
+					17,
+					18,
+					18,
+					19,
+					19,
+					20,
+					20,
+					21,
+					21,
+					22,
+					22,
+					23,
+					23,
+					24,
+					24,
+					25,
+					25,
+					26,
+					26,
+					27,
+					27,
+					28,
+					28,
+					29,
+					29,
+					64,
+					64
+				];
+				t.exports = function(e, t, r, n, i, s, a, o) {
+					var h, u, l, f, c, d, p, m, _, g = o.bits, b = 0, v = 0, y = 0, w = 0, k = 0, x = 0, S = 0, z = 0, C = 0, E = 0, A = null, I = 0, O = new D.Buf16(16), B = new D.Buf16(16), R = null, T = 0;
+					for (b = 0; b <= 15; b++) O[b] = 0;
+					for (v = 0; v < n; v++) O[t[r + v]]++;
+					for (k = g, w = 15; 1 <= w && 0 === O[w]; w--);
+					if (w < k && (k = w), 0 === w) return i[s++] = 20971520, i[s++] = 20971520, o.bits = 1, 0;
+					for (y = 1; y < w && 0 === O[y]; y++);
+					for (k < y && (k = y), b = z = 1; b <= 15; b++) if (z <<= 1, (z -= O[b]) < 0) return -1;
+					if (0 < z && (0 === e || 1 !== w)) return -1;
+					for (B[1] = 0, b = 1; b < 15; b++) B[b + 1] = B[b] + O[b];
+					for (v = 0; v < n; v++) 0 !== t[r + v] && (a[B[t[r + v]]++] = v);
+					if (d = 0 === e ? (A = R = a, 19) : 1 === e ? (A = F, I -= 257, R = N, T -= 257, 256) : (A = U, R = P, -1), b = y, c = s, S = v = E = 0, l = -1, f = (C = 1 << (x = k)) - 1, 1 === e && 852 < C || 2 === e && 592 < C) return 1;
+					for (;;) {
+						for (p = b - S, _ = a[v] < d ? (m = 0, a[v]) : a[v] > d ? (m = R[T + a[v]], A[I + a[v]]) : (m = 96, 0), h = 1 << b - S, y = u = 1 << x; i[c + (E >> S) + (u -= h)] = p << 24 | m << 16 | _ | 0, 0 !== u;);
+						for (h = 1 << b - 1; E & h;) h >>= 1;
+						if (0 !== h ? (E &= h - 1, E += h) : E = 0, v++, 0 == --O[b]) {
+							if (b === w) break;
+							b = t[r + a[v]];
+						}
+						if (k < b && (E & f) !== l) {
+							for (0 === S && (S = k), c += y, z = 1 << (x = b - S); x + S < w && !((z -= O[x + S]) <= 0);) x++, z <<= 1;
+							if (C += 1 << x, 1 === e && 852 < C || 2 === e && 592 < C) return 1;
+							i[l = E & f] = k << 24 | x << 16 | c - s | 0;
+						}
+					}
+					return 0 !== E && (i[c + E] = b - S << 24 | 4194304), o.bits = k, 0;
+				};
+			}, { "../utils/common": 41 }],
+			51: [function(e, t, r) {
+				"use strict";
+				t.exports = {
+					2: "need dictionary",
+					1: "stream end",
+					0: "",
+					"-1": "file error",
+					"-2": "stream error",
+					"-3": "data error",
+					"-4": "insufficient memory",
+					"-5": "buffer error",
+					"-6": "incompatible version"
+				};
+			}, {}],
+			52: [function(e, t, r) {
+				"use strict";
+				var i = e("../utils/common"), o = 0, h = 1;
+				function n(e) {
+					for (var t = e.length; 0 <= --t;) e[t] = 0;
+				}
+				var s = 0, a = 29, u = 256, l = u + 1 + a, f = 30, c = 19, _ = 2 * l + 1, g = 15, d = 16, p = 7, m = 256, b = 16, v = 17, y = 18, w = [
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					1,
+					1,
+					1,
+					1,
+					2,
+					2,
+					2,
+					2,
+					3,
+					3,
+					3,
+					3,
+					4,
+					4,
+					4,
+					4,
+					5,
+					5,
+					5,
+					5,
+					0
+				], k = [
+					0,
+					0,
+					0,
+					0,
+					1,
+					1,
+					2,
+					2,
+					3,
+					3,
+					4,
+					4,
+					5,
+					5,
+					6,
+					6,
+					7,
+					7,
+					8,
+					8,
+					9,
+					9,
+					10,
+					10,
+					11,
+					11,
+					12,
+					12,
+					13,
+					13
+				], x = [
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					0,
+					2,
+					3,
+					7
+				], S = [
+					16,
+					17,
+					18,
+					0,
+					8,
+					7,
+					9,
+					6,
+					10,
+					5,
+					11,
+					4,
+					12,
+					3,
+					13,
+					2,
+					14,
+					1,
+					15
+				], z = new Array(2 * (l + 2));
+				n(z);
+				var C = new Array(2 * f);
+				n(C);
+				var E = new Array(512);
+				n(E);
+				var A = new Array(256);
+				n(A);
+				var I = new Array(a);
+				n(I);
+				var O, B, R, T = new Array(f);
+				function D(e, t, r, n, i) {
+					this.static_tree = e, this.extra_bits = t, this.extra_base = r, this.elems = n, this.max_length = i, this.has_stree = e && e.length;
+				}
+				function F(e, t) {
+					this.dyn_tree = e, this.max_code = 0, this.stat_desc = t;
+				}
+				function N(e) {
+					return e < 256 ? E[e] : E[256 + (e >>> 7)];
+				}
+				function U(e, t) {
+					e.pending_buf[e.pending++] = 255 & t, e.pending_buf[e.pending++] = t >>> 8 & 255;
+				}
+				function P(e, t, r) {
+					e.bi_valid > d - r ? (e.bi_buf |= t << e.bi_valid & 65535, U(e, e.bi_buf), e.bi_buf = t >> d - e.bi_valid, e.bi_valid += r - d) : (e.bi_buf |= t << e.bi_valid & 65535, e.bi_valid += r);
+				}
+				function L(e, t, r) {
+					P(e, r[2 * t], r[2 * t + 1]);
+				}
+				function j(e, t) {
+					for (var r = 0; r |= 1 & e, e >>>= 1, r <<= 1, 0 < --t;);
+					return r >>> 1;
+				}
+				function Z(e, t, r) {
+					var n, i, s = new Array(g + 1), a = 0;
+					for (n = 1; n <= g; n++) s[n] = a = a + r[n - 1] << 1;
+					for (i = 0; i <= t; i++) {
+						var o = e[2 * i + 1];
+						0 !== o && (e[2 * i] = j(s[o]++, o));
+					}
+				}
+				function W(e) {
+					var t = 0;
+					for (; t < l; t++) e.dyn_ltree[2 * t] = 0;
+					for (t = 0; t < f; t++) e.dyn_dtree[2 * t] = 0;
+					for (t = 0; t < c; t++) e.bl_tree[2 * t] = 0;
+					e.dyn_ltree[2 * m] = 1, e.opt_len = e.static_len = 0, e.last_lit = e.matches = 0;
+				}
+				function M(e) {
+					8 < e.bi_valid ? U(e, e.bi_buf) : 0 < e.bi_valid && (e.pending_buf[e.pending++] = e.bi_buf), e.bi_buf = 0, e.bi_valid = 0;
+				}
+				function H(e, t, r, n) {
+					var i = 2 * t, s = 2 * r;
+					return e[i] < e[s] || e[i] === e[s] && n[t] <= n[r];
+				}
+				function G(e, t, r) {
+					for (var n = e.heap[r], i = r << 1; i <= e.heap_len && (i < e.heap_len && H(t, e.heap[i + 1], e.heap[i], e.depth) && i++, !H(t, n, e.heap[i], e.depth));) e.heap[r] = e.heap[i], r = i, i <<= 1;
+					e.heap[r] = n;
+				}
+				function K(e, t, r) {
+					var n, i, s, a, o = 0;
+					if (0 !== e.last_lit) for (; n = e.pending_buf[e.d_buf + 2 * o] << 8 | e.pending_buf[e.d_buf + 2 * o + 1], i = e.pending_buf[e.l_buf + o], o++, 0 === n ? L(e, i, t) : (L(e, (s = A[i]) + u + 1, t), 0 !== (a = w[s]) && P(e, i -= I[s], a), L(e, s = N(--n), r), 0 !== (a = k[s]) && P(e, n -= T[s], a)), o < e.last_lit;);
+					L(e, m, t);
+				}
+				function Y(e, t) {
+					var r, n, i, s = t.dyn_tree, a = t.stat_desc.static_tree, o = t.stat_desc.has_stree, h = t.stat_desc.elems, u = -1;
+					for (e.heap_len = 0, e.heap_max = _, r = 0; r < h; r++) 0 !== s[2 * r] ? (e.heap[++e.heap_len] = u = r, e.depth[r] = 0) : s[2 * r + 1] = 0;
+					for (; e.heap_len < 2;) s[2 * (i = e.heap[++e.heap_len] = u < 2 ? ++u : 0)] = 1, e.depth[i] = 0, e.opt_len--, o && (e.static_len -= a[2 * i + 1]);
+					for (t.max_code = u, r = e.heap_len >> 1; 1 <= r; r--) G(e, s, r);
+					for (i = h; r = e.heap[1], e.heap[1] = e.heap[e.heap_len--], G(e, s, 1), n = e.heap[1], e.heap[--e.heap_max] = r, e.heap[--e.heap_max] = n, s[2 * i] = s[2 * r] + s[2 * n], e.depth[i] = (e.depth[r] >= e.depth[n] ? e.depth[r] : e.depth[n]) + 1, s[2 * r + 1] = s[2 * n + 1] = i, e.heap[1] = i++, G(e, s, 1), 2 <= e.heap_len;);
+					e.heap[--e.heap_max] = e.heap[1], function(e, t) {
+						var r, n, i, s, a, o, h = t.dyn_tree, u = t.max_code, l = t.stat_desc.static_tree, f = t.stat_desc.has_stree, c = t.stat_desc.extra_bits, d = t.stat_desc.extra_base, p = t.stat_desc.max_length, m = 0;
+						for (s = 0; s <= g; s++) e.bl_count[s] = 0;
+						for (h[2 * e.heap[e.heap_max] + 1] = 0, r = e.heap_max + 1; r < _; r++) p < (s = h[2 * h[2 * (n = e.heap[r]) + 1] + 1] + 1) && (s = p, m++), h[2 * n + 1] = s, u < n || (e.bl_count[s]++, a = 0, d <= n && (a = c[n - d]), o = h[2 * n], e.opt_len += o * (s + a), f && (e.static_len += o * (l[2 * n + 1] + a)));
+						if (0 !== m) {
+							do {
+								for (s = p - 1; 0 === e.bl_count[s];) s--;
+								e.bl_count[s]--, e.bl_count[s + 1] += 2, e.bl_count[p]--, m -= 2;
+							} while (0 < m);
+							for (s = p; 0 !== s; s--) for (n = e.bl_count[s]; 0 !== n;) u < (i = e.heap[--r]) || (h[2 * i + 1] !== s && (e.opt_len += (s - h[2 * i + 1]) * h[2 * i], h[2 * i + 1] = s), n--);
+						}
+					}(e, t), Z(s, u, e.bl_count);
+				}
+				function X(e, t, r) {
+					var n, i, s = -1, a = t[1], o = 0, h = 7, u = 4;
+					for (0 === a && (h = 138, u = 3), t[2 * (r + 1) + 1] = 65535, n = 0; n <= r; n++) i = a, a = t[2 * (n + 1) + 1], ++o < h && i === a || (o < u ? e.bl_tree[2 * i] += o : 0 !== i ? (i !== s && e.bl_tree[2 * i]++, e.bl_tree[2 * b]++) : o <= 10 ? e.bl_tree[2 * v]++ : e.bl_tree[2 * y]++, s = i, u = (o = 0) === a ? (h = 138, 3) : i === a ? (h = 6, 3) : (h = 7, 4));
+				}
+				function V(e, t, r) {
+					var n, i, s = -1, a = t[1], o = 0, h = 7, u = 4;
+					for (0 === a && (h = 138, u = 3), n = 0; n <= r; n++) if (i = a, a = t[2 * (n + 1) + 1], !(++o < h && i === a)) {
+						if (o < u) for (; L(e, i, e.bl_tree), 0 != --o;);
+						else 0 !== i ? (i !== s && (L(e, i, e.bl_tree), o--), L(e, b, e.bl_tree), P(e, o - 3, 2)) : o <= 10 ? (L(e, v, e.bl_tree), P(e, o - 3, 3)) : (L(e, y, e.bl_tree), P(e, o - 11, 7));
+						s = i, u = (o = 0) === a ? (h = 138, 3) : i === a ? (h = 6, 3) : (h = 7, 4);
+					}
+				}
+				n(T);
+				var q = !1;
+				function J(e, t, r, n) {
+					P(e, (s << 1) + (n ? 1 : 0), 3), function(e, t, r, n) {
+						M(e), n && (U(e, r), U(e, ~r)), i.arraySet(e.pending_buf, e.window, t, r, e.pending), e.pending += r;
+					}(e, t, r, !0);
+				}
+				r._tr_init = function(e) {
+					q || (function() {
+						var e, t, r, n, i, s = new Array(g + 1);
+						for (n = r = 0; n < a - 1; n++) for (I[n] = r, e = 0; e < 1 << w[n]; e++) A[r++] = n;
+						for (A[r - 1] = n, n = i = 0; n < 16; n++) for (T[n] = i, e = 0; e < 1 << k[n]; e++) E[i++] = n;
+						for (i >>= 7; n < f; n++) for (T[n] = i << 7, e = 0; e < 1 << k[n] - 7; e++) E[256 + i++] = n;
+						for (t = 0; t <= g; t++) s[t] = 0;
+						for (e = 0; e <= 143;) z[2 * e + 1] = 8, e++, s[8]++;
+						for (; e <= 255;) z[2 * e + 1] = 9, e++, s[9]++;
+						for (; e <= 279;) z[2 * e + 1] = 7, e++, s[7]++;
+						for (; e <= 287;) z[2 * e + 1] = 8, e++, s[8]++;
+						for (Z(z, l + 1, s), e = 0; e < f; e++) C[2 * e + 1] = 5, C[2 * e] = j(e, 5);
+						O = new D(z, w, u + 1, l, g), B = new D(C, k, 0, f, g), R = new D(new Array(0), x, 0, c, p);
+					}(), q = !0), e.l_desc = new F(e.dyn_ltree, O), e.d_desc = new F(e.dyn_dtree, B), e.bl_desc = new F(e.bl_tree, R), e.bi_buf = 0, e.bi_valid = 0, W(e);
+				}, r._tr_stored_block = J, r._tr_flush_block = function(e, t, r, n) {
+					var i, s, a = 0;
+					0 < e.level ? (2 === e.strm.data_type && (e.strm.data_type = function(e) {
+						var t, r = 4093624447;
+						for (t = 0; t <= 31; t++, r >>>= 1) if (1 & r && 0 !== e.dyn_ltree[2 * t]) return o;
+						if (0 !== e.dyn_ltree[18] || 0 !== e.dyn_ltree[20] || 0 !== e.dyn_ltree[26]) return h;
+						for (t = 32; t < u; t++) if (0 !== e.dyn_ltree[2 * t]) return h;
+						return o;
+					}(e)), Y(e, e.l_desc), Y(e, e.d_desc), a = function(e) {
+						var t;
+						for (X(e, e.dyn_ltree, e.l_desc.max_code), X(e, e.dyn_dtree, e.d_desc.max_code), Y(e, e.bl_desc), t = c - 1; 3 <= t && 0 === e.bl_tree[2 * S[t] + 1]; t--);
+						return e.opt_len += 3 * (t + 1) + 5 + 5 + 4, t;
+					}(e), i = e.opt_len + 3 + 7 >>> 3, (s = e.static_len + 3 + 7 >>> 3) <= i && (i = s)) : i = s = r + 5, r + 4 <= i && -1 !== t ? J(e, t, r, n) : 4 === e.strategy || s === i ? (P(e, 2 + (n ? 1 : 0), 3), K(e, z, C)) : (P(e, 4 + (n ? 1 : 0), 3), function(e, t, r, n) {
+						var i;
+						for (P(e, t - 257, 5), P(e, r - 1, 5), P(e, n - 4, 4), i = 0; i < n; i++) P(e, e.bl_tree[2 * S[i] + 1], 3);
+						V(e, e.dyn_ltree, t - 1), V(e, e.dyn_dtree, r - 1);
+					}(e, e.l_desc.max_code + 1, e.d_desc.max_code + 1, a + 1), K(e, e.dyn_ltree, e.dyn_dtree)), W(e), n && M(e);
+				}, r._tr_tally = function(e, t, r) {
+					return e.pending_buf[e.d_buf + 2 * e.last_lit] = t >>> 8 & 255, e.pending_buf[e.d_buf + 2 * e.last_lit + 1] = 255 & t, e.pending_buf[e.l_buf + e.last_lit] = 255 & r, e.last_lit++, 0 === t ? e.dyn_ltree[2 * r]++ : (e.matches++, t--, e.dyn_ltree[2 * (A[r] + u + 1)]++, e.dyn_dtree[2 * N(t)]++), e.last_lit === e.lit_bufsize - 1;
+				}, r._tr_align = function(e) {
+					P(e, 2, 3), L(e, m, z), function(e) {
+						16 === e.bi_valid ? (U(e, e.bi_buf), e.bi_buf = 0, e.bi_valid = 0) : 8 <= e.bi_valid && (e.pending_buf[e.pending++] = 255 & e.bi_buf, e.bi_buf >>= 8, e.bi_valid -= 8);
+					}(e);
+				};
+			}, { "../utils/common": 41 }],
+			53: [function(e, t, r) {
+				"use strict";
+				t.exports = function() {
+					this.input = null, this.next_in = 0, this.avail_in = 0, this.total_in = 0, this.output = null, this.next_out = 0, this.avail_out = 0, this.total_out = 0, this.msg = "", this.state = null, this.data_type = 2, this.adler = 0;
+				};
+			}, {}],
+			54: [function(e, t, r) {
+				(function(e) {
+					(function(r, n) {
+						"use strict";
+						if (!r.setImmediate) {
+							var i, s, t, a, o = 1, h = {}, u = !1, l = r.document, e = Object.getPrototypeOf && Object.getPrototypeOf(r);
+							e = e && e.setTimeout ? e : r, i = "[object process]" === {}.toString.call(r.process) ? function(e) {
+								process.nextTick(function() {
+									c(e);
+								});
+							} : function() {
+								if (r.postMessage && !r.importScripts) {
+									var e = !0, t = r.onmessage;
+									return r.onmessage = function() {
+										e = !1;
+									}, r.postMessage("", "*"), r.onmessage = t, e;
+								}
+							}() ? (a = "setImmediate$" + Math.random() + "$", r.addEventListener ? r.addEventListener("message", d, !1) : r.attachEvent("onmessage", d), function(e) {
+								r.postMessage(a + e, "*");
+							}) : r.MessageChannel ? ((t = new MessageChannel()).port1.onmessage = function(e) {
+								c(e.data);
+							}, function(e) {
+								t.port2.postMessage(e);
+							}) : l && "onreadystatechange" in l.createElement("script") ? (s = l.documentElement, function(e) {
+								var t = l.createElement("script");
+								t.onreadystatechange = function() {
+									c(e), t.onreadystatechange = null, s.removeChild(t), t = null;
+								}, s.appendChild(t);
+							}) : function(e) {
+								setTimeout(c, 0, e);
+							}, e.setImmediate = function(e) {
+								"function" != typeof e && (e = new Function("" + e));
+								for (var t = new Array(arguments.length - 1), r = 0; r < t.length; r++) t[r] = arguments[r + 1];
+								return h[o] = {
+									callback: e,
+									args: t
+								}, i(o), o++;
+							}, e.clearImmediate = f;
+						}
+						function f(e) {
+							delete h[e];
+						}
+						function c(e) {
+							if (u) setTimeout(c, 0, e);
+							else {
+								var t = h[e];
+								if (t) {
+									u = !0;
+									try {
+										(function(e) {
+											var t = e.callback, r = e.args;
+											switch (r.length) {
+												case 0:
+													t();
+													break;
+												case 1:
+													t(r[0]);
+													break;
+												case 2:
+													t(r[0], r[1]);
+													break;
+												case 3:
+													t(r[0], r[1], r[2]);
+													break;
+												default: t.apply(n, r);
+											}
+										})(t);
+									} finally {
+										f(e), u = !1;
+									}
+								}
+							}
+						}
+						function d(e) {
+							e.source === r && "string" == typeof e.data && 0 === e.data.indexOf(a) && c(+e.data.slice(a.length));
+						}
+					})("undefined" == typeof self ? void 0 === e ? this : e : self);
+				}).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
+			}, {}]
+		}, {}, [10])(10);
 	});
-}
-// src/utils/caldavClient.ts
-function unescapeIcsText(val) {
-	return val.replace(/\\n/gi, "\n").replace(/\\,/g, ",").replace(/\\;/g, ";").replace(/\\\\/g, "\\").trim();
-}
-function escapeIcsText(val) {
-	return val.replace(/\\/g, "\\\\").replace(/\r?\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
-}
-function parseIcsDate(rawVal) {
-	const val = rawVal.trim();
-	if (/^\d{8}$/.test(val)) return `${val.slice(0, 4)}-${val.slice(4, 6)}-${val.slice(6, 8)}T09:00:00`;
-	const match = val.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/);
-	if (match) {
-		const [, y, m, d, hh, mm, ss, z] = match;
-		if (z === "Z") return (/* @__PURE__ */ new Date(`${y}-${m}-${d}T${hh}:${mm}:${ss}Z`)).toISOString();
-		return `${y}-${m}-${d}T${hh}:${mm}:${ss}`;
-	}
-	const parsed = new Date(val);
-	return Number.isNaN(parsed.getTime()) ? (/* @__PURE__ */ new Date()).toISOString() : parsed.toISOString();
-}
-function toIcsUtcString(iso) {
-	const d = new Date(iso);
-	if (Number.isNaN(d.getTime())) return toIcsUtcString((/* @__PURE__ */ new Date()).toISOString());
-	const pad = (n) => String(n).padStart(2, "0");
-	return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
-}
-function buildIcsEvent(appointment) {
-	const uid = appointment.uid || `${appointment.id}@taktwerk.app`;
-	const startDate = new Date(appointment.startTime);
-	const safeStartMs = Number.isNaN(startDate.getTime()) ? Date.now() : startDate.getTime();
-	const rawEndDate = new Date(appointment.endTime);
-	const rawEndMs = Number.isNaN(rawEndDate.getTime()) ? safeStartMs + 6e4 : rawEndDate.getTime();
-	const safeEndMs = rawEndMs > safeStartMs ? rawEndMs : safeStartMs + 6e4;
-	const lines = [
-		"BEGIN:VCALENDAR",
-		"VERSION:2.0",
-		"PRODID:-//TaktWerk//DE",
-		"BEGIN:VEVENT",
-		`UID:${uid}`,
-		`DTSTAMP:${toIcsUtcString((/* @__PURE__ */ new Date()).toISOString())}`,
-		`DTSTART:${toIcsUtcString(new Date(safeStartMs).toISOString())}`,
-		`DTEND:${toIcsUtcString(new Date(safeEndMs).toISOString())}`,
-		`SUMMARY:${escapeIcsText(appointment.title || "TaktWerk Termin")}`
-	];
-	if (appointment.location) lines.push(`LOCATION:${escapeIcsText(appointment.location)}`);
-	if (appointment.description) lines.push(`DESCRIPTION:${escapeIcsText(appointment.description)}`);
-	lines.push("END:VEVENT", "END:VCALENDAR", "");
-	return lines.join("\r\n");
-}
-function parseIcsEvents(icsRaw, calendarName) {
-	const lines = icsRaw.replace(/\r?\n[ \t]/g, "").split(/\r?\n/);
-	const events = [];
-	let inEvent = false;
-	let current = {};
-	for (const line of lines) {
-		const trimmed = line.trim();
-		if (trimmed === "BEGIN:VEVENT") {
-			inEvent = true;
-			current = {};
-			continue;
-		}
-		if (trimmed === "END:VEVENT") {
-			if (inEvent && current.SUMMARY && current.DTSTART) {
-				const startIso = parseIcsDate(current.DTSTART);
-				const endIso = current.DTEND ? parseIcsDate(current.DTEND) : new Date(new Date(startIso).getTime() + 36e5).toISOString();
-				const uid = current.UID || `${startIso}-${current.SUMMARY}`;
-				events.push({
-					id: `nc-${uid}`,
-					uid,
-					title: unescapeIcsText(current.SUMMARY),
-					startTime: startIso,
-					endTime: endIso,
-					location: current.LOCATION ? unescapeIcsText(current.LOCATION) : void 0,
-					description: current.DESCRIPTION ? unescapeIcsText(current.DESCRIPTION) : void 0,
-					calendarName,
-					source: "nextcloud"
-				});
-			}
-			inEvent = false;
-			current = {};
-			continue;
-		}
-		if (!inEvent) continue;
-		const colonIdx = line.indexOf(":");
-		if (colonIdx <= 0) continue;
-		const rawKey = line.slice(0, colonIdx).split(";")[0].toUpperCase();
-		const rawVal = line.slice(colonIdx + 1);
-		current[rawKey] = rawVal;
-	}
-	return events;
-}
-function parseCalDavCalendarsXml(xmlText, baseOrigin) {
-	const doc = new DOMParser().parseFromString(xmlText, "application/xml");
-	const responses = Array.from(doc.getElementsByTagName("*")).filter((el) => el.localName === "response");
-	const calendars = [];
-	for (const resp of responses) {
-		const hrefEl = Array.from(resp.getElementsByTagName("*")).find((el) => el.localName === "href");
-		const displayEl = Array.from(resp.getElementsByTagName("*")).find((el) => el.localName === "displayname");
-		const resTypeEl = Array.from(resp.getElementsByTagName("*")).find((el) => el.localName === "resourcetype");
-		const hasCalendarTag = resTypeEl ? Array.from(resTypeEl.getElementsByTagName("*")).some((el) => el.localName === "calendar") : false;
-		const href = hrefEl?.textContent?.trim() || "";
-		const displayName = displayEl?.textContent?.trim() || "";
-		if (!href || !hasCalendarTag) continue;
-		if (href.includes("/inbox") || href.includes("/outbox") || href.includes("/trashbin")) continue;
-		const fullUrl = href.startsWith("http") ? href : `${baseOrigin.replace(/\/+$/, "")}${href.startsWith("/") ? "" : "/"}${href}`;
-		calendars.push({
-			url: fullUrl.endsWith("/") ? fullUrl : `${fullUrl}/`,
-			displayName: displayName || "Nextcloud Kalender"
-		});
-	}
-	return calendars;
-}
-function parseCalDavCalendarDataXml(xmlText, calendarName) {
-	const doc = new DOMParser().parseFromString(xmlText, "application/xml");
-	const dataNodes = Array.from(doc.getElementsByTagName("*")).filter((el) => el.localName === "calendar-data");
-	const all = [];
-	const seen = /* @__PURE__ */ new Set();
-	for (const node of dataNodes) {
-		const raw = node.textContent || "";
-		if (!raw.trim()) continue;
-		for (const ev of parseIcsEvents(raw, calendarName)) if (!seen.has(ev.id)) {
-			seen.add(ev.id);
-			all.push(ev);
-		}
-	}
-	return all.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-}
-// node_modules/xlsx/xlsx.mjs
+})))(), 1);
 /*! xlsx.js (C) 2013-present SheetJS -- http://sheetjs.com */
 var XLSX = {};
 XLSX.version = "0.18.5";
@@ -60405,3113 +62641,7 @@ var utils = {
 	}
 };
 XLSX.version;
-/*!
-
-JSZip v3.10.2 - A JavaScript class for generating and reading zip files
-<http://stuartk.com/jszip>
-
-(c) 2009-2016 Stuart Knightley <stuart [at] stuartk.com>
-Dual licenced under the MIT license or GPLv3. See https://raw.github.com/Stuk/jszip/main/LICENSE.markdown.
-
-JSZip uses the library pako released under the MIT license :
-https://github.com/nodeca/pako/blob/main/LICENSE
-*/
 // src/utils/sampleData.ts
-var import_jszip_min = /* @__PURE__ */ __toESM((/* @__PURE__ */ __commonJSMin(((exports, module) => {
-	(function(e) {
-		if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
-		else if ("function" == typeof define && define.amd) define([], e);
-		else ("undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self ? self : this).JSZip = e();
-	})(function() {
-		return function s(a, o, h) {
-			function u(r, e) {
-				if (!o[r]) {
-					if (!a[r]) {
-						var t = "function" == typeof __require && __require;
-						if (!e && t) return t(r, !0);
-						if (l) return l(r, !0);
-						var n = /* @__PURE__ */ new Error("Cannot find module '" + r + "'");
-						throw n.code = "MODULE_NOT_FOUND", n;
-					}
-					var i = o[r] = { exports: {} };
-					a[r][0].call(i.exports, function(e) {
-						var t = a[r][1][e];
-						return u(t || e);
-					}, i, i.exports, s, a, o, h);
-				}
-				return o[r].exports;
-			}
-			for (var l = "function" == typeof __require && __require, e = 0; e < h.length; e++) u(h[e]);
-			return u;
-		}({
-			1: [function(e, t, r) {
-				"use strict";
-				var d = e("./utils"), c = e("./support"), p = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-				r.encode = function(e) {
-					for (var t, r, n, i, s, a, o, h = [], u = 0, l = e.length, f = l, c = "string" !== d.getTypeOf(e); u < e.length;) f = l - u, n = c ? (t = e[u++], r = u < l ? e[u++] : 0, u < l ? e[u++] : 0) : (t = e.charCodeAt(u++), r = u < l ? e.charCodeAt(u++) : 0, u < l ? e.charCodeAt(u++) : 0), i = t >> 2, s = (3 & t) << 4 | r >> 4, a = 1 < f ? (15 & r) << 2 | n >> 6 : 64, o = 2 < f ? 63 & n : 64, h.push(p.charAt(i) + p.charAt(s) + p.charAt(a) + p.charAt(o));
-					return h.join("");
-				}, r.decode = function(e) {
-					var t, r, n, i, s, a, o = 0, h = 0, u = "data:";
-					if (e.substr(0, u.length) === u) throw new Error("Invalid base64 input, it looks like a data url.");
-					var l, f = 3 * (e = e.replace(/[^A-Za-z0-9+/=]/g, "")).length / 4;
-					if (e.charAt(e.length - 1) === p.charAt(64) && f--, e.charAt(e.length - 2) === p.charAt(64) && f--, f % 1 != 0) throw new Error("Invalid base64 input, bad content length.");
-					for (l = c.uint8array ? new Uint8Array(0 | f) : new Array(0 | f); o < e.length;) t = p.indexOf(e.charAt(o++)) << 2 | (i = p.indexOf(e.charAt(o++))) >> 4, r = (15 & i) << 4 | (s = p.indexOf(e.charAt(o++))) >> 2, n = (3 & s) << 6 | (a = p.indexOf(e.charAt(o++))), l[h++] = t, 64 !== s && (l[h++] = r), 64 !== a && (l[h++] = n);
-					return l;
-				};
-			}, {
-				"./support": 30,
-				"./utils": 32
-			}],
-			2: [function(e, t, r) {
-				"use strict";
-				var n = e("./external"), i = e("./stream/DataWorker"), s = e("./stream/Crc32Probe"), a = e("./stream/DataLengthProbe");
-				function o(e, t, r, n, i) {
-					this.compressedSize = e, this.uncompressedSize = t, this.crc32 = r, this.compression = n, this.compressedContent = i;
-				}
-				o.prototype = {
-					getContentWorker: function() {
-						var e = new i(n.Promise.resolve(this.compressedContent)).pipe(this.compression.uncompressWorker()).pipe(new a("data_length")), t = this;
-						return e.on("end", function() {
-							if (this.streamInfo.data_length !== t.uncompressedSize) throw new Error("Bug : uncompressed data size mismatch");
-						}), e;
-					},
-					getCompressedWorker: function() {
-						return new i(n.Promise.resolve(this.compressedContent)).withStreamInfo("compressedSize", this.compressedSize).withStreamInfo("uncompressedSize", this.uncompressedSize).withStreamInfo("crc32", this.crc32).withStreamInfo("compression", this.compression);
-					}
-				}, o.createWorkerFrom = function(e, t, r) {
-					return e.pipe(new s()).pipe(new a("uncompressedSize")).pipe(t.compressWorker(r)).pipe(new a("compressedSize")).withStreamInfo("compression", t);
-				}, t.exports = o;
-			}, {
-				"./external": 6,
-				"./stream/Crc32Probe": 25,
-				"./stream/DataLengthProbe": 26,
-				"./stream/DataWorker": 27
-			}],
-			3: [function(e, t, r) {
-				"use strict";
-				var n = e("./stream/GenericWorker");
-				r.STORE = {
-					magic: "\0\0",
-					compressWorker: function() {
-						return new n("STORE compression");
-					},
-					uncompressWorker: function() {
-						return new n("STORE decompression");
-					}
-				}, r.DEFLATE = e("./flate");
-			}, {
-				"./flate": 7,
-				"./stream/GenericWorker": 28
-			}],
-			4: [function(e, t, r) {
-				"use strict";
-				var n = e("./utils");
-				var o = function() {
-					for (var e, t = [], r = 0; r < 256; r++) {
-						e = r;
-						for (var n = 0; n < 8; n++) e = 1 & e ? 3988292384 ^ e >>> 1 : e >>> 1;
-						t[r] = e;
-					}
-					return t;
-				}();
-				t.exports = function(e, t) {
-					return void 0 !== e && e.length ? "string" !== n.getTypeOf(e) ? function(e, t, r, n) {
-						var i = o, s = n + r;
-						e ^= -1;
-						for (var a = n; a < s; a++) e = e >>> 8 ^ i[255 & (e ^ t[a])];
-						return -1 ^ e;
-					}(0 | t, e, e.length, 0) : function(e, t, r, n) {
-						var i = o, s = n + r;
-						e ^= -1;
-						for (var a = n; a < s; a++) e = e >>> 8 ^ i[255 & (e ^ t.charCodeAt(a))];
-						return -1 ^ e;
-					}(0 | t, e, e.length, 0) : 0;
-				};
-			}, { "./utils": 32 }],
-			5: [function(e, t, r) {
-				"use strict";
-				r.base64 = !1, r.binary = !1, r.dir = !1, r.createFolders = !0, r.date = null, r.compression = null, r.compressionOptions = null, r.comment = null, r.unixPermissions = null, r.dosPermissions = null;
-			}, {}],
-			6: [function(e, t, r) {
-				"use strict";
-				var n = null;
-				n = "undefined" != typeof Promise ? Promise : e("lie"), t.exports = { Promise: n };
-			}, { lie: 37 }],
-			7: [function(e, t, r) {
-				"use strict";
-				var n = "undefined" != typeof Uint8Array && "undefined" != typeof Uint16Array && "undefined" != typeof Uint32Array, i = e("pako"), s = e("./utils"), a = e("./stream/GenericWorker"), o = n ? "uint8array" : "array";
-				function h(e, t) {
-					a.call(this, "FlateWorker/" + e), this._pako = null, this._pakoAction = e, this._pakoOptions = t, this.meta = {};
-				}
-				r.magic = "\b\0", s.inherits(h, a), h.prototype.processChunk = function(e) {
-					this.meta = e.meta, null === this._pako && this._createPako(), this._pako.push(s.transformTo(o, e.data), !1);
-				}, h.prototype.flush = function() {
-					a.prototype.flush.call(this), null === this._pako && this._createPako(), this._pako.push([], !0);
-				}, h.prototype.cleanUp = function() {
-					a.prototype.cleanUp.call(this), this._pako = null;
-				}, h.prototype._createPako = function() {
-					this._pako = new i[this._pakoAction]({
-						raw: !0,
-						level: this._pakoOptions.level || -1
-					});
-					var t = this;
-					this._pako.onData = function(e) {
-						t.push({
-							data: e,
-							meta: t.meta
-						});
-					};
-				}, r.compressWorker = function(e) {
-					return new h("Deflate", e);
-				}, r.uncompressWorker = function() {
-					return new h("Inflate", {});
-				};
-			}, {
-				"./stream/GenericWorker": 28,
-				"./utils": 32,
-				pako: 38
-			}],
-			8: [function(e, t, r) {
-				"use strict";
-				function A(e, t) {
-					var r, n = "";
-					for (r = 0; r < t; r++) n += String.fromCharCode(255 & e), e >>>= 8;
-					return n;
-				}
-				function n(e, t, r, n, i, s) {
-					var a, o, h = e.file, u = e.compression, l = s !== O.utf8encode, f = I.transformTo("string", s(h.name)), c = I.transformTo("string", O.utf8encode(h.name)), d = h.comment, p = I.transformTo("string", s(d)), m = I.transformTo("string", O.utf8encode(d)), _ = c.length !== h.name.length, g = m.length !== d.length, b = "", v = "", y = "", w = h.dir, k = h.date, x = {
-						crc32: 0,
-						compressedSize: 0,
-						uncompressedSize: 0
-					};
-					t && !r || (x.crc32 = e.crc32, x.compressedSize = e.compressedSize, x.uncompressedSize = e.uncompressedSize);
-					var S = 0;
-					t && (S |= 8), l || !_ && !g || (S |= 2048);
-					var z = 0, C = 0;
-					w && (z |= 16), "UNIX" === i ? (C = 798, z |= function(e, t) {
-						var r = e;
-						return e || (r = t ? 16893 : 33204), (65535 & r) << 16;
-					}(h.unixPermissions, w)) : (C = 20, z |= function(e) {
-						return 63 & (e || 0);
-					}(h.dosPermissions)), a = k.getUTCHours(), a <<= 6, a |= k.getUTCMinutes(), a <<= 5, a |= k.getUTCSeconds() / 2, o = k.getUTCFullYear() - 1980, o <<= 4, o |= k.getUTCMonth() + 1, o <<= 5, o |= k.getUTCDate(), _ && (v = A(1, 1) + A(B(f), 4) + c, b += "up" + A(v.length, 2) + v), g && (y = A(1, 1) + A(B(p), 4) + m, b += "uc" + A(y.length, 2) + y);
-					var E = "";
-					return E += "\n\0", E += A(S, 2), E += u.magic, E += A(a, 2), E += A(o, 2), E += A(x.crc32, 4), E += A(x.compressedSize, 4), E += A(x.uncompressedSize, 4), E += A(f.length, 2), E += A(b.length, 2), {
-						fileRecord: R.LOCAL_FILE_HEADER + E + f + b,
-						dirRecord: R.CENTRAL_FILE_HEADER + A(C, 2) + E + A(p.length, 2) + "\0\0\0\0" + A(z, 4) + A(n, 4) + f + b + p
-					};
-				}
-				var I = e("../utils"), i = e("../stream/GenericWorker"), O = e("../utf8"), B = e("../crc32"), R = e("../signature");
-				function s(e, t, r, n) {
-					i.call(this, "ZipFileWorker"), this.bytesWritten = 0, this.zipComment = t, this.zipPlatform = r, this.encodeFileName = n, this.streamFiles = e, this.accumulate = !1, this.contentBuffer = [], this.dirRecords = [], this.currentSourceOffset = 0, this.entriesCount = 0, this.currentFile = null, this._sources = [];
-				}
-				I.inherits(s, i), s.prototype.push = function(e) {
-					var t = e.meta.percent || 0, r = this.entriesCount, n = this._sources.length;
-					this.accumulate ? this.contentBuffer.push(e) : (this.bytesWritten += e.data.length, i.prototype.push.call(this, {
-						data: e.data,
-						meta: {
-							currentFile: this.currentFile,
-							percent: r ? (t + 100 * (r - n - 1)) / r : 100
-						}
-					}));
-				}, s.prototype.openedSource = function(e) {
-					this.currentSourceOffset = this.bytesWritten, this.currentFile = e.file.name;
-					var t = this.streamFiles && !e.file.dir;
-					if (t) {
-						var r = n(e, t, !1, this.currentSourceOffset, this.zipPlatform, this.encodeFileName);
-						this.push({
-							data: r.fileRecord,
-							meta: { percent: 0 }
-						});
-					} else this.accumulate = !0;
-				}, s.prototype.closedSource = function(e) {
-					this.accumulate = !1;
-					var t = this.streamFiles && !e.file.dir, r = n(e, t, !0, this.currentSourceOffset, this.zipPlatform, this.encodeFileName);
-					if (this.dirRecords.push(r.dirRecord), t) this.push({
-						data: function(e) {
-							return R.DATA_DESCRIPTOR + A(e.crc32, 4) + A(e.compressedSize, 4) + A(e.uncompressedSize, 4);
-						}(e),
-						meta: { percent: 100 }
-					});
-					else for (this.push({
-						data: r.fileRecord,
-						meta: { percent: 0 }
-					}); this.contentBuffer.length;) this.push(this.contentBuffer.shift());
-					this.currentFile = null;
-				}, s.prototype.flush = function() {
-					for (var e = this.bytesWritten, t = 0; t < this.dirRecords.length; t++) this.push({
-						data: this.dirRecords[t],
-						meta: { percent: 100 }
-					});
-					var r = this.bytesWritten - e, n = function(e, t, r, n, i) {
-						var s = I.transformTo("string", i(n));
-						return R.CENTRAL_DIRECTORY_END + "\0\0\0\0" + A(e, 2) + A(e, 2) + A(t, 4) + A(r, 4) + A(s.length, 2) + s;
-					}(this.dirRecords.length, r, e, this.zipComment, this.encodeFileName);
-					this.push({
-						data: n,
-						meta: { percent: 100 }
-					});
-				}, s.prototype.prepareNextSource = function() {
-					this.previous = this._sources.shift(), this.openedSource(this.previous.streamInfo), this.isPaused ? this.previous.pause() : this.previous.resume();
-				}, s.prototype.registerPrevious = function(e) {
-					this._sources.push(e);
-					var t = this;
-					return e.on("data", function(e) {
-						t.processChunk(e);
-					}), e.on("end", function() {
-						t.closedSource(t.previous.streamInfo), t._sources.length ? t.prepareNextSource() : t.end();
-					}), e.on("error", function(e) {
-						t.error(e);
-					}), this;
-				}, s.prototype.resume = function() {
-					return !!i.prototype.resume.call(this) && (!this.previous && this._sources.length ? (this.prepareNextSource(), !0) : this.previous || this._sources.length || this.generatedError ? void 0 : (this.end(), !0));
-				}, s.prototype.error = function(e) {
-					var t = this._sources;
-					if (!i.prototype.error.call(this, e)) return !1;
-					for (var r = 0; r < t.length; r++) try {
-						t[r].error(e);
-					} catch (e) {}
-					return !0;
-				}, s.prototype.lock = function() {
-					i.prototype.lock.call(this);
-					for (var e = this._sources, t = 0; t < e.length; t++) e[t].lock();
-				}, t.exports = s;
-			}, {
-				"../crc32": 4,
-				"../signature": 23,
-				"../stream/GenericWorker": 28,
-				"../utf8": 31,
-				"../utils": 32
-			}],
-			9: [function(e, t, r) {
-				"use strict";
-				var u = e("../compressions"), n = e("./ZipFileWorker");
-				r.generateWorker = function(e, a, t) {
-					var o = new n(a.streamFiles, t, a.platform, a.encodeFileName), h = 0;
-					try {
-						e.forEach(function(e, t) {
-							h++;
-							var r = function(e, t) {
-								var r = e || t, n = u[r];
-								if (!n) throw new Error(r + " is not a valid compression method !");
-								return n;
-							}(t.options.compression, a.compression), n = t.options.compressionOptions || a.compressionOptions || {}, i = t.dir, s = t.date;
-							t._compressWorker(r, n).withStreamInfo("file", {
-								name: e,
-								dir: i,
-								date: s,
-								comment: t.comment || "",
-								unixPermissions: t.unixPermissions,
-								dosPermissions: t.dosPermissions
-							}).pipe(o);
-						}), o.entriesCount = h;
-					} catch (e) {
-						o.error(e);
-					}
-					return o;
-				};
-			}, {
-				"../compressions": 3,
-				"./ZipFileWorker": 8
-			}],
-			10: [function(e, t, r) {
-				"use strict";
-				function n() {
-					if (!(this instanceof n)) return new n();
-					if (arguments.length) throw new Error("The constructor with parameters has been removed in JSZip 3.0, please check the upgrade guide.");
-					this.files = Object.create(null), this.comment = null, this.root = "", this.clone = function() {
-						var e = new n();
-						for (var t in this) "function" != typeof this[t] && (e[t] = this[t]);
-						return e;
-					};
-				}
-				(n.prototype = e("./object")).loadAsync = e("./load"), n.support = e("./support"), n.defaults = e("./defaults"), n.version = "3.10.2", n.loadAsync = function(e, t) {
-					return new n().loadAsync(e, t);
-				}, n.external = e("./external"), t.exports = n;
-			}, {
-				"./defaults": 5,
-				"./external": 6,
-				"./load": 11,
-				"./object": 15,
-				"./support": 30
-			}],
-			11: [function(e, t, r) {
-				"use strict";
-				var u = e("./utils"), i = e("./external"), n = e("./utf8"), s = e("./zipEntries"), a = e("./stream/Crc32Probe"), l = e("./nodejsUtils");
-				function f(n) {
-					return new i.Promise(function(e, t) {
-						var r = n.decompressed.getContentWorker().pipe(new a());
-						r.on("error", function(e) {
-							t(e);
-						}).on("end", function() {
-							r.streamInfo.crc32 !== n.decompressed.crc32 ? t(/* @__PURE__ */ new Error("Corrupted zip : CRC32 mismatch")) : e();
-						}).resume();
-					});
-				}
-				t.exports = function(e, o) {
-					var h = this;
-					return o = u.extend(o || {}, {
-						base64: !1,
-						checkCRC32: !1,
-						optimizedBinaryString: !1,
-						createFolders: !1,
-						decodeFileName: n.utf8decode
-					}), l.isNode && l.isStream(e) ? i.Promise.reject(/* @__PURE__ */ new Error("JSZip can't accept a stream when loading a zip file.")) : u.prepareContent("the loaded zip file", e, !0, o.optimizedBinaryString, o.base64).then(function(e) {
-						var t = new s(o);
-						return t.load(e), t;
-					}).then(function(e) {
-						var t = [i.Promise.resolve(e)], r = e.files;
-						if (o.checkCRC32) for (var n = 0; n < r.length; n++) t.push(f(r[n]));
-						return i.Promise.all(t);
-					}).then(function(e) {
-						for (var t = e.shift(), r = t.files, n = 0; n < r.length; n++) {
-							var i = r[n], s = i.fileNameStr, a = u.resolve(i.fileNameStr);
-							h.file(a, i.decompressed, {
-								binary: !0,
-								optimizedBinaryString: !0,
-								date: i.date,
-								dir: i.dir,
-								comment: i.fileCommentStr.length ? i.fileCommentStr : null,
-								unixPermissions: i.unixPermissions,
-								dosPermissions: i.dosPermissions,
-								createFolders: o.createFolders
-							}), i.dir || (h.file(a).unsafeOriginalName = s);
-						}
-						return t.zipComment.length && (h.comment = t.zipComment), h;
-					});
-				};
-			}, {
-				"./external": 6,
-				"./nodejsUtils": 14,
-				"./stream/Crc32Probe": 25,
-				"./utf8": 31,
-				"./utils": 32,
-				"./zipEntries": 33
-			}],
-			12: [function(e, t, r) {
-				"use strict";
-				var n = e("../utils"), i = e("../stream/GenericWorker");
-				function s(e, t) {
-					i.call(this, "Nodejs stream input adapter for " + e), this._upstreamEnded = !1, this._bindStream(t);
-				}
-				n.inherits(s, i), s.prototype._bindStream = function(e) {
-					var t = this;
-					(this._stream = e).pause(), e.on("data", function(e) {
-						t.push({
-							data: e,
-							meta: { percent: 0 }
-						});
-					}).on("error", function(e) {
-						t.isPaused ? this.generatedError = e : t.error(e);
-					}).on("end", function() {
-						t.isPaused ? t._upstreamEnded = !0 : t.end();
-					});
-				}, s.prototype.pause = function() {
-					return !!i.prototype.pause.call(this) && (this._stream.pause(), !0);
-				}, s.prototype.resume = function() {
-					return !!i.prototype.resume.call(this) && (this._upstreamEnded ? this.end() : this._stream.resume(), !0);
-				}, t.exports = s;
-			}, {
-				"../stream/GenericWorker": 28,
-				"../utils": 32
-			}],
-			13: [function(e, t, r) {
-				"use strict";
-				var i = e("readable-stream").Readable;
-				function n(e, t, r) {
-					i.call(this, t), this._helper = e;
-					var n = this;
-					e.on("data", function(e, t) {
-						n.push(e) || n._helper.pause(), r && r(t);
-					}).on("error", function(e) {
-						n.emit("error", e);
-					}).on("end", function() {
-						n.push(null);
-					});
-				}
-				e("../utils").inherits(n, i), n.prototype._read = function() {
-					this._helper.resume();
-				}, t.exports = n;
-			}, {
-				"../utils": 32,
-				"readable-stream": 16
-			}],
-			14: [function(e, t, r) {
-				"use strict";
-				t.exports = {
-					isNode: "undefined" != typeof Buffer,
-					newBufferFrom: function(e, t) {
-						if (Buffer.from && Buffer.from !== Uint8Array.from) return Buffer.from(e, t);
-						if ("number" == typeof e) throw new Error("The \"data\" argument must not be a number");
-						return new Buffer(e, t);
-					},
-					allocBuffer: function(e) {
-						if (Buffer.alloc) return Buffer.alloc(e);
-						var t = new Buffer(e);
-						return t.fill(0), t;
-					},
-					isBuffer: function(e) {
-						return Buffer.isBuffer(e);
-					},
-					isStream: function(e) {
-						return e && "function" == typeof e.on && "function" == typeof e.pause && "function" == typeof e.resume;
-					}
-				};
-			}, {}],
-			15: [function(e, t, r) {
-				"use strict";
-				function s(e, t, r) {
-					var n, i = u.getTypeOf(t), s = u.extend(r || {}, f);
-					s.date = s.date || /* @__PURE__ */ new Date(), null !== s.compression && (s.compression = s.compression.toUpperCase()), "string" == typeof s.unixPermissions && (s.unixPermissions = parseInt(s.unixPermissions, 8)), s.unixPermissions && 16384 & s.unixPermissions && (s.dir = !0), s.dosPermissions && 16 & s.dosPermissions && (s.dir = !0), s.dir && (e = g(e)), s.createFolders && (n = _(e)) && b.call(this, n, !0);
-					var a = "string" === i && !1 === s.binary && !1 === s.base64;
-					r && void 0 !== r.binary || (s.binary = !a), (t instanceof c && 0 === t.uncompressedSize || s.dir || !t || 0 === t.length) && (s.base64 = !1, s.binary = !0, t = "", s.compression = "STORE", i = "string");
-					var o = null;
-					o = t instanceof c || t instanceof l ? t : p.isNode && p.isStream(t) ? new m(e, t) : u.prepareContent(e, t, s.binary, s.optimizedBinaryString, s.base64);
-					var h = new d(e, o, s);
-					this.files[e] = h;
-				}
-				var i = e("./utf8"), u = e("./utils"), l = e("./stream/GenericWorker"), a = e("./stream/StreamHelper"), f = e("./defaults"), c = e("./compressedObject"), d = e("./zipObject"), o = e("./generate"), p = e("./nodejsUtils"), m = e("./nodejs/NodejsStreamInputAdapter"), _ = function(e) {
-					"/" === e.slice(-1) && (e = e.substring(0, e.length - 1));
-					var t = e.lastIndexOf("/");
-					return 0 < t ? e.substring(0, t) : "";
-				}, g = function(e) {
-					return "/" !== e.slice(-1) && (e += "/"), e;
-				}, b = function(e, t) {
-					return t = void 0 !== t ? t : f.createFolders, e = g(e), this.files[e] || s.call(this, e, null, {
-						dir: !0,
-						createFolders: t
-					}), this.files[e];
-				};
-				function h(e) {
-					return "[object RegExp]" === Object.prototype.toString.call(e);
-				}
-				t.exports = {
-					load: function() {
-						throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
-					},
-					forEach: function(e) {
-						var t, r, n;
-						for (t in this.files) n = this.files[t], (r = t.slice(this.root.length, t.length)) && t.slice(0, this.root.length) === this.root && e(r, n);
-					},
-					filter: function(r) {
-						var n = [];
-						return this.forEach(function(e, t) {
-							r(e, t) && n.push(t);
-						}), n;
-					},
-					file: function(e, t, r) {
-						if (1 !== arguments.length) return e = this.root + e, s.call(this, e, t, r), this;
-						if (h(e)) {
-							var n = e;
-							return this.filter(function(e, t) {
-								return !t.dir && n.test(e);
-							});
-						}
-						var i = this.files[this.root + e];
-						return i && !i.dir ? i : null;
-					},
-					folder: function(r) {
-						if (!r) return this;
-						if (h(r)) return this.filter(function(e, t) {
-							return t.dir && r.test(e);
-						});
-						var e = this.root + r, t = b.call(this, e), n = this.clone();
-						return n.root = t.name, n;
-					},
-					remove: function(r) {
-						r = this.root + r;
-						var e = this.files[r];
-						if (e || ("/" !== r.slice(-1) && (r += "/"), e = this.files[r]), e && !e.dir) delete this.files[r];
-						else for (var t = this.filter(function(e, t) {
-							return t.name.slice(0, r.length) === r;
-						}), n = 0; n < t.length; n++) delete this.files[t[n].name];
-						return this;
-					},
-					generate: function() {
-						throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
-					},
-					generateInternalStream: function(e) {
-						var t, r = {};
-						try {
-							if ((r = u.extend(e || {}, {
-								streamFiles: !1,
-								compression: "STORE",
-								compressionOptions: null,
-								type: "",
-								platform: "DOS",
-								comment: null,
-								mimeType: "application/zip",
-								encodeFileName: i.utf8encode
-							})).type = r.type.toLowerCase(), r.compression = r.compression.toUpperCase(), "binarystring" === r.type && (r.type = "string"), !r.type) throw new Error("No output type specified.");
-							u.checkSupport(r.type), "darwin" !== r.platform && "freebsd" !== r.platform && "linux" !== r.platform && "sunos" !== r.platform || (r.platform = "UNIX"), "win32" === r.platform && (r.platform = "DOS");
-							var n = r.comment || this.comment || "";
-							t = o.generateWorker(this, r, n);
-						} catch (e) {
-							(t = new l("error")).error(e);
-						}
-						return new a(t, r.type || "string", r.mimeType);
-					},
-					generateAsync: function(e, t) {
-						return this.generateInternalStream(e).accumulate(t);
-					},
-					generateNodeStream: function(e, t) {
-						return (e = e || {}).type || (e.type = "nodebuffer"), this.generateInternalStream(e).toNodejsStream(t);
-					}
-				};
-			}, {
-				"./compressedObject": 2,
-				"./defaults": 5,
-				"./generate": 9,
-				"./nodejs/NodejsStreamInputAdapter": 12,
-				"./nodejsUtils": 14,
-				"./stream/GenericWorker": 28,
-				"./stream/StreamHelper": 29,
-				"./utf8": 31,
-				"./utils": 32,
-				"./zipObject": 35
-			}],
-			16: [function(e, t, r) {
-				"use strict";
-				t.exports = e("stream");
-			}, { stream: void 0 }],
-			17: [function(e, t, r) {
-				"use strict";
-				var n = e("./DataReader");
-				function i(e) {
-					n.call(this, e);
-					for (var t = 0; t < this.data.length; t++) e[t] = 255 & e[t];
-				}
-				e("../utils").inherits(i, n), i.prototype.byteAt = function(e) {
-					return this.data[this.zero + e];
-				}, i.prototype.lastIndexOfSignature = function(e) {
-					for (var t = e.charCodeAt(0), r = e.charCodeAt(1), n = e.charCodeAt(2), i = e.charCodeAt(3), s = this.length - 4; 0 <= s; --s) if (this.data[s] === t && this.data[s + 1] === r && this.data[s + 2] === n && this.data[s + 3] === i) return s - this.zero;
-					return -1;
-				}, i.prototype.readAndCheckSignature = function(e) {
-					var t = e.charCodeAt(0), r = e.charCodeAt(1), n = e.charCodeAt(2), i = e.charCodeAt(3), s = this.readData(4);
-					return t === s[0] && r === s[1] && n === s[2] && i === s[3];
-				}, i.prototype.readData = function(e) {
-					if (this.checkOffset(e), 0 === e) return [];
-					var t = this.data.slice(this.zero + this.index, this.zero + this.index + e);
-					return this.index += e, t;
-				}, t.exports = i;
-			}, {
-				"../utils": 32,
-				"./DataReader": 18
-			}],
-			18: [function(e, t, r) {
-				"use strict";
-				var n = e("../utils");
-				function i(e) {
-					this.data = e, this.length = e.length, this.index = 0, this.zero = 0;
-				}
-				i.prototype = {
-					checkOffset: function(e) {
-						this.checkIndex(this.index + e);
-					},
-					checkIndex: function(e) {
-						if (this.length < this.zero + e || e < 0) throw new Error("End of data reached (data length = " + this.length + ", asked index = " + e + "). Corrupted zip ?");
-					},
-					setIndex: function(e) {
-						this.checkIndex(e), this.index = e;
-					},
-					skip: function(e) {
-						this.setIndex(this.index + e);
-					},
-					byteAt: function() {},
-					readInt: function(e) {
-						var t, r = 0;
-						for (this.checkOffset(e), t = this.index + e - 1; t >= this.index; t--) r = (r << 8) + this.byteAt(t);
-						return this.index += e, r;
-					},
-					readString: function(e) {
-						return n.transformTo("string", this.readData(e));
-					},
-					readData: function() {},
-					lastIndexOfSignature: function() {},
-					readAndCheckSignature: function() {},
-					readDate: function() {
-						var e = this.readInt(4);
-						return new Date(Date.UTC(1980 + (e >> 25 & 127), (e >> 21 & 15) - 1, e >> 16 & 31, e >> 11 & 31, e >> 5 & 63, (31 & e) << 1));
-					}
-				}, t.exports = i;
-			}, { "../utils": 32 }],
-			19: [function(e, t, r) {
-				"use strict";
-				var n = e("./Uint8ArrayReader");
-				function i(e) {
-					n.call(this, e);
-				}
-				e("../utils").inherits(i, n), i.prototype.readData = function(e) {
-					this.checkOffset(e);
-					var t = this.data.slice(this.zero + this.index, this.zero + this.index + e);
-					return this.index += e, t;
-				}, t.exports = i;
-			}, {
-				"../utils": 32,
-				"./Uint8ArrayReader": 21
-			}],
-			20: [function(e, t, r) {
-				"use strict";
-				var n = e("./DataReader");
-				function i(e) {
-					n.call(this, e);
-				}
-				e("../utils").inherits(i, n), i.prototype.byteAt = function(e) {
-					return this.data.charCodeAt(this.zero + e);
-				}, i.prototype.lastIndexOfSignature = function(e) {
-					return this.data.lastIndexOf(e) - this.zero;
-				}, i.prototype.readAndCheckSignature = function(e) {
-					return e === this.readData(4);
-				}, i.prototype.readData = function(e) {
-					this.checkOffset(e);
-					var t = this.data.slice(this.zero + this.index, this.zero + this.index + e);
-					return this.index += e, t;
-				}, t.exports = i;
-			}, {
-				"../utils": 32,
-				"./DataReader": 18
-			}],
-			21: [function(e, t, r) {
-				"use strict";
-				var n = e("./ArrayReader");
-				function i(e) {
-					n.call(this, e);
-				}
-				e("../utils").inherits(i, n), i.prototype.readData = function(e) {
-					if (this.checkOffset(e), 0 === e) return /* @__PURE__ */ new Uint8Array(0);
-					var t = this.data.subarray(this.zero + this.index, this.zero + this.index + e);
-					return this.index += e, t;
-				}, t.exports = i;
-			}, {
-				"../utils": 32,
-				"./ArrayReader": 17
-			}],
-			22: [function(e, t, r) {
-				"use strict";
-				var n = e("../utils"), i = e("../support"), s = e("./ArrayReader"), a = e("./StringReader"), o = e("./NodeBufferReader"), h = e("./Uint8ArrayReader");
-				t.exports = function(e) {
-					var t = n.getTypeOf(e);
-					return n.checkSupport(t), "string" !== t || i.uint8array ? "nodebuffer" === t ? new o(e) : i.uint8array ? new h(n.transformTo("uint8array", e)) : new s(n.transformTo("array", e)) : new a(e);
-				};
-			}, {
-				"../support": 30,
-				"../utils": 32,
-				"./ArrayReader": 17,
-				"./NodeBufferReader": 19,
-				"./StringReader": 20,
-				"./Uint8ArrayReader": 21
-			}],
-			23: [function(e, t, r) {
-				"use strict";
-				r.LOCAL_FILE_HEADER = "PK", r.CENTRAL_FILE_HEADER = "PK", r.CENTRAL_DIRECTORY_END = "PK", r.ZIP64_CENTRAL_DIRECTORY_LOCATOR = "PK\x07", r.ZIP64_CENTRAL_DIRECTORY_END = "PK", r.DATA_DESCRIPTOR = "PK\x07\b";
-			}, {}],
-			24: [function(e, t, r) {
-				"use strict";
-				var n = e("./GenericWorker"), i = e("../utils");
-				function s(e) {
-					n.call(this, "ConvertWorker to " + e), this.destType = e;
-				}
-				i.inherits(s, n), s.prototype.processChunk = function(e) {
-					this.push({
-						data: i.transformTo(this.destType, e.data),
-						meta: e.meta
-					});
-				}, t.exports = s;
-			}, {
-				"../utils": 32,
-				"./GenericWorker": 28
-			}],
-			25: [function(e, t, r) {
-				"use strict";
-				var n = e("./GenericWorker"), i = e("../crc32");
-				function s() {
-					n.call(this, "Crc32Probe"), this.withStreamInfo("crc32", 0);
-				}
-				e("../utils").inherits(s, n), s.prototype.processChunk = function(e) {
-					this.streamInfo.crc32 = i(e.data, this.streamInfo.crc32 || 0), this.push(e);
-				}, t.exports = s;
-			}, {
-				"../crc32": 4,
-				"../utils": 32,
-				"./GenericWorker": 28
-			}],
-			26: [function(e, t, r) {
-				"use strict";
-				var n = e("../utils"), i = e("./GenericWorker");
-				function s(e) {
-					i.call(this, "DataLengthProbe for " + e), this.propName = e, this.withStreamInfo(e, 0);
-				}
-				n.inherits(s, i), s.prototype.processChunk = function(e) {
-					if (e) {
-						var t = this.streamInfo[this.propName] || 0;
-						this.streamInfo[this.propName] = t + e.data.length;
-					}
-					i.prototype.processChunk.call(this, e);
-				}, t.exports = s;
-			}, {
-				"../utils": 32,
-				"./GenericWorker": 28
-			}],
-			27: [function(e, t, r) {
-				"use strict";
-				var n = e("../utils"), i = e("./GenericWorker");
-				function s(e) {
-					i.call(this, "DataWorker");
-					var t = this;
-					this.dataIsReady = !1, this.index = 0, this.max = 0, this.data = null, this.type = "", this._tickScheduled = !1, e.then(function(e) {
-						t.dataIsReady = !0, t.data = e, t.max = e && e.length || 0, t.type = n.getTypeOf(e), t.isPaused || t._tickAndRepeat();
-					}, function(e) {
-						t.error(e);
-					});
-				}
-				n.inherits(s, i), s.prototype.cleanUp = function() {
-					i.prototype.cleanUp.call(this), this.data = null;
-				}, s.prototype.resume = function() {
-					return !!i.prototype.resume.call(this) && (!this._tickScheduled && this.dataIsReady && (this._tickScheduled = !0, n.delay(this._tickAndRepeat, [], this)), !0);
-				}, s.prototype._tickAndRepeat = function() {
-					this._tickScheduled = !1, this.isPaused || this.isFinished || (this._tick(), this.isFinished || (n.delay(this._tickAndRepeat, [], this), this._tickScheduled = !0));
-				}, s.prototype._tick = function() {
-					if (this.isPaused || this.isFinished) return !1;
-					var e = null, t = Math.min(this.max, this.index + 16384);
-					if (this.index >= this.max) return this.end();
-					switch (this.type) {
-						case "string":
-							e = this.data.substring(this.index, t);
-							break;
-						case "uint8array":
-							e = this.data.subarray(this.index, t);
-							break;
-						case "array":
-						case "nodebuffer": e = this.data.slice(this.index, t);
-					}
-					return this.index = t, this.push({
-						data: e,
-						meta: { percent: this.max ? this.index / this.max * 100 : 0 }
-					});
-				}, t.exports = s;
-			}, {
-				"../utils": 32,
-				"./GenericWorker": 28
-			}],
-			28: [function(e, t, r) {
-				"use strict";
-				function n(e) {
-					this.name = e || "default", this.streamInfo = {}, this.generatedError = null, this.extraStreamInfo = {}, this.isPaused = !0, this.isFinished = !1, this.isLocked = !1, this._listeners = {
-						data: [],
-						end: [],
-						error: []
-					}, this.previous = null;
-				}
-				n.prototype = {
-					push: function(e) {
-						this.emit("data", e);
-					},
-					end: function() {
-						if (this.isFinished) return !1;
-						this.flush();
-						try {
-							this.emit("end"), this.cleanUp(), this.isFinished = !0;
-						} catch (e) {
-							this.emit("error", e);
-						}
-						return !0;
-					},
-					error: function(e) {
-						return !this.isFinished && (this.isPaused ? this.generatedError = e : (this.isFinished = !0, this.emit("error", e), this.previous && this.previous.error(e), this.cleanUp()), !0);
-					},
-					on: function(e, t) {
-						return this._listeners[e].push(t), this;
-					},
-					cleanUp: function() {
-						this.streamInfo = this.generatedError = this.extraStreamInfo = null, this._listeners = [];
-					},
-					emit: function(e, t) {
-						if (this._listeners[e]) for (var r = 0; r < this._listeners[e].length; r++) this._listeners[e][r].call(this, t);
-					},
-					pipe: function(e) {
-						return e.registerPrevious(this);
-					},
-					registerPrevious: function(e) {
-						if (this.isLocked) throw new Error("The stream '" + this + "' has already been used.");
-						this.streamInfo = e.streamInfo, this.mergeStreamInfo(), this.previous = e;
-						var t = this;
-						return e.on("data", function(e) {
-							t.processChunk(e);
-						}), e.on("end", function() {
-							t.end();
-						}), e.on("error", function(e) {
-							t.error(e);
-						}), this;
-					},
-					pause: function() {
-						return !this.isPaused && !this.isFinished && (this.isPaused = !0, this.previous && this.previous.pause(), !0);
-					},
-					resume: function() {
-						if (!this.isPaused || this.isFinished) return !1;
-						var e = this.isPaused = !1;
-						return this.generatedError && (this.error(this.generatedError), e = !0), this.previous && this.previous.resume(), !e;
-					},
-					flush: function() {},
-					processChunk: function(e) {
-						this.push(e);
-					},
-					withStreamInfo: function(e, t) {
-						return this.extraStreamInfo[e] = t, this.mergeStreamInfo(), this;
-					},
-					mergeStreamInfo: function() {
-						for (var e in this.extraStreamInfo) Object.prototype.hasOwnProperty.call(this.extraStreamInfo, e) && (this.streamInfo[e] = this.extraStreamInfo[e]);
-					},
-					lock: function() {
-						if (this.isLocked) throw new Error("The stream '" + this + "' has already been used.");
-						this.isLocked = !0, this.previous && this.previous.lock();
-					},
-					toString: function() {
-						var e = "Worker " + this.name;
-						return this.previous ? this.previous + " -> " + e : e;
-					}
-				}, t.exports = n;
-			}, {}],
-			29: [function(e, t, r) {
-				"use strict";
-				var h = e("../utils"), i = e("./ConvertWorker"), s = e("./GenericWorker"), u = e("../base64"), n = e("../support"), a = e("../external"), o = null;
-				if (n.nodestream) try {
-					o = e("../nodejs/NodejsStreamOutputAdapter");
-				} catch (e) {}
-				function l(e, o) {
-					return new a.Promise(function(t, r) {
-						var n = [], i = e._internalType, s = e._outputType, a = e._mimeType;
-						e.on("data", function(e, t) {
-							n.push(e), o && o(t);
-						}).on("error", function(e) {
-							n = [], r(e);
-						}).on("end", function() {
-							try {
-								t(function(e, t, r) {
-									switch (e) {
-										case "blob": return h.newBlob(h.transformTo("arraybuffer", t), r);
-										case "base64": return u.encode(t);
-										default: return h.transformTo(e, t);
-									}
-								}(s, function(e, t) {
-									var r, n = 0, i = null, s = 0;
-									for (r = 0; r < t.length; r++) s += t[r].length;
-									switch (e) {
-										case "string": return t.join("");
-										case "array": return Array.prototype.concat.apply([], t);
-										case "uint8array":
-											for (i = new Uint8Array(s), r = 0; r < t.length; r++) i.set(t[r], n), n += t[r].length;
-											return i;
-										case "nodebuffer": return Buffer.concat(t);
-										default: throw new Error("concat : unsupported type '" + e + "'");
-									}
-								}(i, n), a));
-							} catch (e) {
-								r(e);
-							}
-							n = [];
-						}).resume();
-					});
-				}
-				function f(e, t, r) {
-					var n = t;
-					switch (t) {
-						case "blob":
-						case "arraybuffer":
-							n = "uint8array";
-							break;
-						case "base64": n = "string";
-					}
-					try {
-						this._internalType = n, this._outputType = t, this._mimeType = r, h.checkSupport(n), this._worker = e.pipe(new i(n)), e.lock();
-					} catch (e) {
-						this._worker = new s("error"), this._worker.error(e);
-					}
-				}
-				f.prototype = {
-					accumulate: function(e) {
-						return l(this, e);
-					},
-					on: function(e, t) {
-						var r = this;
-						return "data" === e ? this._worker.on(e, function(e) {
-							t.call(r, e.data, e.meta);
-						}) : this._worker.on(e, function() {
-							h.delay(t, arguments, r);
-						}), this;
-					},
-					resume: function() {
-						return h.delay(this._worker.resume, [], this._worker), this;
-					},
-					pause: function() {
-						return this._worker.pause(), this;
-					},
-					toNodejsStream: function(e) {
-						if (h.checkSupport("nodestream"), "nodebuffer" !== this._outputType) throw new Error(this._outputType + " is not supported by this method");
-						return new o(this, { objectMode: "nodebuffer" !== this._outputType }, e);
-					}
-				}, t.exports = f;
-			}, {
-				"../base64": 1,
-				"../external": 6,
-				"../nodejs/NodejsStreamOutputAdapter": 13,
-				"../support": 30,
-				"../utils": 32,
-				"./ConvertWorker": 24,
-				"./GenericWorker": 28
-			}],
-			30: [function(e, t, r) {
-				"use strict";
-				if (r.base64 = !0, r.array = !0, r.string = !0, r.arraybuffer = "undefined" != typeof ArrayBuffer && "undefined" != typeof Uint8Array, r.nodebuffer = "undefined" != typeof Buffer, r.uint8array = "undefined" != typeof Uint8Array, "undefined" == typeof ArrayBuffer) r.blob = !1;
-				else {
-					var n = /* @__PURE__ */ new ArrayBuffer(0);
-					try {
-						r.blob = 0 === new Blob([n], { type: "application/zip" }).size;
-					} catch (e) {
-						try {
-							var i = new (self.BlobBuilder || self.WebKitBlobBuilder || self.MozBlobBuilder || self.MSBlobBuilder)();
-							i.append(n), r.blob = 0 === i.getBlob("application/zip").size;
-						} catch (e) {
-							r.blob = !1;
-						}
-					}
-				}
-				try {
-					r.nodestream = !!e("readable-stream").Readable;
-				} catch (e) {
-					r.nodestream = !1;
-				}
-			}, { "readable-stream": 16 }],
-			31: [function(e, t, s) {
-				"use strict";
-				for (var o = e("./utils"), h = e("./support"), r = e("./nodejsUtils"), n = e("./stream/GenericWorker"), u = new Array(256), i = 0; i < 256; i++) u[i] = 252 <= i ? 6 : 248 <= i ? 5 : 240 <= i ? 4 : 224 <= i ? 3 : 192 <= i ? 2 : 1;
-				u[254] = u[254] = 1;
-				function a() {
-					n.call(this, "utf-8 decode"), this.leftOver = null;
-				}
-				function l() {
-					n.call(this, "utf-8 encode");
-				}
-				s.utf8encode = function(e) {
-					return h.nodebuffer ? r.newBufferFrom(e, "utf-8") : function(e) {
-						var t, r, n, i, s, a = e.length, o = 0;
-						for (i = 0; i < a; i++) 55296 == (64512 & (r = e.charCodeAt(i))) && i + 1 < a && 56320 == (64512 & (n = e.charCodeAt(i + 1))) && (r = 65536 + (r - 55296 << 10) + (n - 56320), i++), o += r < 128 ? 1 : r < 2048 ? 2 : r < 65536 ? 3 : 4;
-						for (t = h.uint8array ? new Uint8Array(o) : new Array(o), i = s = 0; s < o; i++) 55296 == (64512 & (r = e.charCodeAt(i))) && i + 1 < a && 56320 == (64512 & (n = e.charCodeAt(i + 1))) && (r = 65536 + (r - 55296 << 10) + (n - 56320), i++), r < 128 ? t[s++] = r : (r < 2048 ? t[s++] = 192 | r >>> 6 : (r < 65536 ? t[s++] = 224 | r >>> 12 : (t[s++] = 240 | r >>> 18, t[s++] = 128 | r >>> 12 & 63), t[s++] = 128 | r >>> 6 & 63), t[s++] = 128 | 63 & r);
-						return t;
-					}(e);
-				}, s.utf8decode = function(e) {
-					return h.nodebuffer ? o.transformTo("nodebuffer", e).toString("utf-8") : function(e) {
-						var t, r, n, i, s = e.length, a = new Array(2 * s);
-						for (t = r = 0; t < s;) if ((n = e[t++]) < 128) a[r++] = n;
-						else if (4 < (i = u[n])) a[r++] = 65533, t += i - 1;
-						else {
-							for (n &= 2 === i ? 31 : 3 === i ? 15 : 7; 1 < i && t < s;) n = n << 6 | 63 & e[t++], i--;
-							1 < i ? a[r++] = 65533 : n < 65536 ? a[r++] = n : (n -= 65536, a[r++] = 55296 | n >> 10 & 1023, a[r++] = 56320 | 1023 & n);
-						}
-						return a.length !== r && (a.subarray ? a = a.subarray(0, r) : a.length = r), o.applyFromCharCode(a);
-					}(e = o.transformTo(h.uint8array ? "uint8array" : "array", e));
-				}, o.inherits(a, n), a.prototype.processChunk = function(e) {
-					var t = o.transformTo(h.uint8array ? "uint8array" : "array", e.data);
-					if (this.leftOver && this.leftOver.length) {
-						if (h.uint8array) {
-							var r = t;
-							(t = new Uint8Array(r.length + this.leftOver.length)).set(this.leftOver, 0), t.set(r, this.leftOver.length);
-						} else t = this.leftOver.concat(t);
-						this.leftOver = null;
-					}
-					var n = function(e, t) {
-						var r;
-						for ((t = t || e.length) > e.length && (t = e.length), r = t - 1; 0 <= r && 128 == (192 & e[r]);) r--;
-						return r < 0 ? t : 0 === r ? t : r + u[e[r]] > t ? r : t;
-					}(t), i = t;
-					n !== t.length && (h.uint8array ? (i = t.subarray(0, n), this.leftOver = t.subarray(n, t.length)) : (i = t.slice(0, n), this.leftOver = t.slice(n, t.length))), this.push({
-						data: s.utf8decode(i),
-						meta: e.meta
-					});
-				}, a.prototype.flush = function() {
-					this.leftOver && this.leftOver.length && (this.push({
-						data: s.utf8decode(this.leftOver),
-						meta: {}
-					}), this.leftOver = null);
-				}, s.Utf8DecodeWorker = a, o.inherits(l, n), l.prototype.processChunk = function(e) {
-					this.push({
-						data: s.utf8encode(e.data),
-						meta: e.meta
-					});
-				}, s.Utf8EncodeWorker = l;
-			}, {
-				"./nodejsUtils": 14,
-				"./stream/GenericWorker": 28,
-				"./support": 30,
-				"./utils": 32
-			}],
-			32: [function(e, t, a) {
-				"use strict";
-				var o = e("./support"), h = e("./base64"), r = e("./nodejsUtils"), u = e("./external");
-				function n(e) {
-					return e;
-				}
-				function l(e, t) {
-					for (var r = 0; r < e.length; ++r) t[r] = 255 & e.charCodeAt(r);
-					return t;
-				}
-				e("setimmediate"), a.newBlob = function(t, r) {
-					a.checkSupport("blob");
-					try {
-						return new Blob([t], { type: r });
-					} catch (e) {
-						try {
-							var n = new (self.BlobBuilder || self.WebKitBlobBuilder || self.MozBlobBuilder || self.MSBlobBuilder)();
-							return n.append(t), n.getBlob(r);
-						} catch (e) {
-							throw new Error("Bug : can't construct the Blob.");
-						}
-					}
-				};
-				var i = {
-					stringifyByChunk: function(e, t, r) {
-						var n = [], i = 0, s = e.length;
-						if (s <= r) return String.fromCharCode.apply(null, e);
-						for (; i < s;) "array" === t || "nodebuffer" === t ? n.push(String.fromCharCode.apply(null, e.slice(i, Math.min(i + r, s)))) : n.push(String.fromCharCode.apply(null, e.subarray(i, Math.min(i + r, s)))), i += r;
-						return n.join("");
-					},
-					stringifyByChar: function(e) {
-						for (var t = "", r = 0; r < e.length; r++) t += String.fromCharCode(e[r]);
-						return t;
-					},
-					applyCanBeUsed: {
-						uint8array: function() {
-							try {
-								return o.uint8array && 1 === String.fromCharCode.apply(null, /* @__PURE__ */ new Uint8Array(1)).length;
-							} catch (e) {
-								return !1;
-							}
-						}(),
-						nodebuffer: function() {
-							try {
-								return o.nodebuffer && 1 === String.fromCharCode.apply(null, r.allocBuffer(1)).length;
-							} catch (e) {
-								return !1;
-							}
-						}()
-					}
-				};
-				function s(e) {
-					var t = 65536, r = a.getTypeOf(e), n = !0;
-					if ("uint8array" === r ? n = i.applyCanBeUsed.uint8array : "nodebuffer" === r && (n = i.applyCanBeUsed.nodebuffer), n) for (; 1 < t;) try {
-						return i.stringifyByChunk(e, r, t);
-					} catch (e) {
-						t = Math.floor(t / 2);
-					}
-					return i.stringifyByChar(e);
-				}
-				function f(e, t) {
-					for (var r = 0; r < e.length; r++) t[r] = e[r];
-					return t;
-				}
-				a.applyFromCharCode = s;
-				var c = {};
-				c.string = {
-					string: n,
-					array: function(e) {
-						return l(e, new Array(e.length));
-					},
-					arraybuffer: function(e) {
-						return c.string.uint8array(e).buffer;
-					},
-					uint8array: function(e) {
-						return l(e, new Uint8Array(e.length));
-					},
-					nodebuffer: function(e) {
-						return l(e, r.allocBuffer(e.length));
-					}
-				}, c.array = {
-					string: s,
-					array: n,
-					arraybuffer: function(e) {
-						return new Uint8Array(e).buffer;
-					},
-					uint8array: function(e) {
-						return new Uint8Array(e);
-					},
-					nodebuffer: function(e) {
-						return r.newBufferFrom(e);
-					}
-				}, c.arraybuffer = {
-					string: function(e) {
-						return s(new Uint8Array(e));
-					},
-					array: function(e) {
-						return f(new Uint8Array(e), new Array(e.byteLength));
-					},
-					arraybuffer: n,
-					uint8array: function(e) {
-						return new Uint8Array(e);
-					},
-					nodebuffer: function(e) {
-						return r.newBufferFrom(new Uint8Array(e));
-					}
-				}, c.uint8array = {
-					string: s,
-					array: function(e) {
-						return f(e, new Array(e.length));
-					},
-					arraybuffer: function(e) {
-						return e.buffer;
-					},
-					uint8array: n,
-					nodebuffer: function(e) {
-						return r.newBufferFrom(e);
-					}
-				}, c.nodebuffer = {
-					string: s,
-					array: function(e) {
-						return f(e, new Array(e.length));
-					},
-					arraybuffer: function(e) {
-						return c.nodebuffer.uint8array(e).buffer;
-					},
-					uint8array: function(e) {
-						return f(e, new Uint8Array(e.length));
-					},
-					nodebuffer: n
-				}, a.transformTo = function(e, t) {
-					if (t = t || "", !e) return t;
-					a.checkSupport(e);
-					return c[a.getTypeOf(t)][e](t);
-				}, a.resolve = function(e) {
-					for (var t = e.split("/"), r = [], n = 0; n < t.length; n++) {
-						var i = t[n];
-						"." === i || "" === i && 0 !== n && n !== t.length - 1 || (".." === i ? r.pop() : r.push(i));
-					}
-					return r.join("/");
-				}, a.getTypeOf = function(e) {
-					if ("string" == typeof e) return "string";
-					var t = Object.prototype.toString.call(e);
-					return "[object Array]" === t ? "array" : o.nodebuffer && r.isBuffer(e) ? "nodebuffer" : o.uint8array && "[object Uint8Array]" === t ? "uint8array" : o.arraybuffer && "[object ArrayBuffer]" === t ? "arraybuffer" : void 0;
-				}, a.checkSupport = function(e) {
-					if (!o[e.toLowerCase()]) throw new Error(e + " is not supported by this platform");
-				}, a.MAX_VALUE_16BITS = 65535, a.MAX_VALUE_32BITS = -1, a.pretty = function(e) {
-					var t, r, n = "";
-					for (r = 0; r < (e || "").length; r++) n += "\\x" + ((t = e.charCodeAt(r)) < 16 ? "0" : "") + t.toString(16).toUpperCase();
-					return n;
-				}, a.delay = function(e, t, r) {
-					setImmediate(function() {
-						e.apply(r || null, t || []);
-					});
-				}, a.inherits = function(e, t) {
-					function r() {}
-					r.prototype = t.prototype, e.prototype = new r();
-				}, a.extend = function() {
-					var e, t, r = {};
-					for (e = 0; e < arguments.length; e++) for (t in arguments[e]) Object.prototype.hasOwnProperty.call(arguments[e], t) && void 0 === r[t] && (r[t] = arguments[e][t]);
-					return r;
-				}, a.prepareContent = function(r, e, n, i, s) {
-					return u.Promise.resolve(e).then(function(n) {
-						return o.blob && (n instanceof Blob || -1 !== ["[object File]", "[object Blob]"].indexOf(Object.prototype.toString.call(n))) ? void 0 !== Blob.prototype.arrayBuffer ? n.arrayBuffer() : "undefined" != typeof FileReader ? new u.Promise(function(t, r) {
-							var e = new FileReader();
-							e.onload = function(e) {
-								t(e.target.result);
-							}, e.onerror = function(e) {
-								r(e.target.error);
-							}, e.readAsArrayBuffer(n);
-						}) : u.Promise.reject(/* @__PURE__ */ new Error(r + " is a Blob, but we have no way of reading it.")) : n;
-					}).then(function(e) {
-						var t = a.getTypeOf(e);
-						return t ? ("arraybuffer" === t ? e = a.transformTo("uint8array", e) : "string" === t && (s ? e = h.decode(e) : n && !0 !== i && (e = function(e) {
-							return l(e, o.uint8array ? new Uint8Array(e.length) : new Array(e.length));
-						}(e))), e) : u.Promise.reject(/* @__PURE__ */ new Error("Can't read the data of '" + r + "'. Is it in a supported JavaScript type (String, Blob, ArrayBuffer, etc) ?"));
-					});
-				};
-			}, {
-				"./base64": 1,
-				"./external": 6,
-				"./nodejsUtils": 14,
-				"./support": 30,
-				setimmediate: 54
-			}],
-			33: [function(e, t, r) {
-				"use strict";
-				var n = e("./reader/readerFor"), i = e("./utils"), s = e("./signature"), a = e("./zipEntry"), o = e("./support");
-				function h(e) {
-					this.files = [], this.loadOptions = e;
-				}
-				h.prototype = {
-					checkSignature: function(e) {
-						if (!this.reader.readAndCheckSignature(e)) {
-							this.reader.index -= 4;
-							var t = this.reader.readString(4);
-							throw new Error("Corrupted zip or bug: unexpected signature (" + i.pretty(t) + ", expected " + i.pretty(e) + ")");
-						}
-					},
-					isSignature: function(e, t) {
-						var r = this.reader.index;
-						this.reader.setIndex(e);
-						var n = this.reader.readString(4) === t;
-						return this.reader.setIndex(r), n;
-					},
-					readBlockEndOfCentral: function() {
-						this.diskNumber = this.reader.readInt(2), this.diskWithCentralDirStart = this.reader.readInt(2), this.centralDirRecordsOnThisDisk = this.reader.readInt(2), this.centralDirRecords = this.reader.readInt(2), this.centralDirSize = this.reader.readInt(4), this.centralDirOffset = this.reader.readInt(4), this.zipCommentLength = this.reader.readInt(2);
-						var e = this.reader.readData(this.zipCommentLength), t = o.uint8array ? "uint8array" : "array", r = i.transformTo(t, e);
-						this.zipComment = this.loadOptions.decodeFileName(r);
-					},
-					readBlockZip64EndOfCentral: function() {
-						this.zip64EndOfCentralSize = this.reader.readInt(8), this.reader.skip(4), this.diskNumber = this.reader.readInt(4), this.diskWithCentralDirStart = this.reader.readInt(4), this.centralDirRecordsOnThisDisk = this.reader.readInt(8), this.centralDirRecords = this.reader.readInt(8), this.centralDirSize = this.reader.readInt(8), this.centralDirOffset = this.reader.readInt(8), this.zip64ExtensibleData = {};
-						for (var e, t, r, n = this.zip64EndOfCentralSize - 44; 0 < n;) e = this.reader.readInt(2), t = this.reader.readInt(4), r = this.reader.readData(t), this.zip64ExtensibleData[e] = {
-							id: e,
-							length: t,
-							value: r
-						};
-					},
-					readBlockZip64EndOfCentralLocator: function() {
-						if (this.diskWithZip64CentralDirStart = this.reader.readInt(4), this.relativeOffsetEndOfZip64CentralDir = this.reader.readInt(8), this.disksCount = this.reader.readInt(4), 1 < this.disksCount) throw new Error("Multi-volumes zip are not supported");
-					},
-					readLocalFiles: function() {
-						var e = 0, t;
-						for (; e < this.files.length; e++) t = this.files[e], this.reader.setIndex(t.localHeaderOffset), this.checkSignature(s.LOCAL_FILE_HEADER), t.readLocalPart(this.reader), t.handleUTF8(), t.processAttributes();
-					},
-					readCentralDir: function() {
-						var e;
-						for (this.reader.setIndex(this.centralDirOffset); this.reader.readAndCheckSignature(s.CENTRAL_FILE_HEADER);) (e = new a({ zip64: this.zip64 }, this.loadOptions)).readCentralPart(this.reader), this.files.push(e);
-						if (this.centralDirRecords !== this.files.length && 0 !== this.centralDirRecords && 0 === this.files.length) throw new Error("Corrupted zip or bug: expected " + this.centralDirRecords + " records in central dir, got " + this.files.length);
-					},
-					readEndOfCentral: function() {
-						var e = this.reader.lastIndexOfSignature(s.CENTRAL_DIRECTORY_END);
-						if (e < 0) throw !this.isSignature(0, s.LOCAL_FILE_HEADER) ? /* @__PURE__ */ new Error("Can't find end of central directory : is this a zip file ? If it is, see https://stuk.github.io/jszip/documentation/howto/read_zip.html") : /* @__PURE__ */ new Error("Corrupted zip: can't find end of central directory");
-						this.reader.setIndex(e);
-						var t = e;
-						if (this.checkSignature(s.CENTRAL_DIRECTORY_END), this.readBlockEndOfCentral(), this.diskNumber === i.MAX_VALUE_16BITS || this.diskWithCentralDirStart === i.MAX_VALUE_16BITS || this.centralDirRecordsOnThisDisk === i.MAX_VALUE_16BITS || this.centralDirRecords === i.MAX_VALUE_16BITS || this.centralDirSize === i.MAX_VALUE_32BITS || this.centralDirOffset === i.MAX_VALUE_32BITS) {
-							if (this.zip64 = !0, (e = this.reader.lastIndexOfSignature(s.ZIP64_CENTRAL_DIRECTORY_LOCATOR)) < 0) throw new Error("Corrupted zip: can't find the ZIP64 end of central directory locator");
-							if (this.reader.setIndex(e), this.checkSignature(s.ZIP64_CENTRAL_DIRECTORY_LOCATOR), this.readBlockZip64EndOfCentralLocator(), !this.isSignature(this.relativeOffsetEndOfZip64CentralDir, s.ZIP64_CENTRAL_DIRECTORY_END) && (this.relativeOffsetEndOfZip64CentralDir = this.reader.lastIndexOfSignature(s.ZIP64_CENTRAL_DIRECTORY_END), this.relativeOffsetEndOfZip64CentralDir < 0)) throw new Error("Corrupted zip: can't find the ZIP64 end of central directory");
-							this.reader.setIndex(this.relativeOffsetEndOfZip64CentralDir), this.checkSignature(s.ZIP64_CENTRAL_DIRECTORY_END), this.readBlockZip64EndOfCentral();
-						}
-						var r = this.centralDirOffset + this.centralDirSize;
-						this.zip64 && (r += 20, r += 12 + this.zip64EndOfCentralSize);
-						var n = t - r;
-						if (0 < n) this.isSignature(t, s.CENTRAL_FILE_HEADER) || (this.reader.zero = n);
-						else if (n < 0) throw new Error("Corrupted zip: missing " + Math.abs(n) + " bytes.");
-					},
-					prepareReader: function(e) {
-						this.reader = n(e);
-					},
-					load: function(e) {
-						this.prepareReader(e), this.readEndOfCentral(), this.readCentralDir(), this.readLocalFiles();
-					}
-				}, t.exports = h;
-			}, {
-				"./reader/readerFor": 22,
-				"./signature": 23,
-				"./support": 30,
-				"./utils": 32,
-				"./zipEntry": 34
-			}],
-			34: [function(e, t, r) {
-				"use strict";
-				var n = e("./reader/readerFor"), s = e("./utils"), i = e("./compressedObject"), a = e("./crc32"), o = e("./utf8"), h = e("./compressions"), u = e("./support");
-				function l(e, t) {
-					this.options = e, this.loadOptions = t;
-				}
-				l.prototype = {
-					isEncrypted: function() {
-						return 1 == (1 & this.bitFlag);
-					},
-					useUTF8: function() {
-						return 2048 == (2048 & this.bitFlag);
-					},
-					readLocalPart: function(e) {
-						var t, r;
-						if (e.skip(22), this.fileNameLength = e.readInt(2), r = e.readInt(2), this.fileName = e.readData(this.fileNameLength), e.skip(r), -1 === this.compressedSize || -1 === this.uncompressedSize) throw new Error("Bug or corrupted zip : didn't get enough information from the central directory (compressedSize === -1 || uncompressedSize === -1)");
-						if (null === (t = function(e) {
-							for (var t in h) if (Object.prototype.hasOwnProperty.call(h, t) && h[t].magic === e) return h[t];
-							return null;
-						}(this.compressionMethod))) throw new Error("Corrupted zip : compression " + s.pretty(this.compressionMethod) + " unknown (inner file : " + s.transformTo("string", this.fileName) + ")");
-						this.decompressed = new i(this.compressedSize, this.uncompressedSize, this.crc32, t, e.readData(this.compressedSize));
-					},
-					readCentralPart: function(e) {
-						this.versionMadeBy = e.readInt(2), e.skip(2), this.bitFlag = e.readInt(2), this.compressionMethod = e.readString(2), this.date = e.readDate(), this.crc32 = e.readInt(4), this.compressedSize = e.readInt(4), this.uncompressedSize = e.readInt(4);
-						var t = e.readInt(2);
-						if (this.extraFieldsLength = e.readInt(2), this.fileCommentLength = e.readInt(2), this.diskNumberStart = e.readInt(2), this.internalFileAttributes = e.readInt(2), this.externalFileAttributes = e.readInt(4), this.localHeaderOffset = e.readInt(4), this.isEncrypted()) throw new Error("Encrypted zip are not supported");
-						e.skip(t), this.readExtraFields(e), this.parseZIP64ExtraField(e), this.fileComment = e.readData(this.fileCommentLength);
-					},
-					processAttributes: function() {
-						this.unixPermissions = null, this.dosPermissions = null;
-						var e = this.versionMadeBy >> 8;
-						this.dir = !!(16 & this.externalFileAttributes), 0 == e && (this.dosPermissions = 63 & this.externalFileAttributes), 3 == e && (this.unixPermissions = this.externalFileAttributes >> 16 & 65535), this.dir || "/" !== this.fileNameStr.slice(-1) || (this.dir = !0);
-					},
-					parseZIP64ExtraField: function() {
-						if (this.extraFields[1]) {
-							var e = n(this.extraFields[1].value);
-							this.uncompressedSize === s.MAX_VALUE_32BITS && (this.uncompressedSize = e.readInt(8)), this.compressedSize === s.MAX_VALUE_32BITS && (this.compressedSize = e.readInt(8)), this.localHeaderOffset === s.MAX_VALUE_32BITS && (this.localHeaderOffset = e.readInt(8)), this.diskNumberStart === s.MAX_VALUE_32BITS && (this.diskNumberStart = e.readInt(4));
-						}
-					},
-					readExtraFields: function(e) {
-						var t, r, n, i = e.index + this.extraFieldsLength;
-						for (this.extraFields || (this.extraFields = {}); e.index + 4 < i;) t = e.readInt(2), r = e.readInt(2), n = e.readData(r), this.extraFields[t] = {
-							id: t,
-							length: r,
-							value: n
-						};
-						e.setIndex(i);
-					},
-					handleUTF8: function() {
-						var e = u.uint8array ? "uint8array" : "array";
-						if (this.useUTF8()) this.fileNameStr = o.utf8decode(this.fileName), this.fileCommentStr = o.utf8decode(this.fileComment);
-						else {
-							var t = this.findExtraFieldUnicodePath();
-							if (null !== t) this.fileNameStr = t;
-							else {
-								var r = s.transformTo(e, this.fileName);
-								this.fileNameStr = this.loadOptions.decodeFileName(r);
-							}
-							var n = this.findExtraFieldUnicodeComment();
-							if (null !== n) this.fileCommentStr = n;
-							else {
-								var i = s.transformTo(e, this.fileComment);
-								this.fileCommentStr = this.loadOptions.decodeFileName(i);
-							}
-						}
-					},
-					findExtraFieldUnicodePath: function() {
-						var e = this.extraFields[28789];
-						if (e) {
-							var t = n(e.value);
-							return 1 !== t.readInt(1) ? null : a(this.fileName) !== t.readInt(4) ? null : o.utf8decode(t.readData(e.length - 5));
-						}
-						return null;
-					},
-					findExtraFieldUnicodeComment: function() {
-						var e = this.extraFields[25461];
-						if (e) {
-							var t = n(e.value);
-							return 1 !== t.readInt(1) ? null : a(this.fileComment) !== t.readInt(4) ? null : o.utf8decode(t.readData(e.length - 5));
-						}
-						return null;
-					}
-				}, t.exports = l;
-			}, {
-				"./compressedObject": 2,
-				"./compressions": 3,
-				"./crc32": 4,
-				"./reader/readerFor": 22,
-				"./support": 30,
-				"./utf8": 31,
-				"./utils": 32
-			}],
-			35: [function(e, t, r) {
-				"use strict";
-				function n(e, t, r) {
-					this.name = e, this.dir = r.dir, this.date = r.date, this.comment = r.comment, this.unixPermissions = r.unixPermissions, this.dosPermissions = r.dosPermissions, this._data = t, this._dataBinary = r.binary, this.options = {
-						compression: r.compression,
-						compressionOptions: r.compressionOptions
-					};
-				}
-				var s = e("./stream/StreamHelper"), i = e("./stream/DataWorker"), a = e("./utf8"), o = e("./compressedObject"), h = e("./stream/GenericWorker");
-				n.prototype = {
-					internalStream: function(e) {
-						var t = null, r = "string";
-						try {
-							if (!e) throw new Error("No output type specified.");
-							var n = "string" === (r = e.toLowerCase()) || "text" === r;
-							"binarystring" !== r && "text" !== r || (r = "string"), t = this._decompressWorker();
-							var i = !this._dataBinary;
-							i && !n && (t = t.pipe(new a.Utf8EncodeWorker())), !i && n && (t = t.pipe(new a.Utf8DecodeWorker()));
-						} catch (e) {
-							(t = new h("error")).error(e);
-						}
-						return new s(t, r, "");
-					},
-					async: function(e, t) {
-						return this.internalStream(e).accumulate(t);
-					},
-					nodeStream: function(e, t) {
-						return this.internalStream(e || "nodebuffer").toNodejsStream(t);
-					},
-					_compressWorker: function(e, t) {
-						if (this._data instanceof o && this._data.compression.magic === e.magic) return this._data.getCompressedWorker();
-						var r = this._decompressWorker();
-						return this._dataBinary || (r = r.pipe(new a.Utf8EncodeWorker())), o.createWorkerFrom(r, e, t);
-					},
-					_decompressWorker: function() {
-						return this._data instanceof o ? this._data.getContentWorker() : this._data instanceof h ? this._data : new i(this._data);
-					}
-				};
-				for (var u = [
-					"asText",
-					"asBinary",
-					"asNodeBuffer",
-					"asUint8Array",
-					"asArrayBuffer"
-				], l = function() {
-					throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
-				}, f = 0; f < u.length; f++) n.prototype[u[f]] = l;
-				t.exports = n;
-			}, {
-				"./compressedObject": 2,
-				"./stream/DataWorker": 27,
-				"./stream/GenericWorker": 28,
-				"./stream/StreamHelper": 29,
-				"./utf8": 31
-			}],
-			36: [function(e, l, t) {
-				(function(t) {
-					"use strict";
-					var r, n, e = t.MutationObserver || t.WebKitMutationObserver;
-					if (e) {
-						var i = 0, s = new e(u), a = t.document.createTextNode("");
-						s.observe(a, { characterData: !0 }), r = function() {
-							a.data = i = ++i % 2;
-						};
-					} else if (t.setImmediate || void 0 === t.MessageChannel) r = "document" in t && "onreadystatechange" in t.document.createElement("script") ? function() {
-						var e = t.document.createElement("script");
-						e.onreadystatechange = function() {
-							u(), e.onreadystatechange = null, e.parentNode.removeChild(e), e = null;
-						}, t.document.documentElement.appendChild(e);
-					} : function() {
-						setTimeout(u, 0);
-					};
-					else {
-						var o = new t.MessageChannel();
-						o.port1.onmessage = u, r = function() {
-							o.port2.postMessage(0);
-						};
-					}
-					var h = [];
-					function u() {
-						var e, t;
-						n = !0;
-						for (var r = h.length; r;) {
-							for (t = h, h = [], e = -1; ++e < r;) t[e]();
-							r = h.length;
-						}
-						n = !1;
-					}
-					l.exports = function(e) {
-						1 !== h.push(e) || n || r();
-					};
-				}).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
-			}, {}],
-			37: [function(e, t, r) {
-				"use strict";
-				var i = e("immediate");
-				function u() {}
-				var l = {}, s = ["REJECTED"], a = ["FULFILLED"], n = ["PENDING"];
-				function o(e) {
-					if ("function" != typeof e) throw new TypeError("resolver must be a function");
-					this.state = n, this.queue = [], this.outcome = void 0, e !== u && d(this, e);
-				}
-				function h(e, t, r) {
-					this.promise = e, "function" == typeof t && (this.onFulfilled = t, this.callFulfilled = this.otherCallFulfilled), "function" == typeof r && (this.onRejected = r, this.callRejected = this.otherCallRejected);
-				}
-				function f(t, r, n) {
-					i(function() {
-						var e;
-						try {
-							e = r(n);
-						} catch (e) {
-							return l.reject(t, e);
-						}
-						e === t ? l.reject(t, /* @__PURE__ */ new TypeError("Cannot resolve promise with itself")) : l.resolve(t, e);
-					});
-				}
-				function c(e) {
-					var t = e && e.then;
-					if (e && ("object" == typeof e || "function" == typeof e) && "function" == typeof t) return function() {
-						t.apply(e, arguments);
-					};
-				}
-				function d(t, e) {
-					var r = !1;
-					function n(e) {
-						r || (r = !0, l.reject(t, e));
-					}
-					function i(e) {
-						r || (r = !0, l.resolve(t, e));
-					}
-					var s = p(function() {
-						e(i, n);
-					});
-					"error" === s.status && n(s.value);
-				}
-				function p(e, t) {
-					var r = {};
-					try {
-						r.value = e(t), r.status = "success";
-					} catch (e) {
-						r.status = "error", r.value = e;
-					}
-					return r;
-				}
-				(t.exports = o).prototype.finally = function(t) {
-					if ("function" != typeof t) return this;
-					var r = this.constructor;
-					return this.then(function(e) {
-						return r.resolve(t()).then(function() {
-							return e;
-						});
-					}, function(e) {
-						return r.resolve(t()).then(function() {
-							throw e;
-						});
-					});
-				}, o.prototype.catch = function(e) {
-					return this.then(null, e);
-				}, o.prototype.then = function(e, t) {
-					if ("function" != typeof e && this.state === a || "function" != typeof t && this.state === s) return this;
-					var r = new this.constructor(u);
-					this.state !== n ? f(r, this.state === a ? e : t, this.outcome) : this.queue.push(new h(r, e, t));
-					return r;
-				}, h.prototype.callFulfilled = function(e) {
-					l.resolve(this.promise, e);
-				}, h.prototype.otherCallFulfilled = function(e) {
-					f(this.promise, this.onFulfilled, e);
-				}, h.prototype.callRejected = function(e) {
-					l.reject(this.promise, e);
-				}, h.prototype.otherCallRejected = function(e) {
-					f(this.promise, this.onRejected, e);
-				}, l.resolve = function(e, t) {
-					var r = p(c, t);
-					if ("error" === r.status) return l.reject(e, r.value);
-					var n = r.value;
-					if (n) d(e, n);
-					else {
-						e.state = a, e.outcome = t;
-						for (var i = -1, s = e.queue.length; ++i < s;) e.queue[i].callFulfilled(t);
-					}
-					return e;
-				}, l.reject = function(e, t) {
-					e.state = s, e.outcome = t;
-					for (var r = -1, n = e.queue.length; ++r < n;) e.queue[r].callRejected(t);
-					return e;
-				}, o.resolve = function(e) {
-					if (e instanceof this) return e;
-					return l.resolve(new this(u), e);
-				}, o.reject = function(e) {
-					var t = new this(u);
-					return l.reject(t, e);
-				}, o.all = function(e) {
-					var r = this;
-					if ("[object Array]" !== Object.prototype.toString.call(e)) return this.reject(/* @__PURE__ */ new TypeError("must be an array"));
-					var n = e.length, i = !1;
-					if (!n) return this.resolve([]);
-					var s = new Array(n), a = 0, t = -1, o = new this(u);
-					for (; ++t < n;) h(e[t], t);
-					return o;
-					function h(e, t) {
-						r.resolve(e).then(function(e) {
-							s[t] = e, ++a !== n || i || (i = !0, l.resolve(o, s));
-						}, function(e) {
-							i || (i = !0, l.reject(o, e));
-						});
-					}
-				}, o.race = function(e) {
-					var t = this;
-					if ("[object Array]" !== Object.prototype.toString.call(e)) return this.reject(/* @__PURE__ */ new TypeError("must be an array"));
-					var r = e.length, n = !1;
-					if (!r) return this.resolve([]);
-					var i = -1, s = new this(u);
-					for (; ++i < r;) a = e[i], t.resolve(a).then(function(e) {
-						n || (n = !0, l.resolve(s, e));
-					}, function(e) {
-						n || (n = !0, l.reject(s, e));
-					});
-					var a;
-					return s;
-				};
-			}, { immediate: 36 }],
-			38: [function(e, t, r) {
-				"use strict";
-				var n = {};
-				(0, e("./lib/utils/common").assign)(n, e("./lib/deflate"), e("./lib/inflate"), e("./lib/zlib/constants")), t.exports = n;
-			}, {
-				"./lib/deflate": 39,
-				"./lib/inflate": 40,
-				"./lib/utils/common": 41,
-				"./lib/zlib/constants": 44
-			}],
-			39: [function(e, t, r) {
-				"use strict";
-				var a = e("./zlib/deflate"), o = e("./utils/common"), h = e("./utils/strings"), i = e("./zlib/messages"), s = e("./zlib/zstream"), u = Object.prototype.toString, l = 0, f = -1, c = 0, d = 8;
-				function p(e) {
-					if (!(this instanceof p)) return new p(e);
-					this.options = o.assign({
-						level: f,
-						method: d,
-						chunkSize: 16384,
-						windowBits: 15,
-						memLevel: 8,
-						strategy: c,
-						to: ""
-					}, e || {});
-					var t = this.options;
-					t.raw && 0 < t.windowBits ? t.windowBits = -t.windowBits : t.gzip && 0 < t.windowBits && t.windowBits < 16 && (t.windowBits += 16), this.err = 0, this.msg = "", this.ended = !1, this.chunks = [], this.strm = new s(), this.strm.avail_out = 0;
-					var r = a.deflateInit2(this.strm, t.level, t.method, t.windowBits, t.memLevel, t.strategy);
-					if (r !== l) throw new Error(i[r]);
-					if (t.header && a.deflateSetHeader(this.strm, t.header), t.dictionary) {
-						var n = "string" == typeof t.dictionary ? h.string2buf(t.dictionary) : "[object ArrayBuffer]" === u.call(t.dictionary) ? new Uint8Array(t.dictionary) : t.dictionary;
-						if ((r = a.deflateSetDictionary(this.strm, n)) !== l) throw new Error(i[r]);
-						this._dict_set = !0;
-					}
-				}
-				function n(e, t) {
-					var r = new p(t);
-					if (r.push(e, !0), r.err) throw r.msg || i[r.err];
-					return r.result;
-				}
-				p.prototype.push = function(e, t) {
-					var r, n, i = this.strm, s = this.options.chunkSize;
-					if (this.ended) return !1;
-					n = t === ~~t ? t : !0 === t ? 4 : 0, "string" == typeof e ? i.input = h.string2buf(e) : "[object ArrayBuffer]" === u.call(e) ? i.input = new Uint8Array(e) : i.input = e, i.next_in = 0, i.avail_in = i.input.length;
-					do {
-						if (0 === i.avail_out && (i.output = new o.Buf8(s), i.next_out = 0, i.avail_out = s), 1 !== (r = a.deflate(i, n)) && r !== l) return this.onEnd(r), !(this.ended = !0);
-						0 !== i.avail_out && (0 !== i.avail_in || 4 !== n && 2 !== n) || ("string" === this.options.to ? this.onData(h.buf2binstring(o.shrinkBuf(i.output, i.next_out))) : this.onData(o.shrinkBuf(i.output, i.next_out)));
-					} while ((0 < i.avail_in || 0 === i.avail_out) && 1 !== r);
-					return 4 === n ? (r = a.deflateEnd(this.strm), this.onEnd(r), this.ended = !0, r === l) : 2 !== n || (this.onEnd(l), !(i.avail_out = 0));
-				}, p.prototype.onData = function(e) {
-					this.chunks.push(e);
-				}, p.prototype.onEnd = function(e) {
-					e === l && ("string" === this.options.to ? this.result = this.chunks.join("") : this.result = o.flattenChunks(this.chunks)), this.chunks = [], this.err = e, this.msg = this.strm.msg;
-				}, r.Deflate = p, r.deflate = n, r.deflateRaw = function(e, t) {
-					return (t = t || {}).raw = !0, n(e, t);
-				}, r.gzip = function(e, t) {
-					return (t = t || {}).gzip = !0, n(e, t);
-				};
-			}, {
-				"./utils/common": 41,
-				"./utils/strings": 42,
-				"./zlib/deflate": 46,
-				"./zlib/messages": 51,
-				"./zlib/zstream": 53
-			}],
-			40: [function(e, t, r) {
-				"use strict";
-				var c = e("./zlib/inflate"), d = e("./utils/common"), p = e("./utils/strings"), m = e("./zlib/constants"), n = e("./zlib/messages"), i = e("./zlib/zstream"), s = e("./zlib/gzheader"), _ = Object.prototype.toString;
-				function a(e) {
-					if (!(this instanceof a)) return new a(e);
-					this.options = d.assign({
-						chunkSize: 16384,
-						windowBits: 0,
-						to: ""
-					}, e || {});
-					var t = this.options;
-					t.raw && 0 <= t.windowBits && t.windowBits < 16 && (t.windowBits = -t.windowBits, 0 === t.windowBits && (t.windowBits = -15)), !(0 <= t.windowBits && t.windowBits < 16) || e && e.windowBits || (t.windowBits += 32), 15 < t.windowBits && t.windowBits < 48 && 0 == (15 & t.windowBits) && (t.windowBits |= 15), this.err = 0, this.msg = "", this.ended = !1, this.chunks = [], this.strm = new i(), this.strm.avail_out = 0;
-					var r = c.inflateInit2(this.strm, t.windowBits);
-					if (r !== m.Z_OK) throw new Error(n[r]);
-					this.header = new s(), c.inflateGetHeader(this.strm, this.header);
-				}
-				function o(e, t) {
-					var r = new a(t);
-					if (r.push(e, !0), r.err) throw r.msg || n[r.err];
-					return r.result;
-				}
-				a.prototype.push = function(e, t) {
-					var r, n, i, s, a, o, h = this.strm, u = this.options.chunkSize, l = this.options.dictionary, f = !1;
-					if (this.ended) return !1;
-					n = t === ~~t ? t : !0 === t ? m.Z_FINISH : m.Z_NO_FLUSH, "string" == typeof e ? h.input = p.binstring2buf(e) : "[object ArrayBuffer]" === _.call(e) ? h.input = new Uint8Array(e) : h.input = e, h.next_in = 0, h.avail_in = h.input.length;
-					do {
-						if (0 === h.avail_out && (h.output = new d.Buf8(u), h.next_out = 0, h.avail_out = u), (r = c.inflate(h, m.Z_NO_FLUSH)) === m.Z_NEED_DICT && l && (o = "string" == typeof l ? p.string2buf(l) : "[object ArrayBuffer]" === _.call(l) ? new Uint8Array(l) : l, r = c.inflateSetDictionary(this.strm, o)), r === m.Z_BUF_ERROR && !0 === f && (r = m.Z_OK, f = !1), r !== m.Z_STREAM_END && r !== m.Z_OK) return this.onEnd(r), !(this.ended = !0);
-						h.next_out && (0 !== h.avail_out && r !== m.Z_STREAM_END && (0 !== h.avail_in || n !== m.Z_FINISH && n !== m.Z_SYNC_FLUSH) || ("string" === this.options.to ? (i = p.utf8border(h.output, h.next_out), s = h.next_out - i, a = p.buf2string(h.output, i), h.next_out = s, h.avail_out = u - s, s && d.arraySet(h.output, h.output, i, s, 0), this.onData(a)) : this.onData(d.shrinkBuf(h.output, h.next_out)))), 0 === h.avail_in && 0 === h.avail_out && (f = !0);
-					} while ((0 < h.avail_in || 0 === h.avail_out) && r !== m.Z_STREAM_END);
-					return r === m.Z_STREAM_END && (n = m.Z_FINISH), n === m.Z_FINISH ? (r = c.inflateEnd(this.strm), this.onEnd(r), this.ended = !0, r === m.Z_OK) : n !== m.Z_SYNC_FLUSH || (this.onEnd(m.Z_OK), !(h.avail_out = 0));
-				}, a.prototype.onData = function(e) {
-					this.chunks.push(e);
-				}, a.prototype.onEnd = function(e) {
-					e === m.Z_OK && ("string" === this.options.to ? this.result = this.chunks.join("") : this.result = d.flattenChunks(this.chunks)), this.chunks = [], this.err = e, this.msg = this.strm.msg;
-				}, r.Inflate = a, r.inflate = o, r.inflateRaw = function(e, t) {
-					return (t = t || {}).raw = !0, o(e, t);
-				}, r.ungzip = o;
-			}, {
-				"./utils/common": 41,
-				"./utils/strings": 42,
-				"./zlib/constants": 44,
-				"./zlib/gzheader": 47,
-				"./zlib/inflate": 49,
-				"./zlib/messages": 51,
-				"./zlib/zstream": 53
-			}],
-			41: [function(e, t, r) {
-				"use strict";
-				var n = "undefined" != typeof Uint8Array && "undefined" != typeof Uint16Array && "undefined" != typeof Int32Array;
-				r.assign = function(e) {
-					for (var t = Array.prototype.slice.call(arguments, 1); t.length;) {
-						var r = t.shift();
-						if (r) {
-							if ("object" != typeof r) throw new TypeError(r + "must be non-object");
-							for (var n in r) r.hasOwnProperty(n) && (e[n] = r[n]);
-						}
-					}
-					return e;
-				}, r.shrinkBuf = function(e, t) {
-					return e.length === t ? e : e.subarray ? e.subarray(0, t) : (e.length = t, e);
-				};
-				var i = {
-					arraySet: function(e, t, r, n, i) {
-						if (t.subarray && e.subarray) e.set(t.subarray(r, r + n), i);
-						else for (var s = 0; s < n; s++) e[i + s] = t[r + s];
-					},
-					flattenChunks: function(e) {
-						var t = n = 0, r = e.length, n, i, s, a;
-						for (; t < r; t++) n += e[t].length;
-						for (a = new Uint8Array(n), t = i = 0, r = e.length; t < r; t++) s = e[t], a.set(s, i), i += s.length;
-						return a;
-					}
-				}, s = {
-					arraySet: function(e, t, r, n, i) {
-						for (var s = 0; s < n; s++) e[i + s] = t[r + s];
-					},
-					flattenChunks: function(e) {
-						return [].concat.apply([], e);
-					}
-				};
-				r.setTyped = function(e) {
-					e ? (r.Buf8 = Uint8Array, r.Buf16 = Uint16Array, r.Buf32 = Int32Array, r.assign(r, i)) : (r.Buf8 = Array, r.Buf16 = Array, r.Buf32 = Array, r.assign(r, s));
-				}, r.setTyped(n);
-			}, {}],
-			42: [function(e, t, r) {
-				"use strict";
-				var h = e("./common"), i = !0, s = !0;
-				try {
-					String.fromCharCode.apply(null, [0]);
-				} catch (e) {
-					i = !1;
-				}
-				try {
-					String.fromCharCode.apply(null, /* @__PURE__ */ new Uint8Array(1));
-				} catch (e) {
-					s = !1;
-				}
-				for (var u = new h.Buf8(256), n = 0; n < 256; n++) u[n] = 252 <= n ? 6 : 248 <= n ? 5 : 240 <= n ? 4 : 224 <= n ? 3 : 192 <= n ? 2 : 1;
-				function l(e, t) {
-					if (t < 65537 && (e.subarray && s || !e.subarray && i)) return String.fromCharCode.apply(null, h.shrinkBuf(e, t));
-					for (var r = "", n = 0; n < t; n++) r += String.fromCharCode(e[n]);
-					return r;
-				}
-				u[254] = u[254] = 1, r.string2buf = function(e) {
-					var t, r, n, i, s, a = e.length, o = 0;
-					for (i = 0; i < a; i++) 55296 == (64512 & (r = e.charCodeAt(i))) && i + 1 < a && 56320 == (64512 & (n = e.charCodeAt(i + 1))) && (r = 65536 + (r - 55296 << 10) + (n - 56320), i++), o += r < 128 ? 1 : r < 2048 ? 2 : r < 65536 ? 3 : 4;
-					for (t = new h.Buf8(o), i = s = 0; s < o; i++) 55296 == (64512 & (r = e.charCodeAt(i))) && i + 1 < a && 56320 == (64512 & (n = e.charCodeAt(i + 1))) && (r = 65536 + (r - 55296 << 10) + (n - 56320), i++), r < 128 ? t[s++] = r : (r < 2048 ? t[s++] = 192 | r >>> 6 : (r < 65536 ? t[s++] = 224 | r >>> 12 : (t[s++] = 240 | r >>> 18, t[s++] = 128 | r >>> 12 & 63), t[s++] = 128 | r >>> 6 & 63), t[s++] = 128 | 63 & r);
-					return t;
-				}, r.buf2binstring = function(e) {
-					return l(e, e.length);
-				}, r.binstring2buf = function(e) {
-					for (var t = new h.Buf8(e.length), r = 0, n = t.length; r < n; r++) t[r] = e.charCodeAt(r);
-					return t;
-				}, r.buf2string = function(e, t) {
-					var r, n, i, s, a = t || e.length, o = new Array(2 * a);
-					for (r = n = 0; r < a;) if ((i = e[r++]) < 128) o[n++] = i;
-					else if (4 < (s = u[i])) o[n++] = 65533, r += s - 1;
-					else {
-						for (i &= 2 === s ? 31 : 3 === s ? 15 : 7; 1 < s && r < a;) i = i << 6 | 63 & e[r++], s--;
-						1 < s ? o[n++] = 65533 : i < 65536 ? o[n++] = i : (i -= 65536, o[n++] = 55296 | i >> 10 & 1023, o[n++] = 56320 | 1023 & i);
-					}
-					return l(o, n);
-				}, r.utf8border = function(e, t) {
-					var r;
-					for ((t = t || e.length) > e.length && (t = e.length), r = t - 1; 0 <= r && 128 == (192 & e[r]);) r--;
-					return r < 0 ? t : 0 === r ? t : r + u[e[r]] > t ? r : t;
-				};
-			}, { "./common": 41 }],
-			43: [function(e, t, r) {
-				"use strict";
-				t.exports = function(e, t, r, n) {
-					for (var i = 65535 & e | 0, s = e >>> 16 & 65535 | 0, a = 0; 0 !== r;) {
-						for (r -= a = 2e3 < r ? 2e3 : r; s = s + (i = i + t[n++] | 0) | 0, --a;);
-						i %= 65521, s %= 65521;
-					}
-					return i | s << 16 | 0;
-				};
-			}, {}],
-			44: [function(e, t, r) {
-				"use strict";
-				t.exports = {
-					Z_NO_FLUSH: 0,
-					Z_PARTIAL_FLUSH: 1,
-					Z_SYNC_FLUSH: 2,
-					Z_FULL_FLUSH: 3,
-					Z_FINISH: 4,
-					Z_BLOCK: 5,
-					Z_TREES: 6,
-					Z_OK: 0,
-					Z_STREAM_END: 1,
-					Z_NEED_DICT: 2,
-					Z_ERRNO: -1,
-					Z_STREAM_ERROR: -2,
-					Z_DATA_ERROR: -3,
-					Z_BUF_ERROR: -5,
-					Z_NO_COMPRESSION: 0,
-					Z_BEST_SPEED: 1,
-					Z_BEST_COMPRESSION: 9,
-					Z_DEFAULT_COMPRESSION: -1,
-					Z_FILTERED: 1,
-					Z_HUFFMAN_ONLY: 2,
-					Z_RLE: 3,
-					Z_FIXED: 4,
-					Z_DEFAULT_STRATEGY: 0,
-					Z_BINARY: 0,
-					Z_TEXT: 1,
-					Z_UNKNOWN: 2,
-					Z_DEFLATED: 8
-				};
-			}, {}],
-			45: [function(e, t, r) {
-				"use strict";
-				var o = function() {
-					for (var e, t = [], r = 0; r < 256; r++) {
-						e = r;
-						for (var n = 0; n < 8; n++) e = 1 & e ? 3988292384 ^ e >>> 1 : e >>> 1;
-						t[r] = e;
-					}
-					return t;
-				}();
-				t.exports = function(e, t, r, n) {
-					var i = o, s = n + r;
-					e ^= -1;
-					for (var a = n; a < s; a++) e = e >>> 8 ^ i[255 & (e ^ t[a])];
-					return -1 ^ e;
-				};
-			}, {}],
-			46: [function(e, t, r) {
-				"use strict";
-				var h, c = e("../utils/common"), u = e("./trees"), d = e("./adler32"), p = e("./crc32"), n = e("./messages"), l = 0, f = 4, m = 0, _ = -2, g = -1, b = 4, i = 2, v = 8, y = 9, s = 286, a = 30, o = 19, w = 2 * s + 1, k = 15, x = 3, S = 258, z = S + x + 1, C = 42, E = 113, A = 1, I = 2, O = 3, B = 4;
-				function R(e, t) {
-					return e.msg = n[t], t;
-				}
-				function T(e) {
-					return (e << 1) - (4 < e ? 9 : 0);
-				}
-				function D(e) {
-					for (var t = e.length; 0 <= --t;) e[t] = 0;
-				}
-				function F(e) {
-					var t = e.state, r = t.pending;
-					r > e.avail_out && (r = e.avail_out), 0 !== r && (c.arraySet(e.output, t.pending_buf, t.pending_out, r, e.next_out), e.next_out += r, t.pending_out += r, e.total_out += r, e.avail_out -= r, t.pending -= r, 0 === t.pending && (t.pending_out = 0));
-				}
-				function N(e, t) {
-					u._tr_flush_block(e, 0 <= e.block_start ? e.block_start : -1, e.strstart - e.block_start, t), e.block_start = e.strstart, F(e.strm);
-				}
-				function U(e, t) {
-					e.pending_buf[e.pending++] = t;
-				}
-				function P(e, t) {
-					e.pending_buf[e.pending++] = t >>> 8 & 255, e.pending_buf[e.pending++] = 255 & t;
-				}
-				function L(e, t) {
-					var r, n, i = e.max_chain_length, s = e.strstart, a = e.prev_length, o = e.nice_match, h = e.strstart > e.w_size - z ? e.strstart - (e.w_size - z) : 0, u = e.window, l = e.w_mask, f = e.prev, c = e.strstart + S, d = u[s + a - 1], p = u[s + a];
-					e.prev_length >= e.good_match && (i >>= 2), o > e.lookahead && (o = e.lookahead);
-					do
-						if (u[(r = t) + a] === p && u[r + a - 1] === d && u[r] === u[s] && u[++r] === u[s + 1]) {
-							s += 2, r++;
-							do;
-							while (u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && u[++s] === u[++r] && s < c);
-							if (n = S - (c - s), s = c - S, a < n) {
-								if (e.match_start = t, o <= (a = n)) break;
-								d = u[s + a - 1], p = u[s + a];
-							}
-						}
-					while ((t = f[t & l]) > h && 0 != --i);
-					return a <= e.lookahead ? a : e.lookahead;
-				}
-				function j(e) {
-					var t, r, n, i, s, a, o, h, u, l, f = e.w_size;
-					do {
-						if (i = e.window_size - e.lookahead - e.strstart, e.strstart >= f + (f - z)) {
-							for (c.arraySet(e.window, e.window, f, f, 0), e.match_start -= f, e.strstart -= f, e.block_start -= f, t = r = e.hash_size; n = e.head[--t], e.head[t] = f <= n ? n - f : 0, --r;);
-							for (t = r = f; n = e.prev[--t], e.prev[t] = f <= n ? n - f : 0, --r;);
-							i += f;
-						}
-						if (0 === e.strm.avail_in) break;
-						if (a = e.strm, o = e.window, h = e.strstart + e.lookahead, u = i, l = void 0, l = a.avail_in, u < l && (l = u), r = 0 === l ? 0 : (a.avail_in -= l, c.arraySet(o, a.input, a.next_in, l, h), 1 === a.state.wrap ? a.adler = d(a.adler, o, l, h) : 2 === a.state.wrap && (a.adler = p(a.adler, o, l, h)), a.next_in += l, a.total_in += l, l), e.lookahead += r, e.lookahead + e.insert >= x) for (s = e.strstart - e.insert, e.ins_h = e.window[s], e.ins_h = (e.ins_h << e.hash_shift ^ e.window[s + 1]) & e.hash_mask; e.insert && (e.ins_h = (e.ins_h << e.hash_shift ^ e.window[s + x - 1]) & e.hash_mask, e.prev[s & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = s, s++, e.insert--, !(e.lookahead + e.insert < x)););
-					} while (e.lookahead < z && 0 !== e.strm.avail_in);
-				}
-				function Z(e, t) {
-					for (var r, n;;) {
-						if (e.lookahead < z) {
-							if (j(e), e.lookahead < z && t === l) return A;
-							if (0 === e.lookahead) break;
-						}
-						if (r = 0, e.lookahead >= x && (e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + x - 1]) & e.hash_mask, r = e.prev[e.strstart & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = e.strstart), 0 !== r && e.strstart - r <= e.w_size - z && (e.match_length = L(e, r)), e.match_length >= x) if (n = u._tr_tally(e, e.strstart - e.match_start, e.match_length - x), e.lookahead -= e.match_length, e.match_length <= e.max_lazy_match && e.lookahead >= x) {
-							for (e.match_length--; e.strstart++, e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + x - 1]) & e.hash_mask, r = e.prev[e.strstart & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = e.strstart, 0 != --e.match_length;);
-							e.strstart++;
-						} else e.strstart += e.match_length, e.match_length = 0, e.ins_h = e.window[e.strstart], e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + 1]) & e.hash_mask;
-						else n = u._tr_tally(e, 0, e.window[e.strstart]), e.lookahead--, e.strstart++;
-						if (n && (N(e, !1), 0 === e.strm.avail_out)) return A;
-					}
-					return e.insert = e.strstart < x - 1 ? e.strstart : x - 1, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : e.last_lit && (N(e, !1), 0 === e.strm.avail_out) ? A : I;
-				}
-				function W(e, t) {
-					for (var r, n, i;;) {
-						if (e.lookahead < z) {
-							if (j(e), e.lookahead < z && t === l) return A;
-							if (0 === e.lookahead) break;
-						}
-						if (r = 0, e.lookahead >= x && (e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + x - 1]) & e.hash_mask, r = e.prev[e.strstart & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = e.strstart), e.prev_length = e.match_length, e.prev_match = e.match_start, e.match_length = x - 1, 0 !== r && e.prev_length < e.max_lazy_match && e.strstart - r <= e.w_size - z && (e.match_length = L(e, r), e.match_length <= 5 && (1 === e.strategy || e.match_length === x && 4096 < e.strstart - e.match_start) && (e.match_length = x - 1)), e.prev_length >= x && e.match_length <= e.prev_length) {
-							for (i = e.strstart + e.lookahead - x, n = u._tr_tally(e, e.strstart - 1 - e.prev_match, e.prev_length - x), e.lookahead -= e.prev_length - 1, e.prev_length -= 2; ++e.strstart <= i && (e.ins_h = (e.ins_h << e.hash_shift ^ e.window[e.strstart + x - 1]) & e.hash_mask, r = e.prev[e.strstart & e.w_mask] = e.head[e.ins_h], e.head[e.ins_h] = e.strstart), 0 != --e.prev_length;);
-							if (e.match_available = 0, e.match_length = x - 1, e.strstart++, n && (N(e, !1), 0 === e.strm.avail_out)) return A;
-						} else if (e.match_available) {
-							if ((n = u._tr_tally(e, 0, e.window[e.strstart - 1])) && N(e, !1), e.strstart++, e.lookahead--, 0 === e.strm.avail_out) return A;
-						} else e.match_available = 1, e.strstart++, e.lookahead--;
-					}
-					return e.match_available && (n = u._tr_tally(e, 0, e.window[e.strstart - 1]), e.match_available = 0), e.insert = e.strstart < x - 1 ? e.strstart : x - 1, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : e.last_lit && (N(e, !1), 0 === e.strm.avail_out) ? A : I;
-				}
-				function M(e, t, r, n, i) {
-					this.good_length = e, this.max_lazy = t, this.nice_length = r, this.max_chain = n, this.func = i;
-				}
-				function H() {
-					this.strm = null, this.status = 0, this.pending_buf = null, this.pending_buf_size = 0, this.pending_out = 0, this.pending = 0, this.wrap = 0, this.gzhead = null, this.gzindex = 0, this.method = v, this.last_flush = -1, this.w_size = 0, this.w_bits = 0, this.w_mask = 0, this.window = null, this.window_size = 0, this.prev = null, this.head = null, this.ins_h = 0, this.hash_size = 0, this.hash_bits = 0, this.hash_mask = 0, this.hash_shift = 0, this.block_start = 0, this.match_length = 0, this.prev_match = 0, this.match_available = 0, this.strstart = 0, this.match_start = 0, this.lookahead = 0, this.prev_length = 0, this.max_chain_length = 0, this.max_lazy_match = 0, this.level = 0, this.strategy = 0, this.good_match = 0, this.nice_match = 0, this.dyn_ltree = new c.Buf16(2 * w), this.dyn_dtree = new c.Buf16(2 * (2 * a + 1)), this.bl_tree = new c.Buf16(2 * (2 * o + 1)), D(this.dyn_ltree), D(this.dyn_dtree), D(this.bl_tree), this.l_desc = null, this.d_desc = null, this.bl_desc = null, this.bl_count = new c.Buf16(k + 1), this.heap = new c.Buf16(2 * s + 1), D(this.heap), this.heap_len = 0, this.heap_max = 0, this.depth = new c.Buf16(2 * s + 1), D(this.depth), this.l_buf = 0, this.lit_bufsize = 0, this.last_lit = 0, this.d_buf = 0, this.opt_len = 0, this.static_len = 0, this.matches = 0, this.insert = 0, this.bi_buf = 0, this.bi_valid = 0;
-				}
-				function G(e) {
-					var t;
-					return e && e.state ? (e.total_in = e.total_out = 0, e.data_type = i, (t = e.state).pending = 0, t.pending_out = 0, t.wrap < 0 && (t.wrap = -t.wrap), t.status = t.wrap ? C : E, e.adler = 2 === t.wrap ? 0 : 1, t.last_flush = l, u._tr_init(t), m) : R(e, _);
-				}
-				function K(e) {
-					var t = G(e);
-					return t === m && function(e) {
-						e.window_size = 2 * e.w_size, D(e.head), e.max_lazy_match = h[e.level].max_lazy, e.good_match = h[e.level].good_length, e.nice_match = h[e.level].nice_length, e.max_chain_length = h[e.level].max_chain, e.strstart = 0, e.block_start = 0, e.lookahead = 0, e.insert = 0, e.match_length = e.prev_length = x - 1, e.match_available = 0, e.ins_h = 0;
-					}(e.state), t;
-				}
-				function Y(e, t, r, n, i, s) {
-					if (!e) return _;
-					var a = 1;
-					if (t === g && (t = 6), n < 0 ? (a = 0, n = -n) : 15 < n && (a = 2, n -= 16), i < 1 || y < i || r !== v || n < 8 || 15 < n || t < 0 || 9 < t || s < 0 || b < s) return R(e, _);
-					8 === n && (n = 9);
-					var o = new H();
-					return (e.state = o).strm = e, o.wrap = a, o.gzhead = null, o.w_bits = n, o.w_size = 1 << o.w_bits, o.w_mask = o.w_size - 1, o.hash_bits = i + 7, o.hash_size = 1 << o.hash_bits, o.hash_mask = o.hash_size - 1, o.hash_shift = ~~((o.hash_bits + x - 1) / x), o.window = new c.Buf8(2 * o.w_size), o.head = new c.Buf16(o.hash_size), o.prev = new c.Buf16(o.w_size), o.lit_bufsize = 1 << i + 6, o.pending_buf_size = 4 * o.lit_bufsize, o.pending_buf = new c.Buf8(o.pending_buf_size), o.d_buf = 1 * o.lit_bufsize, o.l_buf = 3 * o.lit_bufsize, o.level = t, o.strategy = s, o.method = r, K(e);
-				}
-				h = [
-					new M(0, 0, 0, 0, function(e, t) {
-						var r = 65535;
-						for (r > e.pending_buf_size - 5 && (r = e.pending_buf_size - 5);;) {
-							if (e.lookahead <= 1) {
-								if (j(e), 0 === e.lookahead && t === l) return A;
-								if (0 === e.lookahead) break;
-							}
-							e.strstart += e.lookahead, e.lookahead = 0;
-							var n = e.block_start + r;
-							if ((0 === e.strstart || e.strstart >= n) && (e.lookahead = e.strstart - n, e.strstart = n, N(e, !1), 0 === e.strm.avail_out)) return A;
-							if (e.strstart - e.block_start >= e.w_size - z && (N(e, !1), 0 === e.strm.avail_out)) return A;
-						}
-						return e.insert = 0, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : (e.strstart > e.block_start && (N(e, !1), e.strm.avail_out), A);
-					}),
-					new M(4, 4, 8, 4, Z),
-					new M(4, 5, 16, 8, Z),
-					new M(4, 6, 32, 32, Z),
-					new M(4, 4, 16, 16, W),
-					new M(8, 16, 32, 32, W),
-					new M(8, 16, 128, 128, W),
-					new M(8, 32, 128, 256, W),
-					new M(32, 128, 258, 1024, W),
-					new M(32, 258, 258, 4096, W)
-				], r.deflateInit = function(e, t) {
-					return Y(e, t, v, 15, 8, 0);
-				}, r.deflateInit2 = Y, r.deflateReset = K, r.deflateResetKeep = G, r.deflateSetHeader = function(e, t) {
-					return e && e.state ? 2 !== e.state.wrap ? _ : (e.state.gzhead = t, m) : _;
-				}, r.deflate = function(e, t) {
-					var r, n, i, s;
-					if (!e || !e.state || 5 < t || t < 0) return e ? R(e, _) : _;
-					if (n = e.state, !e.output || !e.input && 0 !== e.avail_in || 666 === n.status && t !== f) return R(e, 0 === e.avail_out ? -5 : _);
-					if (n.strm = e, r = n.last_flush, n.last_flush = t, n.status === C) if (2 === n.wrap) e.adler = 0, U(n, 31), U(n, 139), U(n, 8), n.gzhead ? (U(n, (n.gzhead.text ? 1 : 0) + (n.gzhead.hcrc ? 2 : 0) + (n.gzhead.extra ? 4 : 0) + (n.gzhead.name ? 8 : 0) + (n.gzhead.comment ? 16 : 0)), U(n, 255 & n.gzhead.time), U(n, n.gzhead.time >> 8 & 255), U(n, n.gzhead.time >> 16 & 255), U(n, n.gzhead.time >> 24 & 255), U(n, 9 === n.level ? 2 : 2 <= n.strategy || n.level < 2 ? 4 : 0), U(n, 255 & n.gzhead.os), n.gzhead.extra && n.gzhead.extra.length && (U(n, 255 & n.gzhead.extra.length), U(n, n.gzhead.extra.length >> 8 & 255)), n.gzhead.hcrc && (e.adler = p(e.adler, n.pending_buf, n.pending, 0)), n.gzindex = 0, n.status = 69) : (U(n, 0), U(n, 0), U(n, 0), U(n, 0), U(n, 0), U(n, 9 === n.level ? 2 : 2 <= n.strategy || n.level < 2 ? 4 : 0), U(n, 3), n.status = E);
-					else {
-						var a = v + (n.w_bits - 8 << 4) << 8;
-						a |= (2 <= n.strategy || n.level < 2 ? 0 : n.level < 6 ? 1 : 6 === n.level ? 2 : 3) << 6, 0 !== n.strstart && (a |= 32), a += 31 - a % 31, n.status = E, P(n, a), 0 !== n.strstart && (P(n, e.adler >>> 16), P(n, 65535 & e.adler)), e.adler = 1;
-					}
-					if (69 === n.status) if (n.gzhead.extra) {
-						for (i = n.pending; n.gzindex < (65535 & n.gzhead.extra.length) && (n.pending !== n.pending_buf_size || (n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), F(e), i = n.pending, n.pending !== n.pending_buf_size));) U(n, 255 & n.gzhead.extra[n.gzindex]), n.gzindex++;
-						n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), n.gzindex === n.gzhead.extra.length && (n.gzindex = 0, n.status = 73);
-					} else n.status = 73;
-					if (73 === n.status) if (n.gzhead.name) {
-						i = n.pending;
-						do {
-							if (n.pending === n.pending_buf_size && (n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), F(e), i = n.pending, n.pending === n.pending_buf_size)) {
-								s = 1;
-								break;
-							}
-							s = n.gzindex < n.gzhead.name.length ? 255 & n.gzhead.name.charCodeAt(n.gzindex++) : 0, U(n, s);
-						} while (0 !== s);
-						n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), 0 === s && (n.gzindex = 0, n.status = 91);
-					} else n.status = 91;
-					if (91 === n.status) if (n.gzhead.comment) {
-						i = n.pending;
-						do {
-							if (n.pending === n.pending_buf_size && (n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), F(e), i = n.pending, n.pending === n.pending_buf_size)) {
-								s = 1;
-								break;
-							}
-							s = n.gzindex < n.gzhead.comment.length ? 255 & n.gzhead.comment.charCodeAt(n.gzindex++) : 0, U(n, s);
-						} while (0 !== s);
-						n.gzhead.hcrc && n.pending > i && (e.adler = p(e.adler, n.pending_buf, n.pending - i, i)), 0 === s && (n.status = 103);
-					} else n.status = 103;
-					if (103 === n.status && (n.gzhead.hcrc ? (n.pending + 2 > n.pending_buf_size && F(e), n.pending + 2 <= n.pending_buf_size && (U(n, 255 & e.adler), U(n, e.adler >> 8 & 255), e.adler = 0, n.status = E)) : n.status = E), 0 !== n.pending) {
-						if (F(e), 0 === e.avail_out) return n.last_flush = -1, m;
-					} else if (0 === e.avail_in && T(t) <= T(r) && t !== f) return R(e, -5);
-					if (666 === n.status && 0 !== e.avail_in) return R(e, -5);
-					if (0 !== e.avail_in || 0 !== n.lookahead || t !== l && 666 !== n.status) {
-						var o = 2 === n.strategy ? function(e, t) {
-							for (var r;;) {
-								if (0 === e.lookahead && (j(e), 0 === e.lookahead)) {
-									if (t === l) return A;
-									break;
-								}
-								if (e.match_length = 0, r = u._tr_tally(e, 0, e.window[e.strstart]), e.lookahead--, e.strstart++, r && (N(e, !1), 0 === e.strm.avail_out)) return A;
-							}
-							return e.insert = 0, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : e.last_lit && (N(e, !1), 0 === e.strm.avail_out) ? A : I;
-						}(n, t) : 3 === n.strategy ? function(e, t) {
-							for (var r, n, i, s, a = e.window;;) {
-								if (e.lookahead <= S) {
-									if (j(e), e.lookahead <= S && t === l) return A;
-									if (0 === e.lookahead) break;
-								}
-								if (e.match_length = 0, e.lookahead >= x && 0 < e.strstart && (n = a[i = e.strstart - 1]) === a[++i] && n === a[++i] && n === a[++i]) {
-									s = e.strstart + S;
-									do;
-									while (n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && i < s);
-									e.match_length = S - (s - i), e.match_length > e.lookahead && (e.match_length = e.lookahead);
-								}
-								if (e.match_length >= x ? (r = u._tr_tally(e, 1, e.match_length - x), e.lookahead -= e.match_length, e.strstart += e.match_length, e.match_length = 0) : (r = u._tr_tally(e, 0, e.window[e.strstart]), e.lookahead--, e.strstart++), r && (N(e, !1), 0 === e.strm.avail_out)) return A;
-							}
-							return e.insert = 0, t === f ? (N(e, !0), 0 === e.strm.avail_out ? O : B) : e.last_lit && (N(e, !1), 0 === e.strm.avail_out) ? A : I;
-						}(n, t) : h[n.level].func(n, t);
-						if (o !== O && o !== B || (n.status = 666), o === A || o === O) return 0 === e.avail_out && (n.last_flush = -1), m;
-						if (o === I && (1 === t ? u._tr_align(n) : 5 !== t && (u._tr_stored_block(n, 0, 0, !1), 3 === t && (D(n.head), 0 === n.lookahead && (n.strstart = 0, n.block_start = 0, n.insert = 0))), F(e), 0 === e.avail_out)) return n.last_flush = -1, m;
-					}
-					return t !== f ? m : n.wrap <= 0 ? 1 : (2 === n.wrap ? (U(n, 255 & e.adler), U(n, e.adler >> 8 & 255), U(n, e.adler >> 16 & 255), U(n, e.adler >> 24 & 255), U(n, 255 & e.total_in), U(n, e.total_in >> 8 & 255), U(n, e.total_in >> 16 & 255), U(n, e.total_in >> 24 & 255)) : (P(n, e.adler >>> 16), P(n, 65535 & e.adler)), F(e), 0 < n.wrap && (n.wrap = -n.wrap), 0 !== n.pending ? m : 1);
-				}, r.deflateEnd = function(e) {
-					var t;
-					return e && e.state ? (t = e.state.status) !== C && 69 !== t && 73 !== t && 91 !== t && 103 !== t && t !== E && 666 !== t ? R(e, _) : (e.state = null, t === E ? R(e, -3) : m) : _;
-				}, r.deflateSetDictionary = function(e, t) {
-					var r, n, i, s, a, o, h, u, l = t.length;
-					if (!e || !e.state) return _;
-					if (2 === (s = (r = e.state).wrap) || 1 === s && r.status !== C || r.lookahead) return _;
-					for (1 === s && (e.adler = d(e.adler, t, l, 0)), r.wrap = 0, l >= r.w_size && (0 === s && (D(r.head), r.strstart = 0, r.block_start = 0, r.insert = 0), u = new c.Buf8(r.w_size), c.arraySet(u, t, l - r.w_size, r.w_size, 0), t = u, l = r.w_size), a = e.avail_in, o = e.next_in, h = e.input, e.avail_in = l, e.next_in = 0, e.input = t, j(r); r.lookahead >= x;) {
-						for (n = r.strstart, i = r.lookahead - (x - 1); r.ins_h = (r.ins_h << r.hash_shift ^ r.window[n + x - 1]) & r.hash_mask, r.prev[n & r.w_mask] = r.head[r.ins_h], r.head[r.ins_h] = n, n++, --i;);
-						r.strstart = n, r.lookahead = x - 1, j(r);
-					}
-					return r.strstart += r.lookahead, r.block_start = r.strstart, r.insert = r.lookahead, r.lookahead = 0, r.match_length = r.prev_length = x - 1, r.match_available = 0, e.next_in = o, e.input = h, e.avail_in = a, r.wrap = s, m;
-				}, r.deflateInfo = "pako deflate (from Nodeca project)";
-			}, {
-				"../utils/common": 41,
-				"./adler32": 43,
-				"./crc32": 45,
-				"./messages": 51,
-				"./trees": 52
-			}],
-			47: [function(e, t, r) {
-				"use strict";
-				t.exports = function() {
-					this.text = 0, this.time = 0, this.xflags = 0, this.os = 0, this.extra = null, this.extra_len = 0, this.name = "", this.comment = "", this.hcrc = 0, this.done = !1;
-				};
-			}, {}],
-			48: [function(e, t, r) {
-				"use strict";
-				t.exports = function(e, t) {
-					var r = e.state, n = e.next_in, i, s, a, o, h, u, l, f, c, d, p, m, _, g, b, v, y, w, k, x, S, z = e.input, C;
-					i = n + (e.avail_in - 5), s = e.next_out, C = e.output, a = s - (t - e.avail_out), o = s + (e.avail_out - 257), h = r.dmax, u = r.wsize, l = r.whave, f = r.wnext, c = r.window, d = r.hold, p = r.bits, m = r.lencode, _ = r.distcode, g = (1 << r.lenbits) - 1, b = (1 << r.distbits) - 1;
-					e: do {
-						p < 15 && (d += z[n++] << p, p += 8, d += z[n++] << p, p += 8), v = m[d & g];
-						t: for (;;) {
-							if (d >>>= y = v >>> 24, p -= y, 0 === (y = v >>> 16 & 255)) C[s++] = 65535 & v;
-							else {
-								if (!(16 & y)) {
-									if (0 == (64 & y)) {
-										v = m[(65535 & v) + (d & (1 << y) - 1)];
-										continue t;
-									}
-									if (32 & y) {
-										r.mode = 12;
-										break e;
-									}
-									e.msg = "invalid literal/length code", r.mode = 30;
-									break e;
-								}
-								w = 65535 & v, (y &= 15) && (p < y && (d += z[n++] << p, p += 8), w += d & (1 << y) - 1, d >>>= y, p -= y), p < 15 && (d += z[n++] << p, p += 8, d += z[n++] << p, p += 8), v = _[d & b];
-								r: for (;;) {
-									if (d >>>= y = v >>> 24, p -= y, !(16 & (y = v >>> 16 & 255))) {
-										if (0 == (64 & y)) {
-											v = _[(65535 & v) + (d & (1 << y) - 1)];
-											continue r;
-										}
-										e.msg = "invalid distance code", r.mode = 30;
-										break e;
-									}
-									if (k = 65535 & v, p < (y &= 15) && (d += z[n++] << p, (p += 8) < y && (d += z[n++] << p, p += 8)), h < (k += d & (1 << y) - 1)) {
-										e.msg = "invalid distance too far back", r.mode = 30;
-										break e;
-									}
-									if (d >>>= y, p -= y, (y = s - a) < k) {
-										if (l < (y = k - y) && r.sane) {
-											e.msg = "invalid distance too far back", r.mode = 30;
-											break e;
-										}
-										if (S = c, (x = 0) === f) {
-											if (x += u - y, y < w) {
-												for (w -= y; C[s++] = c[x++], --y;);
-												x = s - k, S = C;
-											}
-										} else if (f < y) {
-											if (x += u + f - y, (y -= f) < w) {
-												for (w -= y; C[s++] = c[x++], --y;);
-												if (x = 0, f < w) {
-													for (w -= y = f; C[s++] = c[x++], --y;);
-													x = s - k, S = C;
-												}
-											}
-										} else if (x += f - y, y < w) {
-											for (w -= y; C[s++] = c[x++], --y;);
-											x = s - k, S = C;
-										}
-										for (; 2 < w;) C[s++] = S[x++], C[s++] = S[x++], C[s++] = S[x++], w -= 3;
-										w && (C[s++] = S[x++], 1 < w && (C[s++] = S[x++]));
-									} else {
-										for (x = s - k; C[s++] = C[x++], C[s++] = C[x++], C[s++] = C[x++], 2 < (w -= 3););
-										w && (C[s++] = C[x++], 1 < w && (C[s++] = C[x++]));
-									}
-									break;
-								}
-							}
-							break;
-						}
-					} while (n < i && s < o);
-					n -= w = p >> 3, d &= (1 << (p -= w << 3)) - 1, e.next_in = n, e.next_out = s, e.avail_in = n < i ? i - n + 5 : 5 - (n - i), e.avail_out = s < o ? o - s + 257 : 257 - (s - o), r.hold = d, r.bits = p;
-				};
-			}, {}],
-			49: [function(e, t, r) {
-				"use strict";
-				var I = e("../utils/common"), O = e("./adler32"), B = e("./crc32"), R = e("./inffast"), T = e("./inftrees"), D = 1, F = 2, N = 0, U = -2, P = 1, n = 852, i = 592;
-				function L(e) {
-					return (e >>> 24 & 255) + (e >>> 8 & 65280) + ((65280 & e) << 8) + ((255 & e) << 24);
-				}
-				function s() {
-					this.mode = 0, this.last = !1, this.wrap = 0, this.havedict = !1, this.flags = 0, this.dmax = 0, this.check = 0, this.total = 0, this.head = null, this.wbits = 0, this.wsize = 0, this.whave = 0, this.wnext = 0, this.window = null, this.hold = 0, this.bits = 0, this.length = 0, this.offset = 0, this.extra = 0, this.lencode = null, this.distcode = null, this.lenbits = 0, this.distbits = 0, this.ncode = 0, this.nlen = 0, this.ndist = 0, this.have = 0, this.next = null, this.lens = new I.Buf16(320), this.work = new I.Buf16(288), this.lendyn = null, this.distdyn = null, this.sane = 0, this.back = 0, this.was = 0;
-				}
-				function a(e) {
-					var t;
-					return e && e.state ? (t = e.state, e.total_in = e.total_out = t.total = 0, e.msg = "", t.wrap && (e.adler = 1 & t.wrap), t.mode = P, t.last = 0, t.havedict = 0, t.dmax = 32768, t.head = null, t.hold = 0, t.bits = 0, t.lencode = t.lendyn = new I.Buf32(n), t.distcode = t.distdyn = new I.Buf32(i), t.sane = 1, t.back = -1, N) : U;
-				}
-				function o(e) {
-					var t;
-					return e && e.state ? ((t = e.state).wsize = 0, t.whave = 0, t.wnext = 0, a(e)) : U;
-				}
-				function h(e, t) {
-					var r, n;
-					return e && e.state ? (n = e.state, t < 0 ? (r = 0, t = -t) : (r = 1 + (t >> 4), t < 48 && (t &= 15)), t && (t < 8 || 15 < t) ? U : (null !== n.window && n.wbits !== t && (n.window = null), n.wrap = r, n.wbits = t, o(e))) : U;
-				}
-				function u(e, t) {
-					var r, n;
-					return e ? (n = new s(), (e.state = n).window = null, (r = h(e, t)) !== N && (e.state = null), r) : U;
-				}
-				var l, f, c = !0;
-				function j(e) {
-					if (c) {
-						var t;
-						for (l = new I.Buf32(512), f = new I.Buf32(32), t = 0; t < 144;) e.lens[t++] = 8;
-						for (; t < 256;) e.lens[t++] = 9;
-						for (; t < 280;) e.lens[t++] = 7;
-						for (; t < 288;) e.lens[t++] = 8;
-						for (T(D, e.lens, 0, 288, l, 0, e.work, { bits: 9 }), t = 0; t < 32;) e.lens[t++] = 5;
-						T(F, e.lens, 0, 32, f, 0, e.work, { bits: 5 }), c = !1;
-					}
-					e.lencode = l, e.lenbits = 9, e.distcode = f, e.distbits = 5;
-				}
-				function Z(e, t, r, n) {
-					var i, s = e.state;
-					return null === s.window && (s.wsize = 1 << s.wbits, s.wnext = 0, s.whave = 0, s.window = new I.Buf8(s.wsize)), n >= s.wsize ? (I.arraySet(s.window, t, r - s.wsize, s.wsize, 0), s.wnext = 0, s.whave = s.wsize) : (n < (i = s.wsize - s.wnext) && (i = n), I.arraySet(s.window, t, r - n, i, s.wnext), (n -= i) ? (I.arraySet(s.window, t, r - n, n, 0), s.wnext = n, s.whave = s.wsize) : (s.wnext += i, s.wnext === s.wsize && (s.wnext = 0), s.whave < s.wsize && (s.whave += i))), 0;
-				}
-				r.inflateReset = o, r.inflateReset2 = h, r.inflateResetKeep = a, r.inflateInit = function(e) {
-					return u(e, 15);
-				}, r.inflateInit2 = u, r.inflate = function(e, t) {
-					var r, n, i, s, a, o, h, u, l, f, c, d, p, m, _, g, b, v, y, w, k, x, S, z, C = 0, E = new I.Buf8(4), A = [
-						16,
-						17,
-						18,
-						0,
-						8,
-						7,
-						9,
-						6,
-						10,
-						5,
-						11,
-						4,
-						12,
-						3,
-						13,
-						2,
-						14,
-						1,
-						15
-					];
-					if (!e || !e.state || !e.output || !e.input && 0 !== e.avail_in) return U;
-					12 === (r = e.state).mode && (r.mode = 13), a = e.next_out, i = e.output, h = e.avail_out, s = e.next_in, n = e.input, o = e.avail_in, u = r.hold, l = r.bits, f = o, c = h, x = N;
-					e: for (;;) switch (r.mode) {
-						case P:
-							if (0 === r.wrap) {
-								r.mode = 13;
-								break;
-							}
-							for (; l < 16;) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							if (2 & r.wrap && 35615 === u) {
-								E[r.check = 0] = 255 & u, E[1] = u >>> 8 & 255, r.check = B(r.check, E, 2, 0), l = u = 0, r.mode = 2;
-								break;
-							}
-							if (r.flags = 0, r.head && (r.head.done = !1), !(1 & r.wrap) || (((255 & u) << 8) + (u >> 8)) % 31) {
-								e.msg = "incorrect header check", r.mode = 30;
-								break;
-							}
-							if (8 != (15 & u)) {
-								e.msg = "unknown compression method", r.mode = 30;
-								break;
-							}
-							if (l -= 4, k = 8 + (15 & (u >>>= 4)), 0 === r.wbits) r.wbits = k;
-							else if (k > r.wbits) {
-								e.msg = "invalid window size", r.mode = 30;
-								break;
-							}
-							r.dmax = 1 << k, e.adler = r.check = 1, r.mode = 512 & u ? 10 : 12, l = u = 0;
-							break;
-						case 2:
-							for (; l < 16;) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							if (r.flags = u, 8 != (255 & r.flags)) {
-								e.msg = "unknown compression method", r.mode = 30;
-								break;
-							}
-							if (57344 & r.flags) {
-								e.msg = "unknown header flags set", r.mode = 30;
-								break;
-							}
-							r.head && (r.head.text = u >> 8 & 1), 512 & r.flags && (E[0] = 255 & u, E[1] = u >>> 8 & 255, r.check = B(r.check, E, 2, 0)), l = u = 0, r.mode = 3;
-						case 3:
-							for (; l < 32;) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							r.head && (r.head.time = u), 512 & r.flags && (E[0] = 255 & u, E[1] = u >>> 8 & 255, E[2] = u >>> 16 & 255, E[3] = u >>> 24 & 255, r.check = B(r.check, E, 4, 0)), l = u = 0, r.mode = 4;
-						case 4:
-							for (; l < 16;) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							r.head && (r.head.xflags = 255 & u, r.head.os = u >> 8), 512 & r.flags && (E[0] = 255 & u, E[1] = u >>> 8 & 255, r.check = B(r.check, E, 2, 0)), l = u = 0, r.mode = 5;
-						case 5:
-							if (1024 & r.flags) {
-								for (; l < 16;) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								r.length = u, r.head && (r.head.extra_len = u), 512 & r.flags && (E[0] = 255 & u, E[1] = u >>> 8 & 255, r.check = B(r.check, E, 2, 0)), l = u = 0;
-							} else r.head && (r.head.extra = null);
-							r.mode = 6;
-						case 6:
-							if (1024 & r.flags && (o < (d = r.length) && (d = o), d && (r.head && (k = r.head.extra_len - r.length, r.head.extra || (r.head.extra = new Array(r.head.extra_len)), I.arraySet(r.head.extra, n, s, d, k)), 512 & r.flags && (r.check = B(r.check, n, d, s)), o -= d, s += d, r.length -= d), r.length)) break e;
-							r.length = 0, r.mode = 7;
-						case 7:
-							if (2048 & r.flags) {
-								if (0 === o) break e;
-								for (d = 0; k = n[s + d++], r.head && k && r.length < 65536 && (r.head.name += String.fromCharCode(k)), k && d < o;);
-								if (512 & r.flags && (r.check = B(r.check, n, d, s)), o -= d, s += d, k) break e;
-							} else r.head && (r.head.name = null);
-							r.length = 0, r.mode = 8;
-						case 8:
-							if (4096 & r.flags) {
-								if (0 === o) break e;
-								for (d = 0; k = n[s + d++], r.head && k && r.length < 65536 && (r.head.comment += String.fromCharCode(k)), k && d < o;);
-								if (512 & r.flags && (r.check = B(r.check, n, d, s)), o -= d, s += d, k) break e;
-							} else r.head && (r.head.comment = null);
-							r.mode = 9;
-						case 9:
-							if (512 & r.flags) {
-								for (; l < 16;) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								if (u !== (65535 & r.check)) {
-									e.msg = "header crc mismatch", r.mode = 30;
-									break;
-								}
-								l = u = 0;
-							}
-							r.head && (r.head.hcrc = r.flags >> 9 & 1, r.head.done = !0), e.adler = r.check = 0, r.mode = 12;
-							break;
-						case 10:
-							for (; l < 32;) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							e.adler = r.check = L(u), l = u = 0, r.mode = 11;
-						case 11:
-							if (0 === r.havedict) return e.next_out = a, e.avail_out = h, e.next_in = s, e.avail_in = o, r.hold = u, r.bits = l, 2;
-							e.adler = r.check = 1, r.mode = 12;
-						case 12: if (5 === t || 6 === t) break e;
-						case 13:
-							if (r.last) {
-								u >>>= 7 & l, l -= 7 & l, r.mode = 27;
-								break;
-							}
-							for (; l < 3;) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							switch (r.last = 1 & u, l -= 1, 3 & (u >>>= 1)) {
-								case 0:
-									r.mode = 14;
-									break;
-								case 1:
-									if (j(r), r.mode = 20, 6 !== t) break;
-									u >>>= 2, l -= 2;
-									break e;
-								case 2:
-									r.mode = 17;
-									break;
-								case 3: e.msg = "invalid block type", r.mode = 30;
-							}
-							u >>>= 2, l -= 2;
-							break;
-						case 14:
-							for (u >>>= 7 & l, l -= 7 & l; l < 32;) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							if ((65535 & u) != (u >>> 16 ^ 65535)) {
-								e.msg = "invalid stored block lengths", r.mode = 30;
-								break;
-							}
-							if (r.length = 65535 & u, l = u = 0, r.mode = 15, 6 === t) break e;
-						case 15: r.mode = 16;
-						case 16:
-							if (d = r.length) {
-								if (o < d && (d = o), h < d && (d = h), 0 === d) break e;
-								I.arraySet(i, n, s, d, a), o -= d, s += d, h -= d, a += d, r.length -= d;
-								break;
-							}
-							r.mode = 12;
-							break;
-						case 17:
-							for (; l < 14;) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							if (r.nlen = 257 + (31 & u), u >>>= 5, l -= 5, r.ndist = 1 + (31 & u), u >>>= 5, l -= 5, r.ncode = 4 + (15 & u), u >>>= 4, l -= 4, 286 < r.nlen || 30 < r.ndist) {
-								e.msg = "too many length or distance symbols", r.mode = 30;
-								break;
-							}
-							r.have = 0, r.mode = 18;
-						case 18:
-							for (; r.have < r.ncode;) {
-								for (; l < 3;) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								r.lens[A[r.have++]] = 7 & u, u >>>= 3, l -= 3;
-							}
-							for (; r.have < 19;) r.lens[A[r.have++]] = 0;
-							if (r.lencode = r.lendyn, r.lenbits = 7, S = { bits: r.lenbits }, x = T(0, r.lens, 0, 19, r.lencode, 0, r.work, S), r.lenbits = S.bits, x) {
-								e.msg = "invalid code lengths set", r.mode = 30;
-								break;
-							}
-							r.have = 0, r.mode = 19;
-						case 19:
-							for (; r.have < r.nlen + r.ndist;) {
-								for (; g = (C = r.lencode[u & (1 << r.lenbits) - 1]) >>> 16 & 255, b = 65535 & C, !((_ = C >>> 24) <= l);) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								if (b < 16) u >>>= _, l -= _, r.lens[r.have++] = b;
-								else {
-									if (16 === b) {
-										for (z = _ + 2; l < z;) {
-											if (0 === o) break e;
-											o--, u += n[s++] << l, l += 8;
-										}
-										if (u >>>= _, l -= _, 0 === r.have) {
-											e.msg = "invalid bit length repeat", r.mode = 30;
-											break;
-										}
-										k = r.lens[r.have - 1], d = 3 + (3 & u), u >>>= 2, l -= 2;
-									} else if (17 === b) {
-										for (z = _ + 3; l < z;) {
-											if (0 === o) break e;
-											o--, u += n[s++] << l, l += 8;
-										}
-										l -= _, k = 0, d = 3 + (7 & (u >>>= _)), u >>>= 3, l -= 3;
-									} else {
-										for (z = _ + 7; l < z;) {
-											if (0 === o) break e;
-											o--, u += n[s++] << l, l += 8;
-										}
-										l -= _, k = 0, d = 11 + (127 & (u >>>= _)), u >>>= 7, l -= 7;
-									}
-									if (r.have + d > r.nlen + r.ndist) {
-										e.msg = "invalid bit length repeat", r.mode = 30;
-										break;
-									}
-									for (; d--;) r.lens[r.have++] = k;
-								}
-							}
-							if (30 === r.mode) break;
-							if (0 === r.lens[256]) {
-								e.msg = "invalid code -- missing end-of-block", r.mode = 30;
-								break;
-							}
-							if (r.lenbits = 9, S = { bits: r.lenbits }, x = T(D, r.lens, 0, r.nlen, r.lencode, 0, r.work, S), r.lenbits = S.bits, x) {
-								e.msg = "invalid literal/lengths set", r.mode = 30;
-								break;
-							}
-							if (r.distbits = 6, r.distcode = r.distdyn, S = { bits: r.distbits }, x = T(F, r.lens, r.nlen, r.ndist, r.distcode, 0, r.work, S), r.distbits = S.bits, x) {
-								e.msg = "invalid distances set", r.mode = 30;
-								break;
-							}
-							if (r.mode = 20, 6 === t) break e;
-						case 20: r.mode = 21;
-						case 21:
-							if (6 <= o && 258 <= h) {
-								e.next_out = a, e.avail_out = h, e.next_in = s, e.avail_in = o, r.hold = u, r.bits = l, R(e, c), a = e.next_out, i = e.output, h = e.avail_out, s = e.next_in, n = e.input, o = e.avail_in, u = r.hold, l = r.bits, 12 === r.mode && (r.back = -1);
-								break;
-							}
-							for (r.back = 0; g = (C = r.lencode[u & (1 << r.lenbits) - 1]) >>> 16 & 255, b = 65535 & C, !((_ = C >>> 24) <= l);) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							if (g && 0 == (240 & g)) {
-								for (v = _, y = g, w = b; g = (C = r.lencode[w + ((u & (1 << v + y) - 1) >> v)]) >>> 16 & 255, b = 65535 & C, !(v + (_ = C >>> 24) <= l);) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								u >>>= v, l -= v, r.back += v;
-							}
-							if (u >>>= _, l -= _, r.back += _, r.length = b, 0 === g) {
-								r.mode = 26;
-								break;
-							}
-							if (32 & g) {
-								r.back = -1, r.mode = 12;
-								break;
-							}
-							if (64 & g) {
-								e.msg = "invalid literal/length code", r.mode = 30;
-								break;
-							}
-							r.extra = 15 & g, r.mode = 22;
-						case 22:
-							if (r.extra) {
-								for (z = r.extra; l < z;) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								r.length += u & (1 << r.extra) - 1, u >>>= r.extra, l -= r.extra, r.back += r.extra;
-							}
-							r.was = r.length, r.mode = 23;
-						case 23:
-							for (; g = (C = r.distcode[u & (1 << r.distbits) - 1]) >>> 16 & 255, b = 65535 & C, !((_ = C >>> 24) <= l);) {
-								if (0 === o) break e;
-								o--, u += n[s++] << l, l += 8;
-							}
-							if (0 == (240 & g)) {
-								for (v = _, y = g, w = b; g = (C = r.distcode[w + ((u & (1 << v + y) - 1) >> v)]) >>> 16 & 255, b = 65535 & C, !(v + (_ = C >>> 24) <= l);) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								u >>>= v, l -= v, r.back += v;
-							}
-							if (u >>>= _, l -= _, r.back += _, 64 & g) {
-								e.msg = "invalid distance code", r.mode = 30;
-								break;
-							}
-							r.offset = b, r.extra = 15 & g, r.mode = 24;
-						case 24:
-							if (r.extra) {
-								for (z = r.extra; l < z;) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								r.offset += u & (1 << r.extra) - 1, u >>>= r.extra, l -= r.extra, r.back += r.extra;
-							}
-							if (r.offset > r.dmax) {
-								e.msg = "invalid distance too far back", r.mode = 30;
-								break;
-							}
-							r.mode = 25;
-						case 25:
-							if (0 === h) break e;
-							if (d = c - h, r.offset > d) {
-								if ((d = r.offset - d) > r.whave && r.sane) {
-									e.msg = "invalid distance too far back", r.mode = 30;
-									break;
-								}
-								p = d > r.wnext ? (d -= r.wnext, r.wsize - d) : r.wnext - d, d > r.length && (d = r.length), m = r.window;
-							} else m = i, p = a - r.offset, d = r.length;
-							for (h < d && (d = h), h -= d, r.length -= d; i[a++] = m[p++], --d;);
-							0 === r.length && (r.mode = 21);
-							break;
-						case 26:
-							if (0 === h) break e;
-							i[a++] = r.length, h--, r.mode = 21;
-							break;
-						case 27:
-							if (r.wrap) {
-								for (; l < 32;) {
-									if (0 === o) break e;
-									o--, u |= n[s++] << l, l += 8;
-								}
-								if (c -= h, e.total_out += c, r.total += c, c && (e.adler = r.check = r.flags ? B(r.check, i, c, a - c) : O(r.check, i, c, a - c)), c = h, (r.flags ? u : L(u)) !== r.check) {
-									e.msg = "incorrect data check", r.mode = 30;
-									break;
-								}
-								l = u = 0;
-							}
-							r.mode = 28;
-						case 28:
-							if (r.wrap && r.flags) {
-								for (; l < 32;) {
-									if (0 === o) break e;
-									o--, u += n[s++] << l, l += 8;
-								}
-								if (u !== (4294967295 & r.total)) {
-									e.msg = "incorrect length check", r.mode = 30;
-									break;
-								}
-								l = u = 0;
-							}
-							r.mode = 29;
-						case 29:
-							x = 1;
-							break e;
-						case 30:
-							x = -3;
-							break e;
-						case 31: return -4;
-						default: return U;
-					}
-					return e.next_out = a, e.avail_out = h, e.next_in = s, e.avail_in = o, r.hold = u, r.bits = l, (r.wsize || c !== e.avail_out && r.mode < 30 && (r.mode < 27 || 4 !== t)) && Z(e, e.output, e.next_out, c - e.avail_out) ? (r.mode = 31, -4) : (f -= e.avail_in, c -= e.avail_out, e.total_in += f, e.total_out += c, r.total += c, r.wrap && c && (e.adler = r.check = r.flags ? B(r.check, i, c, e.next_out - c) : O(r.check, i, c, e.next_out - c)), e.data_type = r.bits + (r.last ? 64 : 0) + (12 === r.mode ? 128 : 0) + (20 === r.mode || 15 === r.mode ? 256 : 0), (0 == f && 0 === c || 4 === t) && x === N && (x = -5), x);
-				}, r.inflateEnd = function(e) {
-					if (!e || !e.state) return U;
-					var t = e.state;
-					return t.window && (t.window = null), e.state = null, N;
-				}, r.inflateGetHeader = function(e, t) {
-					var r;
-					return e && e.state ? 0 == (2 & (r = e.state).wrap) ? U : ((r.head = t).done = !1, N) : U;
-				}, r.inflateSetDictionary = function(e, t) {
-					var r, n = t.length;
-					return e && e.state ? 0 !== (r = e.state).wrap && 11 !== r.mode ? U : 11 === r.mode && O(1, t, n, 0) !== r.check ? -3 : Z(e, t, n, n) ? (r.mode = 31, -4) : (r.havedict = 1, N) : U;
-				}, r.inflateInfo = "pako inflate (from Nodeca project)";
-			}, {
-				"../utils/common": 41,
-				"./adler32": 43,
-				"./crc32": 45,
-				"./inffast": 48,
-				"./inftrees": 50
-			}],
-			50: [function(e, t, r) {
-				"use strict";
-				var D = e("../utils/common"), F = [
-					3,
-					4,
-					5,
-					6,
-					7,
-					8,
-					9,
-					10,
-					11,
-					13,
-					15,
-					17,
-					19,
-					23,
-					27,
-					31,
-					35,
-					43,
-					51,
-					59,
-					67,
-					83,
-					99,
-					115,
-					131,
-					163,
-					195,
-					227,
-					258,
-					0,
-					0
-				], N = [
-					16,
-					16,
-					16,
-					16,
-					16,
-					16,
-					16,
-					16,
-					17,
-					17,
-					17,
-					17,
-					18,
-					18,
-					18,
-					18,
-					19,
-					19,
-					19,
-					19,
-					20,
-					20,
-					20,
-					20,
-					21,
-					21,
-					21,
-					21,
-					16,
-					72,
-					78
-				], U = [
-					1,
-					2,
-					3,
-					4,
-					5,
-					7,
-					9,
-					13,
-					17,
-					25,
-					33,
-					49,
-					65,
-					97,
-					129,
-					193,
-					257,
-					385,
-					513,
-					769,
-					1025,
-					1537,
-					2049,
-					3073,
-					4097,
-					6145,
-					8193,
-					12289,
-					16385,
-					24577,
-					0,
-					0
-				], P = [
-					16,
-					16,
-					16,
-					16,
-					17,
-					17,
-					18,
-					18,
-					19,
-					19,
-					20,
-					20,
-					21,
-					21,
-					22,
-					22,
-					23,
-					23,
-					24,
-					24,
-					25,
-					25,
-					26,
-					26,
-					27,
-					27,
-					28,
-					28,
-					29,
-					29,
-					64,
-					64
-				];
-				t.exports = function(e, t, r, n, i, s, a, o) {
-					var h, u, l, f, c, d, p, m, _, g = o.bits, b = 0, v = 0, y = 0, w = 0, k = 0, x = 0, S = 0, z = 0, C = 0, E = 0, A = null, I = 0, O = new D.Buf16(16), B = new D.Buf16(16), R = null, T = 0;
-					for (b = 0; b <= 15; b++) O[b] = 0;
-					for (v = 0; v < n; v++) O[t[r + v]]++;
-					for (k = g, w = 15; 1 <= w && 0 === O[w]; w--);
-					if (w < k && (k = w), 0 === w) return i[s++] = 20971520, i[s++] = 20971520, o.bits = 1, 0;
-					for (y = 1; y < w && 0 === O[y]; y++);
-					for (k < y && (k = y), b = z = 1; b <= 15; b++) if (z <<= 1, (z -= O[b]) < 0) return -1;
-					if (0 < z && (0 === e || 1 !== w)) return -1;
-					for (B[1] = 0, b = 1; b < 15; b++) B[b + 1] = B[b] + O[b];
-					for (v = 0; v < n; v++) 0 !== t[r + v] && (a[B[t[r + v]]++] = v);
-					if (d = 0 === e ? (A = R = a, 19) : 1 === e ? (A = F, I -= 257, R = N, T -= 257, 256) : (A = U, R = P, -1), b = y, c = s, S = v = E = 0, l = -1, f = (C = 1 << (x = k)) - 1, 1 === e && 852 < C || 2 === e && 592 < C) return 1;
-					for (;;) {
-						for (p = b - S, _ = a[v] < d ? (m = 0, a[v]) : a[v] > d ? (m = R[T + a[v]], A[I + a[v]]) : (m = 96, 0), h = 1 << b - S, y = u = 1 << x; i[c + (E >> S) + (u -= h)] = p << 24 | m << 16 | _ | 0, 0 !== u;);
-						for (h = 1 << b - 1; E & h;) h >>= 1;
-						if (0 !== h ? (E &= h - 1, E += h) : E = 0, v++, 0 == --O[b]) {
-							if (b === w) break;
-							b = t[r + a[v]];
-						}
-						if (k < b && (E & f) !== l) {
-							for (0 === S && (S = k), c += y, z = 1 << (x = b - S); x + S < w && !((z -= O[x + S]) <= 0);) x++, z <<= 1;
-							if (C += 1 << x, 1 === e && 852 < C || 2 === e && 592 < C) return 1;
-							i[l = E & f] = k << 24 | x << 16 | c - s | 0;
-						}
-					}
-					return 0 !== E && (i[c + E] = b - S << 24 | 4194304), o.bits = k, 0;
-				};
-			}, { "../utils/common": 41 }],
-			51: [function(e, t, r) {
-				"use strict";
-				t.exports = {
-					2: "need dictionary",
-					1: "stream end",
-					0: "",
-					"-1": "file error",
-					"-2": "stream error",
-					"-3": "data error",
-					"-4": "insufficient memory",
-					"-5": "buffer error",
-					"-6": "incompatible version"
-				};
-			}, {}],
-			52: [function(e, t, r) {
-				"use strict";
-				var i = e("../utils/common"), o = 0, h = 1;
-				function n(e) {
-					for (var t = e.length; 0 <= --t;) e[t] = 0;
-				}
-				var s = 0, a = 29, u = 256, l = u + 1 + a, f = 30, c = 19, _ = 2 * l + 1, g = 15, d = 16, p = 7, m = 256, b = 16, v = 17, y = 18, w = [
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					1,
-					1,
-					1,
-					1,
-					2,
-					2,
-					2,
-					2,
-					3,
-					3,
-					3,
-					3,
-					4,
-					4,
-					4,
-					4,
-					5,
-					5,
-					5,
-					5,
-					0
-				], k = [
-					0,
-					0,
-					0,
-					0,
-					1,
-					1,
-					2,
-					2,
-					3,
-					3,
-					4,
-					4,
-					5,
-					5,
-					6,
-					6,
-					7,
-					7,
-					8,
-					8,
-					9,
-					9,
-					10,
-					10,
-					11,
-					11,
-					12,
-					12,
-					13,
-					13
-				], x = [
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					0,
-					2,
-					3,
-					7
-				], S = [
-					16,
-					17,
-					18,
-					0,
-					8,
-					7,
-					9,
-					6,
-					10,
-					5,
-					11,
-					4,
-					12,
-					3,
-					13,
-					2,
-					14,
-					1,
-					15
-				], z = new Array(2 * (l + 2));
-				n(z);
-				var C = new Array(2 * f);
-				n(C);
-				var E = new Array(512);
-				n(E);
-				var A = new Array(256);
-				n(A);
-				var I = new Array(a);
-				n(I);
-				var O, B, R, T = new Array(f);
-				function D(e, t, r, n, i) {
-					this.static_tree = e, this.extra_bits = t, this.extra_base = r, this.elems = n, this.max_length = i, this.has_stree = e && e.length;
-				}
-				function F(e, t) {
-					this.dyn_tree = e, this.max_code = 0, this.stat_desc = t;
-				}
-				function N(e) {
-					return e < 256 ? E[e] : E[256 + (e >>> 7)];
-				}
-				function U(e, t) {
-					e.pending_buf[e.pending++] = 255 & t, e.pending_buf[e.pending++] = t >>> 8 & 255;
-				}
-				function P(e, t, r) {
-					e.bi_valid > d - r ? (e.bi_buf |= t << e.bi_valid & 65535, U(e, e.bi_buf), e.bi_buf = t >> d - e.bi_valid, e.bi_valid += r - d) : (e.bi_buf |= t << e.bi_valid & 65535, e.bi_valid += r);
-				}
-				function L(e, t, r) {
-					P(e, r[2 * t], r[2 * t + 1]);
-				}
-				function j(e, t) {
-					for (var r = 0; r |= 1 & e, e >>>= 1, r <<= 1, 0 < --t;);
-					return r >>> 1;
-				}
-				function Z(e, t, r) {
-					var n, i, s = new Array(g + 1), a = 0;
-					for (n = 1; n <= g; n++) s[n] = a = a + r[n - 1] << 1;
-					for (i = 0; i <= t; i++) {
-						var o = e[2 * i + 1];
-						0 !== o && (e[2 * i] = j(s[o]++, o));
-					}
-				}
-				function W(e) {
-					var t = 0;
-					for (; t < l; t++) e.dyn_ltree[2 * t] = 0;
-					for (t = 0; t < f; t++) e.dyn_dtree[2 * t] = 0;
-					for (t = 0; t < c; t++) e.bl_tree[2 * t] = 0;
-					e.dyn_ltree[2 * m] = 1, e.opt_len = e.static_len = 0, e.last_lit = e.matches = 0;
-				}
-				function M(e) {
-					8 < e.bi_valid ? U(e, e.bi_buf) : 0 < e.bi_valid && (e.pending_buf[e.pending++] = e.bi_buf), e.bi_buf = 0, e.bi_valid = 0;
-				}
-				function H(e, t, r, n) {
-					var i = 2 * t, s = 2 * r;
-					return e[i] < e[s] || e[i] === e[s] && n[t] <= n[r];
-				}
-				function G(e, t, r) {
-					for (var n = e.heap[r], i = r << 1; i <= e.heap_len && (i < e.heap_len && H(t, e.heap[i + 1], e.heap[i], e.depth) && i++, !H(t, n, e.heap[i], e.depth));) e.heap[r] = e.heap[i], r = i, i <<= 1;
-					e.heap[r] = n;
-				}
-				function K(e, t, r) {
-					var n, i, s, a, o = 0;
-					if (0 !== e.last_lit) for (; n = e.pending_buf[e.d_buf + 2 * o] << 8 | e.pending_buf[e.d_buf + 2 * o + 1], i = e.pending_buf[e.l_buf + o], o++, 0 === n ? L(e, i, t) : (L(e, (s = A[i]) + u + 1, t), 0 !== (a = w[s]) && P(e, i -= I[s], a), L(e, s = N(--n), r), 0 !== (a = k[s]) && P(e, n -= T[s], a)), o < e.last_lit;);
-					L(e, m, t);
-				}
-				function Y(e, t) {
-					var r, n, i, s = t.dyn_tree, a = t.stat_desc.static_tree, o = t.stat_desc.has_stree, h = t.stat_desc.elems, u = -1;
-					for (e.heap_len = 0, e.heap_max = _, r = 0; r < h; r++) 0 !== s[2 * r] ? (e.heap[++e.heap_len] = u = r, e.depth[r] = 0) : s[2 * r + 1] = 0;
-					for (; e.heap_len < 2;) s[2 * (i = e.heap[++e.heap_len] = u < 2 ? ++u : 0)] = 1, e.depth[i] = 0, e.opt_len--, o && (e.static_len -= a[2 * i + 1]);
-					for (t.max_code = u, r = e.heap_len >> 1; 1 <= r; r--) G(e, s, r);
-					for (i = h; r = e.heap[1], e.heap[1] = e.heap[e.heap_len--], G(e, s, 1), n = e.heap[1], e.heap[--e.heap_max] = r, e.heap[--e.heap_max] = n, s[2 * i] = s[2 * r] + s[2 * n], e.depth[i] = (e.depth[r] >= e.depth[n] ? e.depth[r] : e.depth[n]) + 1, s[2 * r + 1] = s[2 * n + 1] = i, e.heap[1] = i++, G(e, s, 1), 2 <= e.heap_len;);
-					e.heap[--e.heap_max] = e.heap[1], function(e, t) {
-						var r, n, i, s, a, o, h = t.dyn_tree, u = t.max_code, l = t.stat_desc.static_tree, f = t.stat_desc.has_stree, c = t.stat_desc.extra_bits, d = t.stat_desc.extra_base, p = t.stat_desc.max_length, m = 0;
-						for (s = 0; s <= g; s++) e.bl_count[s] = 0;
-						for (h[2 * e.heap[e.heap_max] + 1] = 0, r = e.heap_max + 1; r < _; r++) p < (s = h[2 * h[2 * (n = e.heap[r]) + 1] + 1] + 1) && (s = p, m++), h[2 * n + 1] = s, u < n || (e.bl_count[s]++, a = 0, d <= n && (a = c[n - d]), o = h[2 * n], e.opt_len += o * (s + a), f && (e.static_len += o * (l[2 * n + 1] + a)));
-						if (0 !== m) {
-							do {
-								for (s = p - 1; 0 === e.bl_count[s];) s--;
-								e.bl_count[s]--, e.bl_count[s + 1] += 2, e.bl_count[p]--, m -= 2;
-							} while (0 < m);
-							for (s = p; 0 !== s; s--) for (n = e.bl_count[s]; 0 !== n;) u < (i = e.heap[--r]) || (h[2 * i + 1] !== s && (e.opt_len += (s - h[2 * i + 1]) * h[2 * i], h[2 * i + 1] = s), n--);
-						}
-					}(e, t), Z(s, u, e.bl_count);
-				}
-				function X(e, t, r) {
-					var n, i, s = -1, a = t[1], o = 0, h = 7, u = 4;
-					for (0 === a && (h = 138, u = 3), t[2 * (r + 1) + 1] = 65535, n = 0; n <= r; n++) i = a, a = t[2 * (n + 1) + 1], ++o < h && i === a || (o < u ? e.bl_tree[2 * i] += o : 0 !== i ? (i !== s && e.bl_tree[2 * i]++, e.bl_tree[2 * b]++) : o <= 10 ? e.bl_tree[2 * v]++ : e.bl_tree[2 * y]++, s = i, u = (o = 0) === a ? (h = 138, 3) : i === a ? (h = 6, 3) : (h = 7, 4));
-				}
-				function V(e, t, r) {
-					var n, i, s = -1, a = t[1], o = 0, h = 7, u = 4;
-					for (0 === a && (h = 138, u = 3), n = 0; n <= r; n++) if (i = a, a = t[2 * (n + 1) + 1], !(++o < h && i === a)) {
-						if (o < u) for (; L(e, i, e.bl_tree), 0 != --o;);
-						else 0 !== i ? (i !== s && (L(e, i, e.bl_tree), o--), L(e, b, e.bl_tree), P(e, o - 3, 2)) : o <= 10 ? (L(e, v, e.bl_tree), P(e, o - 3, 3)) : (L(e, y, e.bl_tree), P(e, o - 11, 7));
-						s = i, u = (o = 0) === a ? (h = 138, 3) : i === a ? (h = 6, 3) : (h = 7, 4);
-					}
-				}
-				n(T);
-				var q = !1;
-				function J(e, t, r, n) {
-					P(e, (s << 1) + (n ? 1 : 0), 3), function(e, t, r, n) {
-						M(e), n && (U(e, r), U(e, ~r)), i.arraySet(e.pending_buf, e.window, t, r, e.pending), e.pending += r;
-					}(e, t, r, !0);
-				}
-				r._tr_init = function(e) {
-					q || (function() {
-						var e, t, r, n, i, s = new Array(g + 1);
-						for (n = r = 0; n < a - 1; n++) for (I[n] = r, e = 0; e < 1 << w[n]; e++) A[r++] = n;
-						for (A[r - 1] = n, n = i = 0; n < 16; n++) for (T[n] = i, e = 0; e < 1 << k[n]; e++) E[i++] = n;
-						for (i >>= 7; n < f; n++) for (T[n] = i << 7, e = 0; e < 1 << k[n] - 7; e++) E[256 + i++] = n;
-						for (t = 0; t <= g; t++) s[t] = 0;
-						for (e = 0; e <= 143;) z[2 * e + 1] = 8, e++, s[8]++;
-						for (; e <= 255;) z[2 * e + 1] = 9, e++, s[9]++;
-						for (; e <= 279;) z[2 * e + 1] = 7, e++, s[7]++;
-						for (; e <= 287;) z[2 * e + 1] = 8, e++, s[8]++;
-						for (Z(z, l + 1, s), e = 0; e < f; e++) C[2 * e + 1] = 5, C[2 * e] = j(e, 5);
-						O = new D(z, w, u + 1, l, g), B = new D(C, k, 0, f, g), R = new D(new Array(0), x, 0, c, p);
-					}(), q = !0), e.l_desc = new F(e.dyn_ltree, O), e.d_desc = new F(e.dyn_dtree, B), e.bl_desc = new F(e.bl_tree, R), e.bi_buf = 0, e.bi_valid = 0, W(e);
-				}, r._tr_stored_block = J, r._tr_flush_block = function(e, t, r, n) {
-					var i, s, a = 0;
-					0 < e.level ? (2 === e.strm.data_type && (e.strm.data_type = function(e) {
-						var t, r = 4093624447;
-						for (t = 0; t <= 31; t++, r >>>= 1) if (1 & r && 0 !== e.dyn_ltree[2 * t]) return o;
-						if (0 !== e.dyn_ltree[18] || 0 !== e.dyn_ltree[20] || 0 !== e.dyn_ltree[26]) return h;
-						for (t = 32; t < u; t++) if (0 !== e.dyn_ltree[2 * t]) return h;
-						return o;
-					}(e)), Y(e, e.l_desc), Y(e, e.d_desc), a = function(e) {
-						var t;
-						for (X(e, e.dyn_ltree, e.l_desc.max_code), X(e, e.dyn_dtree, e.d_desc.max_code), Y(e, e.bl_desc), t = c - 1; 3 <= t && 0 === e.bl_tree[2 * S[t] + 1]; t--);
-						return e.opt_len += 3 * (t + 1) + 5 + 5 + 4, t;
-					}(e), i = e.opt_len + 3 + 7 >>> 3, (s = e.static_len + 3 + 7 >>> 3) <= i && (i = s)) : i = s = r + 5, r + 4 <= i && -1 !== t ? J(e, t, r, n) : 4 === e.strategy || s === i ? (P(e, 2 + (n ? 1 : 0), 3), K(e, z, C)) : (P(e, 4 + (n ? 1 : 0), 3), function(e, t, r, n) {
-						var i;
-						for (P(e, t - 257, 5), P(e, r - 1, 5), P(e, n - 4, 4), i = 0; i < n; i++) P(e, e.bl_tree[2 * S[i] + 1], 3);
-						V(e, e.dyn_ltree, t - 1), V(e, e.dyn_dtree, r - 1);
-					}(e, e.l_desc.max_code + 1, e.d_desc.max_code + 1, a + 1), K(e, e.dyn_ltree, e.dyn_dtree)), W(e), n && M(e);
-				}, r._tr_tally = function(e, t, r) {
-					return e.pending_buf[e.d_buf + 2 * e.last_lit] = t >>> 8 & 255, e.pending_buf[e.d_buf + 2 * e.last_lit + 1] = 255 & t, e.pending_buf[e.l_buf + e.last_lit] = 255 & r, e.last_lit++, 0 === t ? e.dyn_ltree[2 * r]++ : (e.matches++, t--, e.dyn_ltree[2 * (A[r] + u + 1)]++, e.dyn_dtree[2 * N(t)]++), e.last_lit === e.lit_bufsize - 1;
-				}, r._tr_align = function(e) {
-					P(e, 2, 3), L(e, m, z), function(e) {
-						16 === e.bi_valid ? (U(e, e.bi_buf), e.bi_buf = 0, e.bi_valid = 0) : 8 <= e.bi_valid && (e.pending_buf[e.pending++] = 255 & e.bi_buf, e.bi_buf >>= 8, e.bi_valid -= 8);
-					}(e);
-				};
-			}, { "../utils/common": 41 }],
-			53: [function(e, t, r) {
-				"use strict";
-				t.exports = function() {
-					this.input = null, this.next_in = 0, this.avail_in = 0, this.total_in = 0, this.output = null, this.next_out = 0, this.avail_out = 0, this.total_out = 0, this.msg = "", this.state = null, this.data_type = 2, this.adler = 0;
-				};
-			}, {}],
-			54: [function(e, t, r) {
-				(function(e) {
-					(function(r, n) {
-						"use strict";
-						if (!r.setImmediate) {
-							var i, s, t, a, o = 1, h = {}, u = !1, l = r.document, e = Object.getPrototypeOf && Object.getPrototypeOf(r);
-							e = e && e.setTimeout ? e : r, i = "[object process]" === {}.toString.call(r.process) ? function(e) {
-								process.nextTick(function() {
-									c(e);
-								});
-							} : function() {
-								if (r.postMessage && !r.importScripts) {
-									var e = !0, t = r.onmessage;
-									return r.onmessage = function() {
-										e = !1;
-									}, r.postMessage("", "*"), r.onmessage = t, e;
-								}
-							}() ? (a = "setImmediate$" + Math.random() + "$", r.addEventListener ? r.addEventListener("message", d, !1) : r.attachEvent("onmessage", d), function(e) {
-								r.postMessage(a + e, "*");
-							}) : r.MessageChannel ? ((t = new MessageChannel()).port1.onmessage = function(e) {
-								c(e.data);
-							}, function(e) {
-								t.port2.postMessage(e);
-							}) : l && "onreadystatechange" in l.createElement("script") ? (s = l.documentElement, function(e) {
-								var t = l.createElement("script");
-								t.onreadystatechange = function() {
-									c(e), t.onreadystatechange = null, s.removeChild(t), t = null;
-								}, s.appendChild(t);
-							}) : function(e) {
-								setTimeout(c, 0, e);
-							}, e.setImmediate = function(e) {
-								"function" != typeof e && (e = new Function("" + e));
-								for (var t = new Array(arguments.length - 1), r = 0; r < t.length; r++) t[r] = arguments[r + 1];
-								return h[o] = {
-									callback: e,
-									args: t
-								}, i(o), o++;
-							}, e.clearImmediate = f;
-						}
-						function f(e) {
-							delete h[e];
-						}
-						function c(e) {
-							if (u) setTimeout(c, 0, e);
-							else {
-								var t = h[e];
-								if (t) {
-									u = !0;
-									try {
-										(function(e) {
-											var t = e.callback, r = e.args;
-											switch (r.length) {
-												case 0:
-													t();
-													break;
-												case 1:
-													t(r[0]);
-													break;
-												case 2:
-													t(r[0], r[1]);
-													break;
-												case 3:
-													t(r[0], r[1], r[2]);
-													break;
-												default: t.apply(n, r);
-											}
-										})(t);
-									} finally {
-										f(e), u = !1;
-									}
-								}
-							}
-						}
-						function d(e) {
-							e.source === r && "string" == typeof e.data && 0 === e.data.indexOf(a) && c(+e.data.slice(a.length));
-						}
-					})("undefined" == typeof self ? void 0 === e ? this : e : self);
-				}).call(this, "undefined" != typeof global ? global : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
-			}, {}]
-		}, {}, [10])(10);
-	});
-})))(), 1);
 var DEFAULT_CUSTOMER_CATEGORIES = [
 	"Stammkunde",
 	"Projektkunde",
@@ -63628,7 +62758,18 @@ function createDefaultCompany() {
 			selectedCalendarUrl: "",
 			selectedCalendarName: "",
 			autoSyncTimeEntries: false
-		}
+		},
+		githubUpdateRepo: "",
+		autoCheckUpdates: false,
+		geoExitConfirmMode: "ask",
+		breakAssistantEnabled: true,
+		breakTriggerHours: 6,
+		breakDefaultMinutes: 30,
+		overnightReminderHour: 20,
+		appLockEnabled: false,
+		appLockBiometric: true,
+		appLockPinHash: "",
+		appLockTimeoutMinutes: 1
 	};
 }
 function createEmptyDatabase() {
@@ -64112,7 +63253,7 @@ function normalizeDatabase(raw) {
 	};
 }
 // src/utils/exportBackup.ts
-function csvCell(value) {
+function csvCell$1(value) {
 	return `"${(value === null || value === void 0 ? "" : String(value)).replace(/"/g, "\"\"")}"`;
 }
 function timeEntriesToCsv(entries, customers, products) {
@@ -64141,22 +63282,22 @@ function timeEntriesToCsv(entries, customers, products) {
 		const net = isInternal ? 0 : hours * e.hourlyRateNet;
 		const locStr = e.location?.address ? e.location.address : e.location ? `${e.location.lat.toFixed(5)}, ${e.location.lng.toFixed(5)}` : "";
 		return [
-			csvCell(formatDateTimeDE(e.startTime)),
-			csvCell(formatDateTimeDE(e.endTime)),
-			csvCell(formatNumber(hours, 2)),
-			csvCell(cust),
-			csvCell(prod),
-			csvCell(e.title),
-			csvCell(e.notes),
-			csvCell(locStr),
-			csvCell(e.source),
-			csvCell(!isInternal && e.billable ? "Ja" : "Nein"),
-			csvCell(isInternal ? "Intern" : e.billedInvoiceId ? "Abgerechnet" : "Offen"),
-			csvCell(formatNumber(isInternal ? 0 : e.hourlyRateNet, 2)),
-			csvCell(formatNumber(!isInternal && e.billable ? net : 0, 2))
+			csvCell$1(formatDateTimeDE(e.startTime)),
+			csvCell$1(formatDateTimeDE(e.endTime)),
+			csvCell$1(formatNumber(hours, 2)),
+			csvCell$1(cust),
+			csvCell$1(prod),
+			csvCell$1(e.title),
+			csvCell$1(e.notes),
+			csvCell$1(locStr),
+			csvCell$1(e.source),
+			csvCell$1(!isInternal && e.billable ? "Ja" : "Nein"),
+			csvCell$1(isInternal ? "Intern" : e.billedInvoiceId ? "Abgerechnet" : "Offen"),
+			csvCell$1(formatNumber(isInternal ? 0 : e.hourlyRateNet, 2)),
+			csvCell$1(formatNumber(!isInternal && e.billable ? net : 0, 2))
 		].join(";");
 	});
-	return `\uFEFF${headers.map(csvCell).join(";")}\r\n${rows.join("\r\n")}`;
+	return `\uFEFF${headers.map(csvCell$1).join(";")}\r\n${rows.join("\r\n")}`;
 }
 function invoicesToCsv(invoices) {
 	const headers = [
@@ -64177,23 +63318,23 @@ function invoicesToCsv(invoices) {
 		"Nextcloud-PDF gesichert"
 	];
 	const rows = [...invoices].sort((a, b) => b.issueDate.localeCompare(a.issueDate)).map((inv) => [
-		csvCell(inv.documentType === "quote" ? "Angebot" : "Rechnung"),
-		csvCell(inv.invoiceNumber),
-		csvCell(formatDateDE(inv.issueDate)),
-		csvCell(formatDateDE(inv.servicePeriodStart)),
-		csvCell(formatDateDE(inv.servicePeriodEnd)),
-		csvCell(formatDateDE(inv.quoteValidUntil || inv.dueDate)),
-		csvCell(inv.customerSnapshot.companyName),
-		csvCell(inv.status),
-		csvCell(inv.isSmallBusiness ? "Ja" : "Nein"),
-		csvCell(formatNumber(inv.discountNetAmount ?? 0, 2)),
-		csvCell(formatNumber(inv.netTotal, 2)),
-		csvCell(formatNumber(inv.isSmallBusiness ? 0 : inv.taxTotal, 2)),
-		csvCell(formatNumber(inv.isSmallBusiness ? inv.netTotal : inv.grossTotal, 2)),
-		csvCell(inv.isArchived ? "Ja" : "Nein"),
-		csvCell(inv.nextcloudUploadedAt ? formatDateTimeDE(inv.nextcloudUploadedAt) : "Nein")
+		csvCell$1(inv.documentType === "quote" ? "Angebot" : "Rechnung"),
+		csvCell$1(inv.invoiceNumber),
+		csvCell$1(formatDateDE(inv.issueDate)),
+		csvCell$1(formatDateDE(inv.servicePeriodStart)),
+		csvCell$1(formatDateDE(inv.servicePeriodEnd)),
+		csvCell$1(formatDateDE(inv.quoteValidUntil || inv.dueDate)),
+		csvCell$1(inv.customerSnapshot.companyName),
+		csvCell$1(inv.status),
+		csvCell$1(inv.isSmallBusiness ? "Ja" : "Nein"),
+		csvCell$1(formatNumber(inv.discountNetAmount ?? 0, 2)),
+		csvCell$1(formatNumber(inv.netTotal, 2)),
+		csvCell$1(formatNumber(inv.isSmallBusiness ? 0 : inv.taxTotal, 2)),
+		csvCell$1(formatNumber(inv.isSmallBusiness ? inv.netTotal : inv.grossTotal, 2)),
+		csvCell$1(inv.isArchived ? "Ja" : "Nein"),
+		csvCell$1(inv.nextcloudUploadedAt ? formatDateTimeDE(inv.nextcloudUploadedAt) : "Nein")
 	].join(";"));
-	return `\uFEFF${headers.map(csvCell).join(";")}\r\n${rows.join("\r\n")}`;
+	return `\uFEFF${headers.map(csvCell$1).join(";")}\r\n${rows.join("\r\n")}`;
 }
 function buildExcelWorkbookBase64(db) {
 	const wb = utils.book_new();
@@ -64479,9 +63620,2276 @@ async function downloadInvoicesZip(invoices, company, options = {}) {
 	const base64 = await buildInvoicesZipBase64(invoices, company, options);
 	await downloadOrShareBinaryFile(`TaktWerk-Rechnungen-${toInputDate()}.zip`, base64, "application/zip");
 }
+// src/utils/taxExport.ts
+function round2(n) {
+	return Math.round((Number.isFinite(n) ? n : 0) * 100) / 100;
+}
+function isDateInPeriod(isoDate, year, period) {
+	if (!isoDate || isoDate.length < 7) return false;
+	const y = parseInt(isoDate.slice(0, 4), 10);
+	const m = parseInt(isoDate.slice(5, 7), 10);
+	if (y !== year || Number.isNaN(m)) return false;
+	if (period === "year") return true;
+	if (period === "Q1") return m >= 1 && m <= 3;
+	if (period === "Q2") return m >= 4 && m <= 6;
+	if (period === "Q3") return m >= 7 && m <= 9;
+	return m >= 10 && m <= 12;
+}
+function calculateTaxPeriodSummary(db, year, period, basis = "ist") {
+	const isSmallBizCo = Boolean(db.company.smallBusinessMode);
+	const periodLabel = period === "year" ? `Gesamtjahr ${year}` : `${period} / ${year}`;
+	const invoicesIncluded = db.invoices.filter((inv) => {
+		if (inv.documentType === "quote") return false;
+		if (inv.status === "Storniert") return false;
+		if (basis === "ist") {
+			if (inv.status !== "Bezahlt") return false;
+		} else if (inv.status === "Entwurf") return false;
+		return isDateInPeriod(inv.issueDate, year, period);
+	});
+	const expensesIncluded = (db.expenses ?? []).filter((exp) => isDateInPeriod(exp.date, year, period));
+	let revenueNet19 = 0;
+	let revenueVat19 = 0;
+	let revenueNet7 = 0;
+	let revenueVat7 = 0;
+	let revenueNet0 = 0;
+	for (const inv of invoicesIncluded) {
+		if (inv.isSmallBusiness ?? isSmallBizCo) {
+			revenueNet0 += inv.netTotal;
+			continue;
+		}
+		const subtotalBefore = inv.lineItems.reduce((acc, i) => acc + i.netTotal, 0);
+		const factor = subtotalBefore > 0 ? inv.netTotal / subtotalBefore : 1;
+		let inv19 = 0;
+		let inv7 = 0;
+		let inv0 = 0;
+		for (const li of inv.lineItems) {
+			const effNet = li.netTotal * factor;
+			if (li.taxRate === 19) inv19 += effNet;
+			else if (li.taxRate === 7) inv7 += effNet;
+			else inv0 += effNet;
+		}
+		const r19 = round2(inv19);
+		const r7 = round2(inv7);
+		const r0 = round2(inv0);
+		revenueNet19 += r19;
+		revenueVat19 += round2(r19 * .19);
+		revenueNet7 += r7;
+		revenueVat7 += round2(r7 * .07);
+		revenueNet0 += r0;
+	}
+	revenueNet19 = round2(revenueNet19);
+	revenueVat19 = round2(revenueVat19);
+	revenueNet7 = round2(revenueNet7);
+	revenueVat7 = round2(revenueVat7);
+	revenueNet0 = round2(revenueNet0);
+	const revenueNetTotal = round2(revenueNet19 + revenueNet7 + revenueNet0);
+	const revenueVatTotal = round2(revenueVat19 + revenueVat7);
+	const revenueGrossTotal = round2(revenueNetTotal + revenueVatTotal);
+	let expenseNet19 = 0;
+	let expenseInputVat19 = 0;
+	let expenseNet7 = 0;
+	let expenseInputVat7 = 0;
+	let expenseNet0 = 0;
+	const catMap = /* @__PURE__ */ new Map();
+	for (const exp of expensesIncluded) {
+		const net = round2(exp.netAmount);
+		const gross = round2(exp.grossAmount);
+		const vat = round2(Math.max(0, gross - net));
+		if (exp.taxRate === 19) {
+			expenseNet19 += net;
+			expenseInputVat19 += vat;
+		} else if (exp.taxRate === 7) {
+			expenseNet7 += net;
+			expenseInputVat7 += vat;
+		} else expenseNet0 += net;
+		const cat = exp.category?.trim() || "Sonstiges";
+		const cur = catMap.get(cat) ?? {
+			category: cat,
+			net: 0,
+			gross: 0,
+			count: 0
+		};
+		cur.net = round2(cur.net + net);
+		cur.gross = round2(cur.gross + gross);
+		cur.count += 1;
+		catMap.set(cat, cur);
+	}
+	expenseNet19 = round2(expenseNet19);
+	expenseInputVat19 = round2(expenseInputVat19);
+	expenseNet7 = round2(expenseNet7);
+	expenseInputVat7 = round2(expenseInputVat7);
+	expenseNet0 = round2(expenseNet0);
+	const expenseNetTotal = round2(expenseNet19 + expenseNet7 + expenseNet0);
+	const expenseInputVatTotal = isSmallBizCo ? 0 : round2(expenseInputVat19 + expenseInputVat7);
+	const expenseGrossTotal = round2(expenseNetTotal + expenseInputVat19 + expenseInputVat7);
+	const euerProfit = isSmallBizCo ? round2(revenueGrossTotal - expenseGrossTotal) : round2(revenueNetTotal - expenseNetTotal);
+	const vatPayable = isSmallBizCo ? 0 : round2(revenueVatTotal - expenseInputVatTotal);
+	const expenseByCategory = Array.from(catMap.values()).sort((a, b) => b.net - a.net);
+	return {
+		year,
+		period,
+		periodLabel,
+		basis,
+		isSmallBusinessCompany: isSmallBizCo,
+		invoicesIncluded,
+		expensesIncluded,
+		revenueNet19,
+		revenueVat19,
+		revenueNet7,
+		revenueVat7,
+		revenueNet0,
+		revenueNetTotal,
+		revenueVatTotal,
+		revenueGrossTotal,
+		expenseNet19,
+		expenseInputVat19,
+		expenseNet7,
+		expenseInputVat7,
+		expenseNet0,
+		expenseNetTotal,
+		expenseInputVatTotal,
+		expenseGrossTotal,
+		euerProfit,
+		vatPayable,
+		expenseByCategory
+	};
+}
+function mapExpenseCategoryToSkr03(category) {
+	const c = category.toLowerCase();
+	if (c.includes("miete") || c.includes("raum")) return "4210";
+	if (c.includes("fahrt") || c.includes("kraftstoff") || c.includes("kfz")) return "4530";
+	if (c.includes("hardware") || c.includes("material")) return "3400";
+	if (c.includes("software") || c.includes("lizenz") || c.includes("cloud")) return "4964";
+	if (c.includes("büro") || c.includes("porto")) return "4930";
+	if (c.includes("reise") || c.includes("verpflegung")) return "4660";
+	if (c.includes("strom") || c.includes("energie")) return "4240";
+	if (c.includes("versicherung")) return "4360";
+	if (c.includes("telefon") || c.includes("internet")) return "4920";
+	if (c.includes("werbung") || c.includes("marketing")) return "4600";
+	if (c.includes("fremdleistung")) return "3100";
+	return "4980";
+}
+function csvCell(v) {
+	return `"${String(v).replace(/"/g, "\"\"")}"`;
+}
+function toDatevDayMonth(isoDate) {
+	if (!isoDate || isoDate.length < 10) return "";
+	return `${isoDate.slice(8, 10)}${isoDate.slice(5, 7)}`;
+}
+function buildDatevCsv(summary) {
+	const headers = [
+		"Umsatz (ohne Soll/Haben-Kz)",
+		"Soll/Haben-Kennzeichen",
+		"WKZ Umsatz",
+		"Konto",
+		"Gegenkonto (ohne BU-Schlüssel)",
+		"BU-Schlüssel",
+		"Belegdatum",
+		"Belegfeld 1",
+		"Buchungstext",
+		"Steuersatz (%)",
+		"Nettobetrag (EUR)",
+		"USt/VSt (EUR)",
+		"Datum (ISO)",
+		"Typ"
+	];
+	const rows = [];
+	for (const inv of summary.invoicesIncluded) {
+		const smallBiz = inv.isSmallBusiness ?? summary.isSmallBusinessCompany;
+		const gross = smallBiz ? inv.netTotal : inv.grossTotal;
+		const vat = smallBiz ? 0 : inv.taxTotal;
+		const dominantRate = smallBiz ? 0 : inv.lineItems.find((l) => l.taxRate === 19) ? 19 : inv.lineItems.find((l) => l.taxRate === 7) ? 7 : 0;
+		const konto = smallBiz ? "8195" : dominantRate === 19 ? "8400" : dominantRate === 7 ? "8300" : "8120";
+		const buKey = smallBiz ? "" : dominantRate === 19 ? "3" : dominantRate === 7 ? "2" : "";
+		rows.push([
+			formatNumber(gross, 2),
+			"H",
+			"EUR",
+			"1200",
+			konto,
+			buKey,
+			toDatevDayMonth(inv.issueDate),
+			inv.invoiceNumber,
+			`Rechnung ${inv.invoiceNumber} ${inv.customerSnapshot.companyName}`.slice(0, 60),
+			dominantRate,
+			formatNumber(inv.netTotal, 2),
+			formatNumber(vat, 2),
+			inv.issueDate,
+			"Einnahme"
+		].map(csvCell).join(";"));
+	}
+	for (const exp of summary.expensesIncluded) {
+		const vat = round2(Math.max(0, exp.grossAmount - exp.netAmount));
+		const konto = mapExpenseCategoryToSkr03(exp.category || "");
+		const buKey = summary.isSmallBusinessCompany ? "" : exp.taxRate === 19 ? "9" : exp.taxRate === 7 ? "8" : "";
+		rows.push([
+			formatNumber(exp.grossAmount, 2),
+			"S",
+			"EUR",
+			konto,
+			"1200",
+			buKey,
+			toDatevDayMonth(exp.date),
+			exp.id.slice(-10).toUpperCase(),
+			`${exp.vendor}${exp.description ? ` - ${exp.description}` : ""}`.slice(0, 60),
+			exp.taxRate,
+			formatNumber(exp.netAmount, 2),
+			formatNumber(summary.isSmallBusinessCompany ? 0 : vat, 2),
+			exp.date,
+			"Ausgabe"
+		].map(csvCell).join(";"));
+	}
+	return `\uFEFF${headers.map(csvCell).join(";")}\r\n${rows.join("\r\n")}`;
+}
+function buildTaxSummaryText(summary, companyName) {
+	return [
+		`TaktWerk – EÜR & UStVA Zusammenfassung`,
+		`Unternehmen: ${companyName}`,
+		`Zeitraum: ${summary.periodLabel}`,
+		`Versteuerungsart: ${summary.basis === "ist" ? "Ist-Versteuerung (nur bezahlte Rechnungen)" : "Soll-Versteuerung (alle gesendeten & bezahlten Rechnungen)"}`,
+		`Kleinunternehmer (§ 19 UStG): ${summary.isSmallBusinessCompany ? "Ja" : "Nein"}`,
+		`Erstellt am: ${formatDateDE((/* @__PURE__ */ new Date()).toISOString())}`,
+		``,
+		`=== BETRIEBSEINNAHMEN (${summary.invoicesIncluded.length} Rechnungen) ===`,
+		`Kz. 81 – Steuerpflichtige Umsätze 19 % Netto:  ${formatCurrency(summary.revenueNet19)}  (USt: ${formatCurrency(summary.revenueVat19)})`,
+		`Kz. 86 – Steuerpflichtige Umsätze  7 % Netto:  ${formatCurrency(summary.revenueNet7)}  (USt: ${formatCurrency(summary.revenueVat7)})`,
+		`Steuerfreie / §19 Umsätze (0 %):               ${formatCurrency(summary.revenueNet0)}`,
+		`Summe Einnahmen Netto:                         ${formatCurrency(summary.revenueNetTotal)}`,
+		`Vereinnahmte Umsatzsteuer gesamt:              ${formatCurrency(summary.revenueVatTotal)}`,
+		`Summe Einnahmen Brutto:                        ${formatCurrency(summary.revenueGrossTotal)}`,
+		``,
+		`=== BETRIEBSAUSGABEN (${summary.expensesIncluded.length} Belege) ===`,
+		`Ausgaben 19 % Netto:                           ${formatCurrency(summary.expenseNet19)}  (VSt: ${formatCurrency(summary.expenseInputVat19)})`,
+		`Ausgaben  7 % Netto:                           ${formatCurrency(summary.expenseNet7)}  (VSt: ${formatCurrency(summary.expenseInputVat7)})`,
+		`Ausgaben  0 % Netto:                           ${formatCurrency(summary.expenseNet0)}`,
+		`Summe Ausgaben Netto:                          ${formatCurrency(summary.expenseNetTotal)}`,
+		`Kz. 66 – Abziehbare Vorsteuer gesamt:          ${formatCurrency(summary.expenseInputVatTotal)}`,
+		`Summe Ausgaben Brutto:                         ${formatCurrency(summary.expenseGrossTotal)}`,
+		``,
+		`=== ERGEBNIS ===`,
+		`EÜR-Überschuss (Gewinn/Verlust):               ${formatCurrency(summary.euerProfit)}`,
+		`Kz. 83 – USt-Zahllast (+Zahlen / -Erstattung): ${formatCurrency(summary.vatPayable)}`,
+		``,
+		`Hinweis: Diese Auswertung dient als vorbereitende Buchführungshilfe und ersetzt keine individuelle Steuerberatung.`
+	].join("\r\n");
+}
+async function downloadDatevCsv(summary) {
+	const csv = buildDatevCsv(summary);
+	await downloadOrShareTextFile(`TaktWerk-DATEV-Buchungen-${`${summary.year}-${summary.period}`}.csv`, csv, "text/csv");
+}
+async function downloadTaxAdvisorZip(db, summary) {
+	const slug = `${summary.year}-${summary.period}`;
+	await trackActivity("Steuerberater-Paket (ZIP) wird erstellt…", async (update) => {
+		const zip = new import_jszip_min.default();
+		zip.file(`DATEV-Buchungsstapel-${slug}.csv`, buildDatevCsv(summary));
+		zip.file(`EUER-UStVA-Bericht-${slug}.txt`, buildTaxSummaryText(summary, db.company.companyName || "TaktWerk"));
+		const invFolder = zip.folder("Rechnungen") || zip;
+		const expFolder = zip.folder("Belege") || zip;
+		const { getInvoicePdfBase64 } = await __vitePreload(async () => {
+			const { getInvoicePdfBase64 } = await Promise.resolve().then(() => pdfInvoice_exports);
+			return { getInvoicePdfBase64 };
+		}, void 0);
+		const totalSteps = summary.invoicesIncluded.length + summary.expensesIncluded.length + 1;
+		let done = 0;
+		for (const inv of summary.invoicesIncluded) {
+			done++;
+			update(Math.min(88, Math.round(done / totalSteps * 85)), `PDF ${inv.invoiceNumber}`);
+			try {
+				const pdfB64 = await getInvoicePdfBase64(inv, db.company);
+				invFolder.file(`${inv.invoiceNumber}.pdf`, pdfB64, { base64: true });
+			} catch {}
+		}
+		for (const exp of summary.expensesIncluded) {
+			done++;
+			update(Math.min(92, Math.round(done / totalSteps * 85)), `Beleg ${exp.vendor}`);
+			if (!exp.receiptImageDataUrl) continue;
+			const m = exp.receiptImageDataUrl.match(/^data:([^;]+);base64,(.+)$/);
+			if (!m) continue;
+			const mime = m[1].toLowerCase();
+			const ext = mime.includes("pdf") ? "pdf" : mime.includes("png") ? "png" : "jpg";
+			const safeVendor = exp.vendor.replace(/[^a-zA-Z0-9_-]+/g, "_").slice(0, 24);
+			expFolder.file(`${exp.date}_${safeVendor}_${exp.id.slice(-5)}.${ext}`, m[2], { base64: true });
+		}
+		update(95, "ZIP-Archiv wird komprimiert…");
+		const base64 = await zip.generateAsync({
+			type: "base64",
+			compression: "DEFLATE",
+			compressionOptions: { level: 6 }
+		});
+		update(100, "Fertig");
+		await downloadOrShareBinaryFile(`TaktWerk-Steuerberater-${slug}.zip`, base64, "application/zip");
+	}, 5, summary.periodLabel);
+}
+// src/components/ThemedSelect.tsx
+function ThemedSelect({ value, onChange, options, placeholder = "Bitte wählen...", disabled = false, className = "", size = "md", ariaLabel }) {
+	const [open, setOpen] = (0, import_react.useState)(false);
+	const rootRef = (0, import_react.useRef)(null);
+	const listId = (0, import_react.useId)();
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		const handlePointerDown = (e) => {
+			if (rootRef.current && !rootRef.current.contains(e.target)) setOpen(false);
+		};
+		const handleKeyDown = (e) => {
+			if (e.key === "Escape") setOpen(false);
+		};
+		document.addEventListener("mousedown", handlePointerDown);
+		document.addEventListener("touchstart", handlePointerDown);
+		document.addEventListener("keydown", handleKeyDown);
+		return () => {
+			document.removeEventListener("mousedown", handlePointerDown);
+			document.removeEventListener("touchstart", handlePointerDown);
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [open]);
+	const selected = (0, import_react.useMemo)(() => options.find((opt) => opt.value === value), [options, value]);
+	const paddingClass = size === "sm" ? "px-2.5 py-1.5 text-xs" : "px-3 py-2 text-sm";
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		ref: rootRef,
+		className: `relative ${className}`,
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+			type: "button",
+			disabled,
+			"aria-haspopup": "listbox",
+			"aria-expanded": open,
+			"aria-controls": listId,
+			"aria-label": ariaLabel,
+			onClick: () => !disabled && setOpen((prev) => !prev),
+			className: `flex w-full items-center justify-between gap-2 rounded-lg border bg-white text-left transition-colors focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-[#211936] cursor-pointer ${paddingClass} ${open ? "ui-accent-ring border-violet-500 ring-2 dark:border-violet-400" : "border-slate-300 text-slate-900 hover:border-slate-400 dark:border-[#3b2d5e] dark:text-slate-100 dark:hover:border-violet-500/70"}`,
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+				className: `truncate ${selected ? "font-medium text-slate-900 dark:text-slate-100" : "text-slate-400 dark:text-slate-500"}`,
+				children: selected ? selected.label : placeholder
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: `h-4 w-4 shrink-0 text-slate-400 transition-transform dark:text-violet-300/70 ${open ? "rotate-180" : ""}` })]
+		}), open && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+			id: listId,
+			role: "listbox",
+			className: "absolute left-0 right-0 z-50 mt-1.5 max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white/95 p-1 shadow-xl backdrop-blur-md dark:border-[#3b2d5e] dark:bg-[#1e1730]/95",
+			children: options.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+				className: "px-3 py-2 text-xs text-slate-500 dark:text-slate-400",
+				children: "Keine Einträge verfügbar"
+			}) : options.map((opt) => {
+				const isSelected = opt.value === value;
+				return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+					role: "option",
+					"aria-selected": isSelected,
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => {
+							onChange(opt.value);
+							setOpen(false);
+						},
+						className: `flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors cursor-pointer ${isSelected ? "ui-accent-selected font-semibold" : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045]"}`,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "min-w-0 flex-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "block truncate",
+								children: opt.label
+							}), opt.hint && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "block truncate text-[11px] opacity-70",
+								children: opt.hint
+							})]
+						}), isSelected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3.5 w-3.5 shrink-0" })]
+					})
+				}, opt.value);
+			})
+		})]
+	});
+}
+function CategoryPicker({ value, onChange, categories, placeholder = "Kategorie wählen oder eingeben..." }) {
+	const [open, setOpen] = (0, import_react.useState)(false);
+	const [customDraft, setCustomDraft] = (0, import_react.useState)("");
+	const rootRef = (0, import_react.useRef)(null);
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		const handlePointerDown = (e) => {
+			if (rootRef.current && !rootRef.current.contains(e.target)) setOpen(false);
+		};
+		const handleKeyDown = (e) => {
+			if (e.key === "Escape") setOpen(false);
+		};
+		document.addEventListener("mousedown", handlePointerDown);
+		document.addEventListener("touchstart", handlePointerDown);
+		document.addEventListener("keydown", handleKeyDown);
+		return () => {
+			document.removeEventListener("mousedown", handlePointerDown);
+			document.removeEventListener("touchstart", handlePointerDown);
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [open]);
+	const applyCustom = () => {
+		const trimmed = customDraft.trim();
+		if (!trimmed) return;
+		onChange(trimmed);
+		setCustomDraft("");
+		setOpen(false);
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		ref: rootRef,
+		className: "relative",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: `flex items-center gap-1 rounded-lg border bg-white px-3 py-1.5 transition-colors dark:bg-[#211936] ${open ? "ui-accent-ring border-violet-500 ring-2 dark:border-violet-400" : "border-slate-300 hover:border-slate-400 dark:border-[#3b2d5e] dark:hover:border-violet-500/70"}`,
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tag, { className: "h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-violet-300/70" }),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+					type: "text",
+					value,
+					onFocus: () => setOpen(true),
+					onChange: (e) => onChange(e.target.value),
+					placeholder,
+					className: "min-w-0 flex-1 bg-transparent py-0.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
+				}),
+				value && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					type: "button",
+					onClick: () => onChange(""),
+					"aria-label": "Kategorie leeren",
+					className: "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-200 cursor-pointer",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3.5 w-3.5" })
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					type: "button",
+					onClick: () => setOpen((prev) => !prev),
+					"aria-label": "Kategorieliste öffnen",
+					"aria-expanded": open,
+					className: "inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 dark:text-violet-300/80 dark:hover:bg-[#2a2045] cursor-pointer",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: `h-4 w-4 transition-transform ${open ? "rotate-180" : ""}` })
+				})
+			]
+		}), open && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "absolute left-0 right-0 z-50 mt-1.5 rounded-xl border border-slate-200 bg-white/95 p-1.5 shadow-xl backdrop-blur-md dark:border-[#3b2d5e] dark:bg-[#1e1730]/95",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "max-h-48 overflow-y-auto space-y-0.5",
+				children: [categories.map((cat) => {
+					const isSelected = value.trim() === cat;
+					return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => {
+							onChange(cat);
+							setOpen(false);
+						},
+						className: `flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-xs transition-colors cursor-pointer ${isSelected ? "ui-accent-selected font-semibold" : "text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045]"}`,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "truncate",
+							children: cat
+						}), isSelected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3.5 w-3.5 shrink-0" })]
+					}, cat);
+				}), categories.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "px-3 py-2 text-xs text-slate-500 dark:text-slate-400",
+					children: "Noch keine Kategorien hinterlegt"
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "mt-1.5 flex items-center gap-1.5 border-t border-slate-200 pt-1.5 dark:border-[#3b2d5e]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+					type: "text",
+					value: customDraft,
+					onChange: (e) => setCustomDraft(e.target.value),
+					onKeyDown: (e) => {
+						if (e.key === "Enter") {
+							e.preventDefault();
+							applyCustom();
+						}
+					},
+					placeholder: "Neue Kategorie...",
+					className: "min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs text-slate-900 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					type: "button",
+					onClick: applyCustom,
+					className: "inline-flex items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer shrink-0",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Übernehmen"]
+				})]
+			})]
+		})]
+	});
+}
+// src/components/TaxAdvisorPanel.tsx
+var TaxAdvisorPanel = ({ db, onNotify }) => {
+	const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
+	const availableYears = (0, import_react.useMemo)(() => {
+		const years = /* @__PURE__ */ new Set([currentYear, currentYear - 1]);
+		for (const inv of db.invoices) {
+			const y = parseInt(inv.issueDate?.slice(0, 4) || "", 10);
+			if (!Number.isNaN(y) && y >= 2015 && y <= 2100) years.add(y);
+		}
+		for (const exp of db.expenses ?? []) {
+			const y = parseInt(exp.date?.slice(0, 4) || "", 10);
+			if (!Number.isNaN(y) && y >= 2015 && y <= 2100) years.add(y);
+		}
+		return Array.from(years).sort((a, b) => b - a);
+	}, [
+		currentYear,
+		db.expenses,
+		db.invoices
+	]);
+	const [selectedYear, setSelectedYear] = (0, import_react.useState)(currentYear);
+	const [selectedPeriod, setSelectedPeriod] = (0, import_react.useState)("year");
+	const [basis, setBasis] = (0, import_react.useState)("ist");
+	const [exportingZip, setExportingZip] = (0, import_react.useState)(false);
+	const summary = (0, import_react.useMemo)(() => calculateTaxPeriodSummary(db, selectedYear, selectedPeriod, basis), [
+		basis,
+		db,
+		selectedPeriod,
+		selectedYear
+	]);
+	const maxCatAmount = (0, import_react.useMemo)(() => Math.max(...summary.expenseByCategory.map((c) => c.net), 1), [summary.expenseByCategory]);
+	const handleDownloadCsv = async () => {
+		try {
+			await downloadDatevCsv(summary);
+			onNotify?.(`DATEV-CSV für ${summary.periodLabel} exportiert.`, "success");
+		} catch (err) {
+			onNotify?.(err instanceof Error ? err.message : "DATEV-CSV Export fehlgeschlagen.", "error");
+		}
+	};
+	const handleDownloadZip = async () => {
+		if (exportingZip) return;
+		setExportingZip(true);
+		try {
+			await downloadTaxAdvisorZip(db, summary);
+			onNotify?.(`Steuerberater-Paket (${summary.invoicesIncluded.length} Rechnungen, ${summary.expensesIncluded.length} Belege) erstellt.`, "success");
+		} catch (err) {
+			onNotify?.(err instanceof Error ? err.message : "Steuerberater-Paket konnte nicht erstellt werden.", "error");
+		} finally {
+			setExportingZip(false);
+		}
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-5",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "rounded-2xl border border-slate-200 bg-white p-4 shadow-xs dark:border-[#2a2045] dark:bg-[#171126]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-2",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Calculator, { className: "h-5 w-5 text-violet-600 dark:text-violet-400" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-base font-bold text-slate-900 dark:text-slate-100",
+								children: "EÜR, UStVA & Steuerberater-Export"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								title: "EÜR, UStVA & DATEV-Export",
+								text: "Berechnet Betriebseinnahmen, Betriebsausgaben, EÜR-Überschuss und UStVA-Kennzahlen (Elster Kz. 81, 86, 66, 83) für ein Jahr oder Quartal. Über den ZIP-Export erhältst du alle Rechnungs-PDFs, Belegfotos, den EÜR-Bericht und die DATEV-Buchungs-CSV (SKR03) in einem Paket."
+							})
+						]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-wrap items-center gap-2",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "w-28",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+									size: "sm",
+									ariaLabel: "Steuerjahr wählen",
+									value: String(selectedYear),
+									onChange: (v) => setSelectedYear(Number(v)),
+									options: availableYears.map((y) => ({
+										value: String(y),
+										label: String(y)
+									}))
+								})
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "w-36",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+									size: "sm",
+									ariaLabel: "Zeitraum wählen",
+									value: selectedPeriod,
+									onChange: (v) => setSelectedPeriod(v),
+									options: [
+										{
+											value: "year",
+											label: "Gesamtjahr"
+										},
+										{
+											value: "Q1",
+											label: "Q1 (Jan – Mär)"
+										},
+										{
+											value: "Q2",
+											label: "Q2 (Apr – Jun)"
+										},
+										{
+											value: "Q3",
+											label: "Q3 (Jul – Sep)"
+										},
+										{
+											value: "Q4",
+											label: "Q4 (Okt – Dez)"
+										}
+									]
+								})
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "inline-flex rounded-lg border border-slate-200 bg-slate-50 p-0.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setBasis("ist"),
+									className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${basis === "ist" ? "ui-accent-active text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+									children: "Ist (Bezahlt)"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setBasis("soll"),
+									className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${basis === "soll" ? "ui-accent-active text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+									children: "Soll (Gestellt)"
+								})]
+							})
+						]
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mt-4 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3 dark:border-[#2a2045]",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => void handleDownloadZip(),
+							disabled: exportingZip,
+							className: "inline-flex items-center gap-2 rounded-xl ui-accent-btn px-3.5 py-2 text-xs font-semibold text-white shadow-xs disabled:opacity-60 cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Archive, { className: "h-4 w-4" }), exportingZip ? "Paket wird erstellt…" : "Steuerberater-Paket (ZIP)"]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => void handleDownloadCsv(),
+							className: "inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "h-4 w-4 text-emerald-600 dark:text-emerald-400" }), "DATEV-CSV (SKR03)"]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "ml-auto text-xs text-slate-500 dark:text-slate-400",
+							children: [
+								summary.invoicesIncluded.length,
+								" Rechnungen · ",
+								summary.expensesIncluded.length,
+								" Belege"
+							]
+						})
+					]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-2xl border border-slate-200 bg-white p-4 dark:border-[#2a2045] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+									"Einnahmen (",
+									summary.isSmallBusinessCompany ? "§19" : "Netto",
+									")"
+								] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TrendingUp, { className: "h-4 w-4 text-emerald-500" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-1.5 font-mono text-xl font-bold text-slate-900 tabular-nums dark:text-white",
+								children: formatCurrency(summary.isSmallBusinessCompany ? summary.revenueGrossTotal : summary.revenueNetTotal)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-1 text-[11px] text-slate-500 dark:text-slate-400",
+								children: ["Brutto: ", formatCurrency(summary.revenueGrossTotal)]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-2xl border border-slate-200 bg-white p-4 dark:border-[#2a2045] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+									"Ausgaben (",
+									summary.isSmallBusinessCompany ? "Brutto" : "Netto",
+									")"
+								] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TrendingDown, { className: "h-4 w-4 text-rose-500" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-1.5 font-mono text-xl font-bold text-slate-900 tabular-nums dark:text-white",
+								children: formatCurrency(summary.isSmallBusinessCompany ? summary.expenseGrossTotal : summary.expenseNetTotal)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-1 text-[11px] text-slate-500 dark:text-slate-400",
+								children: ["Brutto: ", formatCurrency(summary.expenseGrossTotal)]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-2xl border border-slate-200 bg-white p-4 dark:border-[#2a2045] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "EÜR-Überschuss (Gewinn)" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Calculator, { className: "h-4 w-4 text-violet-500" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: `mt-1.5 font-mono text-xl font-bold tabular-nums ${summary.euerProfit >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`,
+								children: formatCurrency(summary.euerProfit)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-1 text-[11px] text-slate-500 dark:text-slate-400",
+								children: [
+									summary.periodLabel,
+									" (",
+									basis === "ist" ? "Ist" : "Soll",
+									")"
+								]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-2xl border border-slate-200 bg-white p-4 dark:border-[#2a2045] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "UStVA Zahllast (Kz. 83)" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-4 w-4 text-amber-500" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-1.5 font-mono text-xl font-bold text-slate-900 tabular-nums dark:text-white",
+								children: summary.isSmallBusinessCompany ? "0,00 €" : formatCurrency(summary.vatPayable)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-1 text-[11px] text-slate-500 dark:text-slate-400",
+								children: summary.isSmallBusinessCompany ? "Kleinunternehmer (§ 19 UStG)" : summary.vatPayable >= 0 ? "An das Finanzamt zu zahlen" : "Vorsteuer-Erstattungsanspruch"
+							})
+						]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "grid grid-cols-1 gap-4 lg:grid-cols-2",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "rounded-2xl border border-slate-200 bg-white p-4 dark:border-[#2a2045] dark:bg-[#171126]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+						className: "font-display text-sm font-bold text-slate-900 dark:text-slate-100",
+						children: [
+							"ELSTER UStVA-Kennzahlen (",
+							summary.periodLabel,
+							")"
+						]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mt-3 divide-y divide-slate-100 text-xs dark:divide-[#2a2045]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between py-2.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "font-mono font-semibold text-violet-700 dark:text-violet-300",
+										children: "Kz. 81"
+									}),
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-slate-700 dark:text-slate-200",
+										children: "Steuerpflichtige Umsätze 19 % (Netto)"
+									})
+								] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "text-right font-mono tabular-nums",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "font-semibold text-slate-900 dark:text-slate-100",
+										children: formatCurrency(summary.revenueNet19)
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-[11px] text-slate-500 dark:text-slate-400",
+										children: ["USt: ", formatCurrency(summary.revenueVat19)]
+									})]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between py-2.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "font-mono font-semibold text-violet-700 dark:text-violet-300",
+										children: "Kz. 86"
+									}),
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-slate-700 dark:text-slate-200",
+										children: "Steuerpflichtige Umsätze 7 % (Netto)"
+									})
+								] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "text-right font-mono tabular-nums",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "font-semibold text-slate-900 dark:text-slate-100",
+										children: formatCurrency(summary.revenueNet7)
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-[11px] text-slate-500 dark:text-slate-400",
+										children: ["USt: ", formatCurrency(summary.revenueVat7)]
+									})]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between py-2.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "font-mono font-semibold text-slate-500 dark:text-slate-400",
+										children: "0 % / §19"
+									}),
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-slate-700 dark:text-slate-200",
+										children: "Steuerfreie / Kleinunternehmer-Umsätze"
+									})
+								] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "font-mono font-semibold text-slate-900 tabular-nums dark:text-slate-100",
+									children: formatCurrency(summary.revenueNet0)
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between py-2.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "font-mono font-semibold text-emerald-700 dark:text-emerald-300",
+										children: "Kz. 66"
+									}),
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-slate-700 dark:text-slate-200",
+										children: "Abziehbare Vorsteuer aus Rechnungen"
+									})
+								] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "font-mono font-semibold text-emerald-600 tabular-nums dark:text-emerald-400",
+									children: ["− ", formatCurrency(summary.expenseInputVatTotal)]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between pt-3 font-semibold",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "font-mono text-amber-700 dark:text-amber-300",
+										children: "Kz. 83"
+									}),
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-slate-900 dark:text-white",
+										children: "Verbleibende USt-Vorauszahlung"
+									})
+								] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "font-mono text-sm text-slate-900 tabular-nums dark:text-white",
+									children: formatCurrency(summary.vatPayable)
+								})]
+							})
+						]
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "rounded-2xl border border-slate-200 bg-white p-4 dark:border-[#2a2045] dark:bg-[#171126]",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+							className: "font-display text-sm font-bold text-slate-900 dark:text-slate-100",
+							children: "Betriebsausgaben nach Kategorie"
+						}),
+						summary.expenseByCategory.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-6 text-center text-xs text-slate-500 dark:text-slate-400",
+							children: "Keine Ausgaben im ausgewählten Zeitraum vorhanden."
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "mt-3 space-y-3",
+							children: summary.expenseByCategory.slice(0, 8).map((cat) => {
+								const pct = Math.max(4, Math.min(100, Math.round(cat.net / maxCatAmount * 100)));
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "space-y-1",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center justify-between gap-2 text-xs",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "truncate font-medium text-slate-800 dark:text-slate-200",
+											children: [
+												cat.category,
+												" ",
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "text-slate-400",
+													children: [
+														"(",
+														cat.count,
+														")"
+													]
+												})
+											]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "shrink-0 font-mono font-semibold text-slate-900 tabular-nums dark:text-slate-100",
+											children: formatCurrency(summary.isSmallBusinessCompany ? cat.gross : cat.net)
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+										viewBox: "0 0 100 4",
+										preserveAspectRatio: "none",
+										className: "h-1.5 w-full overflow-hidden rounded-full",
+										"aria-hidden": "true",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+											x: "0",
+											y: "0",
+											width: "100",
+											height: "4",
+											rx: "2",
+											className: "fill-slate-100 dark:fill-[#2a2045]"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+											x: "0",
+											y: "0",
+											width: pct,
+											height: "4",
+											rx: "2",
+											className: "fill-violet-500"
+										})]
+									})]
+								}, cat.category);
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mt-4 flex items-center gap-2 rounded-xl bg-slate-50 p-3 text-[11px] text-slate-600 dark:bg-[#211936] dark:text-slate-400",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5 shrink-0 text-violet-500" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Tipp: Das Steuerberater-Paket enthält alle Rechnungen als PDF, alle Belegfotos und den DATEV-Buchungsstapel (SKR03)." })]
+						})
+					]
+				})]
+			})
+		]
+	});
+};
+// src/components/AnalyticsView.tsx
+var INTERNAL_KEY = "__internal__";
+var INTERNAL_COLOR = "#d97706";
+var CHART_PALETTE = [
+	"#7c3aed",
+	"#2563eb",
+	"#059669",
+	"#d97706",
+	"#e11d48",
+	"#0891b2",
+	"#4f46e5",
+	"#65a30d"
+];
+function getLocalDateKey(iso) {
+	const d = new Date(iso);
+	if (Number.isNaN(d.getTime())) return iso.slice(0, 10);
+	return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+function formatDayShort(dateKey) {
+	const parts = dateKey.split("-");
+	if (parts.length !== 3) return dateKey;
+	return `${parts[2]}.${parts[1]}.`;
+}
+function AnalyticsView({ customers, products, timeEntries, expenses = [], recurringExpenses = [], db, onNotify }) {
+	const [activeTab, setActiveTab] = (0, import_react.useState)("charts");
+	const [range, setRange] = (0, import_react.useState)("30d");
+	const [selectedCustomerId, setSelectedCustomerId] = (0, import_react.useState)("all");
+	const [selectedProductId, setSelectedProductId] = (0, import_react.useState)("all");
+	const [hoveredDayKey, setHoveredDayKey] = (0, import_react.useState)(null);
+	const [hoveredCustomerId, setHoveredCustomerId] = (0, import_react.useState)(null);
+	const customerMap = (0, import_react.useMemo)(() => new Map(customers.map((c) => [c.id, c])), [customers]);
+	const productMap = (0, import_react.useMemo)(() => new Map(products.map((p) => [p.id, p])), [products]);
+	const customerColorMap = (0, import_react.useMemo)(() => {
+		const map = /* @__PURE__ */ new Map();
+		customers.forEach((c, idx) => {
+			map.set(c.id, CHART_PALETTE[idx % CHART_PALETTE.length]);
+		});
+		map.set(INTERNAL_KEY, INTERNAL_COLOR);
+		return map;
+	}, [customers]);
+	const productColorMap = (0, import_react.useMemo)(() => {
+		const map = /* @__PURE__ */ new Map();
+		products.forEach((p, idx) => {
+			map.set(p.id, CHART_PALETTE[(idx + 2) % CHART_PALETTE.length]);
+		});
+		return map;
+	}, [products]);
+	const filteredEntries = (0, import_react.useMemo)(() => {
+		const now = Date.now();
+		const cutoffMs = range === "7d" ? now - 6048e5 : range === "30d" ? now - 2592e6 : 0;
+		return timeEntries.filter((entry) => {
+			const isInternal = entry.entryType === "internal" || !entry.customerId;
+			if (selectedCustomerId === "internal_only") {
+				if (!isInternal) return false;
+			} else if (selectedCustomerId !== "all") {
+				if (isInternal || entry.customerId !== selectedCustomerId) return false;
+			}
+			if (selectedProductId !== "all" && entry.productId !== selectedProductId) return false;
+			if (cutoffMs > 0) {
+				const entryMs = new Date(entry.startTime).getTime();
+				if (!Number.isNaN(entryMs) && entryMs < cutoffMs) return false;
+			}
+			return true;
+		});
+	}, [
+		timeEntries,
+		range,
+		selectedCustomerId,
+		selectedProductId
+	]);
+	const kpis = (0, import_react.useMemo)(() => {
+		let totalSeconds = 0;
+		let billableSeconds = 0;
+		let internalSeconds = 0;
+		let totalRevenueNet = 0;
+		const activeCustIds = /* @__PURE__ */ new Set();
+		for (const e of filteredEntries) {
+			const isInternal = e.entryType === "internal" || !e.customerId;
+			totalSeconds += e.durationSeconds;
+			const hours = e.durationSeconds / 3600;
+			if (!isInternal && e.billable) {
+				billableSeconds += e.durationSeconds;
+				totalRevenueNet += hours * e.hourlyRateNet;
+			}
+			if (isInternal) internalSeconds += e.durationSeconds;
+			else if (e.customerId) activeCustIds.add(e.customerId);
+		}
+		const billableRatioPct = totalSeconds > 0 ? Math.round(billableSeconds / totalSeconds * 100) : 0;
+		return {
+			totalHours: totalSeconds / 3600,
+			billableHours: billableSeconds / 3600,
+			internalHours: internalSeconds / 3600,
+			billableRatioPct,
+			totalRevenueNet,
+			activeCustomers: activeCustIds.size,
+			entryCount: filteredEntries.length
+		};
+	}, [filteredEntries]);
+	const internalCategoryStats = (0, import_react.useMemo)(() => {
+		const map = /* @__PURE__ */ new Map();
+		for (const e of filteredEntries) {
+			if (!(e.entryType === "internal" || !e.customerId)) continue;
+			const cat = e.internalCategory || "Sonstige interne Arbeit";
+			const cur = map.get(cat) ?? {
+				label: cat,
+				seconds: 0,
+				count: 0
+			};
+			cur.seconds += e.durationSeconds;
+			cur.count += 1;
+			map.set(cat, cur);
+		}
+		return Array.from(map.values()).sort((a, b) => b.seconds - a.seconds);
+	}, [filteredEntries]);
+	const expenseSummary = (0, import_react.useMemo)(() => {
+		const now = Date.now();
+		const cutoffMs = range === "7d" ? now - 6048e5 : range === "30d" ? now - 2592e6 : 0;
+		const inRange = expenses.filter((exp) => {
+			if (cutoffMs === 0) return true;
+			const ms = (/* @__PURE__ */ new Date(`${exp.date}T12:00:00`)).getTime();
+			return Number.isNaN(ms) || ms >= cutoffMs;
+		});
+		return {
+			operatingNet: inRange.filter((e) => e.expenseType === "operating" || !e.customerId).reduce((acc, e) => acc + (e.netAmount || 0), 0),
+			totalExpenseNet: inRange.reduce((acc, e) => acc + (e.netAmount || 0), 0),
+			monthlyFixedNet: recurringExpenses.filter((r) => r.active).reduce((acc, r) => {
+				const factor = r.interval === "monthly" ? 1 : r.interval === "quarterly" ? 1 / 3 : 1 / 12;
+				return acc + (r.netAmount || 0) * factor;
+			}, 0),
+			count: inRange.length
+		};
+	}, [
+		expenses,
+		recurringExpenses,
+		range
+	]);
+	const handleQuickPdfExport = async () => {
+		if (!db) return;
+		const now = /* @__PURE__ */ new Date();
+		const startDate = range === "7d" ? toInputDate(/* @__PURE__ */ new Date(now.getTime() - 6048e5)) : range === "30d" ? toInputDate(/* @__PURE__ */ new Date(now.getTime() - 2592e6)) : void 0;
+		try {
+			await downloadFilteredReportPdf(db, {
+				title: "Grafischer Tätigkeits- & Auswertungsbericht",
+				startDate,
+				endDate: range === "all" ? void 0 : toInputDate(now),
+				customerId: selectedCustomerId,
+				productId: selectedProductId
+			});
+			onNotify?.("Grafische PDF-Auswertung erstellt.");
+		} catch (err) {
+			onNotify?.(err instanceof Error ? err.message : "PDF-Auswertung fehlgeschlagen.", true);
+		}
+	};
+	const customerStats = (0, import_react.useMemo)(() => {
+		const acc = /* @__PURE__ */ new Map();
+		for (const e of filteredEntries) {
+			const isInternal = e.entryType === "internal" || !e.customerId;
+			const key = isInternal ? INTERNAL_KEY : e.customerId;
+			const cust = !isInternal ? customerMap.get(e.customerId) : void 0;
+			const existing = acc.get(key) ?? {
+				customerId: key,
+				name: isInternal ? "Intern (nicht verrechenbar)" : cust?.companyName ?? "Unbekannter Kunde",
+				color: customerColorMap.get(key) ?? "#7c3aed",
+				seconds: 0,
+				revenueNet: 0,
+				entries: 0
+			};
+			existing.seconds += e.durationSeconds;
+			if (!isInternal && e.billable) existing.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
+			existing.entries += 1;
+			acc.set(key, existing);
+		}
+		return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
+	}, [
+		filteredEntries,
+		customerMap,
+		customerColorMap
+	]);
+	const productStats = (0, import_react.useMemo)(() => {
+		const acc = /* @__PURE__ */ new Map();
+		for (const e of filteredEntries) {
+			const isInternal = e.entryType === "internal" || !e.customerId;
+			const key = isInternal ? `int::${e.internalCategory || "Interne Tätigkeit"}` : e.productId;
+			const prod = !isInternal ? productMap.get(e.productId) : void 0;
+			const existing = acc.get(key) ?? {
+				productId: key,
+				name: isInternal ? `[Intern] ${e.internalCategory || "Interne Tätigkeit"}` : prod?.name ?? "Leistung",
+				color: isInternal ? INTERNAL_COLOR : productColorMap.get(e.productId) ?? "#2563eb",
+				seconds: 0,
+				revenueNet: 0,
+				entries: 0
+			};
+			existing.seconds += e.durationSeconds;
+			if (!isInternal && e.billable) existing.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
+			existing.entries += 1;
+			acc.set(key, existing);
+		}
+		return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
+	}, [
+		filteredEntries,
+		productMap,
+		productColorMap
+	]);
+	const dailySeries = (0, import_react.useMemo)(() => {
+		const dayMap = /* @__PURE__ */ new Map();
+		if (range === "7d" || range === "30d") {
+			const daysCount = range === "7d" ? 7 : 14;
+			for (let i = daysCount - 1; i >= 0; i--) {
+				const key = getLocalDateKey((/* @__PURE__ */ new Date(Date.now() - i * 86400 * 1e3)).toISOString());
+				dayMap.set(key, {
+					dateKey: key,
+					totalSeconds: 0,
+					revenueNet: 0,
+					byCustomer: /* @__PURE__ */ new Map()
+				});
+			}
+		}
+		for (const e of filteredEntries) {
+			const isInternal = e.entryType === "internal" || !e.customerId;
+			const custKey = isInternal ? INTERNAL_KEY : e.customerId;
+			const key = getLocalDateKey(e.startTime);
+			const bucket = dayMap.get(key) ?? {
+				dateKey: key,
+				totalSeconds: 0,
+				revenueNet: 0,
+				byCustomer: /* @__PURE__ */ new Map()
+			};
+			bucket.totalSeconds += e.durationSeconds;
+			if (!isInternal && e.billable) bucket.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
+			bucket.byCustomer.set(custKey, (bucket.byCustomer.get(custKey) ?? 0) + e.durationSeconds);
+			dayMap.set(key, bucket);
+		}
+		return Array.from(dayMap.values()).sort((a, b) => a.dateKey.localeCompare(b.dateKey)).slice(-16);
+	}, [filteredEntries, range]);
+	const maxDayHours = (0, import_react.useMemo)(() => {
+		const peak = dailySeries.reduce((max, d) => Math.max(max, d.totalSeconds / 3600), 0);
+		return Math.max(1, Math.ceil(peak));
+	}, [dailySeries]);
+	const matrixRows = (0, import_react.useMemo)(() => {
+		const grouped = /* @__PURE__ */ new Map();
+		for (const e of filteredEntries) {
+			const isInternal = e.entryType === "internal" || !e.customerId;
+			const custKey = isInternal ? INTERNAL_KEY : e.customerId;
+			const key = `${custKey}::${isInternal ? e.internalCategory || "Intern" : e.productId}`;
+			const cust = !isInternal ? customerMap.get(e.customerId) : void 0;
+			const prod = !isInternal ? productMap.get(e.productId) : void 0;
+			const item = grouped.get(key) ?? {
+				key,
+				customerName: isInternal ? "Intern (ohne Ertrag)" : cust?.companyName ?? "Unbekannter Kunde",
+				customerColor: customerColorMap.get(custKey) ?? "#7c3aed",
+				productName: isInternal ? e.internalCategory || "Interne Tätigkeit" : prod?.name ?? "Leistung",
+				hours: 0,
+				revenueNet: 0,
+				count: 0
+			};
+			const hrs = e.durationSeconds / 3600;
+			item.hours += hrs;
+			if (!isInternal && e.billable) item.revenueNet += hrs * e.hourlyRateNet;
+			item.count += 1;
+			grouped.set(key, item);
+		}
+		return Array.from(grouped.values()).sort((a, b) => b.hours - a.hours);
+	}, [
+		filteredEntries,
+		customerMap,
+		productMap,
+		customerColorMap
+	]);
+	const donutSegments = (0, import_react.useMemo)(() => {
+		const totalSeconds = customerStats.reduce((sum, c) => sum + c.seconds, 0);
+		if (totalSeconds <= 0) return [];
+		const circumference = 2 * Math.PI * 64;
+		let cumulative = 0;
+		return customerStats.map((c) => {
+			const fraction = c.seconds / totalSeconds;
+			const dashLength = fraction * circumference;
+			const dashOffset = -cumulative;
+			cumulative += dashLength;
+			return {
+				...c,
+				fraction,
+				dashArray: `${dashLength} ${circumference}`,
+				dashOffset
+			};
+		});
+	}, [customerStats]);
+	const activeDayDetail = (0, import_react.useMemo)(() => {
+		if (!hoveredDayKey) return null;
+		return dailySeries.find((d) => d.dateKey === hoveredDayKey) ?? null;
+	}, [hoveredDayKey, dailySeries]);
+	const maxProductSeconds = (0, import_react.useMemo)(() => productStats.reduce((m, p) => Math.max(m, p.seconds), 1), [productStats]);
+	const maxMatrixHours = (0, import_react.useMemo)(() => matrixRows.reduce((m, r) => Math.max(m, r.hours), 1), [matrixRows]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-6",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "space-y-2",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+						className: "font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100",
+						children: "Auswertung & Steuern"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+						title: "Auswertung & Steuern",
+						text: "Grafische Verteilung deiner Arbeitszeiten & Umsätze sowie EÜR-, UStVA- und DATEV-/Steuerberater-Export."
+					})]
+				}), db && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "inline-flex rounded-xl border border-slate-200 bg-slate-100/80 p-1 dark:border-[#2e2349] dark:bg-[#211936]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => setActiveTab("charts"),
+						className: `inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${activeTab === "charts" ? "ui-accent-active text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { className: "h-3.5 w-3.5" }), "Zeit & Umsatz"]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => setActiveTab("tax"),
+						className: `inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${activeTab === "tax" ? "ui-accent-active text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Calculator, { className: "h-3.5 w-3.5" }), "EÜR, UStVA & Steuerberater"]
+					})]
+				})]
+			}), activeTab === "charts" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex flex-wrap items-center gap-2",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
+						children: [
+							{
+								id: "7d",
+								label: "7 Tage"
+							},
+							{
+								id: "30d",
+								label: "30 Tage"
+							},
+							{
+								id: "all",
+								label: "Gesamt"
+							}
+						].map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setRange(item.id),
+							className: `rounded-md px-3 py-1 text-xs font-medium transition-colors cursor-pointer ${range === item.id ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+							children: item.label
+						}, item.id))
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+						size: "sm",
+						value: selectedCustomerId,
+						onChange: setSelectedCustomerId,
+						ariaLabel: "Nach Kunde filtern",
+						className: "min-w-44",
+						options: [
+							{
+								value: "all",
+								label: "Alle Kunden & Intern"
+							},
+							{
+								value: "internal_only",
+								label: "Nur interne Tätigkeiten"
+							},
+							...customers.map((c) => ({
+								value: c.id,
+								label: c.companyName
+							}))
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+						size: "sm",
+						value: selectedProductId,
+						onChange: setSelectedProductId,
+						ariaLabel: "Nach Produkt filtern",
+						className: "min-w-44",
+						options: [{
+							value: "all",
+							label: "Alle Leistungen"
+						}, ...products.map((p) => ({
+							value: p.id,
+							label: p.name
+						}))]
+					}),
+					db && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => void handleQuickPdfExport(),
+						className: "inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileDown, { className: "h-3.5 w-3.5" }), "Grafik-PDF"]
+					})
+				]
+			})]
+		}), activeTab === "tax" && db ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TaxAdvisorPanel, {
+			db,
+			onNotify: (msg, tone) => onNotify?.(msg, tone === "error")
+		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Erfasste Arbeitszeit" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums",
+								children: [formatNumber(kpis.totalHours, 2), " Std."]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+								children: [
+									formatNumber(kpis.billableHours, 1),
+									"h Projekt · ",
+									formatNumber(kpis.internalHours, 1),
+									"h Intern"
+								]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Abrechenbarer Wert (Netto)" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { className: "h-4 w-4 text-emerald-600 dark:text-emerald-400" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums",
+								children: formatCurrency(kpis.totalRevenueNet)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+								children: [
+									"Verrechenbare Quote: ",
+									kpis.billableRatioPct,
+									" %"
+								]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Aktive Kunden" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Users, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums",
+								children: kpis.activeCustomers
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+								children: [
+									"Aus ",
+									kpis.entryCount,
+									" Zeiteinträgen gesamt"
+								]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Ausgaben & Fixkosten (Netto)" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-4 w-4 text-amber-600 dark:text-amber-400" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-2 font-mono text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums",
+								children: formatCurrency(expenseSummary.totalExpenseNet)
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+								children: [
+									"Ø Fixkosten: ",
+									formatCurrency(expenseSummary.monthlyFixedNet),
+									"/Monat"
+								]
+							})
+						]
+					})
+				]
+			}),
+			(kpis.internalHours > 0 || kpis.billableHours > 0) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-wrap items-center justify-between gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-sm font-semibold text-slate-900 dark:text-slate-100",
+								children: "Verhältnis: Verrechenbare Aufträge vs. Interne Arbeiten"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Verrechenbare vs. Interne Arbeiten",
+								text: "Übersicht über ertragbringende Projektzeit und interne Aufgaben (z. B. Kundenakquise, Studio-Reinigung)."
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "font-mono text-xs font-semibold text-slate-700 dark:text-slate-200",
+							children: [
+								kpis.billableRatioPct,
+								" % Verrechenbar · ",
+								100 - kpis.billableRatioPct,
+								" % Intern / Nicht verrechenbar"
+							]
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+						viewBox: "0 0 400 14",
+						preserveAspectRatio: "none",
+						className: "mt-3 h-3.5 w-full overflow-hidden rounded-full",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+							x: "0",
+							y: "0",
+							width: "400",
+							height: "14",
+							rx: "7",
+							fill: "#d97706"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+							x: "0",
+							y: "0",
+							width: Math.round(kpis.billableRatioPct / 100 * 400),
+							height: "14",
+							rx: "7",
+							fill: "#7c3aed"
+						})]
+					}),
+					internalCategoryStats.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mt-3 flex flex-wrap gap-2",
+						children: internalCategoryStats.map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50/70 px-2.5 py-1 text-xs text-amber-900 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-200",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "font-medium",
+								children: cat.label
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "font-mono font-semibold tabular-nums",
+								children: [formatNumber(cat.seconds / 3600, 2), " Std."]
+							})]
+						}, cat.label))
+					})
+				]
+			}),
+			filteredEntries.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-xl border border-slate-200 bg-white p-12 text-center dark:border-[#2e2349] dark:bg-[#171126]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "text-sm font-medium text-slate-700 dark:text-slate-300",
+					children: "Keine Zeiteinträge im gewählten Filter vorhanden."
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-1 text-xs text-slate-500 dark:text-slate-400",
+					children: "Wähle einen größeren Zeitraum oder erfasse Arbeitszeiten über Timer bzw. NFC-Tags."
+				})]
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+					className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: "Zeitverlauf nach Tagen & Kunden"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Zeitverlauf nach Tagen & Kunden",
+								text: "Gestapelte Stunden pro Tag, farblich nach Kunde aufgeschlüsselt (Tippen/Hover für Tagesdetails)."
+							})]
+						}), activeDayDetail && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs dark:border-[#3b2d5e] dark:bg-[#211936]",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "font-semibold text-slate-800 dark:text-slate-100",
+									children: [formatDayShort(activeDayDetail.dateKey), ":"]
+								}),
+								" ",
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "font-mono font-semibold text-blue-700 dark:text-violet-300",
+									children: [formatNumber(activeDayDetail.totalSeconds / 3600, 2), " Std."]
+								}),
+								" ",
+								"·",
+								" ",
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "font-mono text-slate-600 dark:text-slate-300",
+									children: formatCurrency(activeDayDetail.revenueNet)
+								})
+							]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mt-5 overflow-x-auto",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+							viewBox: "0 0 760 220",
+							className: "h-56 w-full min-w-[540px]",
+							role: "img",
+							"aria-label": "Säulendiagramm der erfassten Arbeitsstunden nach Tagen",
+							children: [[
+								0,
+								.25,
+								.5,
+								.75,
+								1
+							].map((step) => {
+								const yPos = 180 - step * 150;
+								const labelVal = Math.round(step * maxDayHours * 10) / 10;
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("line", {
+									x1: "44",
+									y1: yPos,
+									x2: "744",
+									y2: yPos,
+									className: "stroke-slate-200 dark:stroke-[#2e2349]",
+									strokeWidth: "1"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("text", {
+									x: "38",
+									y: yPos + 4,
+									textAnchor: "end",
+									className: "fill-slate-400 dark:fill-slate-500 text-[10px] font-mono",
+									children: [labelVal, "h"]
+								})] }, step);
+							}), dailySeries.map((day, idx) => {
+								const slotWidth = 700 / Math.max(1, dailySeries.length);
+								const barWidth = Math.min(34, Math.max(14, slotWidth * .62));
+								const barX = 44 + idx * slotWidth + (slotWidth - barWidth) / 2;
+								const segments = Array.from(day.byCustomer.entries()).sort((a, b) => b[1] - a[1]);
+								let currentTopY = 180;
+								const isHovered = hoveredDayKey === day.dateKey;
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", {
+									onMouseEnter: () => setHoveredDayKey(day.dateKey),
+									onMouseLeave: () => setHoveredDayKey(null),
+									onClick: () => setHoveredDayKey((prev) => prev === day.dateKey ? null : day.dateKey),
+									className: "cursor-pointer",
+									children: [
+										isHovered && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+											x: barX - 4,
+											y: 24,
+											width: barWidth + 8,
+											height: 158,
+											rx: "6",
+											className: "fill-slate-100 dark:fill-[#211936]"
+										}),
+										segments.map(([custId, secs]) => {
+											const segHours = secs / 3600;
+											const segHeight = Math.max(2, segHours / maxDayHours * 150);
+											currentTopY -= segHeight;
+											const fill = customerColorMap.get(custId) ?? "#7c3aed";
+											return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+												x: barX,
+												y: currentTopY,
+												width: barWidth,
+												height: segHeight,
+												rx: "3",
+												fill,
+												opacity: hoveredDayKey && !isHovered ? .55 : 1
+											}, custId);
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("text", {
+											x: barX + barWidth / 2,
+											y: 198,
+											textAnchor: "middle",
+											className: "fill-slate-500 dark:fill-slate-400 text-[10px] font-mono",
+											children: formatDayShort(day.dateKey)
+										})
+									]
+								}, day.dateKey);
+							})]
+						})
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+					className: "grid grid-cols-1 gap-6 lg:grid-cols-12",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: "Arbeitszeit & Umsatz nach Kunden"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Arbeitszeit & Umsatz nach Kunden",
+								text: "Anteilige Zeitverteilung über alle aktiven Kunden."
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mt-5 flex flex-col items-center gap-6 sm:flex-row",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "relative h-44 w-44 shrink-0",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+									viewBox: "0 0 180 180",
+									className: "h-full w-full -rotate-90",
+									role: "img",
+									"aria-label": "Kreisdiagramm Arbeitszeit pro Kunde",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+										cx: "90",
+										cy: "90",
+										r: "64",
+										fill: "transparent",
+										className: "stroke-slate-100 dark:stroke-[#211936]",
+										strokeWidth: "22"
+									}), donutSegments.map((seg) => {
+										const dimmed = hoveredCustomerId !== null && hoveredCustomerId !== seg.customerId;
+										return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+											cx: "90",
+											cy: "90",
+											r: "64",
+											fill: "transparent",
+											stroke: seg.color,
+											strokeWidth: "22",
+											strokeDasharray: seg.dashArray,
+											strokeDashoffset: seg.dashOffset,
+											opacity: dimmed ? .35 : 1,
+											onMouseEnter: () => setHoveredCustomerId(seg.customerId),
+											onMouseLeave: () => setHoveredCustomerId(null),
+											className: "transition-opacity cursor-pointer"
+										}, seg.customerId);
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "font-mono text-lg font-bold text-slate-900 dark:text-slate-100 tabular-nums",
+										children: [formatNumber(kpis.totalHours, 1), "h"]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[11px] text-slate-500 dark:text-slate-400",
+										children: "Gesamt"
+									})]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "w-full flex-1 space-y-2.5",
+								children: donutSegments.map((seg) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									onMouseEnter: () => setHoveredCustomerId(seg.customerId),
+									onMouseLeave: () => setHoveredCustomerId(null),
+									className: "flex items-center justify-between gap-3 rounded-lg border border-slate-100 px-3 py-2 text-xs transition-colors hover:bg-slate-50 dark:border-[#2e2349] dark:hover:bg-[#211936]/70",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-2 min-w-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+											viewBox: "0 0 12 12",
+											className: "h-3 w-3 shrink-0",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+												cx: "6",
+												cy: "6",
+												r: "5",
+												fill: seg.color
+											})
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "truncate font-medium text-slate-800 dark:text-slate-100",
+											children: seg.name
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-right font-mono tabular-nums shrink-0",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "font-semibold text-slate-900 dark:text-slate-100",
+												children: [formatNumber(seg.seconds / 3600, 2), "h"]
+											}),
+											" ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "text-slate-400 dark:text-slate-500",
+												children: [
+													"(",
+													Math.round(seg.fraction * 100),
+													"%)"
+												]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "text-[11px] text-slate-500 dark:text-violet-300/80",
+												children: formatCurrency(seg.revenueNet)
+											})
+										]
+									})]
+								}, seg.customerId))
+							})]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] lg:col-span-6",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: "Arbeitszeit nach Produkten & Leistungen"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Arbeitszeit nach Produkten & Leistungen",
+								text: "Welche Leistungen die meiste Arbeitszeit und den höchsten Umsatz erzeugen."
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "mt-5 space-y-4",
+							children: productStats.map((prod) => {
+								const barWidth = Math.max(4, Math.round(prod.seconds / maxProductSeconds * 100)) / 100 * 240;
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "space-y-1.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-baseline justify-between gap-3 text-xs",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "truncate font-medium text-slate-800 dark:text-slate-100",
+											children: prod.name
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "font-mono tabular-nums text-slate-600 dark:text-slate-300 shrink-0",
+											children: [
+												formatNumber(prod.seconds / 3600, 2),
+												" Std. ·",
+												" ",
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+													className: "text-slate-900 dark:text-violet-300",
+													children: formatCurrency(prod.revenueNet)
+												})
+											]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+										viewBox: "0 0 240 10",
+										preserveAspectRatio: "none",
+										className: "h-2.5 w-full overflow-hidden rounded-full",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+											x: "0",
+											y: "0",
+											width: "240",
+											height: "10",
+											rx: "5",
+											className: "fill-slate-100 dark:fill-[#211936]"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+											x: "0",
+											y: "0",
+											width: barWidth,
+											height: "10",
+											rx: "5",
+											fill: prod.color
+										})]
+									})]
+								}, prod.productId);
+							})
+						})]
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+					className: "rounded-xl border border-slate-200 bg-white dark:border-[#2e2349] dark:bg-[#171126]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-2 border-b border-slate-200 px-6 py-4 dark:border-[#2e2349]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { className: "h-4 w-4 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-1.5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: "Kunde × Produkt Verknüpfung"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+								size: "sm",
+								title: "Kunde × Produkt Verknüpfung",
+								text: "Aufschlüsselung, welcher Kunde welche Leistung in welchem Umfang genutzt hat."
+							})]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "overflow-x-auto",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+							className: "w-full text-left text-sm",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								className: "border-b border-slate-200 bg-slate-50 text-xs font-medium text-slate-500 dark:border-[#2e2349] dark:bg-[#211936]/70 dark:text-violet-200/70",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-6 py-3",
+										children: "Kunde"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3",
+										children: "Produkt / Leistung"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 w-48",
+										children: "Anteil"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Buchungen"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-4 py-3 text-right",
+										children: "Stunden"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+										className: "px-6 py-3 text-right",
+										children: "Umsatz (Netto)"
+									})
+								]
+							}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
+								className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
+								children: matrixRows.map((row) => {
+									const barW = Math.max(10, Math.round(row.hours / maxMatrixHours * 160));
+									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+										className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "px-6 py-3 font-medium text-slate-900 dark:text-slate-100",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center gap-2",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+														viewBox: "0 0 10 10",
+														className: "h-2.5 w-2.5 shrink-0",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+															cx: "5",
+															cy: "5",
+															r: "4",
+															fill: row.customerColor
+														})
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: row.customerName })]
+												})
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "px-4 py-3 text-slate-700 dark:text-slate-300",
+												children: row.productName
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "px-4 py-3",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+													viewBox: "0 0 160 8",
+													preserveAspectRatio: "none",
+													className: "h-2 w-full rounded-full",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+														x: "0",
+														y: "0",
+														width: "160",
+														height: "8",
+														rx: "4",
+														className: "fill-slate-100 dark:fill-[#211936]"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+														x: "0",
+														y: "0",
+														width: barW,
+														height: "8",
+														rx: "4",
+														fill: row.customerColor
+													})]
+												})
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "px-4 py-3 text-right font-mono text-xs text-slate-600 dark:text-slate-400 tabular-nums",
+												children: row.count
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
+												className: "px-4 py-3 text-right font-mono text-sm font-medium text-slate-900 dark:text-slate-100 tabular-nums",
+												children: [formatNumber(row.hours, 2), " Std."]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+												className: "px-6 py-3 text-right font-mono text-sm font-semibold text-slate-900 dark:text-violet-300 tabular-nums",
+												children: formatCurrency(row.revenueNet)
+											})
+										]
+									}, row.key);
+								})
+							})]
+						})
+					})]
+				})
+			] })
+		] })]
+	});
+}
+// src/utils/appLock.ts
+var PIN_SALT = "taktwerk-lock-v1::";
+function fallbackHash(input) {
+	let h1 = 2166136261;
+	let h2 = 1818371886;
+	for (let i = 0; i < input.length; i++) {
+		const c = input.charCodeAt(i);
+		h1 ^= c;
+		h1 = Math.imul(h1, 16777619);
+		h2 ^= c + i;
+		h2 = Math.imul(h2, 16777619);
+	}
+	return `fb_${(h1 >>> 0).toString(16).padStart(8, "0")}${(h2 >>> 0).toString(16).padStart(8, "0")}`;
+}
+async function hashPin(pin) {
+	const payload = `${PIN_SALT}${pin.trim()}`;
+	if (typeof crypto !== "undefined" && crypto.subtle && typeof TextEncoder !== "undefined") try {
+		const data = new TextEncoder().encode(payload);
+		const digest = await crypto.subtle.digest("SHA-256", data);
+		return `sha256_${Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+	} catch {
+		return fallbackHash(payload);
+	}
+	return fallbackHash(payload);
+}
+async function verifyPin(pin, storedHash) {
+	if (!storedHash || !pin.trim()) return false;
+	const payload = `${PIN_SALT}${pin.trim()}`;
+	if (storedHash.startsWith("fb_")) return fallbackHash(payload) === storedHash;
+	return await hashPin(pin) === storedHash;
+}
 // src/utils/taktwerkNative.ts
 var taktwerkNative_exports = /* @__PURE__ */ __exportAll({ TaktWerkNative: () => TaktWerkNative });
 var TaktWerkNative = registerPlugin("TaktWerkNative");
+// src/components/AppLockScreen.tsx
+var DIGITS = [
+	"1",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9"
+];
+var AppLockScreen = ({ companyName, pinHash, biometricEnabled = true, onUnlock }) => {
+	const [enteredPin, setEnteredPin] = (0, import_react.useState)("");
+	const [errorMsg, setErrorMsg] = (0, import_react.useState)("");
+	const [verifying, setVerifying] = (0, import_react.useState)(false);
+	const [biometricAvailable, setBiometricAvailable] = (0, import_react.useState)(false);
+	const [biometricBusy, setBiometricBusy] = (0, import_react.useState)(false);
+	const autoPromptedRef = (0, import_react.useRef)(false);
+	const hasPin = Boolean(pinHash);
+	const triggerBiometric = (0, import_react.useCallback)(async () => {
+		if (!Capacitor.isNativePlatform() || biometricBusy) return;
+		setBiometricBusy(true);
+		setErrorMsg("");
+		try {
+			const res = await TaktWerkNative.authenticateBiometric({
+				title: "TaktWerk entsperren",
+				subtitle: companyName || "Biometrische Authentifizierung"
+			});
+			if (res.authenticated) onUnlock();
+			else if (!res.cancelled && res.error) setErrorMsg(res.error);
+		} catch {
+			setErrorMsg("Biometrische Entsperrung fehlgeschlagen. Bitte PIN eingeben.");
+		} finally {
+			setBiometricBusy(false);
+		}
+	}, [
+		biometricBusy,
+		companyName,
+		onUnlock
+	]);
+	(0, import_react.useEffect)(() => {
+		let active = true;
+		const checkBio = async () => {
+			if (!Capacitor.isNativePlatform() || !biometricEnabled) return;
+			try {
+				const res = await TaktWerkNative.getBiometricAvailability();
+				if (!active) return;
+				setBiometricAvailable(res.available);
+				if (res.available && !autoPromptedRef.current) {
+					autoPromptedRef.current = true;
+					triggerBiometric();
+				}
+			} catch {}
+		};
+		checkBio();
+		return () => {
+			active = false;
+		};
+	}, [biometricEnabled, triggerBiometric]);
+	const submitPin = (0, import_react.useCallback)(async (candidate) => {
+		if (!hasPin || verifying || candidate.length < 4) return;
+		setVerifying(true);
+		setErrorMsg("");
+		try {
+			if (await verifyPin(candidate, pinHash)) {
+				setEnteredPin("");
+				onUnlock();
+			} else {
+				setErrorMsg("Falsche PIN. Bitte erneut versuchen.");
+				setEnteredPin("");
+				if (Capacitor.isNativePlatform()) TaktWerkNative.hapticFeedback({ pattern: "error" }).catch(() => {});
+			}
+		} finally {
+			setVerifying(false);
+		}
+	}, [
+		hasPin,
+		onUnlock,
+		pinHash,
+		verifying
+	]);
+	const handleDigit = (0, import_react.useCallback)((d) => {
+		if (verifying) return;
+		setErrorMsg("");
+		setEnteredPin((prev) => {
+			if (prev.length >= 6) return prev;
+			const next = prev + d;
+			if (hasPin && next.length >= 4) verifyPin(next, pinHash).then((ok) => {
+				if (ok) {
+					setEnteredPin("");
+					onUnlock();
+				} else if (next.length === 6) {
+					setErrorMsg("Falsche PIN. Bitte erneut versuchen.");
+					setEnteredPin("");
+				}
+			});
+			return next;
+		});
+	}, [
+		hasPin,
+		onUnlock,
+		pinHash,
+		verifying
+	]);
+	const handleBackspace = (0, import_react.useCallback)(() => {
+		setErrorMsg("");
+		setEnteredPin((prev) => prev.slice(0, -1));
+	}, []);
+	(0, import_react.useEffect)(() => {
+		const onKeyDown = (e) => {
+			if (e.key >= "0" && e.key <= "9") {
+				e.preventDefault();
+				handleDigit(e.key);
+			} else if (e.key === "Backspace") {
+				e.preventDefault();
+				handleBackspace();
+			} else if (e.key === "Enter" && enteredPin.length >= 4) {
+				e.preventDefault();
+				submitPin(enteredPin);
+			}
+		};
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, [
+		enteredPin,
+		handleBackspace,
+		handleDigit,
+		submitPin
+	]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		role: "dialog",
+		"aria-modal": "true",
+		"aria-label": "TaktWerk App-Sperre",
+		className: "fixed inset-0 z-[220] flex flex-col items-center justify-center bg-slate-950/95 px-4 py-8 text-white backdrop-blur-md",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "w-full max-w-xs rounded-3xl border border-violet-500/25 bg-[#171126] p-6 shadow-2xl",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-col items-center text-center",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600/20 text-violet-300 ring-1 ring-violet-500/30",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Lock, { className: "h-7 w-7" })
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+							className: "mt-4 font-display text-lg font-bold tracking-tight text-white",
+							children: "TaktWerk gesperrt"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-1 text-xs text-slate-400",
+							children: companyName || "Bitte entsperre die App zum Fortfahren"
+						})
+					]
+				}),
+				hasPin && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mt-6 flex items-center justify-center gap-3",
+						"aria-label": "PIN Eingabe",
+						children: [
+							0,
+							1,
+							2,
+							3,
+							4,
+							5
+						].map((idx) => {
+							const filled = idx < enteredPin.length;
+							const activeSlot = idx < 4 || enteredPin.length > idx;
+							return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-3.5 w-3.5 rounded-full border transition-all ${filled ? "scale-110 border-violet-400 bg-violet-400" : activeSlot ? "border-slate-500 bg-transparent" : "border-slate-700/60 bg-transparent opacity-40"}` }, idx);
+						})
+					}),
+					errorMsg ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-3 min-h-[1.25rem] text-center text-xs font-medium text-rose-400",
+						children: errorMsg
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-3 min-h-[1.25rem] text-center text-[11px] text-slate-400",
+						children: "4–6-stellige PIN eingeben"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mt-4 grid grid-cols-3 gap-2.5",
+						children: [
+							DIGITS.map((d) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => handleDigit(d),
+								className: "flex h-13 items-center justify-center rounded-2xl border border-[#3b2d5e] bg-[#211936] font-mono text-xl font-semibold text-white transition-colors hover:bg-[#2a2045] active:scale-95 cursor-pointer",
+								children: d
+							}, d)),
+							biometricAvailable ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => void triggerBiometric(),
+								disabled: biometricBusy,
+								"aria-label": "Mit Fingerabdruck oder Face-ID entsperren",
+								className: "flex h-13 items-center justify-center rounded-2xl border border-violet-500/40 bg-violet-600/20 text-violet-300 transition-colors hover:bg-violet-600/30 active:scale-95 cursor-pointer",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Fingerprint, { className: "h-6 w-6" })
+							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => void submitPin(enteredPin),
+								disabled: enteredPin.length < 4 || verifying,
+								"aria-label": "PIN bestätigen",
+								className: "flex h-13 items-center justify-center rounded-2xl border border-emerald-500/40 bg-emerald-600/20 text-emerald-300 transition-colors hover:bg-emerald-600/30 disabled:opacity-35 cursor-pointer",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "h-5 w-5" })
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => handleDigit("0"),
+								className: "flex h-13 items-center justify-center rounded-2xl border border-[#3b2d5e] bg-[#211936] font-mono text-xl font-semibold text-white transition-colors hover:bg-[#2a2045] active:scale-95 cursor-pointer",
+								children: "0"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: handleBackspace,
+								disabled: enteredPin.length === 0,
+								"aria-label": "Letzte Ziffer löschen",
+								className: "flex h-13 items-center justify-center rounded-2xl border border-[#3b2d5e] bg-[#211936] text-slate-300 transition-colors hover:bg-[#2a2045] disabled:opacity-35 active:scale-95 cursor-pointer",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Delete, { className: "h-5 w-5" })
+							})
+						]
+					}),
+					enteredPin.length >= 4 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => void submitPin(enteredPin),
+						disabled: verifying,
+						className: "mt-3 flex w-full items-center justify-center gap-2 rounded-xl ui-accent-btn py-2.5 text-sm font-semibold text-white cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "h-4 w-4" }), "Entsperren"]
+					})
+				] }),
+				biometricAvailable && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+					type: "button",
+					onClick: () => void triggerBiometric(),
+					disabled: biometricBusy,
+					className: "mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-violet-400/40 bg-violet-500/15 py-2.5 text-sm font-semibold text-violet-200 transition-colors hover:bg-violet-500/25 cursor-pointer",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Fingerprint, { className: "h-4 w-4" }), biometricBusy ? "Warte auf Biometrie…" : "Mit Biometrie entsperren"]
+				}),
+				!hasPin && !biometricAvailable && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mt-5 space-y-3 text-center",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-xs text-amber-300",
+						children: "Auf diesem Gerät ist keine Biometrie verfügbar und keine PIN hinterlegt."
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: onUnlock,
+						className: "flex w-full items-center justify-center gap-2 rounded-xl ui-accent-btn py-2.5 text-sm font-semibold text-white cursor-pointer",
+						children: "Entsperren"
+					})]
+				})
+			]
+		})
+	});
+};
+// src/utils/caldavClient.ts
+function unescapeIcsText(val) {
+	return val.replace(/\\n/gi, "\n").replace(/\\,/g, ",").replace(/\\;/g, ";").replace(/\\\\/g, "\\").trim();
+}
+function escapeIcsText(val) {
+	return val.replace(/\\/g, "\\\\").replace(/\r?\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
+}
+function parseIcsDate(rawVal) {
+	const val = rawVal.trim();
+	if (/^\d{8}$/.test(val)) return `${val.slice(0, 4)}-${val.slice(4, 6)}-${val.slice(6, 8)}T09:00:00`;
+	const match = val.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/);
+	if (match) {
+		const [, y, m, d, hh, mm, ss, z] = match;
+		if (z === "Z") return (/* @__PURE__ */ new Date(`${y}-${m}-${d}T${hh}:${mm}:${ss}Z`)).toISOString();
+		return `${y}-${m}-${d}T${hh}:${mm}:${ss}`;
+	}
+	const parsed = new Date(val);
+	return Number.isNaN(parsed.getTime()) ? (/* @__PURE__ */ new Date()).toISOString() : parsed.toISOString();
+}
+function toIcsUtcString(iso) {
+	const d = new Date(iso);
+	if (Number.isNaN(d.getTime())) return toIcsUtcString((/* @__PURE__ */ new Date()).toISOString());
+	const pad = (n) => String(n).padStart(2, "0");
+	return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
+}
+function buildIcsEvent(appointment) {
+	const uid = appointment.uid || `${appointment.id}@taktwerk.app`;
+	const startDate = new Date(appointment.startTime);
+	const safeStartMs = Number.isNaN(startDate.getTime()) ? Date.now() : startDate.getTime();
+	const rawEndDate = new Date(appointment.endTime);
+	const rawEndMs = Number.isNaN(rawEndDate.getTime()) ? safeStartMs + 6e4 : rawEndDate.getTime();
+	const safeEndMs = rawEndMs > safeStartMs ? rawEndMs : safeStartMs + 6e4;
+	const lines = [
+		"BEGIN:VCALENDAR",
+		"VERSION:2.0",
+		"PRODID:-//TaktWerk//DE",
+		"BEGIN:VEVENT",
+		`UID:${uid}`,
+		`DTSTAMP:${toIcsUtcString((/* @__PURE__ */ new Date()).toISOString())}`,
+		`DTSTART:${toIcsUtcString(new Date(safeStartMs).toISOString())}`,
+		`DTEND:${toIcsUtcString(new Date(safeEndMs).toISOString())}`,
+		`SUMMARY:${escapeIcsText(appointment.title || "TaktWerk Termin")}`
+	];
+	if (appointment.location) lines.push(`LOCATION:${escapeIcsText(appointment.location)}`);
+	if (appointment.description) lines.push(`DESCRIPTION:${escapeIcsText(appointment.description)}`);
+	lines.push("END:VEVENT", "END:VCALENDAR", "");
+	return lines.join("\r\n");
+}
+function parseIcsEvents(icsRaw, calendarName) {
+	const lines = icsRaw.replace(/\r?\n[ \t]/g, "").split(/\r?\n/);
+	const events = [];
+	let inEvent = false;
+	let current = {};
+	for (const line of lines) {
+		const trimmed = line.trim();
+		if (trimmed === "BEGIN:VEVENT") {
+			inEvent = true;
+			current = {};
+			continue;
+		}
+		if (trimmed === "END:VEVENT") {
+			if (inEvent && current.SUMMARY && current.DTSTART) {
+				const startIso = parseIcsDate(current.DTSTART);
+				const endIso = current.DTEND ? parseIcsDate(current.DTEND) : new Date(new Date(startIso).getTime() + 36e5).toISOString();
+				const uid = current.UID || `${startIso}-${current.SUMMARY}`;
+				events.push({
+					id: `nc-${uid}`,
+					uid,
+					title: unescapeIcsText(current.SUMMARY),
+					startTime: startIso,
+					endTime: endIso,
+					location: current.LOCATION ? unescapeIcsText(current.LOCATION) : void 0,
+					description: current.DESCRIPTION ? unescapeIcsText(current.DESCRIPTION) : void 0,
+					calendarName,
+					source: "nextcloud"
+				});
+			}
+			inEvent = false;
+			current = {};
+			continue;
+		}
+		if (!inEvent) continue;
+		const colonIdx = line.indexOf(":");
+		if (colonIdx <= 0) continue;
+		const rawKey = line.slice(0, colonIdx).split(";")[0].toUpperCase();
+		const rawVal = line.slice(colonIdx + 1);
+		current[rawKey] = rawVal;
+	}
+	return events;
+}
+function parseCalDavCalendarsXml(xmlText, baseOrigin) {
+	const doc = new DOMParser().parseFromString(xmlText, "application/xml");
+	const responses = Array.from(doc.getElementsByTagName("*")).filter((el) => el.localName === "response");
+	const calendars = [];
+	for (const resp of responses) {
+		const hrefEl = Array.from(resp.getElementsByTagName("*")).find((el) => el.localName === "href");
+		const displayEl = Array.from(resp.getElementsByTagName("*")).find((el) => el.localName === "displayname");
+		const resTypeEl = Array.from(resp.getElementsByTagName("*")).find((el) => el.localName === "resourcetype");
+		const hasCalendarTag = resTypeEl ? Array.from(resTypeEl.getElementsByTagName("*")).some((el) => el.localName === "calendar") : false;
+		const href = hrefEl?.textContent?.trim() || "";
+		const displayName = displayEl?.textContent?.trim() || "";
+		if (!href || !hasCalendarTag) continue;
+		if (href.includes("/inbox") || href.includes("/outbox") || href.includes("/trashbin")) continue;
+		const fullUrl = href.startsWith("http") ? href : `${baseOrigin.replace(/\/+$/, "")}${href.startsWith("/") ? "" : "/"}${href}`;
+		calendars.push({
+			url: fullUrl.endsWith("/") ? fullUrl : `${fullUrl}/`,
+			displayName: displayName || "Nextcloud Kalender"
+		});
+	}
+	return calendars;
+}
+function parseCalDavCalendarDataXml(xmlText, calendarName) {
+	const doc = new DOMParser().parseFromString(xmlText, "application/xml");
+	const dataNodes = Array.from(doc.getElementsByTagName("*")).filter((el) => el.localName === "calendar-data");
+	const all = [];
+	const seen = /* @__PURE__ */ new Set();
+	for (const node of dataNodes) {
+		const raw = node.textContent || "";
+		if (!raw.trim()) continue;
+		for (const ev of parseIcsEvents(raw, calendarName)) if (!seen.has(ev.id)) {
+			seen.add(ev.id);
+			all.push(ev);
+		}
+	}
+	return all.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+}
 // src/utils/apiClient.ts
 var SERVER_URL_KEY = "taktwerk-server-url";
 var NATIVE_DB_KEY = "taktwerk-native-db";
@@ -66106,6 +67514,68 @@ function UndoDeleteBanner({ undo, onDismiss }) {
 			})
 		})]
 	});
+}
+// src/utils/budgetHelpers.ts
+function getMonthPrefix(date = /* @__PURE__ */ new Date()) {
+	return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+function computeCustomerBudgetStatus(customer, timeEntries, activeTimer, nowMs = Date.now()) {
+	const budgetHours = customer?.budgetHours && customer.budgetHours > 0 ? customer.budgetHours : null;
+	const budgetAmountNet = customer?.budgetAmountNet && customer.budgetAmountNet > 0 ? customer.budgetAmountNet : null;
+	const period = customer?.budgetPeriod ?? "monthly";
+	const periodLabel = period === "monthly" ? "Diesen Monat" : "Gesamtprojekt";
+	if (!customer || !budgetHours && !budgetAmountNet) return {
+		hasBudget: false,
+		period,
+		periodLabel,
+		budgetHours: null,
+		budgetAmountNet: null,
+		usedHours: 0,
+		usedAmountNet: 0,
+		hoursPct: null,
+		amountPct: null,
+		primaryPct: 0,
+		remainingHours: null,
+		remainingAmountNet: null,
+		severity: "ok"
+	};
+	const monthPrefix = getMonthPrefix(new Date(nowMs));
+	let totalSeconds = 0;
+	let totalNet = 0;
+	for (const entry of timeEntries) {
+		if (entry.entryType === "internal" || entry.customerId !== customer.id) continue;
+		if (period === "monthly" && !entry.startTime.startsWith(monthPrefix)) continue;
+		totalSeconds += entry.durationSeconds;
+		if (entry.billable) totalNet += entry.durationSeconds / 3600 * entry.hourlyRateNet;
+	}
+	if (activeTimer && activeTimer.entryType !== "internal" && activeTimer.customerId === customer.id) {
+		if (period === "total" || activeTimer.startTime.startsWith(monthPrefix)) {
+			const activeSecs = Math.floor(getActiveTimerElapsedMs(activeTimer, nowMs) / 1e3);
+			totalSeconds += activeSecs;
+			totalNet += activeSecs / 3600 * activeTimer.hourlyRateNet;
+		}
+	}
+	const usedHours = totalSeconds / 3600;
+	const usedAmountNet = Math.round(totalNet * 100) / 100;
+	const hoursPct = budgetHours ? Math.round(usedHours / budgetHours * 100) : null;
+	const amountPct = budgetAmountNet ? Math.round(usedAmountNet / budgetAmountNet * 100) : null;
+	const primaryPct = Math.max(hoursPct ?? 0, amountPct ?? 0);
+	const severity = primaryPct >= 100 ? "exceeded" : primaryPct >= 80 ? "warning" : "ok";
+	return {
+		hasBudget: true,
+		period,
+		periodLabel,
+		budgetHours,
+		budgetAmountNet,
+		usedHours,
+		usedAmountNet,
+		hoursPct,
+		amountPct,
+		primaryPct,
+		remainingHours: budgetHours !== null ? budgetHours - usedHours : null,
+		remainingAmountNet: budgetAmountNet !== null ? Math.round((budgetAmountNet - usedAmountNet) * 100) / 100 : null,
+		severity
+	};
 }
 // src/utils/geolocation.ts
 function buildOsmApiUrl(path) {
@@ -74024,6 +75494,9 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 	const [vatId, setVatId] = (0, import_react.useState)("");
 	const [paymentTermDays, setPaymentTermDays] = (0, import_react.useState)(14);
 	const [timeRoundingInput, setTimeRoundingInput] = (0, import_react.useState)("");
+	const [budgetPeriod, setBudgetPeriod] = (0, import_react.useState)("monthly");
+	const [budgetHoursInput, setBudgetHoursInput] = (0, import_react.useState)("");
+	const [budgetAmountInput, setBudgetAmountInput] = (0, import_react.useState)("");
 	const [category, setCategory] = (0, import_react.useState)("");
 	const [notes, setNotes] = (0, import_react.useState)("");
 	const [error, setError] = (0, import_react.useState)("");
@@ -74048,6 +75521,9 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 		setVatId("");
 		setPaymentTermDays(14);
 		setTimeRoundingInput("");
+		setBudgetPeriod("monthly");
+		setBudgetHoursInput("");
+		setBudgetAmountInput("");
 		setCategory("");
 		setNotes("");
 		setError("");
@@ -74067,6 +75543,9 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 		setVatId(c.vatId);
 		setPaymentTermDays(c.paymentTermDays);
 		setTimeRoundingInput(c.timeRoundingMinutes !== void 0 && c.timeRoundingMinutes !== null ? String(c.timeRoundingMinutes) : "");
+		setBudgetPeriod(c.budgetPeriod ?? "monthly");
+		setBudgetHoursInput(c.budgetHours && c.budgetHours > 0 ? String(c.budgetHours) : "");
+		setBudgetAmountInput(c.budgetAmountNet && c.budgetAmountNet > 0 ? String(c.budgetAmountNet) : "");
 		setCategory(c.category ?? "");
 		setNotes(c.notes);
 		setError("");
@@ -74078,6 +75557,8 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 			setError("Bitte einen Firmen- oder Kundennamen angeben.");
 			return null;
 		}
+		const parsedBudgetHours = parseFloat(budgetHoursInput.replace(",", "."));
+		const parsedBudgetNet = parseFloat(budgetAmountInput.replace(",", "."));
 		const saved = {
 			id: editing?.id ?? createId("cust"),
 			customerNumber: customerNumber.trim() || `KD-${1001 + customers.length}`,
@@ -74092,6 +75573,9 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 			vatId: vatId.trim(),
 			paymentTermDays: Math.max(0, Number(paymentTermDays) || 14),
 			timeRoundingMinutes: timeRoundingInput === "" ? null : Number(timeRoundingInput),
+			budgetPeriod,
+			budgetHours: Number.isFinite(parsedBudgetHours) && parsedBudgetHours > 0 ? parsedBudgetHours : null,
+			budgetAmountNet: Number.isFinite(parsedBudgetNet) && parsedBudgetNet > 0 ? parsedBudgetNet : null,
 			category: category.trim() || void 0,
 			notes: notes.trim(),
 			createdAt: editing?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
@@ -74366,6 +75850,64 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 								className: inputClass
 							})]
 						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#2e2349] dark:bg-[#211936]/40 md:col-span-3 md:grid-cols-3",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-1.5 md:col-span-3",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Gauge, { className: "h-4 w-4 text-violet-600 dark:text-violet-400" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "text-xs font-semibold text-slate-800 dark:text-slate-100",
+											children: "Stundenkontingent & Projektbudget (optional)"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "Stundenkontingent & Budget",
+											text: "Lege ein monatliches Retainer-Kontingent oder ein Gesamtprojekt-Budget in Stunden und/oder Euro Netto fest. TaktWerk zeigt dir den aktuellen Verbrauch live an und warnt ab 80 % sowie 100 % Auslastung."
+										})
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Zeitraum"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+									value: budgetPeriod,
+									onChange: (v) => setBudgetPeriod(v),
+									options: [{
+										value: "monthly",
+										label: "Monatliches Kontingent"
+									}, {
+										value: "total",
+										label: "Gesamtprojekt-Budget"
+									}]
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Stundenkontingent (Std.)"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "number",
+									min: 0,
+									step: "0.5",
+									value: budgetHoursInput,
+									onChange: (e) => setBudgetHoursInput(e.target.value),
+									placeholder: "z. B. 20",
+									className: `${inputClass} font-mono`
+								})] }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Euro-Budget Netto (€)"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "number",
+									min: 0,
+									step: "10",
+									value: budgetAmountInput,
+									onChange: (e) => setBudgetAmountInput(e.target.value),
+									placeholder: "z. B. 2500",
+									className: `${inputClass} font-mono`
+								})] })
+							]
+						}),
 						editing && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#2e2349] dark:bg-[#211936]/40 md:col-span-3",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -74549,6 +76091,9 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 								const st = statsByCustomer.get(c.id);
 								const hasOpen = (st?.openIds.length ?? 0) > 0;
 								const linkedGeoRules = geoRulesByCustomer.get(c.id) ?? [];
+								const budget = computeCustomerBudgetStatus(c, timeEntries);
+								const clampedPct = Math.min(100, Math.max(0, budget.primaryPct));
+								const barFillClass = budget.severity === "exceeded" ? "fill-rose-500" : budget.severity === "warning" ? "fill-amber-500" : "fill-emerald-500";
 								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
 									className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
 									children: [
@@ -74558,24 +76103,66 @@ function CustomersView({ customers, products, timeEntries, invoices, categories 
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
 											className: "px-4 py-3",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "flex flex-wrap items-center gap-2",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "font-medium text-slate-900 dark:text-slate-100",
-													children: c.companyName
-												}), c.category && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-[#231b38] dark:text-violet-300",
-													children: c.category
-												})]
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500 dark:text-slate-400",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: [c.contactName, c.email].filter(Boolean).join(" · ") || "—" }), linkedGeoRules.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-													type: "button",
-													onClick: () => openEditGeoRule(linkedGeoRules[0]),
-													className: "inline-flex items-center gap-1 font-medium text-blue-700 hover:underline dark:text-violet-300 cursor-pointer",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3 w-3 shrink-0" }), linkedGeoRules.length === 1 ? linkedGeoRules[0].name : `${linkedGeoRules.length} Ortsregeln`]
-												})]
-											})]
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex flex-wrap items-center gap-2",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "font-medium text-slate-900 dark:text-slate-100",
+														children: c.companyName
+													}), c.category && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-[#231b38] dark:text-violet-300",
+														children: c.category
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-slate-500 dark:text-slate-400",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: [c.contactName, c.email].filter(Boolean).join(" · ") || "—" }), linkedGeoRules.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => openEditGeoRule(linkedGeoRules[0]),
+														className: "inline-flex items-center gap-1 font-medium text-blue-700 hover:underline dark:text-violet-300 cursor-pointer",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3 w-3 shrink-0" }), linkedGeoRules.length === 1 ? linkedGeoRules[0].name : `${linkedGeoRules.length} Ortsregeln`]
+													})]
+												}),
+												budget.hasBudget && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-1.5 max-w-xs space-y-1",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-center justify-between gap-2 text-[11px]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+															className: `font-medium ${budget.severity === "exceeded" ? "text-rose-600 dark:text-rose-400" : budget.severity === "warning" ? "text-amber-600 dark:text-amber-400" : "text-slate-600 dark:text-slate-300"}`,
+															children: [
+																budget.budgetHours !== null ? `${formatNumber(budget.usedHours, 1)} / ${formatNumber(budget.budgetHours, 1)} Std.` : `${formatCurrency(budget.usedAmountNet)} / ${formatCurrency(budget.budgetAmountNet ?? 0)}`,
+																" ",
+																"(",
+																budget.periodLabel,
+																")"
+															]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+															className: "font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-200",
+															children: [budget.primaryPct, " %"]
+														})]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+														viewBox: "0 0 100 5",
+														preserveAspectRatio: "none",
+														className: "h-1.5 w-full overflow-hidden rounded-full",
+														"aria-hidden": "true",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+															x: "0",
+															y: "0",
+															width: "100",
+															height: "5",
+															rx: "2.5",
+															className: "fill-slate-200 dark:fill-[#2e2349]"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+															x: "0",
+															y: "0",
+															width: clampedPct,
+															height: "5",
+															rx: "2.5",
+															className: barFillClass
+														})]
+													})]
+												})
+											]
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
 											className: "px-4 py-3 text-xs text-slate-600 dark:text-slate-400",
@@ -76101,6 +77688,307 @@ function ExpensesView({ expenses, recurringExpenses = [], customers, expenseCate
 		]
 	});
 }
+// src/components/GlobalSearchModal.tsx
+var MAX_RESULTS_PER_CATEGORY = 6;
+var MAX_TOTAL_RESULTS = 28;
+var GlobalSearchModal = ({ open, onClose, db, onNavigate, onTriggerNfcTask }) => {
+	const [query, setQuery] = (0, import_react.useState)("");
+	const [selectedIndex, setSelectedIndex] = (0, import_react.useState)(0);
+	const inputRef = (0, import_react.useRef)(null);
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		setQuery("");
+		setSelectedIndex(0);
+		const t = window.setTimeout(() => inputRef.current?.focus(), 20);
+		return () => window.clearTimeout(t);
+	}, [open]);
+	const customerMap = (0, import_react.useMemo)(() => new Map(db.customers.map((c) => [c.id, c])), [db.customers]);
+	const results = (0, import_react.useMemo)(() => {
+		const q = query.trim().toLowerCase();
+		const items = [];
+		const match = (...fields) => {
+			if (!q) return true;
+			return fields.some((f) => f !== void 0 && f !== null && String(f).toLowerCase().includes(q));
+		};
+		let count = 0;
+		for (const task of db.nfcTasks) {
+			if (count >= MAX_RESULTS_PER_CATEGORY) break;
+			const cust = customerMap.get(task.customerId);
+			if (match(task.title, task.tagUid, task.description, cust?.companyName, task.internalCategory)) {
+				items.push({
+					id: `nfc-${task.id}`,
+					category: "NFC-Aufgabe",
+					title: task.title,
+					subtitle: `${cust?.companyName || task.internalCategory || "Intern"} · Tag ${task.tagUid}`,
+					badge: "Startbar",
+					targetSection: "nfc",
+					nfcTask: task
+				});
+				count++;
+			}
+		}
+		count = 0;
+		for (const c of db.customers) {
+			if (count >= MAX_RESULTS_PER_CATEGORY) break;
+			if (match(c.companyName, c.contactName, c.customerNumber, c.city, c.email, c.category, c.notes)) {
+				items.push({
+					id: `cust-${c.id}`,
+					category: "Kunde",
+					title: c.companyName,
+					subtitle: [
+						c.customerNumber,
+						c.contactName,
+						c.city
+					].filter(Boolean).join(" · "),
+					badge: c.category || void 0,
+					targetSection: "customers"
+				});
+				count++;
+			}
+		}
+		count = 0;
+		for (const inv of db.invoices) {
+			if (count >= MAX_RESULTS_PER_CATEGORY) break;
+			if (match(inv.invoiceNumber, inv.customerSnapshot.companyName, inv.status, inv.issueDate, inv.grossTotal)) {
+				items.push({
+					id: `inv-${inv.id}`,
+					category: "Rechnung",
+					title: `${inv.invoiceNumber} · ${inv.customerSnapshot.companyName}`,
+					subtitle: `${formatDateDE(inv.issueDate)} · ${formatCurrency(inv.isSmallBusiness ? inv.netTotal : inv.grossTotal)}`,
+					badge: inv.documentType === "quote" ? "Angebot" : inv.status,
+					targetSection: "invoices"
+				});
+				count++;
+			}
+		}
+		count = 0;
+		for (const p of db.products) {
+			if (count >= MAX_RESULTS_PER_CATEGORY) break;
+			if (match(p.name, p.sku, p.description, p.category, p.unit)) {
+				items.push({
+					id: `prod-${p.id}`,
+					category: "Produkt",
+					title: p.name,
+					subtitle: `${p.sku || "Ohne Nr."} · ${formatCurrency(p.unitPriceNet)} / ${p.unit}`,
+					badge: p.category || void 0,
+					targetSection: "products"
+				});
+				count++;
+			}
+		}
+		count = 0;
+		for (const e of db.timeEntries) {
+			if (count >= MAX_RESULTS_PER_CATEGORY) break;
+			const cust = customerMap.get(e.customerId);
+			if (match(e.title, e.notes, cust?.companyName, e.location?.address, e.internalCategory)) {
+				items.push({
+					id: `time-${e.id}`,
+					category: "Tätigkeit",
+					title: e.title,
+					subtitle: `${cust?.companyName || e.internalCategory || "Intern"} · ${formatDateDE(e.startTime)} · ${formatDuration(e.durationSeconds)}`,
+					badge: e.billedInvoiceId ? "Abgerechnet" : void 0,
+					targetSection: "tracker"
+				});
+				count++;
+			}
+		}
+		count = 0;
+		for (const exp of db.expenses ?? []) {
+			if (count >= MAX_RESULTS_PER_CATEGORY) break;
+			if (match(exp.vendor, exp.description, exp.category, exp.notes, exp.date)) {
+				items.push({
+					id: `exp-${exp.id}`,
+					category: "Ausgabe",
+					title: `${exp.vendor}${exp.description ? ` – ${exp.description}` : ""}`,
+					subtitle: `${formatDateDE(exp.date)} · ${exp.category} · ${formatCurrency(exp.grossAmount)}`,
+					targetSection: "expenses"
+				});
+				count++;
+			}
+		}
+		count = 0;
+		for (const rec of db.recurringExpenses ?? []) {
+			if (count >= 4) break;
+			if (match(rec.vendor, rec.description, rec.category)) {
+				items.push({
+					id: `recexp-${rec.id}`,
+					category: "Fixkosten",
+					title: `${rec.vendor} – ${rec.description}`,
+					subtitle: `${rec.category} · ${formatCurrency(rec.grossAmount)}`,
+					targetSection: "expenses"
+				});
+				count++;
+			}
+		}
+		count = 0;
+		for (const rule of db.geoFenceRules ?? []) {
+			if (count >= 4) break;
+			const cust = customerMap.get(rule.customerId);
+			if (match(rule.name, rule.address, rule.taskTitle, cust?.companyName)) {
+				items.push({
+					id: `geo-${rule.id}`,
+					category: "Ortsregel",
+					title: rule.name,
+					subtitle: `${rule.address || rule.taskTitle} (${rule.radiusMeters} m)`,
+					targetSection: "nfc"
+				});
+				count++;
+			}
+		}
+		return items.slice(0, MAX_TOTAL_RESULTS);
+	}, [
+		customerMap,
+		db,
+		query
+	]);
+	(0, import_react.useEffect)(() => {
+		setSelectedIndex(0);
+	}, [query]);
+	(0, import_react.useEffect)(() => {
+		if (!open) return;
+		const onKeyDown = (e) => {
+			if (e.key === "Escape") {
+				e.preventDefault();
+				onClose();
+			} else if (e.key === "ArrowDown") {
+				e.preventDefault();
+				setSelectedIndex((prev) => results.length > 0 ? (prev + 1) % results.length : 0);
+			} else if (e.key === "ArrowUp") {
+				e.preventDefault();
+				setSelectedIndex((prev) => results.length > 0 ? (prev - 1 + results.length) % results.length : 0);
+			} else if (e.key === "Enter" && results[selectedIndex]) {
+				e.preventDefault();
+				const item = results[selectedIndex];
+				onNavigate(item.targetSection);
+				onClose();
+			}
+		};
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, [
+		onClose,
+		onNavigate,
+		open,
+		results,
+		selectedIndex
+	]);
+	if (!open || typeof document === "undefined") return null;
+	const getCategoryIcon = (cat) => {
+		switch (cat) {
+			case "Kunde": return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Users, { className: "h-4 w-4 text-blue-600 dark:text-blue-400" });
+			case "Produkt": return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Package, { className: "h-4 w-4 text-violet-600 dark:text-violet-400" });
+			case "Rechnung": return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileText, { className: "h-4 w-4 text-emerald-600 dark:text-emerald-400" });
+			case "Tätigkeit": return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "h-4 w-4 text-amber-600 dark:text-amber-400" });
+			case "NFC-Aufgabe": return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Nfc, { className: "h-4 w-4 text-fuchsia-600 dark:text-fuchsia-400" });
+			case "Ausgabe": return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Receipt, { className: "h-4 w-4 text-rose-600 dark:text-rose-400" });
+			case "Fixkosten": return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Repeat, { className: "h-4 w-4 text-orange-600 dark:text-orange-400" });
+			case "Ortsregel": return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-4 w-4 text-teal-600 dark:text-teal-400" });
+		}
+	};
+	return (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		role: "dialog",
+		"aria-modal": "true",
+		"aria-label": "Globale Schnellsuche",
+		onClick: onClose,
+		className: "fixed inset-0 z-[180] flex items-start justify-center bg-slate-950/60 px-3 pt-[10vh] backdrop-blur-xs sm:px-4",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			onClick: (e) => e.stopPropagation(),
+			className: "w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2.5 border-b border-slate-200 px-4 py-3 dark:border-[#2a2045]",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-4 w-4 shrink-0 text-slate-400 dark:text-violet-300" }),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							ref: inputRef,
+							type: "text",
+							value: query,
+							onChange: (e) => setQuery(e.target.value),
+							placeholder: "Suche nach Kunden, Rechnungen, Tätigkeiten, NFC, Belegen…",
+							className: "min-w-0 flex-1 bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-500"
+						}),
+						query && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setQuery(""),
+							"aria-label": "Suche leeren",
+							className: "rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-200 cursor-pointer",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: onClose,
+							"aria-label": "Schnellsuche schließen",
+							className: "rounded-lg border border-slate-200 px-2 py-0.5 text-[11px] font-medium text-slate-500 hover:bg-slate-100 dark:border-[#3b2d5e] dark:text-slate-400 dark:hover:bg-[#2a2045] cursor-pointer",
+							children: "ESC"
+						})
+					]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "max-h-[60vh] overflow-y-auto p-2",
+					children: results.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "py-10 text-center text-sm text-slate-500 dark:text-slate-400",
+						children: [
+							"Keine Treffer für „",
+							query,
+							"“ gefunden."
+						]
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+						className: "space-y-1",
+						children: results.map((item, idx) => {
+							return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								onMouseEnter: () => setSelectedIndex(idx),
+								className: `flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 transition-colors ${idx === selectedIndex ? "bg-slate-100 dark:bg-[#2a2045]" : "hover:bg-slate-50 dark:hover:bg-[#211936]"}`,
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => {
+										onNavigate(item.targetSection);
+										onClose();
+									},
+									className: "flex min-w-0 flex-1 items-center gap-3 text-left cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-[#211936]",
+										children: getCategoryIcon(item.category)
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "min-w-0 flex-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "flex items-center gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "truncate text-sm font-medium text-slate-900 dark:text-slate-100",
+												children: item.title
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "shrink-0 rounded-md bg-slate-200/80 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-[#3b2d5e]/70 dark:text-violet-200",
+												children: item.category
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "mt-0.5 block truncate text-xs text-slate-500 dark:text-slate-400",
+											children: item.subtitle
+										})]
+									})]
+								}), item.nfcTask && onTriggerNfcTask && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: (e) => {
+										e.stopPropagation();
+										onTriggerNfcTask(item.nfcTask);
+										onClose();
+									},
+									className: "inline-flex shrink-0 items-center gap-1 rounded-lg ui-accent-btn px-2.5 py-1.5 text-xs font-semibold text-white cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3 w-3" }), "Start"]
+								})]
+							}) }, item.id);
+						})
+					})
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center justify-between border-t border-slate-200 bg-slate-50/70 px-4 py-2 text-[11px] text-slate-500 dark:border-[#2a2045] dark:bg-[#120d1f] dark:text-slate-400",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [results.length, " Ergebnis(se)"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "hidden sm:inline",
+						children: "↑↓ Navigieren · Enter Öffnen · Strg+K"
+					})]
+				})
+			]
+		})
+	}), document.body);
+};
 // src/utils/eInvoiceXml.ts
 function escapeXml(value) {
 	return (value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
@@ -76282,6 +78170,500 @@ ${linesXml}
 </ubl:Invoice>
 `;
 }
+// src/utils/emailTemplates.ts
+var DEFAULT_EMAIL_TEMPLATES = {
+	invoiceSubject: "Rechnung {Nummer} – {Firma}",
+	invoiceBody: "Sehr geehrte(r) {Ansprechpartner},\n\nanbei erhalten Sie unsere Rechnung {Nummer} vom {Datum} über {Betrag}.\n\nBitte überweisen Sie den Betrag bis zum {Fällig} unter Angabe der Rechnungsnummer.\n\nVielen Dank für Ihren Auftrag!\n\nMit freundlichen Grüßen\n{Inhaber}\n{Firma}",
+	quoteSubject: "Angebot {Nummer} – {Firma}",
+	quoteBody: "Sehr geehrte(r) {Ansprechpartner},\n\nvielen Dank für Ihre Anfrage. Anbei übersenden wir Ihnen unser unverbindliches Angebot {Nummer} über {Betrag} (gültig bis {Fällig}).\n\nBei Rückfragen oder zur Beauftragung stehen wir Ihnen gerne zur Verfügung.\n\nMit freundlichen Grüßen\n{Inhaber}\n{Firma}",
+	reminderSubject: "Zahlungserinnerung zu Rechnung {Nummer} – {Firma}",
+	reminderBody: "Sehr geehrte(r) {Ansprechpartner},\n\nsicherlich ist es in der Hektik des Alltags untergegangen: Unsere Rechnung {Nummer} vom {Datum} über {Betrag} war am {Fällig} fällig.\n\nSollte sich Ihre Zahlung mit dieser Nachricht überschnitten haben, betrachten Sie dieses Schreiben bitte als gegenstandslos.\n\nMit freundlichen Grüßen\n{Inhaber}\n{Firma}"
+};
+var EMAIL_TEMPLATE_PLACEHOLDERS = [
+	{
+		token: "{Kunde}",
+		desc: "Firmenname des Kunden"
+	},
+	{
+		token: "{Ansprechpartner}",
+		desc: "Ansprechpartner (Fallback: Damen und Herren)"
+	},
+	{
+		token: "{Nummer}",
+		desc: "Rechnungs- / Angebotsnummer"
+	},
+	{
+		token: "{Betrag}",
+		desc: "Endbetrag (Brutto bzw. Netto bei §19)"
+	},
+	{
+		token: "{Datum}",
+		desc: "Belegdatum"
+	},
+	{
+		token: "{Fällig}",
+		desc: "Fälligkeitsdatum / Gültig bis"
+	},
+	{
+		token: "{Firma}",
+		desc: "Eigener Firmenname"
+	},
+	{
+		token: "{Inhaber}",
+		desc: "Eigener Name / Inhaber"
+	}
+];
+function getEffectiveEmailTemplates(company) {
+	return {
+		invoiceSubject: company.emailTemplates?.invoiceSubject?.trim() || DEFAULT_EMAIL_TEMPLATES.invoiceSubject,
+		invoiceBody: company.emailTemplates?.invoiceBody?.trim() || DEFAULT_EMAIL_TEMPLATES.invoiceBody,
+		quoteSubject: company.emailTemplates?.quoteSubject?.trim() || DEFAULT_EMAIL_TEMPLATES.quoteSubject,
+		quoteBody: company.emailTemplates?.quoteBody?.trim() || DEFAULT_EMAIL_TEMPLATES.quoteBody,
+		reminderSubject: company.emailTemplates?.reminderSubject?.trim() || DEFAULT_EMAIL_TEMPLATES.reminderSubject,
+		reminderBody: company.emailTemplates?.reminderBody?.trim() || DEFAULT_EMAIL_TEMPLATES.reminderBody
+	};
+}
+function renderEmailForInvoice(invoice, company, mode) {
+	const resolvedMode = mode ?? (invoice.documentType === "quote" ? "quote" : "invoice");
+	const templates = getEffectiveEmailTemplates(company);
+	const payable = invoice.isSmallBusiness ?? Boolean(company.smallBusinessMode) ? invoice.netTotal : invoice.grossTotal;
+	const contact = invoice.customerSnapshot.contactName?.trim() || "Damen und Herren";
+	const replacements = {
+		"{Kunde}": invoice.customerSnapshot.companyName || "",
+		"{Ansprechpartner}": contact,
+		"{Nummer}": invoice.invoiceNumber || "",
+		"{Betrag}": formatCurrency(payable),
+		"{Datum}": formatDateDE(invoice.issueDate),
+		"{Fällig}": formatDateDE(resolvedMode === "quote" ? invoice.quoteValidUntil || invoice.dueDate : invoice.dueDate),
+		"{Firma}": company.companyName || "TaktWerk",
+		"{Inhaber}": company.ownerName || company.companyName || ""
+	};
+	const apply = (tpl) => Object.entries(replacements).reduce((acc, [token, val]) => acc.split(token).join(val), tpl);
+	const rawSubject = resolvedMode === "reminder" ? templates.reminderSubject : resolvedMode === "quote" ? templates.quoteSubject : templates.invoiceSubject;
+	const rawBody = resolvedMode === "reminder" ? templates.reminderBody : resolvedMode === "quote" ? templates.quoteBody : templates.invoiceBody;
+	return {
+		to: (invoice.customerSnapshot.email || "").trim(),
+		subject: apply(rawSubject),
+		body: apply(rawBody)
+	};
+}
+async function sendDocumentByEmail(invoice, company, mode) {
+	const resolvedMode = mode ?? (invoice.documentType === "quote" ? "quote" : "invoice");
+	const emailData = renderEmailForInvoice(invoice, company, resolvedMode);
+	const filename = resolvedMode === "reminder" ? `Zahlungserinnerung-${invoice.invoiceNumber}.pdf` : `${invoice.invoiceNumber}.pdf`;
+	if (Capacitor.isNativePlatform()) {
+		const base64 = resolvedMode === "reminder" ? await getPaymentReminderPdfBase64(invoice, company) : await getInvoicePdfBase64(invoice, company);
+		await TaktWerkNative.sharePdfWithEmail({
+			filename,
+			base64,
+			to: emailData.to,
+			subject: emailData.subject,
+			body: emailData.body
+		});
+		return {
+			nativeShared: true,
+			message: "E-Mail-App mit Empfänger, Vorlagentext & PDF-Anhang geöffnet."
+		};
+	}
+	if (resolvedMode === "reminder") await downloadPaymentReminderPdf(invoice, company);
+	else await downloadInvoicePdf(invoice, company);
+	const mailtoUrl = `mailto:${encodeURIComponent(emailData.to)}?subject=${encodeURIComponent(emailData.subject)}&body=${encodeURIComponent(emailData.body)}`;
+	const a = document.createElement("a");
+	a.href = mailtoUrl;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	return {
+		nativeShared: false,
+		message: "E-Mail-Vorlage geöffnet & PDF heruntergeladen — bitte PDF als Anhang hinzufügen."
+	};
+}
+// src/utils/bankReconcile.ts
+function parseCsvLine(line, delimiter) {
+	const cells = [];
+	let cur = "";
+	let inQuotes = false;
+	for (let i = 0; i < line.length; i++) {
+		const ch = line[i];
+		if (ch === "\"") {
+			if (inQuotes && line[i + 1] === "\"") {
+				cur += "\"";
+				i++;
+			} else inQuotes = !inQuotes;
+		} else if (ch === delimiter && !inQuotes) {
+			cells.push(cur.trim());
+			cur = "";
+		} else cur += ch;
+	}
+	cells.push(cur.trim());
+	return cells;
+}
+function parseGermanNumber(raw) {
+	if (!raw) return null;
+	let cleaned = raw.replace(/\s+/g, "").replace(/EUR|€/gi, "").replace(/[^\d,.-]/g, "");
+	if (!cleaned) return null;
+	const lastComma = cleaned.lastIndexOf(",");
+	const lastDot = cleaned.lastIndexOf(".");
+	if (lastComma > lastDot) cleaned = cleaned.replace(/\./g, "").replace(",", ".");
+	else if (lastDot > lastComma && lastComma !== -1) cleaned = cleaned.replace(/,/g, "");
+	const num = Number(cleaned);
+	return Number.isFinite(num) ? Math.round(num * 100) / 100 : null;
+}
+function normalizeDateString(raw) {
+	const s = raw.trim();
+	const deMatch = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$/);
+	if (deMatch) {
+		const dd = deMatch[1].padStart(2, "0");
+		const mm = deMatch[2].padStart(2, "0");
+		return `${deMatch[3].length === 2 ? `20${deMatch[3]}` : deMatch[3]}-${mm}-${dd}`;
+	}
+	const isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+	if (isoMatch) return `${isoMatch[1]}-${isoMatch[2]}-${isoMatch[3]}`;
+	return s;
+}
+function parseBankStatementCsv(csvText) {
+	const rawLines = csvText.replace(/^\uFEFF/, "").split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+	if (rawLines.length < 2) return [];
+	let headerIdx = -1;
+	let delimiter = ";";
+	for (let i = 0; i < Math.min(25, rawLines.length); i++) {
+		const line = rawLines[i];
+		const semiCount = (line.match(/;/g) || []).length;
+		const candDelim = semiCount >= (line.match(/,/g) || []).length && semiCount >= 2 ? ";" : ",";
+		const cols = parseCsvLine(line, candDelim).map((c) => c.toLowerCase());
+		const hasAmount = cols.some((c) => /betrag|umsatz|haben|gutschrift|amount|eingang/i.test(c));
+		const hasDateOrPurpose = cols.some((c) => /buchung|valuta|datum|date|verwendungszweck|auftraggeber|empfänger|zahler|purpose/i.test(c));
+		if (cols.length >= 3 && hasAmount && hasDateOrPurpose) {
+			headerIdx = i;
+			delimiter = candDelim;
+			break;
+		}
+	}
+	if (headerIdx === -1) {
+		headerIdx = 0;
+		delimiter = (rawLines[0].match(/;/g) || []).length >= (rawLines[0].match(/,/g) || []).length ? ";" : ",";
+	}
+	const headers = parseCsvLine(rawLines[headerIdx], delimiter).map((h) => h.toLowerCase());
+	const findCol = (regex) => headers.findIndex((h) => regex.test(h));
+	const dateCol = findCol(/buchungstag|buchungsdatum|valuta|wertstellung|datum|date/i);
+	const amountCol = findCol(/^betrag|betrag\s*\(|umsatz|amount/i);
+	const creditCol = findCol(/haben|gutschrift|eingang|credit/i);
+	const payerCol = findCol(/begünstigter|auftraggeber|zahlungspflichtiger|name|empfänger|partner|sender|counterparty/i);
+	const purposeCol = findCol(/verwendungszweck|buchungstext|beschreibung|referenz|purpose|info|notiz/i);
+	const transactions = [];
+	for (let i = headerIdx + 1; i < rawLines.length; i++) {
+		const cells = parseCsvLine(rawLines[i], delimiter);
+		if (cells.length < 2) continue;
+		let amount = null;
+		if (amountCol >= 0 && cells[amountCol]) amount = parseGermanNumber(cells[amountCol]);
+		if ((amount === null || amount === 0) && creditCol >= 0 && cells[creditCol]) {
+			const creditVal = parseGermanNumber(cells[creditCol]);
+			if (creditVal !== null && creditVal > 0) amount = creditVal;
+		}
+		if (amount === null) {
+			for (let c = cells.length - 1; c >= 0; c--) if (/^-?[\d.]+,\d{2}(\s*€|\s*EUR)?$/.test(cells[c])) {
+				amount = parseGermanNumber(cells[c]);
+				if (amount !== null) break;
+			}
+		}
+		if (amount === null || amount <= 0) continue;
+		const date = dateCol >= 0 && cells[dateCol] ? normalizeDateString(cells[dateCol]) : "";
+		const payer = payerCol >= 0 && cells[payerCol] ? cells[payerCol] : "";
+		const purpose = purposeCol >= 0 && cells[purposeCol] ? cells[purposeCol] : cells.filter((_, idx) => idx !== dateCol && idx !== amountCol).join(" · ");
+		transactions.push({
+			id: `tx-${i}`,
+			date,
+			payer,
+			purpose,
+			amount
+		});
+	}
+	return transactions;
+}
+function normalizeToken(s) {
+	return s.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+function matchBankTransactionsToInvoices(transactions, invoices) {
+	const openInvoices = invoices.filter((inv) => inv.documentType !== "quote" && !inv.isArchived && (inv.status === "Gesendet" || inv.status === "Entwurf"));
+	const matches = [];
+	const usedInvoiceIds = /* @__PURE__ */ new Set();
+	for (const tx of transactions) {
+		const combinedNorm = normalizeToken(`${tx.purpose} ${tx.payer}`);
+		const payerNorm = normalizeToken(`${tx.payer} ${tx.purpose}`);
+		let bestMatch = null;
+		for (const inv of openInvoices) {
+			if (usedInvoiceIds.has(inv.id)) continue;
+			const payable = inv.isSmallBusiness ? inv.netTotal : inv.grossTotal;
+			const numNorm = normalizeToken(inv.invoiceNumber);
+			const amountMatches = Math.abs(tx.amount - payable) <= .02;
+			if (numNorm.length >= 4 && combinedNorm.includes(numNorm)) {
+				bestMatch = {
+					transaction: tx,
+					invoice: inv,
+					confidence: "exact_number",
+					reason: amountMatches ? `Rechnungsnummer ${inv.invoiceNumber} & Betrag exakt gefunden` : `Rechnungsnummer ${inv.invoiceNumber} gefunden (Teil-/Abweichung: ${tx.amount.toFixed(2)} €)`
+				};
+				break;
+			}
+		}
+		if (!bestMatch) for (const inv of openInvoices) {
+			if (usedInvoiceIds.has(inv.id)) continue;
+			const payable = inv.isSmallBusiness ? inv.netTotal : inv.grossTotal;
+			if (Math.abs(tx.amount - payable) > .02) continue;
+			if (inv.customerSnapshot.companyName.toLowerCase().split(/[^a-zäöüß0-9]+/).filter((w) => w.length >= 4 && !/^(gmbh|ug|ag|gbr|ohg|kg|co)$/.test(w)).some((tok) => payerNorm.includes(normalizeToken(tok)))) {
+				bestMatch = {
+					transaction: tx,
+					invoice: inv,
+					confidence: "amount_and_name",
+					reason: `Betrag (${payable.toFixed(2)} €) & Kundenname stimmen überein`
+				};
+				break;
+			}
+		}
+		if (!bestMatch) {
+			const amountCandidates = openInvoices.filter((inv) => {
+				if (usedInvoiceIds.has(inv.id)) return false;
+				const payable = inv.isSmallBusiness ? inv.netTotal : inv.grossTotal;
+				return Math.abs(tx.amount - payable) <= .02;
+			});
+			if (amountCandidates.length === 1) bestMatch = {
+				transaction: tx,
+				invoice: amountCandidates[0],
+				confidence: "amount_only",
+				reason: `Eindeutiger Rechnungsbetrag (${tx.amount.toFixed(2)} €)`
+			};
+		}
+		if (bestMatch) {
+			usedInvoiceIds.add(bestMatch.invoice.id);
+			matches.push(bestMatch);
+		}
+	}
+	return matches;
+}
+// src/components/BankReconcileModal.tsx
+var BankReconcileModal = ({ open, onClose, invoices, onApplyPaid }) => {
+	const fileInputRef = (0, import_react.useRef)(null);
+	const [fileName, setFileName] = (0, import_react.useState)("");
+	const [transactions, setTransactions] = (0, import_react.useState)([]);
+	const [matches, setMatches] = (0, import_react.useState)([]);
+	const [selectedIds, setSelectedIds] = (0, import_react.useState)(/* @__PURE__ */ new Set());
+	const [parseError, setParseError] = (0, import_react.useState)("");
+	const openInvoiceCount = (0, import_react.useMemo)(() => invoices.filter((i) => i.documentType !== "quote" && !i.isArchived && (i.status === "Gesendet" || i.status === "Entwurf")).length, [invoices]);
+	if (!open || typeof document === "undefined") return null;
+	const handleFileChange = async (e) => {
+		const file = e.target.files?.[0];
+		e.target.value = "";
+		if (!file) return;
+		setParseError("");
+		setFileName(file.name);
+		try {
+			const buffer = await file.arrayBuffer();
+			let text = new TextDecoder("utf-8").decode(buffer);
+			if (text.includes("�")) try {
+				text = new TextDecoder("windows-1252").decode(buffer);
+			} catch {}
+			const parsed = parseBankStatementCsv(text);
+			setTransactions(parsed);
+			if (parsed.length === 0) {
+				setMatches([]);
+				setSelectedIds(/* @__PURE__ */ new Set());
+				setParseError("Keine eingehenden Zahlungen (Gutschriften) in dieser CSV erkannt. Prüfe, ob Betrags- und Buchungsdatumsspalten enthalten sind.");
+				return;
+			}
+			const found = matchBankTransactionsToInvoices(parsed, invoices);
+			setMatches(found);
+			const preselected = new Set(found.filter((m) => m.confidence === "exact_number" || m.confidence === "amount_and_name").map((m) => m.invoice.id));
+			setSelectedIds(preselected);
+		} catch {
+			setParseError("Die CSV-Datei konnte nicht gelesen werden.");
+		}
+	};
+	const toggleSelect = (invoiceId) => {
+		setSelectedIds((prev) => {
+			const next = new Set(prev);
+			if (next.has(invoiceId)) next.delete(invoiceId);
+			else next.add(invoiceId);
+			return next;
+		});
+	};
+	const handleConfirm = () => {
+		const ids = Array.from(selectedIds);
+		if (ids.length === 0) return;
+		onApplyPaid(ids);
+		onClose();
+	};
+	const badgeForConfidence = (c) => {
+		if (c === "exact_number") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: "rounded-md bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300",
+			children: "Exakt (Rechnungsnr.)"
+		});
+		if (c === "amount_and_name") return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: "rounded-md bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300",
+			children: "Wahrscheinlich"
+		});
+		return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: "rounded-md bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950/70 dark:text-amber-300",
+			children: "Betrag passt"
+		});
+	};
+	return (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		role: "dialog",
+		"aria-modal": "true",
+		"aria-label": "Kontoabgleich per CSV",
+		onClick: onClose,
+		className: "fixed inset-0 z-[170] flex items-center justify-center bg-slate-950/60 p-3 backdrop-blur-xs sm:p-4",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			onClick: (e) => e.stopPropagation(),
+			className: "flex max-h-[88vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-[#2a2045]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-2.5",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Landmark, { className: "h-5 w-5 text-violet-600 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							className: "font-display text-base font-bold text-slate-900 dark:text-slate-100",
+							children: "Zahlungsabgleich (Bank-CSV)"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+							className: "text-xs text-slate-500 dark:text-slate-400",
+							children: [openInvoiceCount, " offene Rechnung(en) zum automatischen Abgleich"]
+						})] })]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: onClose,
+						"aria-label": "Dialog schließen",
+						className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-200 cursor-pointer",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
+					})]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex-1 space-y-4 overflow-y-auto p-5",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "rounded-xl border border-dashed border-slate-300 bg-slate-50/80 p-4 text-center dark:border-[#3b2d5e] dark:bg-[#211936]/70",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									ref: fileInputRef,
+									type: "file",
+									accept: ".csv,text/csv,text/plain",
+									onChange: (e) => void handleFileChange(e),
+									className: "hidden"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileUp, { className: "mx-auto h-7 w-7 text-violet-600 dark:text-violet-400" }),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-2 text-xs font-medium text-slate-700 dark:text-slate-200",
+									children: fileName ? `Geladen: ${fileName} (${transactions.length} Zahlungseingänge erkannt)` : "CSV-Umsatzexport deiner Bank auswählen (Sparkasse, Volksbank, ING, DKB, N26, Commerzbank…)"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-1 text-[11px] text-slate-500 dark:text-slate-400",
+									children: "Die Datei wird vollständig lokal auf deinem Gerät ausgewertet — keine Bankdaten werden hochgeladen."
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => fileInputRef.current?.click(),
+									className: "mt-3 inline-flex items-center gap-2 rounded-xl ui-accent-btn px-4 py-2 text-xs font-semibold text-white cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-3.5 w-3.5" }), fileName ? "Andere CSV-Datei wählen" : "Bank-CSV auswählen"]
+								})
+							]
+						}),
+						parseError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300",
+							children: parseError
+						}),
+						fileName && !parseError && matches.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-600 dark:border-[#2a2045] dark:bg-[#211936] dark:text-slate-300",
+							children: [
+								"Keine offenen Rechnungen passend zu den ",
+								transactions.length,
+								" gefundenen Zahlungseingängen erkannt."
+							]
+						}),
+						matches.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-200",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [matches.length, " Zuordnung(en) gefunden"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "text-slate-500 dark:text-slate-400",
+									children: [selectedIds.size, " ausgewählt"]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "space-y-2",
+								children: matches.map((m) => {
+									const checked = selectedIds.has(m.invoice.id);
+									const invAmount = m.invoice.isSmallBusiness ? m.invoice.netTotal : m.invoice.grossTotal;
+									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+										className: `flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition-colors ${checked ? "border-violet-400 bg-violet-50/60 dark:border-violet-500/70 dark:bg-violet-950/25" : "border-slate-200 bg-white hover:bg-slate-50 dark:border-[#2a2045] dark:bg-[#211936]/50 dark:hover:bg-[#211936]"}`,
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "checkbox",
+											checked,
+											onChange: () => toggleSelect(m.invoice.id),
+											className: "mt-1 h-4 w-4 rounded border-slate-300 text-violet-600 focus:ring-violet-500"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "min-w-0 flex-1 space-y-1",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex flex-wrap items-center justify-between gap-2",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex flex-wrap items-center gap-2",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-mono text-xs font-bold text-slate-900 dark:text-white",
+																children: m.invoice.invoiceNumber
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "text-xs font-medium text-slate-700 dark:text-slate-200",
+																children: m.invoice.customerSnapshot.companyName
+															}),
+															badgeForConfidence(m.confidence)
+														]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: "font-mono text-xs font-bold text-emerald-700 tabular-nums dark:text-emerald-400",
+														children: ["+", formatCurrency(m.transaction.amount)]
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+													className: "text-[11px] text-slate-600 dark:text-slate-300",
+													children: [
+														m.reason,
+														" (Rechnungsbetrag: ",
+														formatCurrency(invAmount),
+														")"
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+													className: "truncate text-[11px] text-slate-500 dark:text-slate-400",
+													children: [
+														m.transaction.date ? `${formatDateDE(m.transaction.date)} · ` : "",
+														m.transaction.payer ? `${m.transaction.payer} · ` : "",
+														m.transaction.purpose
+													]
+												})
+											]
+										})]
+									}, m.invoice.id);
+								})
+							})]
+						})
+					]
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50/70 px-5 py-3.5 dark:border-[#2a2045] dark:bg-[#120d1f]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: onClose,
+						className: "rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+						children: "Abbrechen"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: handleConfirm,
+						disabled: selectedIds.size === 0,
+						className: "inline-flex items-center gap-1.5 rounded-xl ui-accent-btn px-4 py-2 text-xs font-semibold text-white disabled:opacity-40 cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }), selectedIds.size > 0 ? `${selectedIds.size} als bezahlt markieren` : "Als bezahlt markieren"]
+					})]
+				})
+			]
+		})
+	}), document.body);
+};
 // src/components/SignaturePadModal.tsx
 function SignaturePadModal({ open, title, subtitle, initialSignature, defaultSignerName = "", onClose, onSave }) {
 	const canvasRef = (0, import_react.useRef)(null);
@@ -76555,7 +78937,7 @@ function SignaturePadModal({ open, title, subtitle, initialSignature, defaultSig
 	});
 }
 // src/components/InvoicesView.tsx
-function InvoicesView({ company, customers, products, timeEntries, expenses = [], invoices, nextcloud, preselectedDraft, onClearPreselectedDraft, onCreateInvoice, onUpdateInvoice, onUpdateInvoiceStatus, onMarkInvoiceUploaded, onSaveSignature, onDeleteSignature, onToggleArchiveInvoice, onDeleteInvoice, onNotify }) {
+function InvoicesView({ company, customers, products, timeEntries, expenses = [], invoices, nextcloud, preselectedDraft, onClearPreselectedDraft, onCreateInvoice, onUpdateInvoice, onUpdateInvoiceStatus, onMarkInvoicesPaid, onMarkInvoiceUploaded, onSaveSignature, onDeleteSignature, onToggleArchiveInvoice, onDeleteInvoice, onNotify }) {
 	const [statusFilter, setStatusFilter] = (0, import_react.useState)("all");
 	const [docFilter, setDocFilter] = (0, import_react.useState)("all");
 	const [archiveFilter, setArchiveFilter] = (0, import_react.useState)("active");
@@ -76565,6 +78947,8 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 	const [showPreviewMenu, setShowPreviewMenu] = (0, import_react.useState)(false);
 	const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = (0, import_react.useState)(null);
 	const [uploadingId, setUploadingId] = (0, import_react.useState)(null);
+	const [sendingEmailId, setSendingEmailId] = (0, import_react.useState)(null);
+	const [reconcileOpen, setReconcileOpen] = (0, import_react.useState)(false);
 	const [signatureModalOpen, setSignatureModalOpen] = (0, import_react.useState)(false);
 	const [documentType, setDocumentType] = (0, import_react.useState)("invoice");
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
@@ -77113,6 +79497,24 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 			onNotify(err instanceof Error ? err.message : "Zahlungserinnerung konnte nicht erstellt werden.", true);
 		}
 	};
+	const handleSendEmail = async (inv, mode) => {
+		setSendingEmailId(inv.id);
+		try {
+			onNotify((await sendDocumentByEmail(inv, company, mode)).message);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "E-Mail-Versand konnte nicht gestartet werden.", true);
+		} finally {
+			setSendingEmailId(null);
+		}
+	};
+	const handleApplyReconcilePaid = (invoiceIds) => {
+		if (invoiceIds.length === 0) return;
+		if (onMarkInvoicesPaid) onMarkInvoicesPaid(invoiceIds);
+		else {
+			for (const id of invoiceIds) onUpdateInvoiceStatus(id, "Bezahlt");
+			onNotify(`${invoiceIds.length} Rechnung(en) per Kontoabgleich als bezahlt markiert.`);
+		}
+	};
 	const getLinkedEntriesForInvoice = (inv) => {
 		const idSet = /* @__PURE__ */ new Set();
 		for (const li of inv.lineItems) for (const tid of li.timeEntryIds ?? []) idSet.add(tid);
@@ -77237,12 +79639,17 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex flex-wrap items-center gap-2 shrink-0",
 					children: [
-						invoices.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						invoices.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+							type: "button",
+							onClick: () => setReconcileOpen(true),
+							className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Landmark, { className: "h-4 w-4 text-emerald-600 dark:text-emerald-400" }), "Kontoabgleich"]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							type: "button",
 							onClick: () => void handleExportCsv(),
 							className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FileSpreadsheet, { className: "h-4 w-4" }), "CSV-Export"]
-						}),
+						})] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							type: "button",
 							onClick: () => openBuilderFresh("quote"),
@@ -78124,7 +80531,7 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
 													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "h-3.5 w-3.5" }), "Tätigkeitsbericht (PDF)"]
 												}),
-												isInvoiceOverdue(previewInvoice) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												isInvoiceOverdue(previewInvoice) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 													type: "button",
 													onClick: () => {
 														setShowPreviewMenu(false);
@@ -78132,7 +80539,16 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 													},
 													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/60 cursor-pointer",
 													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-3.5 w-3.5" }), "Zahlungserinnerung (PDF)"]
-												}),
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => {
+														setShowPreviewMenu(false);
+														handleSendEmail(previewInvoice, "reminder");
+													},
+													disabled: sendingEmailId === previewInvoice.id,
+													className: "flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50 dark:text-red-300 dark:hover:bg-red-950/60 cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Mail, { className: "h-3.5 w-3.5" }), "Mahnung per E-Mail"]
+												})] }),
 												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 													type: "button",
 													onClick: () => {
@@ -78198,6 +80614,14 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 										onClick: () => setSignatureModalOpen(true),
 										className: "inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200 whitespace-nowrap shrink-0 cursor-pointer",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PenTool, { className: "h-3.5 w-3.5" }), "Abnahme"]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => void handleSendEmail(previewInvoice),
+										disabled: sendingEmailId === previewInvoice.id,
+										title: "Mit E-Mail-Vorlage & PDF-Anhang versenden",
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Mail, { className: "h-3.5 w-3.5" }), sendingEmailId === previewInvoice.id ? "Öffne…" : "E-Mail"]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 										type: "button",
@@ -78602,9 +81026,123 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 					}
 					setSignatureModalOpen(false);
 				}
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BankReconcileModal, {
+				open: reconcileOpen,
+				onClose: () => setReconcileOpen(false),
+				invoices,
+				onApplyPaid: handleApplyReconcilePaid
 			})
 		]
 	});
+}
+// src/utils/appUpdater.ts
+var WEB_APP_VERSION = "1.1.0";
+function normalizeVersionParts(version) {
+	return version.trim().replace(/^v/i, "").split("-")[0].split(".").map((p) => {
+		const n = parseInt(p, 10);
+		return Number.isFinite(n) ? n : 0;
+	});
+}
+function compareVersions(a, b) {
+	const pa = normalizeVersionParts(a);
+	const pb = normalizeVersionParts(b);
+	const maxLen = Math.max(pa.length, pb.length, 3);
+	for (let i = 0; i < maxLen; i++) {
+		const va = pa[i] ?? 0;
+		const vb = pb[i] ?? 0;
+		if (va > vb) return 1;
+		if (va < vb) return -1;
+	}
+	return 0;
+}
+function sanitizeGithubRepo(input) {
+	if (!input) return "";
+	let s = input.trim();
+	s = s.replace(/^https?:\/\/(www\.)?github\.com\//i, "");
+	s = s.replace(/\.git$/i, "");
+	s = s.replace(/^\/+|\/+$/g, "");
+	const parts = s.split("/").filter(Boolean);
+	if (parts.length < 2) return "";
+	return `${parts[0]}/${parts[1]}`;
+}
+async function getCurrentAppVersion() {
+	const isNative = Capacitor.isNativePlatform();
+	if (isNative) try {
+		const info = await TaktWerkNative.getAppVersion();
+		return {
+			versionName: info.versionName || "1.1.0",
+			versionCode: info.versionCode || 100,
+			isNative: true
+		};
+	} catch {}
+	return {
+		versionName: WEB_APP_VERSION,
+		versionCode: 100,
+		isNative
+	};
+}
+async function checkGithubReleaseUpdate(repoInput) {
+	const repo = sanitizeGithubRepo(repoInput);
+	if (!repo) throw new Error("Bitte ein gültiges GitHub-Repository im Format „Benutzer/Repository“ angeben.");
+	return trackActivity("Prüfe auf neue TaktWerk-Version…", async (update) => {
+		update(25, repo);
+		const current = await getCurrentAppVersion();
+		const res = await fetch(`https://api.github.com/repos/${repo}/releases/latest`, { headers: { Accept: "application/vnd.github+json" } });
+		if (res.status === 404) throw new Error(`Kein veröffentlichtes GitHub-Release unter „${repo}“ gefunden. Starte zuerst einen Android-Build oder erstelle ein Release mit APK.`);
+		if (!res.ok) throw new Error(`GitHub API antwortet mit HTTP ${res.status}.`);
+		update(70, "Release-Daten werden ausgewertet…");
+		const data = await res.json();
+		const tagName = (data.tag_name || "").trim();
+		const latestVersion = tagName.replace(/^v/i, "") || "0.0.0";
+		const apkAsset = (data.assets || []).find((a) => (a.name || "").toLowerCase().endsWith(".apk"));
+		const isNewer = compareVersions(latestVersion, current.versionName) > 0;
+		update(100, isNewer ? `Version ${latestVersion} verfügbar` : "Aktuell");
+		return {
+			available: isNewer,
+			currentVersion: current.versionName,
+			latestVersion,
+			tagName: tagName || `v${latestVersion}`,
+			releaseName: data.name || tagName || `Version ${latestVersion}`,
+			body: (data.body || "").trim(),
+			publishedAt: data.published_at || "",
+			htmlUrl: data.html_url || `https://github.com/${repo}/releases`,
+			apkDownloadUrl: apkAsset?.browser_download_url || null,
+			apkFileName: apkAsset?.name || `TaktWerk-${latestVersion}.apk`,
+			apkSizeBytes: typeof apkAsset?.size === "number" ? apkAsset.size : null
+		};
+	}, 10, repo);
+}
+async function downloadAndInstallReleaseUpdate(release) {
+	if (!release.apkDownloadUrl) throw new Error("Dieses GitHub-Release enthält keine APK-Datei. Öffne die Release-Seite im Browser.");
+	if (Capacitor.isNativePlatform()) return trackActivity(`Lade Update ${release.tagName} herunter…`, async (update) => {
+		update(35, release.apkFileName || "TaktWerk.apk");
+		const result = await TaktWerkNative.downloadAndInstallApk({
+			url: release.apkDownloadUrl,
+			filename: release.apkFileName || `TaktWerk-${release.latestVersion}.apk`
+		});
+		update(100, "Installationsdialog geöffnet");
+		if (result.needsPermission) return {
+			startedInstall: false,
+			needsPermission: true,
+			message: result.message || "Bitte erlaube „Apps aus dieser Quelle installieren“ in den Android-Einstellungen und tippe erneut auf Installieren."
+		};
+		return {
+			startedInstall: true,
+			message: result.message || `Android-Update-Installer für ${release.tagName} wurde gestartet. Alle Daten bleiben erhalten.`
+		};
+	}, 15, release.apkFileName || "APK");
+	const link = document.createElement("a");
+	link.href = release.apkDownloadUrl;
+	link.download = release.apkFileName || `TaktWerk-${release.latestVersion}.apk`;
+	link.rel = "noopener noreferrer";
+	document.body.appendChild(link);
+	link.click();
+	document.body.removeChild(link);
+	return {
+		startedInstall: true,
+		message: `APK-Download (${release.apkFileName}) gestartet. Übertrage und installiere die Datei auf deinem Android-Gerät.`
+	};
 }
 // src/utils/soundReminder.ts
 var REMINDER_SOUND_OPTIONS = {
@@ -79144,6 +81682,137 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 	const [exportingReport, setExportingReport] = (0, import_react.useState)(false);
 	const nativeApp = isNativeCapacitor();
 	const [serverUrl, setServerUrl] = (0, import_react.useState)(() => getBackendServerUrl());
+	const [appVersionInfo, setAppVersionInfo] = (0, import_react.useState)(null);
+	const [checkingUpdate, setCheckingUpdate] = (0, import_react.useState)(false);
+	const [installingUpdate, setInstallingUpdate] = (0, import_react.useState)(false);
+	const [releaseInfo, setReleaseInfo] = (0, import_react.useState)(null);
+	const [updateError, setUpdateError] = (0, import_react.useState)(null);
+	(0, import_react.useEffect)(() => {
+		let active = true;
+		getCurrentAppVersion().then((info) => {
+			if (active) setAppVersionInfo(info);
+		});
+		return () => {
+			active = false;
+		};
+	}, []);
+	const [pinDraft, setPinDraft] = (0, import_react.useState)("");
+	const [pinConfirm, setPinConfirm] = (0, import_react.useState)("");
+	const [savingPin, setSavingPin] = (0, import_react.useState)(false);
+	const [biometricSupported, setBiometricSupported] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		if (!nativeApp) return;
+		let active = true;
+		TaktWerkNative.getBiometricAvailability().then((res) => {
+			if (active) setBiometricSupported(Boolean(res.available));
+		}).catch(() => {});
+		return () => {
+			active = false;
+		};
+	}, [nativeApp]);
+	const [activeEmailField, setActiveEmailField] = (0, import_react.useState)("invoiceBody");
+	const effectiveEmailTemplates = (0, import_react.useMemo)(() => getEffectiveEmailTemplates(companyForm), [companyForm]);
+	const updateEmailTemplateField = (field, value) => {
+		setCompanyForm((prev) => ({
+			...prev,
+			emailTemplates: {
+				...getEffectiveEmailTemplates(prev),
+				[field]: value
+			}
+		}));
+	};
+	const insertEmailPlaceholder = (token) => {
+		const currentVal = effectiveEmailTemplates[activeEmailField] || "";
+		const spacer = currentVal && !currentVal.endsWith(" ") && !currentVal.endsWith("\n") ? " " : "";
+		updateEmailTemplateField(activeEmailField, `${currentVal}${spacer}${token}`);
+	};
+	const handleResetEmailTemplates = () => {
+		setCompanyForm((prev) => ({
+			...prev,
+			emailTemplates: { ...DEFAULT_EMAIL_TEMPLATES }
+		}));
+		onNotify("Standard-E-Mail-Vorlagen wiederhergestellt. Zum Übernehmen speichern.");
+	};
+	const handleCheckForUpdates = async () => {
+		const cleaned = sanitizeGithubRepo(companyForm.githubUpdateRepo);
+		if (!cleaned) {
+			onNotify("Bitte zuerst ein GitHub-Repository (z. B. benutzer/taktwerk) eintragen.", true);
+			return;
+		}
+		setCheckingUpdate(true);
+		setUpdateError(null);
+		try {
+			const info = await checkGithubReleaseUpdate(cleaned);
+			setReleaseInfo(info);
+			if (cleaned !== companyForm.githubUpdateRepo) {
+				const updated = {
+					...companyForm,
+					githubUpdateRepo: cleaned
+				};
+				setCompanyForm(updated);
+				onSaveCompany(updated);
+			}
+			if (info.available) onNotify(`Neue TaktWerk-Version ${info.tagName} verfügbar!`);
+			else onNotify(`TaktWerk ist aktuell (v${info.currentVersion}).`);
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : "Update-Prüfung fehlgeschlagen.";
+			setUpdateError(msg);
+			onNotify(msg, true);
+		} finally {
+			setCheckingUpdate(false);
+		}
+	};
+	const handleInstallUpdate = async () => {
+		if (!releaseInfo) return;
+		setInstallingUpdate(true);
+		try {
+			const res = await downloadAndInstallReleaseUpdate(releaseInfo);
+			onNotify(res.message, Boolean(res.needsPermission));
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Update-Installation fehlgeschlagen.", true);
+		} finally {
+			setInstallingUpdate(false);
+		}
+	};
+	const handleSavePin = async () => {
+		const cleanPin = pinDraft.trim();
+		if (!/^\d{4,6}$/.test(cleanPin)) {
+			onNotify("Die PIN muss aus 4 bis 6 Ziffern bestehen.", true);
+			return;
+		}
+		if (cleanPin !== pinConfirm.trim()) {
+			onNotify("Die beiden PIN-Eingaben stimmen nicht überein.", true);
+			return;
+		}
+		setSavingPin(true);
+		try {
+			const hashed = await hashPin(cleanPin);
+			const nextCompany = {
+				...companyForm,
+				appLockPinHash: hashed,
+				appLockEnabled: true
+			};
+			setCompanyForm(nextCompany);
+			onSaveCompany(nextCompany);
+			setPinDraft("");
+			setPinConfirm("");
+			onNotify("App-Sperre mit PIN wurde gespeichert und aktiviert.");
+		} finally {
+			setSavingPin(false);
+		}
+	};
+	const handleRemovePin = () => {
+		const nextCompany = {
+			...companyForm,
+			appLockPinHash: "",
+			appLockEnabled: biometricSupported && Boolean(companyForm.appLockBiometric) ? companyForm.appLockEnabled : false
+		};
+		setCompanyForm(nextCompany);
+		onSaveCompany(nextCompany);
+		setPinDraft("");
+		setPinConfirm("");
+		onNotify("Gespeicherte PIN wurde entfernt.");
+	};
 	const [homeAddressQuery, setHomeAddressQuery] = (0, import_react.useState)(() => company.homeBaseLocation?.address ?? "");
 	const [homeSearching, setHomeSearching] = (0, import_react.useState)(false);
 	const [homeLocating, setHomeLocating] = (0, import_react.useState)(false);
@@ -80032,394 +82701,659 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 			activeTab === "general" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 				onSubmit: handleCompanySubmit,
 				className: "space-y-6",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-					className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "App-Oberfläche anpassen"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
-								size: "sm",
-								title: "App-Oberfläche anpassen",
-								text: "Steuere Akzentfarbe, Informationsdichte, Textgröße, Startansicht und Wischgesten."
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "space-y-3",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "App-Akzentfarbe (Vorlagen oder eigene Wunschfarbe)"
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: "flex flex-wrap items-center gap-2",
-									children: UI_ACCENTS.map((item) => {
-										const selected = (companyForm.uiAccent ?? "violet") === item.id;
-										return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-											type: "button",
-											onClick: () => setCompanyForm({
-												...companyForm,
-												uiAccent: item.id
-											}),
-											className: `inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors cursor-pointer ${selected ? "border-slate-900 bg-slate-100 text-slate-900 dark:border-violet-400 dark:bg-[#2a2045] dark:text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-300"}`,
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-3 w-3 shrink-0 rounded-full ring-1 ring-black/15 dark:ring-white/20 ${item.dotClass}` }), item.label]
-										}, item.id);
-									})
-								}),
-								companyForm.uiAccent === "custom" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-[#3b2d5e] dark:bg-[#211936]/70 space-y-3",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex flex-wrap items-center gap-3",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "color",
-												value: /^#[0-9a-fA-F]{6}$/.test((companyForm.uiCustomAccentHex || "").trim()) ? companyForm.uiCustomAccentHex.trim() : "#7c3aed",
-												onChange: (e) => setCompanyForm({
-													...companyForm,
-													uiAccent: "custom",
-													uiCustomAccentHex: e.target.value
-												}),
-												"aria-label": "Eigene App-Akzentfarbe wählen",
-												className: "h-9 w-12 cursor-pointer rounded-lg border border-slate-300 bg-white p-0.5 dark:border-[#4b3a73] dark:bg-[#171126]"
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "text",
-												value: companyForm.uiCustomAccentHex ?? "#7c3aed",
-												onChange: (e) => {
-													const raw = e.target.value;
-													const normalized = raw && !raw.startsWith("#") ? `#${raw}` : raw;
-													setCompanyForm({
-														...companyForm,
-														uiAccent: "custom",
-														uiCustomAccentHex: normalized.slice(0, 7)
-													});
-												},
-												placeholder: "#7c3aed",
-												"aria-label": "Hex-Farbcode der App-Akzentfarbe",
-												className: "w-28 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-xs text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
-											})]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "flex flex-wrap items-center gap-1.5",
-											children: CUSTOM_UI_SWATCHES.map((swatch) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+									children: "App-Oberfläche anpassen"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+									size: "sm",
+									title: "App-Oberfläche anpassen",
+									text: "Steuere Akzentfarbe, Informationsdichte, Textgröße, Startansicht und Wischgesten."
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "space-y-3",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "App-Akzentfarbe (Vorlagen oder eigene Wunschfarbe)"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex flex-wrap items-center gap-2",
+										children: UI_ACCENTS.map((item) => {
+											const selected = (companyForm.uiAccent ?? "violet") === item.id;
+											return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 												type: "button",
 												onClick: () => setCompanyForm({
 													...companyForm,
-													uiAccent: "custom",
-													uiCustomAccentHex: swatch.hex
+													uiAccent: item.id
 												}),
-												title: `${swatch.label} (${swatch.hex})`,
-												className: "inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-2.5 w-2.5 rounded-full ${swatch.dotClass}` }), swatch.label]
-											}, swatch.hex))
+												className: `inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors cursor-pointer ${selected ? "border-slate-900 bg-slate-100 text-slate-900 dark:border-violet-400 dark:bg-[#2a2045] dark:text-white" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-300"}`,
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-3 w-3 shrink-0 rounded-full ring-1 ring-black/15 dark:ring-white/20 ${item.dotClass}` }), item.label]
+											}, item.id);
+										})
+									}),
+									companyForm.uiAccent === "custom" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 dark:border-[#3b2d5e] dark:bg-[#211936]/70 space-y-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-wrap items-center gap-3",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "color",
+													value: /^#[0-9a-fA-F]{6}$/.test((companyForm.uiCustomAccentHex || "").trim()) ? companyForm.uiCustomAccentHex.trim() : "#7c3aed",
+													onChange: (e) => setCompanyForm({
+														...companyForm,
+														uiAccent: "custom",
+														uiCustomAccentHex: e.target.value
+													}),
+													"aria-label": "Eigene App-Akzentfarbe wählen",
+													className: "h-9 w-12 cursor-pointer rounded-lg border border-slate-300 bg-white p-0.5 dark:border-[#4b3a73] dark:bg-[#171126]"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: companyForm.uiCustomAccentHex ?? "#7c3aed",
+													onChange: (e) => {
+														const raw = e.target.value;
+														const normalized = raw && !raw.startsWith("#") ? `#${raw}` : raw;
+														setCompanyForm({
+															...companyForm,
+															uiAccent: "custom",
+															uiCustomAccentHex: normalized.slice(0, 7)
+														});
+													},
+													placeholder: "#7c3aed",
+													"aria-label": "Hex-Farbcode der App-Akzentfarbe",
+													className: "w-28 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 font-mono text-xs text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex flex-wrap items-center gap-1.5",
+												children: CUSTOM_UI_SWATCHES.map((swatch) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => setCompanyForm({
+														...companyForm,
+														uiAccent: "custom",
+														uiCustomAccentHex: swatch.hex
+													}),
+													title: `${swatch.label} (${swatch.hex})`,
+													className: "inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-2.5 w-2.5 rounded-full ${swatch.dotClass}` }), swatch.label]
+												}, swatch.hex))
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Live-Vorschau:" }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "inline-flex items-center rounded-md ui-accent-btn px-2.5 py-1 font-semibold text-white",
+													children: "Aktiver Button"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "inline-flex items-center rounded-md ui-accent-selected px-2.5 py-1 font-semibold",
+													children: "Ausgewählter Eintrag"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-[11px] opacity-80",
+													children: "(Unten speichern, um dauerhaft zu übernehmen)"
+												})
+											]
 										})]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex flex-wrap items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Live-Vorschau:" }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "inline-flex items-center rounded-md ui-accent-btn px-2.5 py-1 font-semibold text-white",
-												children: "Aktiver Button"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "inline-flex items-center rounded-md ui-accent-selected px-2.5 py-1 font-semibold",
-												children: "Ausgewählter Eintrag"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "text-[11px] opacity-80",
-												children: "(Unten speichern, um dauerhaft zu übernehmen)"
-											})
-										]
-									})]
-								})
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "grid grid-cols-1 gap-4 md:grid-cols-4",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Darstellungsdichte"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-									value: companyForm.uiDensity ?? "comfortable",
-									onChange: (val) => setCompanyForm({
-										...companyForm,
-										uiDensity: val
-									}),
-									ariaLabel: "Darstellungsdichte",
-									options: [{
-										value: "comfortable",
-										label: "Komfortabel (Standard)"
-									}, {
-										value: "compact",
-										label: "Kompakt (mehr Inhalt)"
-									}]
-								})] }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Schriftgröße der App"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-									value: companyForm.uiFontScale ?? "normal",
-									onChange: (val) => setCompanyForm({
-										...companyForm,
-										uiFontScale: val
-									}),
-									ariaLabel: "Schriftgröße der App",
-									options: [{
-										value: "normal",
-										label: "Normal"
-									}, {
-										value: "large",
-										label: "Groß (bessere Lesbarkeit)"
-									}]
-								})] }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Standard-Startbereich"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-									value: companyForm.defaultStartSection ?? "tracker",
-									onChange: (val) => setCompanyForm({
-										...companyForm,
-										defaultStartSection: val
-									}),
-									ariaLabel: "Standard-Startbereich",
-									options: START_SECTION_OPTIONS.map((opt) => ({
-										value: opt.id,
-										label: opt.label
-									}))
-								})] }),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Tagesziel (Stunden-Widget)"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "number",
-									min: "1",
-									max: "24",
-									step: "0.5",
-									value: companyForm.dailyGoalHours ?? 8,
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-4 md:grid-cols-4",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Darstellungsdichte"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: companyForm.uiDensity ?? "comfortable",
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											uiDensity: val
+										}),
+										ariaLabel: "Darstellungsdichte",
+										options: [{
+											value: "comfortable",
+											label: "Komfortabel (Standard)"
+										}, {
+											value: "compact",
+											label: "Kompakt (mehr Inhalt)"
+										}]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Schriftgröße der App"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: companyForm.uiFontScale ?? "normal",
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											uiFontScale: val
+										}),
+										ariaLabel: "Schriftgröße der App",
+										options: [{
+											value: "normal",
+											label: "Normal"
+										}, {
+											value: "large",
+											label: "Groß (bessere Lesbarkeit)"
+										}]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Standard-Startbereich"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: companyForm.defaultStartSection ?? "tracker",
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											defaultStartSection: val
+										}),
+										ariaLabel: "Standard-Startbereich",
+										options: START_SECTION_OPTIONS.map((opt) => ({
+											value: opt.id,
+											label: opt.label
+										}))
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Tagesziel (Stunden-Widget)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "number",
+										min: "1",
+										max: "24",
+										step: "0.5",
+										value: companyForm.dailyGoalHours ?? 8,
+										onChange: (e) => setCompanyForm({
+											...companyForm,
+											dailyGoalHours: Math.max(1, Number(e.target.value) || 8)
+										}),
+										className: `${inputClass} font-mono`
+									})] })
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: companyForm.swipeNavigationEnabled !== false,
 									onChange: (e) => setCompanyForm({
 										...companyForm,
-										dailyGoalHours: Math.max(1, Number(e.target.value) || 8)
+										swipeNavigationEnabled: e.target.checked
 									}),
-									className: `${inputClass} font-mono`
-								})] })
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-							className: "flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "checkbox",
-								checked: companyForm.swipeNavigationEnabled !== false,
-								onChange: (e) => setCompanyForm({
-									...companyForm,
-									swipeNavigationEnabled: e.target.checked
-								}),
-								className: "h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-							}), "Wischgesten am äußeren Bildschirmrand aktivieren (vom linken/rechten Rand wischen für Zurück / Vor; schützt Unterschriften & Formulare)"]
-						})
-					]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-					className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-								className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-								children: "Kategorien für Kunden, Produkte, Kosten & interne Arbeiten"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
-								size: "sm",
-								title: "Kategorien verwalten",
-								text: "Stehen in der Kunden-, Produkt-, Beleg-/Kosten-, NFC- und Zeiterfassung als Schnellauswahl & Filter zur Verfügung."
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "grid grid-cols-1 gap-6 md:grid-cols-2",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "space-y-3",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-											className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
-											children: "Kunden-Kategorien"
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "flex flex-wrap gap-1.5",
-											children: (companyForm.customerCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-												className: "inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200",
-												children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => removeCategory("customer", cat),
-													"aria-label": `${cat} entfernen`,
-													className: "text-slate-400 hover:text-red-600 cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
-												})]
-											}, cat))
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "text",
-												value: newCustomerCategory,
-												onChange: (e) => setNewCustomerCategory(e.target.value),
-												onKeyDown: (e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-														addCategory("customer");
-													}
-												},
-												placeholder: "Neue Kunden-Kategorie...",
-												className: inputClass
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-												type: "button",
-												onClick: () => addCategory("customer"),
-												className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
-											})]
-										})
-									]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "space-y-3",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-											className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
-											children: "Tätigkeiten- & Produkt-Kategorien"
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "flex flex-wrap gap-1.5",
-											children: (companyForm.productCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-												className: "inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200",
-												children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => removeCategory("product", cat),
-													"aria-label": `${cat} entfernen`,
-													className: "text-slate-400 hover:text-red-600 cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
-												})]
-											}, cat))
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "text",
-												value: newProductCategory,
-												onChange: (e) => setNewProductCategory(e.target.value),
-												onKeyDown: (e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-														addCategory("product");
-													}
-												},
-												placeholder: "Neue Produkt-Kategorie...",
-												className: inputClass
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-												type: "button",
-												onClick: () => addCategory("product"),
-												className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
-											})]
-										})
-									]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "space-y-3",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-											className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
-											children: "Kosten- & Ausgaben-Kategorien (Belege & Betriebskosten)"
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "flex flex-wrap gap-1.5",
-											children: (companyForm.expenseCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-												className: "inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50/70 px-2.5 py-1 text-xs font-medium text-rose-900 dark:border-rose-800/60 dark:bg-rose-950/40 dark:text-rose-200",
-												children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => removeCategory("expense", cat),
-													"aria-label": `${cat} entfernen`,
-													className: "text-rose-500/80 hover:text-red-600 cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
-												})]
-											}, cat))
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "text",
-												value: newExpenseCategory,
-												onChange: (e) => setNewExpenseCategory(e.target.value),
-												onKeyDown: (e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-														addCategory("expense");
-													}
-												},
-												placeholder: "Neue Kosten-Kategorie (z. B. Miete, Material)...",
-												className: inputClass
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-												type: "button",
-												onClick: () => addCategory("expense"),
-												className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
-											})]
-										})
-									]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "space-y-3",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-											className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
-											children: "Interne Tätigkeiten (Zeiterfassung & NFC ohne Kunde)"
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "flex flex-wrap gap-1.5",
-											children: (companyForm.internalCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-												className: "inline-flex items-center gap-1 rounded-md border border-amber-200 bg-amber-50/70 px-2.5 py-1 text-xs font-medium text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200",
-												children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => removeCategory("internal", cat),
-													"aria-label": `${cat} entfernen`,
-													className: "text-amber-600/70 hover:text-red-600 cursor-pointer",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
-												})]
-											}, cat))
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "text",
-												value: newInternalCategory,
-												onChange: (e) => setNewInternalCategory(e.target.value),
-												onKeyDown: (e) => {
-													if (e.key === "Enter") {
-														e.preventDefault();
-														addCategory("internal");
-													}
-												},
-												placeholder: "z. B. Kundenakquise, Reinigung...",
-												className: inputClass
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-												type: "button",
-												onClick: () => addCategory("internal"),
-												className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
-											})]
-										})
-									]
-								})
-							]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "flex justify-end pt-2",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "submit",
-								className: "rounded-lg ui-accent-active px-5 py-2 text-sm font-semibold text-white cursor-pointer",
-								children: "Oberfläche & Kategorien speichern"
+									className: "h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+								}), "Wischgesten am äußeren Bildschirmrand aktivieren (vom linken/rechten Rand wischen für Zurück / Vor; schützt Unterschriften & Formulare)"]
 							})
-						})
-					]
-				})]
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-1.5 border-b border-slate-200 pb-3 dark:border-[#2e2349]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+									children: "Kategorien für Kunden, Produkte, Kosten & interne Arbeiten"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+									size: "sm",
+									title: "Kategorien verwalten",
+									text: "Stehen in der Kunden-, Produkt-, Beleg-/Kosten-, NFC- und Zeiterfassung als Schnellauswahl & Filter zur Verfügung."
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-6 md:grid-cols-2",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-3",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
+												children: "Kunden-Kategorien"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex flex-wrap gap-1.5",
+												children: (companyForm.customerCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200",
+													children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => removeCategory("customer", cat),
+														"aria-label": `${cat} entfernen`,
+														className: "text-slate-400 hover:text-red-600 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
+													})]
+												}, cat))
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: newCustomerCategory,
+													onChange: (e) => setNewCustomerCategory(e.target.value),
+													onKeyDown: (e) => {
+														if (e.key === "Enter") {
+															e.preventDefault();
+															addCategory("customer");
+														}
+													},
+													placeholder: "Neue Kunden-Kategorie...",
+													className: inputClass
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => addCategory("customer"),
+													className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
+												})]
+											})
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-3",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
+												children: "Tätigkeiten- & Produkt-Kategorien"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex flex-wrap gap-1.5",
+												children: (companyForm.productCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200",
+													children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => removeCategory("product", cat),
+														"aria-label": `${cat} entfernen`,
+														className: "text-slate-400 hover:text-red-600 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
+													})]
+												}, cat))
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: newProductCategory,
+													onChange: (e) => setNewProductCategory(e.target.value),
+													onKeyDown: (e) => {
+														if (e.key === "Enter") {
+															e.preventDefault();
+															addCategory("product");
+														}
+													},
+													placeholder: "Neue Produkt-Kategorie...",
+													className: inputClass
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => addCategory("product"),
+													className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
+												})]
+											})
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-3",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
+												children: "Kosten- & Ausgaben-Kategorien (Belege & Betriebskosten)"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex flex-wrap gap-1.5",
+												children: (companyForm.expenseCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50/70 px-2.5 py-1 text-xs font-medium text-rose-900 dark:border-rose-800/60 dark:bg-rose-950/40 dark:text-rose-200",
+													children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => removeCategory("expense", cat),
+														"aria-label": `${cat} entfernen`,
+														className: "text-rose-500/80 hover:text-red-600 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
+													})]
+												}, cat))
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: newExpenseCategory,
+													onChange: (e) => setNewExpenseCategory(e.target.value),
+													onKeyDown: (e) => {
+														if (e.key === "Enter") {
+															e.preventDefault();
+															addCategory("expense");
+														}
+													},
+													placeholder: "Neue Kosten-Kategorie (z. B. Miete, Material)...",
+													className: inputClass
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => addCategory("expense"),
+													className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
+												})]
+											})
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-3",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "block text-xs font-semibold text-slate-700 dark:text-slate-200",
+												children: "Interne Tätigkeiten (Zeiterfassung & NFC ohne Kunde)"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex flex-wrap gap-1.5",
+												children: (companyForm.internalCategories ?? []).map((cat) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-1 rounded-md border border-amber-200 bg-amber-50/70 px-2.5 py-1 text-xs font-medium text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200",
+													children: [cat, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => removeCategory("internal", cat),
+														"aria-label": `${cat} entfernen`,
+														className: "text-amber-600/70 hover:text-red-600 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
+													})]
+												}, cat))
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: newInternalCategory,
+													onChange: (e) => setNewInternalCategory(e.target.value),
+													onKeyDown: (e) => {
+														if (e.key === "Enter") {
+															e.preventDefault();
+															addCategory("internal");
+														}
+													},
+													placeholder: "z. B. Kundenakquise, Reinigung...",
+													className: inputClass
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => addCategory("internal"),
+													className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-3.5 w-3.5" }), "Neu"]
+												})]
+											})
+										]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "flex justify-end pt-2",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg ui-accent-active px-5 py-2 text-sm font-semibold text-white cursor-pointer",
+									children: "Oberfläche & Kategorien speichern"
+								})
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 space-y-5 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Lock, { className: "h-5 w-5 text-blue-700 dark:text-violet-400" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: "App-Sperre (PIN & Biometrie)"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "App-Sperre",
+											text: "Schütze Kundendaten, Rechnungen und Zeiten beim App-Start oder nach kurzer Inaktivität mit einer 4–6-stelligen PIN sowie auf Android zusätzlich per Fingerabdruck oder Face-Unlock."
+										})
+									]
+								}), companyForm.appLockEnabled ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "h-3.5 w-3.5" }), "Aktiv"]
+								}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-[#211936] dark:text-slate-400",
+									children: "Inaktiv"
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "space-y-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "flex items-center gap-2.5 text-sm font-medium text-slate-800 dark:text-slate-100 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "checkbox",
+										checked: Boolean(companyForm.appLockEnabled),
+										onChange: (e) => {
+											const checked = e.target.checked;
+											if (checked && !companyForm.appLockPinHash && !(nativeApp && biometricSupported)) {
+												onNotify("Bitte lege zuerst unten eine 4–6-stellige PIN fest.", true);
+												return;
+											}
+											setCompanyForm({
+												...companyForm,
+												appLockEnabled: checked
+											});
+										},
+										className: "h-4 w-4 rounded border-slate-300 accent-violet-600"
+									}), "App-Sperre beim Öffnen und nach Hintergrund-Wechsel aktivieren"]
+								}), nativeApp && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "checkbox",
+											checked: companyForm.appLockBiometric !== false,
+											disabled: !biometricSupported,
+											onChange: (e) => setCompanyForm({
+												...companyForm,
+												appLockBiometric: e.target.checked
+											}),
+											className: "h-4 w-4 rounded border-slate-300 accent-violet-600 disabled:opacity-50"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Fingerprint, { className: "h-4 w-4 text-violet-500 shrink-0" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: ["Fingerabdruck / Face-Unlock nutzen", !biometricSupported && " (auf diesem Gerät nicht eingerichtet)"] })
+									]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-4 md:grid-cols-3",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Automatisch sperren nach"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: String(companyForm.appLockTimeoutMinutes ?? 1),
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											appLockTimeoutMinutes: Number(val)
+										}),
+										ariaLabel: "Sperr-Timeout",
+										options: [
+											{
+												value: "0",
+												label: "Sofort beim Wegwechseln"
+											},
+											{
+												value: "1",
+												label: "Nach 1 Minute"
+											},
+											{
+												value: "5",
+												label: "Nach 5 Minuten"
+											},
+											{
+												value: "15",
+												label: "Nach 15 Minuten"
+											}
+										]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: companyForm.appLockPinHash ? "Neue PIN (4–6 Ziffern)" : "PIN festlegen (4–6 Ziffern)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "password",
+										inputMode: "numeric",
+										maxLength: 6,
+										value: pinDraft,
+										onChange: (e) => setPinDraft(e.target.value.replace(/\D/g, "").slice(0, 6)),
+										placeholder: "z. B. 2580",
+										className: inputClass
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "PIN bestätigen"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "password",
+										inputMode: "numeric",
+										maxLength: 6,
+										value: pinConfirm,
+										onChange: (e) => setPinConfirm(e.target.value.replace(/\D/g, "").slice(0, 6)),
+										placeholder: "PIN wiederholen",
+										className: inputClass
+									})] })
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2 pt-1",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										disabled: savingPin || pinDraft.length < 4,
+										onClick: () => void handleSavePin(),
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 disabled:opacity-50 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "h-3.5 w-3.5" }), companyForm.appLockPinHash ? "PIN aktualisieren" : "PIN speichern & aktivieren"]
+									}), companyForm.appLockPinHash && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: handleRemovePin,
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" }), "PIN entfernen"]
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg ui-accent-active px-4 py-2 text-xs font-semibold text-white cursor-pointer",
+									children: "Sperreinstellungen speichern"
+								})]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 space-y-5 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-5 w-5 text-blue-700 dark:text-violet-400" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: "App-Updates (GitHub Releases)"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "In-App-Update-Prüfung",
+											text: "Trage dein GitHub-Repository ein, in dem dein Android-APK-Workflow Releases veröffentlicht. TaktWerk prüft dort automatisch auf neuere Versionen und startet auf Android direkt das nahtlose In-Place-Update ohne Datenverlust."
+										})
+									]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs font-semibold text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200",
+									children: [
+										"Installiert: v",
+										appVersionInfo?.versionName ?? "1.1.0",
+										appVersionInfo?.isNative ? ` (Build ${appVersionInfo.versionCode})` : " (Web)"
+									]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-4 md:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "GitHub-Repository (Benutzer/Repository)"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "text",
+									value: companyForm.githubUpdateRepo ?? "",
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										githubUpdateRepo: e.target.value
+									}),
+									placeholder: "z. B. meinname/taktwerk",
+									className: inputClass
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "flex items-end",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+										className: "flex items-center gap-2.5 pb-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "checkbox",
+											checked: companyForm.autoCheckUpdates !== false,
+											onChange: (e) => setCompanyForm({
+												...companyForm,
+												autoCheckUpdates: e.target.checked
+											}),
+											className: "h-4 w-4 rounded border-slate-300 accent-violet-600"
+										}), "Beim App-Start automatisch nach Updates suchen"]
+									})
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									disabled: checkingUpdate,
+									onClick: () => void handleCheckForUpdates(),
+									className: "inline-flex items-center gap-1.5 rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white disabled:opacity-60 cursor-pointer",
+									children: [checkingUpdate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, { className: "h-3.5 w-3.5" }), "Nach Updates suchen"]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer",
+									children: "Repository speichern"
+								})]
+							}),
+							updateError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200",
+								children: updateError
+							}),
+							releaseInfo && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: `rounded-xl border p-4 space-y-3 ${releaseInfo.available ? "border-emerald-300 bg-emerald-50/70 dark:border-emerald-700/60 dark:bg-emerald-950/30" : "border-slate-200 bg-slate-50 dark:border-[#342653] dark:bg-[#211936]/60"}`,
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center justify-between gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-sm font-semibold text-slate-900 dark:text-slate-100",
+										children: releaseInfo.available ? `Neue Version verfügbar: ${releaseInfo.releaseName}` : `Bereits aktuell: ${releaseInfo.releaseName}`
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-xs text-slate-600 dark:text-slate-400",
+										children: [
+											"Aktuell: v",
+											releaseInfo.currentVersion,
+											" → Release: v",
+											releaseInfo.latestVersion,
+											releaseInfo.apkSizeBytes ? ` · APK ${(releaseInfo.apkSizeBytes / 1048576).toFixed(1)} MB` : ""
+										]
+									})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2",
+										children: [releaseInfo.apkDownloadUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											disabled: installingUpdate,
+											onClick: () => void handleInstallUpdate(),
+											className: "inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 cursor-pointer",
+											children: [installingUpdate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), nativeApp ? "Jetzt herunterladen & installieren" : "APK herunterladen"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+											href: releaseInfo.htmlUrl,
+											target: "_blank",
+											rel: "noopener noreferrer",
+											className: "inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ExternalLink, { className: "h-3.5 w-3.5" }), "GitHub Release"]
+										})]
+									})]
+								}), releaseInfo.body && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("pre", {
+									className: "max-h-36 overflow-y-auto whitespace-pre-wrap rounded-lg border border-slate-200/80 bg-white/80 p-3 font-sans text-xs text-slate-700 dark:border-[#3b2d5e] dark:bg-[#171126]/80 dark:text-slate-300",
+									children: releaseInfo.body
+								})]
+							})
+						]
+					})
+				]
 			}),
 			activeTab === "company" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 				onSubmit: handleCompanySubmit,
@@ -81197,13 +84131,149 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 										className: "h-4 w-4 rounded border-slate-300 accent-violet-600"
 									}), "Auftragsnotizen standardmäßig auf Rechnungen & Angeboten ausgeben"]
 								})]
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 space-y-5 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Mail, { className: "h-5 w-5 text-blue-700 dark:text-violet-400" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: "E-Mail-Vorlagen (Rechnung, Angebot & Mahnung)"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "E-Mail-Vorlagen mit Platzhaltern",
+											text: "Diese Texte werden beim Klick auf „Per E-Mail senden“ in Rechnungen & Angeboten automatisch mit Kundenname, Nummer, Betrag und Fälligkeitsdatum befüllt. Auf Android wird das PDF direkt als Anhang an deine E-Mail-App übergeben."
+										})
+									]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: handleResetEmailTemplates,
+									className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RotateCcw, { className: "h-3.5 w-3.5" }), "Standard wiederherstellen"]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "space-y-1.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: "Platzhalter (Tippen fügt in das zuletzt gewählte Textfeld ein):"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "flex flex-wrap gap-1.5",
+									children: EMAIL_TEMPLATE_PLACEHOLDERS.map((ph) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										title: ph.desc,
+										onClick: () => insertEmailPlaceholder(ph.token),
+										className: "rounded-md border border-violet-200 bg-violet-50 px-2 py-1 font-mono text-[11px] font-semibold text-violet-800 hover:bg-violet-100 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-200 dark:hover:bg-violet-900/50 cursor-pointer",
+										children: ph.token
+									}, ph.token))
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-5 lg:grid-cols-3",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-[#342653] dark:bg-[#211936]/50",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+												className: "text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-violet-200",
+												children: "Rechnung"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400",
+												children: "Betreff"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: effectiveEmailTemplates.invoiceSubject,
+												onFocus: () => setActiveEmailField("invoiceSubject"),
+												onChange: (e) => updateEmailTemplateField("invoiceSubject", e.target.value),
+												className: inputClass
+											})] }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400",
+												children: "Nachrichtentext"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+												rows: 6,
+												value: effectiveEmailTemplates.invoiceBody,
+												onFocus: () => setActiveEmailField("invoiceBody"),
+												onChange: (e) => updateEmailTemplateField("invoiceBody", e.target.value),
+												className: inputClass
+											})] })
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-[#342653] dark:bg-[#211936]/50",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+												className: "text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-violet-200",
+												children: "Angebot"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400",
+												children: "Betreff"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: effectiveEmailTemplates.quoteSubject,
+												onFocus: () => setActiveEmailField("quoteSubject"),
+												onChange: (e) => updateEmailTemplateField("quoteSubject", e.target.value),
+												className: inputClass
+											})] }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400",
+												children: "Nachrichtentext"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+												rows: 6,
+												value: effectiveEmailTemplates.quoteBody,
+												onFocus: () => setActiveEmailField("quoteBody"),
+												onChange: (e) => updateEmailTemplateField("quoteBody", e.target.value),
+												className: inputClass
+											})] })
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-[#342653] dark:bg-[#211936]/50",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+												className: "text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-violet-200",
+												children: "Zahlungserinnerung / Mahnung"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400",
+												children: "Betreff"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: effectiveEmailTemplates.reminderSubject,
+												onFocus: () => setActiveEmailField("reminderSubject"),
+												onChange: (e) => updateEmailTemplateField("reminderSubject", e.target.value),
+												className: inputClass
+											})] }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400",
+												children: "Nachrichtentext"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+												rows: 6,
+												value: effectiveEmailTemplates.reminderBody,
+												onFocus: () => setActiveEmailField("reminderBody"),
+												onChange: (e) => updateEmailTemplateField("reminderBody", e.target.value),
+												className: inputClass
+											})] })
+										]
+									})
+								]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "flex justify-end",
+								className: "flex justify-end pt-1",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 									type: "submit",
 									className: "rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-									children: "Firmendaten, Nummern & Design speichern"
+									children: "Firmendaten, Nummern, Design & Vorlagen speichern"
 								})
 							})
 						]
@@ -82351,43 +85421,64 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 								})]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "grid grid-cols-1 gap-4 md:grid-cols-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-									className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-									children: "Prüfintervall für Standortregeln"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-									value: String(companyForm.geoFenceCheckIntervalSec ?? 60),
-									onChange: (val) => setCompanyForm({
-										...companyForm,
-										geoFenceCheckIntervalSec: Number(val)
-									}),
-									ariaLabel: "Standort-Prüfintervall",
-									options: [
-										{
-											value: "30",
-											label: "Alle 30 Sekunden (präzise)"
-										},
-										{
-											value: "60",
-											label: "Jede Minute (empfohlen)"
-										},
-										{
-											value: "120",
-											label: "Alle 2 Minuten (akkuschonend)"
-										},
-										{
-											value: "300",
-											label: "Alle 5 Minuten"
-										}
-									]
-								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: "flex items-end",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-										type: "submit",
-										className: "rounded-lg border border-slate-300 bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:border-violet-600 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-										children: "Ortsautomatik-Einstellung speichern"
+								className: "grid grid-cols-1 gap-4 md:grid-cols-3",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Prüfintervall für Standortregeln"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: String(companyForm.geoFenceCheckIntervalSec ?? 60),
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											geoFenceCheckIntervalSec: Number(val)
+										}),
+										ariaLabel: "Standort-Prüfintervall",
+										options: [
+											{
+												value: "30",
+												label: "Alle 30 Sekunden (präzise)"
+											},
+											{
+												value: "60",
+												label: "Jede Minute (empfohlen)"
+											},
+											{
+												value: "120",
+												label: "Alle 2 Minuten (akkuschonend)"
+											},
+											{
+												value: "300",
+												label: "Alle 5 Minuten"
+											}
+										]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Beim Verlassen einer Ortsregel"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: companyForm.geoExitConfirmMode ?? "ask",
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											geoExitConfirmMode: val === "auto" ? "auto" : "ask"
+										}),
+										ariaLabel: "Verhalten beim Verlassen einer Ortsregel",
+										options: [{
+											value: "ask",
+											label: "Nachfrage-Banner anzeigen (empfohlen)"
+										}, {
+											value: "auto",
+											label: "Sofort automatisch stoppen"
+										}]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex items-end",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "submit",
+											className: "w-full md:w-auto rounded-lg border border-slate-300 bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:border-violet-600 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+											children: "Ortsautomatik-Einstellung speichern"
+										})
 									})
-								})]
+								]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "space-y-2.5 border-t border-slate-200 pt-4 dark:border-[#2e2349]",
@@ -83058,6 +86149,142 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 									type: "submit",
 									className: "rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
 									children: "Ortung & Erinnerung speichern"
+								})
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 space-y-4 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-2",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Coffee, { className: "h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+										children: "Pausen- & Überstunden-Assistent (ArbZG)"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: "Pausen- & Überstunden-Assistent",
+										text: "Weist dich im laufenden Timer automatisch darauf hin, sobald du die gesetzliche Arbeitszeit-Grenze (z. B. 6 Stunden ohne Pause) überschreitest oder ein Timer spätabends bzw. über Nacht vergessen wurde. Mit einem Klick kannst du 15 oder 30 Minuten Pause abziehen."
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+								className: "flex items-center gap-2.5 text-sm font-medium text-slate-800 dark:text-slate-100 cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "checkbox",
+									checked: companyForm.breakAssistantEnabled !== false,
+									onChange: (e) => setCompanyForm({
+										...companyForm,
+										breakAssistantEnabled: e.target.checked
+									}),
+									className: "h-4 w-4 rounded border-slate-300 accent-violet-600"
+								}), "Pausen- & Über-Nacht-Hinweise in der Zeiterfassung anzeigen"]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-4 md:grid-cols-3",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Pausen-Hinweis ab Laufzeit"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: String(companyForm.breakTriggerHours ?? 6),
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											breakTriggerHours: Number(val)
+										}),
+										ariaLabel: "Pausen-Hinweis ab Laufzeit",
+										options: [
+											{
+												value: "4",
+												label: "Nach 4 Stunden"
+											},
+											{
+												value: "6",
+												label: "Nach 6 Stunden (ArbZG Standard)"
+											},
+											{
+												value: "8",
+												label: "Nach 8 Stunden"
+											},
+											{
+												value: "9",
+												label: "Nach 9 Stunden"
+											}
+										]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Standard-Pausenabzug (1-Klick)"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: String(companyForm.breakDefaultMinutes ?? 30),
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											breakDefaultMinutes: Number(val)
+										}),
+										ariaLabel: "Standard-Pausenabzug",
+										options: [
+											{
+												value: "15",
+												label: "15 Minuten"
+											},
+											{
+												value: "30",
+												label: "30 Minuten (ArbZG Standard)"
+											},
+											{
+												value: "45",
+												label: "45 Minuten"
+											},
+											{
+												value: "60",
+												label: "60 Minuten"
+											}
+										]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+										className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+										children: "Feierabend- / Über-Nacht-Hinweis ab"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+										value: String(companyForm.overnightReminderHour ?? 20),
+										onChange: (val) => setCompanyForm({
+											...companyForm,
+											overnightReminderHour: Number(val)
+										}),
+										ariaLabel: "Feierabend-Hinweis Uhrzeit",
+										options: [
+											{
+												value: "18",
+												label: "Ab 18:00 Uhr"
+											},
+											{
+												value: "19",
+												label: "Ab 19:00 Uhr"
+											},
+											{
+												value: "20",
+												label: "Ab 20:00 Uhr (empfohlen)"
+											},
+											{
+												value: "21",
+												label: "Ab 21:00 Uhr"
+											},
+											{
+												value: "22",
+												label: "Ab 22:00 Uhr"
+											}
+										]
+									})] })
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "flex justify-end pt-1",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "submit",
+									className: "rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+									children: "Pausen-Assistent speichern"
 								})
 							})
 						]
@@ -85373,7 +88600,7 @@ var NAV_ITEMS = [
 		icon: Cloud
 	}
 ];
-function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, openTimeCount, unpaidInvoiceCount, dueRecurringCount = 0, activeTimer, elapsedSeconds, recentQuickTasks, onQuickStartTask, onStopTimer, theme, onToggleTheme }) {
+function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, openTimeCount, unpaidInvoiceCount, dueRecurringCount = 0, activeTimer, elapsedSeconds, recentQuickTasks, onQuickStartTask, onStopTimer, theme, onToggleTheme, onOpenSearch }) {
 	const [mobileOpen, setMobileOpen] = (0, import_react.useState)(false);
 	(0, import_react.useEffect)(() => {
 		if (!mobileOpen) return;
@@ -85440,48 +88667,62 @@ function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, open
 				})]
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex shrink-0 items-center gap-1.5",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(QuickStartMenu, {
-					recentTasks: recentQuickTasks,
-					activeTimer,
-					onStartTask: (task) => {
-						setMobileOpen(false);
-						onQuickStartTask(task);
-					},
-					onOpenTracker: () => handleNav("tracker"),
-					compactMobile: true
-				}), activeTimer ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					type: "button",
-					onClick: onStopTimer,
-					title: `Laufende Aufgabe "${activeTimer.title}" stoppen`,
-					className: "inline-flex h-9 items-center gap-1.5 rounded-lg ui-accent-btn px-2.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3 w-3 shrink-0 fill-current" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-						className: "font-mono tabular-nums",
-						children: formatDuration(elapsedSeconds)
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-					type: "button",
-					onClick: () => handleNav("invoices"),
-					title: "Rechnung erstellen",
-					"aria-label": "Rechnung erstellen",
-					className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:text-violet-100 dark:hover:bg-[#352857] cursor-pointer",
-					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-4 w-4" })
-				})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-					type: "button",
-					onClick: () => handleNav("invoices"),
-					title: "Rechnung erstellen",
-					className: "inline-flex h-9 items-center gap-1.5 rounded-lg ui-accent-active px-2.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5 shrink-0" }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "sm:hidden",
-							children: "Rechnung"
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "hidden sm:inline",
-							children: "Rechnung erstellen"
-						})
-					]
-				})]
+				children: [
+					onOpenSearch && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: () => {
+							setMobileOpen(false);
+							onOpenSearch();
+						},
+						"aria-label": "Globale Schnellsuche öffnen",
+						title: "Schnellsuche (Strg+K)",
+						className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200 dark:hover:bg-[#2a2045] cursor-pointer",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-4 w-4" })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(QuickStartMenu, {
+						recentTasks: recentQuickTasks,
+						activeTimer,
+						onStartTask: (task) => {
+							setMobileOpen(false);
+							onQuickStartTask(task);
+						},
+						onOpenTracker: () => handleNav("tracker"),
+						compactMobile: true
+					}),
+					activeTimer ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: onStopTimer,
+						title: `Laufende Aufgabe "${activeTimer.title}" stoppen`,
+						className: "inline-flex h-9 items-center gap-1.5 rounded-lg ui-accent-btn px-2.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3 w-3 shrink-0 fill-current" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "font-mono tabular-nums",
+							children: formatDuration(elapsedSeconds)
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: () => handleNav("invoices"),
+						title: "Rechnung erstellen",
+						"aria-label": "Rechnung erstellen",
+						className: "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:text-violet-100 dark:hover:bg-[#352857] cursor-pointer",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-4 w-4" })
+					})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: () => handleNav("invoices"),
+						title: "Rechnung erstellen",
+						className: "inline-flex h-9 items-center gap-1.5 rounded-lg ui-accent-active px-2.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FilePlus2, { className: "h-3.5 w-3.5 shrink-0" }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "sm:hidden",
+								children: "Rechnung"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "hidden sm:inline",
+								children: "Rechnung erstellen"
+							})
+						]
+					})
+				]
 			})]
 		}),
 		mobileOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -85545,10 +88786,25 @@ function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, open
 			className: "no-print hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-60 lg:shrink-0 lg:flex-col lg:border-r lg:border-slate-200 lg:bg-white dark:lg:border-[#2e2349] dark:lg:bg-[#171126]",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-					className: "flex h-16 shrink-0 items-center border-b border-slate-200 px-6 dark:border-[#2e2349]",
+					className: "flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-6 dark:border-[#2e2349]",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 						className: "font-display text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 whitespace-nowrap shrink-0",
 						children: "TaktWerk"
+					})
+				}),
+				onOpenSearch && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "px-3 pt-3",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						type: "button",
+						onClick: onOpenSearch,
+						className: "flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-400 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "flex items-center gap-2 truncate",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-3.5 w-3.5 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Schnellsuche…" })]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("kbd", {
+							className: "rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-400 dark:border-[#3b2d5e] dark:bg-[#171126]",
+							children: "Strg+K"
+						})]
 					})
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -85588,8 +88844,75 @@ function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, open
 		})
 	] });
 }
+// src/utils/photoHelpers.ts
+var MAX_PHOTO_DIMENSION = 1280;
+var JPEG_QUALITY = .78;
+async function compressWorkPhotoFile(file, caption = "") {
+	const dataUrl = await new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = () => {
+			const rawUrl = String(reader.result || "");
+			if (!rawUrl.startsWith("data:image/")) {
+				reject(/* @__PURE__ */ new Error("Bitte wähle eine gültige Bilddatei (JPG, PNG, WebP)."));
+				return;
+			}
+			const img = new Image();
+			img.onload = () => {
+				try {
+					let { width, height } = img;
+					if (width > MAX_PHOTO_DIMENSION || height > MAX_PHOTO_DIMENSION) {
+						const scale = MAX_PHOTO_DIMENSION / Math.max(width, height);
+						width = Math.max(1, Math.round(width * scale));
+						height = Math.max(1, Math.round(height * scale));
+					}
+					const canvas = document.createElement("canvas");
+					canvas.width = width;
+					canvas.height = height;
+					const ctx = canvas.getContext("2d");
+					if (!ctx) {
+						resolve(rawUrl);
+						return;
+					}
+					ctx.fillStyle = "#ffffff";
+					ctx.fillRect(0, 0, width, height);
+					ctx.drawImage(img, 0, 0, width, height);
+					resolve(canvas.toDataURL("image/jpeg", JPEG_QUALITY));
+				} catch {
+					resolve(rawUrl);
+				}
+			};
+			img.onerror = () => reject(/* @__PURE__ */ new Error("Foto konnte nicht geladen werden."));
+			img.src = rawUrl;
+		};
+		reader.onerror = () => reject(/* @__PURE__ */ new Error("Datei konnte nicht gelesen werden."));
+		reader.readAsDataURL(file);
+	});
+	return {
+		id: createId("photo"),
+		dataUrl,
+		caption: caption.trim() || void 0,
+		capturedAt: (/* @__PURE__ */ new Date()).toISOString()
+	};
+}
+async function uploadWorkPhotoToNextcloud(photo, taskTitle) {
+	const match = photo.dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+	if (!match) throw new Error("Ungültige Fotodaten für Nextcloud-Upload.");
+	const mime = match[1] || "image/jpeg";
+	const base64 = match[2];
+	const ext = mime.includes("png") ? "png" : "jpg";
+	const dateObj = new Date(photo.capturedAt);
+	const ym = Number.isNaN(dateObj.getTime()) ? (/* @__PURE__ */ new Date()).toISOString().slice(0, 7) : `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, "0")}`;
+	const filename = `${photo.capturedAt.slice(0, 10)}_${(taskTitle || "Einsatz").replace(/[^a-zA-Z0-9äöüÄÖÜß_-]+/g, "_").slice(0, 32)}_${photo.id.slice(-6)}.${ext}`;
+	return (await apiUploadNextcloudFile({
+		subFolder: `Einsatzfotos/${ym}`,
+		filename,
+		contentOrBase64: base64,
+		isBinary: true,
+		contentType: mime
+	})).path;
+}
 // src/components/TimeTrackerView.tsx
-function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, invoices = [], calendarEvents = [], activeTimer, elapsedSeconds, onStartTimer, onUpdateActiveTimerNotes, onUpdateActiveTimerLocation, onPauseTimer, onResumeTimer, onStopTimer, onDiscardTimer, onAddManualEntry, onUpdateEntry, onDeleteEntry, onToggleBillable, onCreateInvoiceFromEntries, onNavigate, onNotify, notificationStatus, onRequestNotificationPermission, onOpenNotificationSettings, onCheckGeoFenceNow, checkingGeoFence = false, geoFenceRuleCount = 0 }) {
+function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, invoices = [], calendarEvents = [], activeTimer, elapsedSeconds, onStartTimer, onUpdateActiveTimerNotes, onUpdateActiveTimerLocation, onUpdateActiveTimerPhotos, onDeductBreakMinutes, nextcloudConfigured = false, onPauseTimer, onResumeTimer, onStopTimer, onDiscardTimer, onAddManualEntry, onUpdateEntry, onDeleteEntry, onToggleBillable, onCreateInvoiceFromEntries, onNavigate, onNotify, notificationStatus, onRequestNotificationPermission, onOpenNotificationSettings, onCheckGeoFenceNow, checkingGeoFence = false, geoFenceRuleCount = 0 }) {
 	const serviceProducts = (0, import_react.useMemo)(() => products.filter((p) => p.type === "service"), [products]);
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [productId, setProductId] = (0, import_react.useState)(serviceProducts[0]?.id ?? products[0]?.id ?? "");
@@ -85615,7 +88938,12 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 	const [manualCustomerId, setManualCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [manualProductId, setManualProductId] = (0, import_react.useState)(serviceProducts[0]?.id ?? products[0]?.id ?? "");
 	const [manualBillable, setManualBillable] = (0, import_react.useState)(true);
+	const [manualPhotos, setManualPhotos] = (0, import_react.useState)([]);
 	const [manualError, setManualError] = (0, import_react.useState)("");
+	const [photoBusy, setPhotoBusy] = (0, import_react.useState)(false);
+	const [lightboxData, setLightboxData] = (0, import_react.useState)(null);
+	const activePhotoInputRef = (0, import_react.useRef)(null);
+	const manualPhotoInputRef = (0, import_react.useRef)(null);
 	const [filterCustomerId, setFilterCustomerId] = (0, import_react.useState)("all");
 	const [filterStatus, setFilterStatus] = (0, import_react.useState)("all");
 	const [filterActivityType, setFilterActivityType] = (0, import_react.useState)("all");
@@ -85683,6 +89011,52 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 			setLocating(false);
 		}
 	};
+	const handleAddActivePhotos = async (e) => {
+		const files = Array.from(e.target.files ?? []);
+		e.target.value = "";
+		if (files.length === 0 || !activeTimer || !onUpdateActiveTimerPhotos) return;
+		setPhotoBusy(true);
+		try {
+			const existing = activeTimer.photos ?? [];
+			const added = [];
+			for (const file of files.slice(0, 6)) {
+				const photo = await compressWorkPhotoFile(file);
+				if (nextcloudConfigured) try {
+					photo.nextcloudPath = await uploadWorkPhotoToNextcloud(photo, activeTimer.title);
+				} catch {}
+				added.push(photo);
+			}
+			onUpdateActiveTimerPhotos([...existing, ...added]);
+			onNotify(added.length === 1 ? "Einsatzfoto gespeichert." : `${added.length} Einsatzfotos gespeichert.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Foto konnte nicht verarbeitet werden.", true);
+		} finally {
+			setPhotoBusy(false);
+		}
+	};
+	const handleAddManualPhotos = async (e) => {
+		const files = Array.from(e.target.files ?? []);
+		e.target.value = "";
+		if (files.length === 0) return;
+		setPhotoBusy(true);
+		try {
+			const taskName = manualTitle.trim() || "Einsatz";
+			const added = [];
+			for (const file of files.slice(0, 6)) {
+				const photo = await compressWorkPhotoFile(file);
+				if (nextcloudConfigured) try {
+					photo.nextcloudPath = await uploadWorkPhotoToNextcloud(photo, taskName);
+				} catch {}
+				added.push(photo);
+			}
+			setManualPhotos((prev) => [...prev, ...added]);
+			onNotify(`${added.length} Einsatzfoto(s) hinzugefügt.`);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Foto konnte nicht verarbeitet werden.", true);
+		} finally {
+			setPhotoBusy(false);
+		}
+	};
 	const handleStartClick = (e) => {
 		e.preventDefault();
 		if (startMode === "internal") {
@@ -85729,6 +89103,7 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 		setManualCustomerId(customers[0]?.id ?? "");
 		setManualProductId(serviceProducts[0]?.id ?? products[0]?.id ?? "");
 		setManualBillable(true);
+		setManualPhotos([]);
 		setManualError("");
 		setShowManualForm(true);
 	};
@@ -85745,6 +89120,7 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 		setManualCustomerId(entry.customerId);
 		setManualProductId(entry.productId);
 		setManualBillable(entry.billable);
+		setManualPhotos(entry.photos ?? []);
 		setManualError("");
 		setShowManualForm(true);
 	};
@@ -85783,7 +89159,8 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 				durationSeconds: diffSec,
 				hourlyRateNet: isInt ? 0 : productChanged ? prod?.unitPriceNet ?? editingEntry.hourlyRateNet : editingEntry.hourlyRateNet,
 				taxRate: isInt ? 19 : productChanged ? prod?.taxRate ?? editingEntry.taxRate : editingEntry.taxRate,
-				billable: isInt ? false : manualBillable
+				billable: isInt ? false : manualBillable,
+				photos: manualPhotos.length > 0 ? manualPhotos : void 0
 			});
 		} else onAddManualEntry({
 			id: createId("time"),
@@ -85802,11 +89179,13 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 			billable: isInt ? false : manualBillable,
 			billedInvoiceId: null,
 			source: "manual",
+			photos: manualPhotos.length > 0 ? manualPhotos : void 0,
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
 		});
 		setEditingEntry(null);
 		setManualTitle("");
 		setManualNotes("");
+		setManualPhotos([]);
 		setShowManualForm(false);
 	};
 	const toggleSelect = (id) => {
@@ -85856,6 +89235,42 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 		"Sonstiges"
 	];
 	const isActiveInternal = activeTimer?.entryType === "internal" || (activeTimer ? !activeTimer.customerId : false);
+	const activeCustomerBudget = (0, import_react.useMemo)(() => {
+		if (!activeTimer || isActiveInternal) return null;
+		const st = computeCustomerBudgetStatus(customerMap.get(activeTimer.customerId), timeEntries, activeTimer);
+		return st.hasBudget ? st : null;
+	}, [
+		activeTimer,
+		customerMap,
+		isActiveInternal,
+		timeEntries
+	]);
+	const draftCustomerBudget = (0, import_react.useMemo)(() => {
+		if (activeTimer || startMode === "internal" || !effectiveCustomerId) return null;
+		const st = computeCustomerBudgetStatus(customerMap.get(effectiveCustomerId), timeEntries, null);
+		return st.hasBudget ? st : null;
+	}, [
+		activeTimer,
+		customerMap,
+		effectiveCustomerId,
+		startMode,
+		timeEntries
+	]);
+	const breakAssistantEnabled = company.breakAssistantEnabled !== false;
+	const breakTriggerHours = company.breakTriggerHours ?? 6;
+	const breakDefaultMinutes = company.breakDefaultMinutes ?? 30;
+	const overnightReminderHour = company.overnightReminderHour ?? 20;
+	const showBreakAlert = Boolean(activeTimer) && breakAssistantEnabled && elapsedSeconds >= breakTriggerHours * 3600;
+	const showOvernightAlert = (0, import_react.useMemo)(() => {
+		if (!activeTimer || !breakAssistantEnabled) return false;
+		if (activeTimer.startTime.slice(0, 10) < toInputDate()) return true;
+		return (/* @__PURE__ */ new Date()).getHours() >= overnightReminderHour && elapsedSeconds >= 3600;
+	}, [
+		activeTimer,
+		breakAssistantEnabled,
+		elapsedSeconds,
+		overnightReminderHour
+	]);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "space-y-6",
 		children: [
@@ -86041,6 +89456,67 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
 							})]
 						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "md:col-span-6 space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5 text-violet-500" }),
+											"Einsatzfotos / Fotodokumentation (",
+											manualPhotos.length,
+											")"
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										ref: manualPhotoInputRef,
+										type: "file",
+										accept: "image/*",
+										multiple: true,
+										onChange: (e) => void handleAddManualPhotos(e),
+										className: "hidden"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => manualPhotoInputRef.current?.click(),
+										disabled: photoBusy,
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5" }), photoBusy ? "Verarbeite…" : "Foto hinzufügen"]
+									})
+								]
+							}), manualPhotos.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4",
+								children: manualPhotos.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "relative overflow-hidden rounded-lg border border-slate-200 bg-white p-1.5 dark:border-[#3b2d5e] dark:bg-[#171126]",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+											src: p.dataUrl,
+											alt: p.caption || "Einsatzfoto",
+											className: "h-20 w-full rounded object-cover"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "text",
+											value: p.caption ?? "",
+											onChange: (e) => setManualPhotos((prev) => prev.map((item) => item.id === p.id ? {
+												...item,
+												caption: e.target.value
+											} : item)),
+											placeholder: "Bildbeschreibung…",
+											className: "mt-1 w-full rounded border border-slate-200 bg-slate-50 px-1.5 py-1 text-[11px] text-slate-800 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setManualPhotos((prev) => prev.filter((item) => item.id !== p.id)),
+											"aria-label": "Foto entfernen",
+											className: "absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-950/75 text-white hover:bg-rose-600 cursor-pointer",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
+										})
+									]
+								}, p.id))
+							})]
+						}),
 						manualError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "text-xs font-medium text-red-600 dark:text-red-400 md:col-span-6",
 							children: manualError
@@ -86082,148 +89558,283 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 				className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
 				children: [activeTimer ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "space-y-4",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "space-y-1",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-2 text-xs font-medium text-blue-700 dark:text-violet-400",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: activeTimer.pausedAt ? "Timer pausiert" : isActiveInternal ? "Interne Aufgabe läuft" : activeTimer.source === "nfc" ? "Gestartet per NFC-Tag" : activeTimer.source === "geo" ? "Gestartet per Ortsregel" : "Timer läuft" }),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											"aria-hidden": "true",
-											children: "·"
-										}),
-										isActiveInternal ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "font-semibold text-amber-700 dark:text-amber-300",
-												children: activeTimer.internalCategory || "Interne Tätigkeit"
-											}),
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "space-y-1",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2 text-xs font-medium text-blue-700 dark:text-violet-400",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: activeTimer.pausedAt ? "Timer pausiert" : isActiveInternal ? "Interne Aufgabe läuft" : activeTimer.source === "nfc" ? "Gestartet per NFC-Tag" : activeTimer.source === "geo" ? "Gestartet per Ortsregel" : "Timer läuft" }),
 											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 												"aria-hidden": "true",
 												children: "·"
 											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "text-slate-500 dark:text-slate-400",
-												children: "Nicht verrechenbar"
-											})
-										] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "text-slate-600 dark:text-slate-300",
-												children: customerMap.get(activeTimer.customerId)?.companyName ?? "Kunde"
+											isActiveInternal ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "font-semibold text-amber-700 dark:text-amber-300",
+													children: activeTimer.internalCategory || "Interne Tätigkeit"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													"aria-hidden": "true",
+													children: "·"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-slate-500 dark:text-slate-400",
+													children: "Nicht verrechenbar"
+												})
+											] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-slate-600 dark:text-slate-300",
+													children: customerMap.get(activeTimer.customerId)?.companyName ?? "Kunde"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													"aria-hidden": "true",
+													children: "·"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-slate-600 dark:text-slate-300",
+													children: productMap.get(activeTimer.productId)?.name ?? "Leistung"
+												})
+											] })
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2.5",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+												className: "font-display text-xl font-bold text-slate-900 dark:text-slate-100",
+												children: activeTimer.title
 											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												"aria-hidden": "true",
-												children: "·"
+											isActiveInternal && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "rounded bg-amber-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-500/20 dark:text-amber-300",
+												children: "Intern"
 											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "text-slate-600 dark:text-slate-300",
-												children: productMap.get(activeTimer.productId)?.name ?? "Leistung"
+											notificationStatus?.enabled && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 dark:border-violet-800 dark:bg-[#231b3b] dark:text-violet-300",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, { className: "h-3 w-3 text-violet-500" }), "Statusleiste aktiv"]
 											})
-										] })
-									]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-2.5",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-											className: "font-display text-xl font-bold text-slate-900 dark:text-slate-100",
-											children: activeTimer.title
-										}),
-										isActiveInternal && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "rounded bg-amber-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-500/20 dark:text-amber-300",
-											children: "Intern"
-										}),
-										notificationStatus?.enabled && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: "inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 dark:border-violet-800 dark:bg-[#231b3b] dark:text-violet-300",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bell, { className: "h-3 w-3 text-violet-500" }), "Statusleiste aktiv"]
-										})
-									]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-										"Gestartet am ",
-										formatDateTimeDE(activeTimer.startTime),
-										!isActiveInternal && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [" · ", /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: "font-mono tabular-nums",
-											children: [formatCurrency(activeTimer.hourlyRateNet), "/Std."]
-										})] })
-									] }), activeTimer.location && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-										className: "inline-flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), activeTimer.location.address || `${activeTimer.location.lat.toFixed(4)}, ${activeTimer.location.lng.toFixed(4)}`]
-									})]
-								})
-							]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex flex-wrap items-center gap-3",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: `rounded-lg border px-5 py-3 font-mono text-3xl font-bold tracking-tight tabular-nums ${activeTimer.pausedAt ? "border-amber-300 bg-amber-950/80 text-amber-200 dark:border-amber-700" : "border-slate-200 bg-slate-900 text-white dark:border-[#3b2d5e] dark:bg-[#0e0a18]"}`,
-									children: formatDuration(elapsedSeconds)
-								}),
-								activeTimer.pausedAt ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: onResumeTimer,
-									className: "inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200 dark:hover:bg-emerald-950 whitespace-nowrap shrink-0 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-4 w-4 fill-current" }), "Fortsetzen"]
-								}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: onPauseTimer,
-									className: "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pause, { className: "h-4 w-4" }), "Pausieren"]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: onStopTimer,
-									className: "inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-4 w-4 fill-current" }), "Stoppen & Speichern"]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									onClick: onDiscardTimer,
-									className: "rounded-lg border border-slate-200 px-3.5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-red-700 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] dark:hover:text-red-400 whitespace-nowrap shrink-0 cursor-pointer",
-									children: "Verwerfen"
-								})
-							]
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 dark:border-[#2e2349] lg:grid-cols-12",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "lg:col-span-9",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-								className: "mb-1 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StickyNote, { className: "h-3.5 w-3.5 text-violet-500" }), isActiveInternal ? "Notizen während der laufenden internen Aufgabe" : "Notizen während der laufenden Aufgabe (optional auf Rechnung ausgebbar)"]
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-3 text-xs text-slate-500 dark:text-slate-400",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
+											"Gestartet am ",
+											formatDateTimeDE(activeTimer.startTime),
+											!isActiveInternal && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [" · ", /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "font-mono tabular-nums",
+												children: [formatCurrency(activeTimer.hourlyRateNet), "/Std."]
+											})] })
+										] }), activeTimer.location && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "inline-flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), activeTimer.location.address || `${activeTimer.location.lat.toFixed(4)}, ${activeTimer.location.lng.toFixed(4)}`]
+										})]
+									})
+								]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-col gap-2 sm:flex-row",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
-									rows: 2,
-									value: liveNotes,
-									onChange: (e) => setLiveNotes(e.target.value),
-									onBlur: () => {
-										if (onUpdateActiveTimerNotes && liveNotes.trim() !== (activeTimer.notes ?? "").trim()) onUpdateActiveTimerNotes(liveNotes.trim());
-									},
-									placeholder: "Zwischenstand, verwendetes Material oder Hinweis festhalten...",
-									className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-								}), onUpdateActiveTimerNotes && liveNotes.trim() !== (activeTimer.notes ?? "").trim() && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "flex flex-wrap items-center gap-3",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: `rounded-lg border px-5 py-3 font-mono text-3xl font-bold tracking-tight tabular-nums ${activeTimer.pausedAt ? "border-amber-300 bg-amber-950/80 text-amber-200 dark:border-amber-700" : "border-slate-200 bg-slate-900 text-white dark:border-[#3b2d5e] dark:bg-[#0e0a18]"}`,
+										children: formatDuration(elapsedSeconds)
+									}),
+									activeTimer.pausedAt ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: onResumeTimer,
+										className: "inline-flex items-center gap-2 rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-200 dark:hover:bg-emerald-950 whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-4 w-4 fill-current" }), "Fortsetzen"]
+									}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: onPauseTimer,
+										className: "inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pause, { className: "h-4 w-4" }), "Pausieren"]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: onStopTimer,
+										className: "inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-4 w-4 fill-current" }), "Stoppen & Speichern"]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: onDiscardTimer,
+										className: "rounded-lg border border-slate-200 px-3.5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-red-700 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] dark:hover:text-red-400 whitespace-nowrap shrink-0 cursor-pointer",
+										children: "Verwerfen"
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid grid-cols-1 gap-3 border-t border-slate-100 pt-4 dark:border-[#2e2349] lg:grid-cols-12",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "lg:col-span-9",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "mb-1 flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-400",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(StickyNote, { className: "h-3.5 w-3.5 text-violet-500" }), isActiveInternal ? "Notizen während der laufenden internen Aufgabe" : "Notizen während der laufenden Aufgabe (optional auf Rechnung ausgebbar)"]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-col gap-2 sm:flex-row",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+										rows: 2,
+										value: liveNotes,
+										onChange: (e) => setLiveNotes(e.target.value),
+										onBlur: () => {
+											if (onUpdateActiveTimerNotes && liveNotes.trim() !== (activeTimer.notes ?? "").trim()) onUpdateActiveTimerNotes(liveNotes.trim());
+										},
+										placeholder: "Zwischenstand, verwendetes Material oder Hinweis festhalten...",
+										className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+									}), onUpdateActiveTimerNotes && liveNotes.trim() !== (activeTimer.notes ?? "").trim() && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => onUpdateActiveTimerNotes(liveNotes.trim()),
+										className: "rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 self-end cursor-pointer",
+										children: "Notiz sichern"
+									})]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-col justify-end gap-2 lg:col-span-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
-									onClick: () => onUpdateActiveTimerNotes(liveNotes.trim()),
-									className: "rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 self-end cursor-pointer",
-									children: "Notiz sichern"
+									onClick: () => void handleCaptureLocationForActive(),
+									disabled: locating,
+									className: "inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LocateFixed, { className: `h-4 w-4 ${locating ? "animate-spin" : ""}` }), locating ? "Ermittle GPS..." : activeTimer.location ? "Standort aktualisieren" : "Standort erfassen (GPS)"]
+								}), onUpdateActiveTimerPhotos && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									ref: activePhotoInputRef,
+									type: "file",
+									accept: "image/*",
+									multiple: true,
+									onChange: (e) => void handleAddActivePhotos(e),
+									className: "hidden"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => activePhotoInputRef.current?.click(),
+									disabled: photoBusy,
+									className: "inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-4 w-4 text-violet-600 dark:text-violet-400" }), photoBusy ? "Foto wird gespeichert…" : `Einsatzfoto (${activeTimer.photos?.length ?? 0})`]
+								})] })]
+							})]
+						}),
+						activeTimer.photos && activeTimer.photos.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-2 border-t border-slate-100 pt-3 dark:border-[#2e2349]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: [
+									"Dokumentationsfotos dieser Aufgabe (",
+									activeTimer.photos.length,
+									")"
+								]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "grid grid-cols-2 gap-2 sm:grid-cols-4",
+								children: activeTimer.photos.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 p-1.5 dark:border-[#3b2d5e] dark:bg-[#211936]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => setLightboxData({
+											title: activeTimer.title,
+											photos: activeTimer.photos ?? []
+										}),
+										className: "block w-full cursor-pointer",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+											src: p.dataUrl,
+											alt: p.caption || "Einsatzfoto",
+											className: "h-20 w-full rounded object-cover"
+										})
+									}), onUpdateActiveTimerPhotos && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "text",
+										value: p.caption ?? "",
+										onChange: (e) => onUpdateActiveTimerPhotos((activeTimer.photos ?? []).map((item) => item.id === p.id ? {
+											...item,
+											caption: e.target.value
+										} : item)),
+										placeholder: "Beschreibung…",
+										className: "mt-1 w-full rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] text-slate-800 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => onUpdateActiveTimerPhotos((activeTimer.photos ?? []).filter((item) => item.id !== p.id)),
+										"aria-label": "Foto entfernen",
+										className: "absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-950/75 text-white hover:bg-rose-600 cursor-pointer",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
+									})] })]
+								}, p.id))
+							})]
+						}),
+						activeCustomerBudget && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: `rounded-xl border px-3.5 py-2.5 text-xs ${activeCustomerBudget.severity === "exceeded" ? "border-rose-200 bg-rose-50/70 text-rose-900 dark:border-rose-900/60 dark:bg-rose-950/35 dark:text-rose-200" : activeCustomerBudget.severity === "warning" ? "border-amber-200 bg-amber-50/70 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/35 dark:text-amber-200" : "border-slate-200 bg-slate-50/70 text-slate-700 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-200"}`,
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "inline-flex items-center gap-1.5 font-semibold",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Gauge, { className: "h-3.5 w-3.5" }),
+										"Kontingent (",
+										activeCustomerBudget.periodLabel,
+										"):",
+										" ",
+										activeCustomerBudget.budgetHours !== null ? `${formatNumber(activeCustomerBudget.usedHours, 1)} / ${formatNumber(activeCustomerBudget.budgetHours, 1)} Std.` : `${formatCurrency(activeCustomerBudget.usedAmountNet)} / ${formatCurrency(activeCustomerBudget.budgetAmountNet ?? 0)}`
+									]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "font-mono font-bold tabular-nums",
+									children: [
+										activeCustomerBudget.primaryPct,
+										" %",
+										activeCustomerBudget.severity === "exceeded" ? " · Kontingent überschritten" : activeCustomerBudget.severity === "warning" ? " · Bald erreicht" : ""
+									]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+								viewBox: "0 0 100 4",
+								preserveAspectRatio: "none",
+								className: "mt-1.5 h-1.5 w-full overflow-hidden rounded-full",
+								"aria-hidden": "true",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+									x: "0",
+									y: "0",
+									width: "100",
+									height: "4",
+									rx: "2",
+									className: "fill-slate-200/80 dark:fill-[#2e2349]"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("rect", {
+									x: "0",
+									y: "0",
+									width: Math.min(100, Math.max(0, activeCustomerBudget.primaryPct)),
+									height: "4",
+									rx: "2",
+									className: activeCustomerBudget.severity === "exceeded" ? "fill-rose-500" : activeCustomerBudget.severity === "warning" ? "fill-amber-500" : "fill-emerald-500"
 								})]
 							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-							className: "flex flex-col justify-end lg:col-span-3",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-								type: "button",
-								onClick: () => void handleCaptureLocationForActive(),
-								disabled: locating,
-								className: "inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LocateFixed, { className: `h-4 w-4 ${locating ? "animate-spin" : ""}` }), locating ? "Ermittle GPS..." : activeTimer.location ? "Standort aktualisieren" : "Standort erfassen (GPS)"]
-							})
-						})]
-					})]
+						}),
+						(showBreakAlert || showOvernightAlert || onDeductBreakMinutes && elapsedSeconds >= 900) && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200/80 bg-amber-50/70 px-3.5 py-2.5 text-xs dark:border-amber-900/50 dark:bg-amber-950/30",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-2 text-amber-900 dark:text-amber-200",
+								children: [showBreakAlert || showOvernightAlert ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Coffee, { className: "h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: showOvernightAlert ? "Timer läuft am späten Abend / seit gestern — vergessen zu stoppen?" : showBreakAlert ? `Über ${breakTriggerHours} Std. am Stück aktiv (ArbZG-Hinweis) — Pause direkt abziehen?` : "Pause vergessen zu drücken? Schnellabzug:" })]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-1.5",
+								children: [onDeductBreakMinutes && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => onDeductBreakMinutes(15),
+									disabled: elapsedSeconds <= 900,
+									className: "rounded-lg border border-amber-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-amber-900 hover:bg-amber-100 disabled:opacity-40 dark:border-amber-700/60 dark:bg-[#211936] dark:text-amber-200 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: "−15 Min. Pause"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => onDeductBreakMinutes(breakDefaultMinutes),
+									disabled: elapsedSeconds <= breakDefaultMinutes * 60,
+									className: "rounded-lg bg-amber-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-amber-700 disabled:opacity-40 cursor-pointer",
+									children: [
+										"−",
+										breakDefaultMinutes,
+										" Min. Pause"
+									]
+								})] }), showOvernightAlert && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: onStopTimer,
+									className: "rounded-lg bg-slate-900 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+									children: "Jetzt stoppen"
+								})]
+							})]
+						})
+					]
 				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 					onSubmit: handleStartClick,
 					className: "space-y-3.5",
@@ -86348,6 +89959,23 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Compass, { className: `h-3.5 w-3.5 ${checkingGeoFence ? "animate-spin" : ""}` }), checkingGeoFence ? "Prüfe Ortsregeln..." : "Ortsregeln prüfen"]
 								})
 							]
+						}),
+						draftCustomerBudget && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: `flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs ${draftCustomerBudget.severity === "exceeded" ? "border-rose-200 bg-rose-50/70 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/35 dark:text-rose-200" : draftCustomerBudget.severity === "warning" ? "border-amber-200 bg-amber-50/70 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/35 dark:text-amber-200" : "border-slate-200 bg-slate-50/70 text-slate-600 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-300"}`,
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "inline-flex items-center gap-1.5 font-medium",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Gauge, { className: "h-3.5 w-3.5 shrink-0" }),
+									"Kunden-Kontingent (",
+									draftCustomerBudget.periodLabel,
+									"):",
+									" ",
+									draftCustomerBudget.budgetHours !== null ? `${formatNumber(draftCustomerBudget.usedHours, 1)} / ${formatNumber(draftCustomerBudget.budgetHours, 1)} Std.` : `${formatCurrency(draftCustomerBudget.usedAmountNet)} / ${formatCurrency(draftCustomerBudget.budgetAmountNet ?? 0)}`
+								]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "font-mono font-semibold tabular-nums",
+								children: [draftCustomerBudget.primaryPct, " %"]
+							})]
 						})
 					]
 				}), !activeTimer && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -86766,6 +90394,24 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 													className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
 													children: entry.notes
 												}),
+												entry.photos && entry.photos.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "mt-1",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => setLightboxData({
+															title: entry.title,
+															photos: entry.photos ?? []
+														}),
+														className: "inline-flex items-center gap-1 rounded-md border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 hover:bg-violet-100 dark:border-violet-500/30 dark:bg-violet-500/15 dark:text-violet-300 cursor-pointer",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3 w-3" }),
+															entry.photos.length,
+															" ",
+															entry.photos.length === 1 ? "Foto" : "Fotos",
+															" ansehen"
+														]
+													})
+												}),
 												entry.location && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 													className: "mt-1 flex flex-wrap items-center gap-2 text-[11px]",
 													children: [
@@ -86863,7 +90509,56 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 						" Einträge (nach oben & unten scrollbar)"
 					]
 				})] })]
-			})
+			}),
+			lightboxData && typeof document !== "undefined" && (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				role: "dialog",
+				"aria-modal": "true",
+				"aria-label": "Fotodokumentation",
+				onClick: () => setLightboxData(null),
+				className: "fixed inset-0 z-[175] flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-xs",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					onClick: (e) => e.stopPropagation(),
+					className: "flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2a2045]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-2 min-w-0",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-4 w-4 shrink-0 text-violet-600 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+								className: "truncate font-display text-sm font-bold text-slate-900 dark:text-slate-100",
+								children: ["Einsatzfotos · ", lightboxData.title]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setLightboxData(null),
+							"aria-label": "Schließen",
+							className: "rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-200 cursor-pointer",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "grid flex-1 grid-cols-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2",
+						children: lightboxData.photos.map((photo, idx) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-[#2e2349] dark:bg-[#211936]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+								src: photo.dataUrl,
+								alt: photo.caption || `Einsatzfoto ${idx + 1}`,
+								className: "max-h-72 w-full bg-slate-900/5 object-contain"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "p-3 text-xs",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "font-medium text-slate-900 dark:text-slate-100",
+									children: photo.caption || `Einsatzfoto #${idx + 1}`
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-0.5 flex flex-wrap items-center justify-between gap-1 text-[11px] text-slate-500 dark:text-slate-400",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: formatDateTimeDE(photo.capturedAt) }), photo.nextcloudPath && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-emerald-600 dark:text-emerald-400",
+										children: "In Nextcloud gesichert"
+									})]
+								})]
+							})]
+						}, photo.id))
+					})]
+				})
+			}), document.body)
 		]
 	});
 }
@@ -86945,6 +90640,11 @@ function App() {
 	const [remoteNewerAt, setRemoteNewerAt] = (0, import_react.useState)(null);
 	const [pushConflictAt, setPushConflictAt] = (0, import_react.useState)(null);
 	const [notificationStatus, setNotificationStatus] = (0, import_react.useState)(null);
+	const [searchOpen, setSearchOpen] = (0, import_react.useState)(false);
+	const [isAppLocked, setIsAppLocked] = (0, import_react.useState)(false);
+	const [geoExitPrompt, setGeoExitPrompt] = (0, import_react.useState)(null);
+	const [availableUpdate, setAvailableUpdate] = (0, import_react.useState)(null);
+	const [installingBannerUpdate, setInstallingBannerUpdate] = (0, import_react.useState)(false);
 	const checkNotificationStatus = (0, import_react.useCallback)(async () => {
 		if (!isNativeCapacitor()) return;
 		const status = await getNativeNotificationStatus();
@@ -86955,8 +90655,12 @@ function App() {
 	}, [checkNotificationStatus]);
 	const deepLinkHandledRef = (0, import_react.useRef)(false);
 	const autoBackupCheckedRef = (0, import_react.useRef)(false);
+	const updateCheckedRef = (0, import_react.useRef)(false);
+	const initialLockEvaluatedRef = (0, import_react.useRef)(false);
+	const appHiddenAtRef = (0, import_react.useRef)(null);
 	const reminderFiredKeyRef = (0, import_react.useRef)(null);
 	const geoCooldownRef = (0, import_react.useRef)(/* @__PURE__ */ new Map());
+	const geoExitSnoozeRef = (0, import_react.useRef)(/* @__PURE__ */ new Map());
 	const sectionHistoryRef = (0, import_react.useRef)([]);
 	const touchStartRef = (0, import_react.useRef)(null);
 	const lastNfcTriggerRef = (0, import_react.useRef)(null);
@@ -87067,6 +90771,7 @@ function App() {
 				entryType: isInternal ? "internal" : "project",
 				internalCategory: isInternal ? timer.internalCategory : void 0,
 				location: timer.location ?? null,
+				photos: timer.photos && timer.photos.length > 0 ? timer.photos : void 0,
 				createdAt: nowIso
 			}, ...nextTimeEntries];
 		};
@@ -87308,6 +91013,17 @@ function App() {
 				dbRef.current = loadedDb;
 				setDb(loadedDb);
 				syncNativeWidgetState(loadedDb);
+				if (!initialLockEvaluatedRef.current) {
+					initialLockEvaluatedRef.current = true;
+					if (loadedDb.company.appLockEnabled && (Boolean(loadedDb.company.appLockPinHash) || isNativeCapacitor())) setIsAppLocked(true);
+				}
+				const configuredRepo = sanitizeGithubRepo(loadedDb.company.githubUpdateRepo);
+				if (!updateCheckedRef.current && loadedDb.company.autoCheckUpdates !== false && configuredRepo) {
+					updateCheckedRef.current = true;
+					checkGithubReleaseUpdate(configuredRepo).then((info) => {
+						if (active && info.available) setAvailableUpdate(info);
+					}).catch(() => {});
+				}
 				if (coldStartedTimer) attachAutoLocationToTimer(coldStartedTimer.id, {
 					forceEnabled: Boolean(loadedDb.company.autoCaptureLocation),
 					retries: 2,
@@ -87464,6 +91180,56 @@ function App() {
 		return () => clearInterval(interval);
 	}, [db.activeTimer]);
 	(0, import_react.useEffect)(() => {
+		if (!db.activeTimer || geoExitPrompt && geoExitPrompt.timerId !== db.activeTimer.id) setGeoExitPrompt(null);
+	}, [db.activeTimer, geoExitPrompt]);
+	(0, import_react.useEffect)(() => {
+		const onKeyDown = (e) => {
+			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+				if (isAppLocked) return;
+				e.preventDefault();
+				setSearchOpen((prev) => !prev);
+			}
+		};
+		window.addEventListener("keydown", onKeyDown);
+		return () => window.removeEventListener("keydown", onKeyDown);
+	}, [isAppLocked]);
+	(0, import_react.useEffect)(() => {
+		const canLock = () => Boolean(dbRef.current.company.appLockEnabled) && (Boolean(dbRef.current.company.appLockPinHash) || isNativeCapacitor());
+		const handleBackground = () => {
+			if (canLock() && appHiddenAtRef.current === null) appHiddenAtRef.current = Date.now();
+		};
+		const handleForeground = () => {
+			if (!canLock()) {
+				appHiddenAtRef.current = null;
+				return;
+			}
+			if (appHiddenAtRef.current !== null) {
+				const timeoutMs = Math.max(0, dbRef.current.company.appLockTimeoutMinutes ?? 1) * 6e4;
+				if (Date.now() - appHiddenAtRef.current >= timeoutMs) setIsAppLocked(true);
+				appHiddenAtRef.current = null;
+			}
+		};
+		const onVisibilityChange = () => {
+			if (document.visibilityState === "hidden") handleBackground();
+			else handleForeground();
+		};
+		document.addEventListener("visibilitychange", onVisibilityChange);
+		let appStateHandle = null;
+		let cancelled = false;
+		if (isNativeCapacitor()) App$1.addListener("appStateChange", ({ isActive }) => {
+			if (!isActive) handleBackground();
+			else handleForeground();
+		}).then((h) => {
+			if (cancelled) h.remove();
+			else appStateHandle = h;
+		}).catch(() => {});
+		return () => {
+			cancelled = true;
+			document.removeEventListener("visibilitychange", onVisibilityChange);
+			if (appStateHandle) appStateHandle.remove();
+		};
+	}, []);
+	(0, import_react.useEffect)(() => {
 		if (loading) return;
 		const customerName = db.activeTimer ? db.activeTimer.entryType === "internal" || !db.activeTimer.customerId ? `Intern${db.activeTimer.internalCategory ? ` · ${db.activeTimer.internalCategory}` : ""}` : db.customers.find((c) => c.id === db.activeTimer.customerId)?.companyName ?? "" : "";
 		syncActiveTimerNotification(db.activeTimer, customerName).then((status) => {
@@ -87589,6 +91355,7 @@ function App() {
 				entryType: prevInternal ? "internal" : "project",
 				internalCategory: prevInternal ? prev.internalCategory : void 0,
 				location: prev.location ?? null,
+				photos: prev.photos && prev.photos.length > 0 ? prev.photos : void 0,
 				createdAt: nowIso
 			};
 			nextTimeEntries = [finishedPrev, ...nextTimeEntries];
@@ -87610,7 +91377,8 @@ function App() {
 			source: payload.source ?? "timer",
 			entryType: isInternal ? "internal" : "project",
 			internalCategory: isInternal ? payload.internalCategory || "Sonstiges" : void 0,
-			location: payload.location ?? null
+			location: payload.location ?? null,
+			photos: []
 		};
 		const nextDb = {
 			...currentDb,
@@ -87618,7 +91386,16 @@ function App() {
 			activeTimer: timer
 		};
 		persistDb(nextDb);
-		notify(stoppedPreviousTitle ? `"${stoppedPreviousTitle}" gespeichert · Gestartet: ${timer.title}` : `Timer gestartet: ${timer.title}`);
+		let budgetHint = "";
+		let budgetExceeded = false;
+		if (!isInternal) {
+			const bStatus = computeCustomerBudgetStatus(nextDb.customers.find((c) => c.id === payload.customerId), nextDb.timeEntries, timer);
+			if (bStatus.hasBudget && bStatus.severity === "exceeded") {
+				budgetHint = ` · Achtung: Kundenkontingent überschritten (${bStatus.primaryPct} %)`;
+				budgetExceeded = true;
+			} else if (bStatus.hasBudget && bStatus.severity === "warning") budgetHint = ` · Kontingent zu ${bStatus.primaryPct} % ausgeschöpft`;
+		}
+		notify((stoppedPreviousTitle ? `"${stoppedPreviousTitle}" gespeichert · Gestartet: ${timer.title}` : `Timer gestartet: ${timer.title}`) + budgetHint, budgetExceeded);
 		if (!payload.location) attachAutoLocationToTimer(timer.id, {
 			forceEnabled: Boolean(nextDb.company.autoCaptureLocation),
 			retries: 1,
@@ -87647,10 +91424,43 @@ function App() {
 			}
 		});
 	}, [persistDb]);
+	const handleUpdateActiveTimerPhotos = (0, import_react.useCallback)((photos) => {
+		const current = dbRef.current;
+		if (!current.activeTimer) return;
+		persistDb({
+			...current,
+			activeTimer: {
+				...current.activeTimer,
+				photos
+			}
+		});
+	}, [persistDb]);
+	const handleDeductBreakMinutes = (0, import_react.useCallback)((minutes) => {
+		const current = dbRef.current;
+		const active = current.activeTimer;
+		if (!active || minutes <= 0) return;
+		const elapsedMs = getActiveTimerElapsedMs(active);
+		const maxDeductMs = Math.max(0, elapsedMs - 6e4);
+		const deductMs = Math.min(minutes * 6e4, maxDeductMs);
+		if (deductMs < 6e4) {
+			notify("Die bisherige Laufzeit ist zu kurz für diesen Pausenabzug.", true);
+			return;
+		}
+		const updatedTimer = {
+			...active,
+			accumulatedPausedMs: (active.accumulatedPausedMs ?? 0) + deductMs
+		};
+		persistDb({
+			...current,
+			activeTimer: updatedTimer
+		});
+		notify(`${Math.round(deductMs / 6e4)} Min. Pause von „${active.title}“ abgezogen.`);
+	}, [notify, persistDb]);
 	const handleStopTimer = (0, import_react.useCallback)(() => {
 		const currentDb = dbRef.current;
 		if (!currentDb.activeTimer) return;
 		const active = currentDb.activeTimer;
+		setGeoExitPrompt(null);
 		if (active.source === "geo" && active.geoFenceRuleId) geoCooldownRef.current.set(active.geoFenceRuleId, Date.now());
 		const now = /* @__PURE__ */ new Date();
 		const durationSeconds = Math.max(1, Math.floor(getActiveTimerElapsedMs(active, now.getTime()) / 1e3));
@@ -87680,6 +91490,7 @@ function App() {
 			entryType: isInternal ? "internal" : "project",
 			internalCategory: isInternal ? active.internalCategory : void 0,
 			location: active.location ?? null,
+			photos: active.photos && active.photos.length > 0 ? active.photos : void 0,
 			travelDistanceKm,
 			travelCostNet,
 			travelBilledInvoiceId: null,
@@ -87693,7 +91504,17 @@ function App() {
 		};
 		persistDb(nextDb);
 		pushFinishedEntryToNextcloudCalendar(entry, nextDb);
-		notify(isInternal ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).` : travelCostNet && travelCostNet > 0 ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.` : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`);
+		let budgetSuffix = "";
+		let budgetExceeded = false;
+		if (!isInternal) {
+			const cust = nextDb.customers.find((c) => c.id === entry.customerId);
+			const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, null);
+			if (bStatus.hasBudget && bStatus.severity === "exceeded") {
+				budgetSuffix = ` · Kontingent für ${cust?.companyName} überschritten (${bStatus.primaryPct} %)!`;
+				budgetExceeded = true;
+			} else if (bStatus.hasBudget && bStatus.severity === "warning") budgetSuffix = ` · Kontingent bei ${bStatus.primaryPct} %`;
+		}
+		notify((isInternal ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).` : travelCostNet && travelCostNet > 0 ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.` : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) + budgetSuffix, budgetExceeded);
 	}, [
 		notify,
 		persistDb,
@@ -87716,9 +91537,26 @@ function App() {
 				if (runningRule && runningRule.autoStopOnExit) {
 					const dist = calculateDistanceMeters(loc.lat, loc.lng, runningRule.lat, runningRule.lng);
 					if (dist > runningRule.radiusMeters * 1.35) {
+						if ((latestDb.company.geoExitConfirmMode ?? "ask") === "auto") {
+							triggerNfcHaptic("stop");
+							handleStopTimer();
+							notify(`Ortsregel "${runningRule.name}" verlassen (${Math.round(dist)} m) — Aufgabe automatisch gestoppt.`);
+							return;
+						}
+						const snoozeUntil = geoExitSnoozeRef.current.get(active.id) ?? 0;
+						if (!manual && nowMs < snoozeUntil) return;
+						setGeoExitPrompt({
+							timerId: active.id,
+							ruleName: runningRule.name,
+							timerTitle: active.title,
+							distanceMeters: Math.round(dist)
+						});
 						triggerNfcHaptic("stop");
-						handleStopTimer();
-						notify(`Ortsregel "${runningRule.name}" verlassen (${Math.round(dist)} m) — Aufgabe automatisch gestoppt.`);
+						const soundPreset = latestDb.company.timerReminderSound ?? "chime";
+						const systemSoundUri = latestDb.company.timerReminderSystemSoundUri?.trim() || void 0;
+						if (isNativeCapacitor()) playNativeReminderTone(soundPreset, systemSoundUri);
+						else playReminderSound(soundPreset);
+						showWebReminderNotification(`Ortsbereich „${runningRule.name}“ verlassen`, `Soll „${active.title}“ jetzt gestoppt werden?`);
 						return;
 					}
 				}
@@ -88174,6 +92012,41 @@ function App() {
 				status
 			} : inv)
 		});
+	};
+	const handleMarkInvoicesPaid = (0, import_react.useCallback)((invoiceIds) => {
+		if (invoiceIds.length === 0) return;
+		const idSet = new Set(invoiceIds);
+		const currentDb = dbRef.current;
+		let changed = 0;
+		const nextInvoices = currentDb.invoices.map((inv) => {
+			if (idSet.has(inv.id) && inv.status !== "Bezahlt") {
+				changed += 1;
+				return {
+					...inv,
+					status: "Bezahlt"
+				};
+			}
+			return inv;
+		});
+		if (changed === 0) return;
+		persistDb({
+			...currentDb,
+			invoices: nextInvoices
+		});
+		notify(changed === 1 ? "1 Rechnung per Kontoabgleich als bezahlt markiert." : `${changed} Rechnungen per Kontoabgleich als bezahlt markiert.`);
+	}, [notify, persistDb]);
+	const handleInstallBannerUpdate = async () => {
+		if (!availableUpdate) return;
+		setInstallingBannerUpdate(true);
+		try {
+			const res = await downloadAndInstallReleaseUpdate(availableUpdate);
+			notify(res.message, Boolean(res.needsPermission));
+			if (res.startedInstall) setAvailableUpdate(null);
+		} catch (err) {
+			notify(err instanceof Error ? err.message : "Update-Installation fehlgeschlagen.", true);
+		} finally {
+			setInstallingBannerUpdate(false);
+		}
 	};
 	const handleMarkInvoiceUploaded = (invoiceId, uploadedAt) => {
 		const currentDb = dbRef.current;
@@ -88798,7 +92671,8 @@ function App() {
 					onQuickStartTask: handleQuickStartFromHeader,
 					onStopTimer: handleStopTimer,
 					theme,
-					onToggleTheme: toggleTheme
+					onToggleTheme: toggleTheme,
+					onOpenSearch: () => setSearchOpen(true)
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex min-w-0 flex-1 flex-col",
 					children: [
@@ -88823,6 +92697,20 @@ function App() {
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex items-center gap-3 shrink-0",
 								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => setSearchOpen(true),
+										title: "Globale Schnellsuche (Strg+K)",
+										className: "inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200/75 dark:hover:bg-[#2a2045] dark:hover:text-white cursor-pointer",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-3.5 w-3.5" }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Suchen…" }),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("kbd", {
+												className: "rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-500 dark:border-[#493773] dark:bg-[#171126] dark:text-violet-300",
+												children: "Strg+K"
+											})
+										]
+									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PWAInstallButton, {}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(QuickStartMenu, {
 										recentTasks: recentQuickTasks,
@@ -88895,6 +92783,87 @@ function App() {
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
 							className: "mx-auto w-full max-w-6xl flex-1 p-4 sm:p-6",
 							children: [
+								availableUpdate && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "no-print mb-5 flex flex-col gap-3 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-xs font-medium text-emerald-950 dark:border-emerald-700/60 dark:bg-emerald-950/40 dark:text-emerald-100 sm:flex-row sm:items-center sm:justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-start gap-2.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "font-semibold",
+											children: [
+												"TaktWerk Update ",
+												availableUpdate.tagName,
+												" verfügbar"
+											]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "ml-1.5 opacity-80",
+											children: [
+												"(Installiert: v",
+												availableUpdate.currentVersion,
+												")"
+											]
+										})] })]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2 shrink-0",
+										children: [availableUpdate.apkDownloadUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											disabled: installingBannerUpdate,
+											onClick: () => void handleInstallBannerUpdate(),
+											className: "inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 cursor-pointer",
+											children: [installingBannerUpdate ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Download, { className: "h-3.5 w-3.5" }), isNativeCapacitor() ? "Jetzt installieren" : "APK laden"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setAvailableUpdate(null),
+											className: "rounded-lg border border-emerald-300 px-2.5 py-1.5 text-xs font-medium hover:bg-emerald-100 dark:border-emerald-800 dark:hover:bg-emerald-900/40 cursor-pointer",
+											children: "Später"
+										})]
+									})]
+								}),
+								geoExitPrompt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "no-print mb-5 flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3.5 text-xs text-amber-950 shadow-sm dark:border-amber-700/70 dark:bg-amber-950/45 dark:text-amber-100 sm:flex-row sm:items-center sm:justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-start gap-2.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "space-y-0.5",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "font-semibold",
+												children: [
+													"Ortsbereich „",
+													geoExitPrompt.ruleName,
+													"“ verlassen (",
+													geoExitPrompt.distanceMeters,
+													" m)"
+												]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "opacity-85",
+												children: [
+													"Soll die laufende Aufgabe „",
+													geoExitPrompt.timerTitle,
+													"“ jetzt gestoppt und gespeichert werden?"
+												]
+											})]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2 shrink-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: () => {
+												setGeoExitPrompt(null);
+												handleStopTimer();
+											},
+											className: "inline-flex items-center gap-1.5 rounded-lg bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3 w-3 fill-current" }), "Timer stoppen & speichern"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => {
+												geoExitSnoozeRef.current.set(geoExitPrompt.timerId, Date.now() + 9e5);
+												setGeoExitPrompt(null);
+												notify("Timer läuft weiter (erneute Prüfung in 15 Minuten).");
+											},
+											className: "rounded-lg border border-amber-300 bg-white/80 px-2.5 py-1.5 text-xs font-medium text-amber-950 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-100 dark:hover:bg-amber-900/50 cursor-pointer",
+											children: "Weiterlaufen lassen (15 Min.)"
+										})]
+									})]
+								}),
 								remoteNewerAt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "no-print mb-5 flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
@@ -88993,6 +92962,9 @@ function App() {
 										onStartTimer: handleStartTimer,
 										onUpdateActiveTimerNotes: handleUpdateActiveTimerNotes,
 										onUpdateActiveTimerLocation: handleUpdateActiveTimerLocation,
+										onUpdateActiveTimerPhotos: handleUpdateActiveTimerPhotos,
+										onDeductBreakMinutes: handleDeductBreakMinutes,
+										nextcloudConfigured: nextcloud.configured,
 										onPauseTimer: handlePauseTimer,
 										onResumeTimer: handleResumeTimer,
 										onStopTimer: handleStopTimer,
@@ -89107,6 +93079,7 @@ function App() {
 										onCreateInvoice: handleCreateInvoice,
 										onUpdateInvoice: handleUpdateInvoice,
 										onUpdateInvoiceStatus: handleUpdateInvoiceStatus,
+										onMarkInvoicesPaid: handleMarkInvoicesPaid,
 										onMarkInvoiceUploaded: handleMarkInvoiceUploaded,
 										onSaveSignature: handleSaveSignature,
 										onDeleteSignature: handleDeleteSignature,
@@ -89180,6 +93153,22 @@ function App() {
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(UndoDeleteBanner, {
 				undo: undoBanner,
 				onDismiss: () => setUndoBanner(null)
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(GlobalSearchModal, {
+				open: searchOpen,
+				onClose: () => setSearchOpen(false),
+				db,
+				onNavigate: navigateToSection,
+				onTriggerNfcTask: (task) => {
+					handleTriggerNfcTag(task.tagUid);
+					navigateToSection("tracker");
+				}
+			}),
+			isAppLocked && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AppLockScreen, {
+				companyName: db.company.companyName,
+				pinHash: db.company.appLockPinHash,
+				biometricEnabled: db.company.appLockBiometric !== false,
+				onUnlock: () => setIsAppLocked(false)
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(OfflineIndicator, {})
 		]

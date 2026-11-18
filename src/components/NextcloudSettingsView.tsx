@@ -8,16 +8,21 @@ import {
   Car,
   CheckCircle2,
   Cloud,
+  Coffee,
   Compass,
   Database,
   Download,
   DownloadCloud,
+  ExternalLink,
   FileArchive,
   FileSpreadsheet,
   FileText,
+  Fingerprint,
   History,
   ImagePlus,
   Loader2,
+  Lock,
+  Mail,
   Map as MapIcon,
   MapPin,
   Music,
@@ -29,7 +34,9 @@ import {
   RotateCcw,
   Server,
   Share2,
+  ShieldCheck,
   Smartphone,
+  Sparkles,
   Trash2,
   Upload,
   UploadCloud,
@@ -43,6 +50,7 @@ import type {
   AutoBackupFrequency,
   BackupVersionEntry,
   CompanyProfile,
+  EmailTemplatesConfig,
   GeoFenceRule,
   HomeBaseLocation,
   InvoiceAccentPreset,
@@ -70,7 +78,21 @@ import {
   playNativeReminderTone,
   setBackendServerUrl,
 } from '../utils/apiClient';
+import { hashPin } from '../utils/appLock';
+import {
+  checkGithubReleaseUpdate,
+  downloadAndInstallReleaseUpdate,
+  getCurrentAppVersion,
+  sanitizeGithubRepo,
+  type AppVersionInfo,
+  type GithubReleaseUpdateInfo,
+} from '../utils/appUpdater';
 import type { DiscoveredCalendar } from '../utils/caldavClient';
+import {
+  DEFAULT_EMAIL_TEMPLATES,
+  EMAIL_TEMPLATE_PLACEHOLDERS,
+  getEffectiveEmailTemplates,
+} from '../utils/emailTemplates';
 import {
   INVOICE_ACCENT_STYLES,
   INVOICE_FONT_OPTIONS,
@@ -113,6 +135,7 @@ import {
   listBackupVersions,
   loadBackupVersionSnapshot,
 } from '../utils/backupVersions';
+import { TaktWerkNative } from '../utils/taktwerkNative';
 import { ConfirmActionDialog, type ConfirmDialogState } from './ConfirmActionDialog';
 import { GeoFenceMapPicker, type PickedMapLocation } from './GeoFenceMapPicker';
 import { GeoFenceRuleModal } from './GeoFenceRuleModal';
@@ -280,6 +303,163 @@ export function NextcloudSettingsView({
 
   const nativeApp = isNativeCapacitor();
   const [serverUrl, setServerUrl] = useState(() => getBackendServerUrl());
+
+  // App Updater (GitHub Releases) state
+  const [appVersionInfo, setAppVersionInfo] = useState<AppVersionInfo | null>(null);
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+  const [installingUpdate, setInstallingUpdate] = useState(false);
+  const [releaseInfo, setReleaseInfo] = useState<GithubReleaseUpdateInfo | null>(null);
+  const [updateError, setUpdateError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void getCurrentAppVersion().then((info) => {
+      if (active) setAppVersionInfo(info);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // App Lock (PIN & Android Biometric) state
+  const [pinDraft, setPinDraft] = useState('');
+  const [pinConfirm, setPinConfirm] = useState('');
+  const [savingPin, setSavingPin] = useState(false);
+  const [biometricSupported, setBiometricSupported] = useState(false);
+
+  useEffect(() => {
+    if (!nativeApp) return;
+    let active = true;
+    void TaktWerkNative.getBiometricAvailability()
+      .then((res) => {
+        if (active) setBiometricSupported(Boolean(res.available));
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [nativeApp]);
+
+  // Email Templates helper state
+  const [activeEmailField, setActiveEmailField] =
+    useState<keyof EmailTemplatesConfig>('invoiceBody');
+  const effectiveEmailTemplates = useMemo(
+    () => getEffectiveEmailTemplates(companyForm),
+    [companyForm]
+  );
+
+  const updateEmailTemplateField = (field: keyof EmailTemplatesConfig, value: string) => {
+    setCompanyForm((prev) => ({
+      ...prev,
+      emailTemplates: {
+        ...getEffectiveEmailTemplates(prev),
+        [field]: value,
+      },
+    }));
+  };
+
+  const insertEmailPlaceholder = (token: string) => {
+    const currentVal = effectiveEmailTemplates[activeEmailField] || '';
+    const spacer = currentVal && !currentVal.endsWith(' ') && !currentVal.endsWith('\n') ? ' ' : '';
+    updateEmailTemplateField(activeEmailField, `${currentVal}${spacer}${token}`);
+  };
+
+  const handleResetEmailTemplates = () => {
+    setCompanyForm((prev) => ({
+      ...prev,
+      emailTemplates: { ...DEFAULT_EMAIL_TEMPLATES },
+    }));
+    onNotify('Standard-E-Mail-Vorlagen wiederhergestellt. Zum Übernehmen speichern.');
+  };
+
+  const handleCheckForUpdates = async () => {
+    const cleaned = sanitizeGithubRepo(companyForm.githubUpdateRepo);
+    if (!cleaned) {
+      onNotify('Bitte zuerst ein GitHub-Repository (z. B. benutzer/taktwerk) eintragen.', true);
+      return;
+    }
+    setCheckingUpdate(true);
+    setUpdateError(null);
+    try {
+      const info = await checkGithubReleaseUpdate(cleaned);
+      setReleaseInfo(info);
+      if (cleaned !== companyForm.githubUpdateRepo) {
+        const updated = { ...companyForm, githubUpdateRepo: cleaned };
+        setCompanyForm(updated);
+        onSaveCompany(updated);
+      }
+      if (info.available) {
+        onNotify(`Neue TaktWerk-Version ${info.tagName} verfügbar!`);
+      } else {
+        onNotify(`TaktWerk ist aktuell (v${info.currentVersion}).`);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Update-Prüfung fehlgeschlagen.';
+      setUpdateError(msg);
+      onNotify(msg, true);
+    } finally {
+      setCheckingUpdate(false);
+    }
+  };
+
+  const handleInstallUpdate = async () => {
+    if (!releaseInfo) return;
+    setInstallingUpdate(true);
+    try {
+      const res = await downloadAndInstallReleaseUpdate(releaseInfo);
+      onNotify(res.message, Boolean(res.needsPermission));
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Update-Installation fehlgeschlagen.',
+        true
+      );
+    } finally {
+      setInstallingUpdate(false);
+    }
+  };
+
+  const handleSavePin = async () => {
+    const cleanPin = pinDraft.trim();
+    if (!/^\d{4,6}$/.test(cleanPin)) {
+      onNotify('Die PIN muss aus 4 bis 6 Ziffern bestehen.', true);
+      return;
+    }
+    if (cleanPin !== pinConfirm.trim()) {
+      onNotify('Die beiden PIN-Eingaben stimmen nicht überein.', true);
+      return;
+    }
+    setSavingPin(true);
+    try {
+      const hashed = await hashPin(cleanPin);
+      const nextCompany: CompanyProfile = {
+        ...companyForm,
+        appLockPinHash: hashed,
+        appLockEnabled: true,
+      };
+      setCompanyForm(nextCompany);
+      onSaveCompany(nextCompany);
+      setPinDraft('');
+      setPinConfirm('');
+      onNotify('App-Sperre mit PIN wurde gespeichert und aktiviert.');
+    } finally {
+      setSavingPin(false);
+    }
+  };
+
+  const handleRemovePin = () => {
+    const nextCompany: CompanyProfile = {
+      ...companyForm,
+      appLockPinHash: '',
+      appLockEnabled: biometricSupported && Boolean(companyForm.appLockBiometric)
+        ? companyForm.appLockEnabled
+        : false,
+    };
+    setCompanyForm(nextCompany);
+    onSaveCompany(nextCompany);
+    setPinDraft('');
+    setPinConfirm('');
+    onNotify('Gespeicherte PIN wurde entfernt.');
+  };
 
   // Travel Home Base state
   const [homeAddressQuery, setHomeAddressQuery] = useState(
@@ -1794,6 +1974,295 @@ export function NextcloudSettingsView({
               </button>
             </div>
           </section>
+
+          {/* App-Sperre (PIN & Biometrie) */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 space-y-5 dark:border-[#2e2349] dark:bg-[#171126]">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Lock className="h-5 w-5 text-blue-700 dark:text-violet-400" />
+                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                  App-Sperre (PIN &amp; Biometrie)
+                </h2>
+                <InfoHintPopup
+                  size="sm"
+                  title="App-Sperre"
+                  text="Schütze Kundendaten, Rechnungen und Zeiten beim App-Start oder nach kurzer Inaktivität mit einer 4–6-stelligen PIN sowie auf Android zusätzlich per Fingerabdruck oder Face-Unlock."
+                />
+              </div>
+              {companyForm.appLockEnabled ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Aktiv
+                </span>
+              ) : (
+                <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-[#211936] dark:text-slate-400">
+                  Inaktiv
+                </span>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <label className="flex items-center gap-2.5 text-sm font-medium text-slate-800 dark:text-slate-100 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={Boolean(companyForm.appLockEnabled)}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    if (
+                      checked &&
+                      !companyForm.appLockPinHash &&
+                      !(nativeApp && biometricSupported)
+                    ) {
+                      onNotify('Bitte lege zuerst unten eine 4–6-stellige PIN fest.', true);
+                      return;
+                    }
+                    setCompanyForm({ ...companyForm, appLockEnabled: checked });
+                  }}
+                  className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                />
+                App-Sperre beim Öffnen und nach Hintergrund-Wechsel aktivieren
+              </label>
+
+              {nativeApp && (
+                <label className="flex items-center gap-2.5 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={companyForm.appLockBiometric !== false}
+                    disabled={!biometricSupported}
+                    onChange={(e) =>
+                      setCompanyForm({ ...companyForm, appLockBiometric: e.target.checked })
+                    }
+                    className="h-4 w-4 rounded border-slate-300 accent-violet-600 disabled:opacity-50"
+                  />
+                  <Fingerprint className="h-4 w-4 text-violet-500 shrink-0" />
+                  <span>
+                    Fingerabdruck / Face-Unlock nutzen
+                    {!biometricSupported && ' (auf diesem Gerät nicht eingerichtet)'}
+                  </span>
+                </label>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Automatisch sperren nach
+                </label>
+                <ThemedSelect
+                  value={String(companyForm.appLockTimeoutMinutes ?? 1)}
+                  onChange={(val) =>
+                    setCompanyForm({
+                      ...companyForm,
+                      appLockTimeoutMinutes: Number(val),
+                    })
+                  }
+                  ariaLabel="Sperr-Timeout"
+                  options={[
+                    { value: '0', label: 'Sofort beim Wegwechseln' },
+                    { value: '1', label: 'Nach 1 Minute' },
+                    { value: '5', label: 'Nach 5 Minuten' },
+                    { value: '15', label: 'Nach 15 Minuten' },
+                  ]}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  {companyForm.appLockPinHash ? 'Neue PIN (4–6 Ziffern)' : 'PIN festlegen (4–6 Ziffern)'}
+                </label>
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={pinDraft}
+                  onChange={(e) => setPinDraft(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="z. B. 2580"
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  PIN bestätigen
+                </label>
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={6}
+                  value={pinConfirm}
+                  onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="PIN wiederholen"
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  disabled={savingPin || pinDraft.length < 4}
+                  onClick={() => void handleSavePin()}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 disabled:opacity-50 cursor-pointer"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  {companyForm.appLockPinHash ? 'PIN aktualisieren' : 'PIN speichern & aktivieren'}
+                </button>
+                {companyForm.appLockPinHash && (
+                  <button
+                    type="button"
+                    onClick={handleRemovePin}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-100 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300 cursor-pointer"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    PIN entfernen
+                  </button>
+                )}
+              </div>
+              <button
+                type="submit"
+                className="rounded-lg ui-accent-active px-4 py-2 text-xs font-semibold text-white cursor-pointer"
+              >
+                Sperreinstellungen speichern
+              </button>
+            </div>
+          </section>
+
+          {/* App-Updates (GitHub Releases & Android APK) */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 space-y-5 dark:border-[#2e2349] dark:bg-[#171126]">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-blue-700 dark:text-violet-400" />
+                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                  App-Updates (GitHub Releases)
+                </h2>
+                <InfoHintPopup
+                  size="sm"
+                  title="In-App-Update-Prüfung"
+                  text="Trage dein GitHub-Repository ein, in dem dein Android-APK-Workflow Releases veröffentlicht. TaktWerk prüft dort automatisch auf neuere Versionen und startet auf Android direkt das nahtlose In-Place-Update ohne Datenverlust."
+                />
+              </div>
+              <span className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-xs font-semibold text-slate-700 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200">
+                Installiert: v{appVersionInfo?.versionName ?? '1.1.0'}
+                {appVersionInfo?.isNative ? ` (Build ${appVersionInfo.versionCode})` : ' (Web)'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  GitHub-Repository (Benutzer/Repository)
+                </label>
+                <input
+                  type="text"
+                  value={companyForm.githubUpdateRepo ?? ''}
+                  onChange={(e) =>
+                    setCompanyForm({ ...companyForm, githubUpdateRepo: e.target.value })
+                  }
+                  placeholder="z. B. meinname/taktwerk"
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex items-end">
+                <label className="flex items-center gap-2.5 pb-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={companyForm.autoCheckUpdates !== false}
+                    onChange={(e) =>
+                      setCompanyForm({ ...companyForm, autoCheckUpdates: e.target.checked })
+                    }
+                    className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+                  />
+                  Beim App-Start automatisch nach Updates suchen
+                </label>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                disabled={checkingUpdate}
+                onClick={() => void handleCheckForUpdates()}
+                className="inline-flex items-center gap-1.5 rounded-lg ui-accent-btn px-4 py-2 text-xs font-semibold text-white disabled:opacity-60 cursor-pointer"
+              >
+                {checkingUpdate ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-3.5 w-3.5" />
+                )}
+                Nach Updates suchen
+              </button>
+              <button
+                type="submit"
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer"
+              >
+                Repository speichern
+              </button>
+            </div>
+
+            {updateError && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200">
+                {updateError}
+              </div>
+            )}
+
+            {releaseInfo && (
+              <div
+                className={`rounded-xl border p-4 space-y-3 ${
+                  releaseInfo.available
+                    ? 'border-emerald-300 bg-emerald-50/70 dark:border-emerald-700/60 dark:bg-emerald-950/30'
+                    : 'border-slate-200 bg-slate-50 dark:border-[#342653] dark:bg-[#211936]/60'
+                }`}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      {releaseInfo.available
+                        ? `Neue Version verfügbar: ${releaseInfo.releaseName}`
+                        : `Bereits aktuell: ${releaseInfo.releaseName}`}
+                    </div>
+                    <div className="text-xs text-slate-600 dark:text-slate-400">
+                      Aktuell: v{releaseInfo.currentVersion} → Release: v{releaseInfo.latestVersion}
+                      {releaseInfo.apkSizeBytes
+                        ? ` · APK ${(releaseInfo.apkSizeBytes / (1024 * 1024)).toFixed(1)} MB`
+                        : ''}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {releaseInfo.apkDownloadUrl && (
+                      <button
+                        type="button"
+                        disabled={installingUpdate}
+                        onClick={() => void handleInstallUpdate()}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 cursor-pointer"
+                      >
+                        {installingUpdate ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Download className="h-3.5 w-3.5" />
+                        )}
+                        {nativeApp ? 'Jetzt herunterladen & installieren' : 'APK herunterladen'}
+                      </button>
+                    )}
+                    <a
+                      href={releaseInfo.htmlUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      GitHub Release
+                    </a>
+                  </div>
+                </div>
+                {releaseInfo.body && (
+                  <pre className="max-h-36 overflow-y-auto whitespace-pre-wrap rounded-lg border border-slate-200/80 bg-white/80 p-3 font-sans text-xs text-slate-700 dark:border-[#3b2d5e] dark:bg-[#171126]/80 dark:text-slate-300">
+                    {releaseInfo.body}
+                  </pre>
+                )}
+              </div>
+            )}
+          </section>
         </form>
       )}
 
@@ -2545,12 +3014,152 @@ export function NextcloudSettingsView({
               </label>
             </div>
 
-            <div className="flex justify-end">
+          </section>
+
+          {/* E-Mail-Vorlagen (Rechnung, Angebot & Mahnung) */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 space-y-5 dark:border-[#2e2349] dark:bg-[#171126]">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Mail className="h-5 w-5 text-blue-700 dark:text-violet-400" />
+                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                  E-Mail-Vorlagen (Rechnung, Angebot &amp; Mahnung)
+                </h2>
+                <InfoHintPopup
+                  size="sm"
+                  title="E-Mail-Vorlagen mit Platzhaltern"
+                  text="Diese Texte werden beim Klick auf „Per E-Mail senden“ in Rechnungen & Angeboten automatisch mit Kundenname, Nummer, Betrag und Fälligkeitsdatum befüllt. Auf Android wird das PDF direkt als Anhang an deine E-Mail-App übergeben."
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleResetEmailTemplates}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 cursor-pointer"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Standard wiederherstellen
+              </button>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                Platzhalter (Tippen fügt in das zuletzt gewählte Textfeld ein):
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {EMAIL_TEMPLATE_PLACEHOLDERS.map((ph) => (
+                  <button
+                    key={ph.token}
+                    type="button"
+                    title={ph.desc}
+                    onClick={() => insertEmailPlaceholder(ph.token)}
+                    className="rounded-md border border-violet-200 bg-violet-50 px-2 py-1 font-mono text-[11px] font-semibold text-violet-800 hover:bg-violet-100 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-200 dark:hover:bg-violet-900/50 cursor-pointer"
+                  >
+                    {ph.token}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+              {/* Rechnung */}
+              <div className="space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-[#342653] dark:bg-[#211936]/50">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-violet-200">
+                  Rechnung
+                </h3>
+                <div>
+                  <label className="mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400">
+                    Betreff
+                  </label>
+                  <input
+                    type="text"
+                    value={effectiveEmailTemplates.invoiceSubject}
+                    onFocus={() => setActiveEmailField('invoiceSubject')}
+                    onChange={(e) => updateEmailTemplateField('invoiceSubject', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400">
+                    Nachrichtentext
+                  </label>
+                  <textarea
+                    rows={6}
+                    value={effectiveEmailTemplates.invoiceBody}
+                    onFocus={() => setActiveEmailField('invoiceBody')}
+                    onChange={(e) => updateEmailTemplateField('invoiceBody', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              {/* Angebot */}
+              <div className="space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-[#342653] dark:bg-[#211936]/50">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-violet-200">
+                  Angebot
+                </h3>
+                <div>
+                  <label className="mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400">
+                    Betreff
+                  </label>
+                  <input
+                    type="text"
+                    value={effectiveEmailTemplates.quoteSubject}
+                    onFocus={() => setActiveEmailField('quoteSubject')}
+                    onChange={(e) => updateEmailTemplateField('quoteSubject', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400">
+                    Nachrichtentext
+                  </label>
+                  <textarea
+                    rows={6}
+                    value={effectiveEmailTemplates.quoteBody}
+                    onFocus={() => setActiveEmailField('quoteBody')}
+                    onChange={(e) => updateEmailTemplateField('quoteBody', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+
+              {/* Zahlungserinnerung / Mahnung */}
+              <div className="space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-[#342653] dark:bg-[#211936]/50">
+                <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-violet-200">
+                  Zahlungserinnerung / Mahnung
+                </h3>
+                <div>
+                  <label className="mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400">
+                    Betreff
+                  </label>
+                  <input
+                    type="text"
+                    value={effectiveEmailTemplates.reminderSubject}
+                    onFocus={() => setActiveEmailField('reminderSubject')}
+                    onChange={(e) => updateEmailTemplateField('reminderSubject', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-[11px] font-medium text-slate-600 dark:text-slate-400">
+                    Nachrichtentext
+                  </label>
+                  <textarea
+                    rows={6}
+                    value={effectiveEmailTemplates.reminderBody}
+                    onFocus={() => setActiveEmailField('reminderBody')}
+                    onChange={(e) => updateEmailTemplateField('reminderBody', e.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-1">
               <button
                 type="submit"
                 className="rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
               >
-                Firmendaten, Nummern &amp; Design speichern
+                Firmendaten, Nummern, Design &amp; Vorlagen speichern
               </button>
             </div>
           </section>
@@ -3656,7 +4265,7 @@ export function NextcloudSettingsView({
               </label>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
                   Prüfintervall für Standortregeln
@@ -3678,10 +4287,29 @@ export function NextcloudSettingsView({
                   ]}
                 />
               </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Beim Verlassen einer Ortsregel
+                </label>
+                <ThemedSelect
+                  value={companyForm.geoExitConfirmMode ?? 'ask'}
+                  onChange={(val) =>
+                    setCompanyForm({
+                      ...companyForm,
+                      geoExitConfirmMode: val === 'auto' ? 'auto' : 'ask',
+                    })
+                  }
+                  ariaLabel="Verhalten beim Verlassen einer Ortsregel"
+                  options={[
+                    { value: 'ask', label: 'Nachfrage-Banner anzeigen (empfohlen)' },
+                    { value: 'auto', label: 'Sofort automatisch stoppen' },
+                  ]}
+                />
+              </div>
               <div className="flex items-end">
                 <button
                   type="submit"
-                  className="rounded-lg border border-slate-300 bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:border-violet-600 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                  className="w-full md:w-auto rounded-lg border border-slate-300 bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:border-violet-600 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
                 >
                   Ortsautomatik-Einstellung speichern
                 </button>
@@ -4340,6 +4968,102 @@ export function NextcloudSettingsView({
                 className="rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
               >
                 Ortung &amp; Erinnerung speichern
+              </button>
+            </div>
+          </section>
+
+          {/* Pausen- & Überstunden-Assistent (ArbZG) */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 space-y-4 dark:border-[#2e2349] dark:bg-[#171126]">
+            <div className="flex items-center gap-2">
+              <Coffee className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                Pausen- &amp; Überstunden-Assistent (ArbZG)
+              </h2>
+              <InfoHintPopup
+                size="sm"
+                title="Pausen- & Überstunden-Assistent"
+                text="Weist dich im laufenden Timer automatisch darauf hin, sobald du die gesetzliche Arbeitszeit-Grenze (z. B. 6 Stunden ohne Pause) überschreitest oder ein Timer spätabends bzw. über Nacht vergessen wurde. Mit einem Klick kannst du 15 oder 30 Minuten Pause abziehen."
+              />
+            </div>
+
+            <label className="flex items-center gap-2.5 text-sm font-medium text-slate-800 dark:text-slate-100 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={companyForm.breakAssistantEnabled !== false}
+                onChange={(e) =>
+                  setCompanyForm({ ...companyForm, breakAssistantEnabled: e.target.checked })
+                }
+                className="h-4 w-4 rounded border-slate-300 accent-violet-600"
+              />
+              Pausen- &amp; Über-Nacht-Hinweise in der Zeiterfassung anzeigen
+            </label>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Pausen-Hinweis ab Laufzeit
+                </label>
+                <ThemedSelect
+                  value={String(companyForm.breakTriggerHours ?? 6)}
+                  onChange={(val) =>
+                    setCompanyForm({ ...companyForm, breakTriggerHours: Number(val) })
+                  }
+                  ariaLabel="Pausen-Hinweis ab Laufzeit"
+                  options={[
+                    { value: '4', label: 'Nach 4 Stunden' },
+                    { value: '6', label: 'Nach 6 Stunden (ArbZG Standard)' },
+                    { value: '8', label: 'Nach 8 Stunden' },
+                    { value: '9', label: 'Nach 9 Stunden' },
+                  ]}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Standard-Pausenabzug (1-Klick)
+                </label>
+                <ThemedSelect
+                  value={String(companyForm.breakDefaultMinutes ?? 30)}
+                  onChange={(val) =>
+                    setCompanyForm({ ...companyForm, breakDefaultMinutes: Number(val) })
+                  }
+                  ariaLabel="Standard-Pausenabzug"
+                  options={[
+                    { value: '15', label: '15 Minuten' },
+                    { value: '30', label: '30 Minuten (ArbZG Standard)' },
+                    { value: '45', label: '45 Minuten' },
+                    { value: '60', label: '60 Minuten' },
+                  ]}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Feierabend- / Über-Nacht-Hinweis ab
+                </label>
+                <ThemedSelect
+                  value={String(companyForm.overnightReminderHour ?? 20)}
+                  onChange={(val) =>
+                    setCompanyForm({ ...companyForm, overnightReminderHour: Number(val) })
+                  }
+                  ariaLabel="Feierabend-Hinweis Uhrzeit"
+                  options={[
+                    { value: '18', label: 'Ab 18:00 Uhr' },
+                    { value: '19', label: 'Ab 19:00 Uhr' },
+                    { value: '20', label: 'Ab 20:00 Uhr (empfohlen)' },
+                    { value: '21', label: 'Ab 21:00 Uhr' },
+                    { value: '22', label: 'Ab 22:00 Uhr' },
+                  ]}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-1">
+              <button
+                type="submit"
+                className="rounded-lg bg-slate-900 px-5 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+              >
+                Pausen-Assistent speichern
               </button>
             </div>
           </section>

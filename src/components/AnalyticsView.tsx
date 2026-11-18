@@ -1,4 +1,4 @@
-import { BarChart3, Clock, FileDown, Layers, Receipt, Users } from 'lucide-react';
+import { BarChart3, Calculator, Clock, FileDown, Layers, Receipt, Users } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type {
   AppDatabase,
@@ -11,6 +11,7 @@ import type {
 import { formatCurrency, formatNumber, toInputDate } from '../utils/format';
 import { downloadFilteredReportPdf } from '../utils/pdfInvoice';
 import { InfoHintPopup } from './InfoHintPopup';
+import { TaxAdvisorPanel } from './TaxAdvisorPanel';
 import { ThemedSelect } from './ThemedSelect';
 
 interface AnalyticsViewProps {
@@ -63,6 +64,7 @@ export function AnalyticsView({
   db,
   onNotify,
 }: AnalyticsViewProps) {
+  const [activeTab, setActiveTab] = useState<'charts' | 'tax'>('charts');
   const [range, setRange] = useState<RangePreset>('30d');
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('all');
   const [selectedProductId, setSelectedProductId] = useState<string>('all');
@@ -460,17 +462,48 @@ export function AnalyticsView({
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div className="flex items-center gap-2">
-          <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            Grafische Zeit- &amp; Umsatzauswertung
-          </h1>
-          <InfoHintPopup
-            title="Grafische Zeit- & Umsatzauswertung"
-            text="Verteilung deiner erfassten Arbeitszeiten nach Tagen, Kunden und verknüpften Leistungen."
-          />
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+              Auswertung &amp; Steuern
+            </h1>
+            <InfoHintPopup
+              title="Auswertung & Steuern"
+              text="Grafische Verteilung deiner Arbeitszeiten & Umsätze sowie EÜR-, UStVA- und DATEV-/Steuerberater-Export."
+            />
+          </div>
+          {db && (
+            <div className="inline-flex rounded-xl border border-slate-200 bg-slate-100/80 p-1 dark:border-[#2e2349] dark:bg-[#211936]">
+              <button
+                type="button"
+                onClick={() => setActiveTab('charts')}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                  activeTab === 'charts'
+                    ? 'ui-accent-active text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                <BarChart3 className="h-3.5 w-3.5" />
+                Zeit &amp; Umsatz
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('tax')}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                  activeTab === 'tax'
+                    ? 'ui-accent-active text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                <Calculator className="h-3.5 w-3.5" />
+                EÜR, UStVA &amp; Steuerberater
+              </button>
+            </div>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        {activeTab === 'charts' && (
+          <div className="flex flex-wrap items-center gap-2">
           <div className="flex rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
             {([
               { id: '7d', label: '7 Tage' },
@@ -533,9 +566,17 @@ export function AnalyticsView({
               Grafik-PDF
             </button>
           )}
-        </div>
+          </div>
+        )}
       </div>
 
+      {activeTab === 'tax' && db ? (
+        <TaxAdvisorPanel
+          db={db}
+          onNotify={(msg, tone) => onNotify?.(msg, tone === 'error')}
+        />
+      ) : (
+      <>
       {/* KPI Strip */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
@@ -1032,6 +1073,8 @@ export function AnalyticsView({
             </div>
           </section>
         </>
+      )}
+      </>
       )}
     </div>
   );

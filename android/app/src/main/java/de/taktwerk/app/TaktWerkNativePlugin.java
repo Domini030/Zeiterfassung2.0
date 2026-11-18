@@ -11,6 +11,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Location;
@@ -43,10 +44,13 @@ import android.provider.Settings;
 import android.util.Base64;
 import android.webkit.WebView;
 import androidx.activity.result.ActivityResult;
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
 import com.getcapacitor.JSArray;
 import com.getcapacitor.JSObject;
 import com.getcapacitor.PermissionState;
@@ -60,6 +64,7 @@ import com.getcapacitor.annotation.PermissionCallback;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -1933,5 +1938,253 @@ public class TaktWerkNativePlugin extends Plugin {
         res.put("action", act);
         res.put("tagUid", uid);
         call.resolve(res);
+    }
+
+    @PluginMethod
+    public void getAppVersion(PluginCall call) {
+        Context context = getContext();
+        JSObject res = new JSObject();
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            res.put("versionName", info.versionName != null ? info.versionName : "1.1.0");
+            long code = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                ? info.getLongVersionCode()
+                : info.versionCode;
+            res.put("versionCode", code);
+        } catch (Exception e) {
+            res.put("versionName", "1.1.0");
+            res.put("versionCode", 1);
+        }
+        call.resolve(res);
+    }
+
+    @PluginMethod
+    public void downloadAndInstallApk(PluginCall call) {
+        String url = call.getString("url", "");
+        String filename = call.getString("filename", "TaktWerk-Update.apk");
+        Activity activity = getActivity();
+        Context context = getContext();
+
+        if (url == null || url.trim().isEmpty()) {
+            call.reject("Download-URL für das Update fehlt.");
+            return;
+        }
+        if (activity == null) {
+            call.reject("Aktivität nicht verfügbar.");
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!context.getPackageManager().canRequestPackageInstalls()) {
+                try {
+                    Intent permIntent = new Intent(
+                        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                        Uri.parse("package:" + context.getPackageName())
+                    );
+                    permIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    activity.startActivity(permIntent);
+                } catch (Exception ignored) {}
+                JSObject res = new JSObject();
+                res.put("ok", false);
+                res.put("needsPermission", true);
+                res.put("message", "Bitte erlaube „Aus dieser Quelle zulassen“ in den Android-Einstellungen und tippe danach erneut auf Update installieren.");
+                call.resolve(res);
+                return;
+            }
+        }
+
+        EXECUTOR.execute(() -> {
+            try {
+                Request req = new Request.Builder()
+                    .url(url.trim())
+                    .header("User-Agent", "TaktWerk-Android-Updater")
+                    .build();
+
+                try (Response response = HTTP_CLIENT.newCall(req).execute()) {
+                    if (!response.isSuccessful() || response.body() == null) {
+                        call.reject("APK-Download fehlgeschlagen (HTTP " + response.code() + ").");
+                        return;
+                    }
+
+                    String safeName = filename.replaceAll("[^a-zA-Z0-9._-]", "_");
+                    if (!safeName.toLowerCase().endsWith(".apk")) {
+                        safeName = safeName + ".apk";
+                    }
+                    File outDir = new File(context.getCacheDir(), "exports");
+                    if (!outDir.exists()) {
+                        //noinspection ResultOfMethodCallIgnored
+                        outDir.mkdirs();
+                    }
+                    File apkFile = new File(outDir, safeName);
+                    try (InputStream in = response.body().byteStream();
+                         FileOutputStream out = new FileOutputStream(apkFile)) {
+                        byte[] buf = new byte[16384];
+                        int len;
+                        while ((len = in.read(buf)) != -1) {
+                            out.write(buf, 0, len);
+                        }
+                        out.flush();
+                    }
+
+                    Uri apkUri = FileProvider.getUriForFile(
+                        context,
+                        context.getPackageName() + ".fileprovider",
+                        apkFile
+                    );
+
+                    activity.runOnUiThread(() -> {
+                        try {
+                            Intent installIntent = new Intent(Intent.ACTION_VIEW);
+                            installIntent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                            installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            activity.startActivity(installIntent);
+                            JSObject okRes = new JSObject();
+                            okRes.put("ok", true);
+                            okRes.put("needsPermission", false);
+                            okRes.put("message", "Update heruntergeladen – Android-Installationsdialog geöffnet.");
+                            call.resolve(okRes);
+                        } catch (Exception e) {
+                            call.reject(e.getMessage() != null ? e.getMessage() : "Installationsdialog konnte nicht geöffnet werden.");
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                call.reject(e.getMessage() != null ? e.getMessage() : "APK-Download fehlgeschlagen.");
+            }
+        });
+    }
+
+    @PluginMethod
+    public void sharePdfWithEmail(PluginCall call) {
+        String filename = call.getString("filename", "Rechnung.pdf");
+        String base64 = call.getString("base64", "");
+        String to = call.getString("to", "");
+        String subject = call.getString("subject", "TaktWerk Dokument");
+        String body = call.getString("body", "");
+
+        if (base64.isEmpty()) {
+            call.reject("PDF-Daten fehlen.");
+            return;
+        }
+        Activity activity = getActivity();
+        if (activity == null) {
+            call.reject("Aktivität nicht verfügbar.");
+            return;
+        }
+
+        try {
+            String safeName = filename.toLowerCase().endsWith(".pdf") ? filename : filename + ".pdf";
+            Uri uri = writeCacheBytesAndGetUri(safeName, Base64.decode(base64, Base64.DEFAULT));
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.setType("application/pdf");
+            if (to != null && !to.trim().isEmpty()) {
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { to.trim() });
+            }
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+            emailIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            activity.startActivity(Intent.createChooser(emailIntent, "Dokument per E-Mail senden"));
+            call.resolve();
+        } catch (Exception e) {
+            call.reject(e.getMessage() != null ? e.getMessage() : "E-Mail-Versand konnte nicht gestartet werden.");
+        }
+    }
+
+    @PluginMethod
+    public void getBiometricAvailability(PluginCall call) {
+        Context context = getContext();
+        BiometricManager bm = BiometricManager.from(context);
+        int authenticators = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+            ? (BiometricManager.Authenticators.BIOMETRIC_STRONG
+                | BiometricManager.Authenticators.BIOMETRIC_WEAK
+                | BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+            : (BiometricManager.Authenticators.BIOMETRIC_WEAK
+                | BiometricManager.Authenticators.DEVICE_CREDENTIAL);
+        int canAuth = bm.canAuthenticate(authenticators);
+        int hwCheck = bm.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK);
+
+        JSObject res = new JSObject();
+        res.put("available", canAuth == BiometricManager.BIOMETRIC_SUCCESS);
+        res.put("hasBiometricHardware", hwCheck == BiometricManager.BIOMETRIC_SUCCESS);
+        res.put("status", canAuth == BiometricManager.BIOMETRIC_SUCCESS ? "OK" : "UNAVAILABLE_" + canAuth);
+        call.resolve(res);
+    }
+
+    @PluginMethod
+    public void authenticateBiometric(PluginCall call) {
+        Activity activity = getActivity();
+        if (!(activity instanceof FragmentActivity)) {
+            JSObject fail = new JSObject();
+            fail.put("authenticated", false);
+            fail.put("error", "Biometrie auf dieser Aktivität nicht verfügbar.");
+            call.resolve(fail);
+            return;
+        }
+
+        String title = call.getString("title", "TaktWerk entsperren");
+        String subtitle = call.getString("subtitle", "Fingerabdruck, Gesichtserkennung oder Geräte-PIN bestätigen");
+
+        FragmentActivity fragmentActivity = (FragmentActivity) activity;
+        fragmentActivity.runOnUiThread(() -> {
+            try {
+                final boolean[] settled = new boolean[] { false };
+                BiometricPrompt prompt = new BiometricPrompt(
+                    fragmentActivity,
+                    ContextCompat.getMainExecutor(fragmentActivity),
+                    new BiometricPrompt.AuthenticationCallback() {
+                        @Override
+                        public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                            if (settled[0]) return;
+                            settled[0] = true;
+                            JSObject ok = new JSObject();
+                            ok.put("authenticated", true);
+                            call.resolve(ok);
+                        }
+
+                        @Override
+                        public void onAuthenticationError(int errorCode, CharSequence errString) {
+                            if (settled[0]) return;
+                            settled[0] = true;
+                            JSObject res = new JSObject();
+                            res.put("authenticated", false);
+                            res.put(
+                                "cancelled",
+                                errorCode == BiometricPrompt.ERROR_USER_CANCELED
+                                    || errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON
+                                    || errorCode == BiometricPrompt.ERROR_CANCELED
+                            );
+                            res.put("error", errString != null ? errString.toString() : "Authentifizierung abgebrochen");
+                            call.resolve(res);
+                        }
+
+                        @Override
+                        public void onAuthenticationFailed() {
+                            // System handles retry automatically
+                        }
+                    }
+                );
+
+                int allowedAuth = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                    ? (BiometricManager.Authenticators.BIOMETRIC_STRONG
+                        | BiometricManager.Authenticators.BIOMETRIC_WEAK
+                        | BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+                    : (BiometricManager.Authenticators.BIOMETRIC_WEAK
+                        | BiometricManager.Authenticators.DEVICE_CREDENTIAL);
+
+                BiometricPrompt.PromptInfo.Builder builder = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle(title)
+                    .setSubtitle(subtitle)
+                    .setAllowedAuthenticators(allowedAuth);
+                prompt.authenticate(builder.build());
+            } catch (Exception e) {
+                JSObject fail = new JSObject();
+                fail.put("authenticated", false);
+                fail.put("error", e.getMessage() != null ? e.getMessage() : "Biometrie fehlgeschlagen");
+                call.resolve(fail);
+            }
+        });
     }
 }

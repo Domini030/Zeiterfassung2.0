@@ -46,9 +46,20 @@ export interface Customer {
   vatId: string;
   paymentTermDays: number;
   timeRoundingMinutes?: TimeRoundingMinutes | null;
+  budgetHours?: number | null;
+  budgetAmountNet?: number | null;
+  budgetPeriod?: 'monthly' | 'total';
   category?: string;
   notes: string;
   createdAt: string;
+}
+
+export interface WorkPhoto {
+  id: string;
+  dataUrl: string;
+  caption?: string;
+  capturedAt: string;
+  nextcloudPath?: string;
 }
 
 export interface Product {
@@ -118,6 +129,7 @@ export interface TimeEntry {
   travelBilledInvoiceId?: string | null;
   entryType?: 'project' | 'internal';
   internalCategory?: string;
+  photos?: WorkPhoto[];
   createdAt: string;
 }
 
@@ -138,6 +150,7 @@ export interface ActiveTimer {
   location?: LocationSnapshot | null;
   entryType?: 'project' | 'internal';
   internalCategory?: string;
+  photos?: WorkPhoto[];
 }
 
 export interface InvoiceLineItem {
@@ -374,6 +387,15 @@ export interface CalendarAppointment {
   productId?: string | null;
 }
 
+export interface EmailTemplatesConfig {
+  invoiceSubject: string;
+  invoiceBody: string;
+  quoteSubject: string;
+  quoteBody: string;
+  reminderSubject: string;
+  reminderBody: string;
+}
+
 export interface CompanyProfile {
   companyName: string;
   ownerName: string;
@@ -445,6 +467,18 @@ export interface CompanyProfile {
   timerReminderSystemSoundTitle?: string;
   autoBackup?: AutoBackupConfig;
   calendarConfig?: NextcloudCalendarConfig;
+  emailTemplates?: EmailTemplatesConfig;
+  githubUpdateRepo?: string;
+  autoCheckUpdates?: boolean;
+  geoExitConfirmMode?: 'ask' | 'auto';
+  breakAssistantEnabled?: boolean;
+  breakTriggerHours?: number;
+  breakDefaultMinutes?: number;
+  overnightReminderHour?: number;
+  appLockEnabled?: boolean;
+  appLockBiometric?: boolean;
+  appLockPinHash?: string;
+  appLockTimeoutMinutes?: number;
 }
 
 export interface AppDatabase {

@@ -11,6 +11,7 @@ import {
   Package,
   Receipt,
   Repeat,
+  Search,
   Square,
   Sun,
   Users,
@@ -37,6 +38,7 @@ interface SidebarProps {
   onStopTimer: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  onOpenSearch?: () => void;
 }
 
 const NAV_ITEMS: { id: NavSection; label: string; icon: typeof Clock }[] = [
@@ -67,6 +69,7 @@ export function Sidebar({
   onStopTimer,
   theme,
   onToggleTheme,
+  onOpenSearch,
 }: SidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -161,6 +164,20 @@ export function Sidebar({
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5">
+          {onOpenSearch && (
+            <button
+              type="button"
+              onClick={() => {
+                setMobileOpen(false);
+                onOpenSearch();
+              }}
+              aria-label="Globale Schnellsuche öffnen"
+              title="Schnellsuche (Strg+K)"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200 dark:hover:bg-[#2a2045] cursor-pointer"
+            >
+              <Search className="h-4 w-4" />
+            </button>
+          )}
           {/* Quick-Start Dropdown (Last 3 Tasks) */}
           <QuickStartMenu
             recentTasks={recentQuickTasks}
@@ -286,11 +303,29 @@ export function Sidebar({
 
       {/* Sticky Desktop Sidebar */}
       <aside className="no-print hidden lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-60 lg:shrink-0 lg:flex-col lg:border-r lg:border-slate-200 lg:bg-white dark:lg:border-[#2e2349] dark:lg:bg-[#171126]">
-        <div className="flex h-16 shrink-0 items-center border-b border-slate-200 px-6 dark:border-[#2e2349]">
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-6 dark:border-[#2e2349]">
           <span className="font-display text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 whitespace-nowrap shrink-0">
             TaktWerk
           </span>
         </div>
+
+        {onOpenSearch && (
+          <div className="px-3 pt-3">
+            <button
+              type="button"
+              onClick={onOpenSearch}
+              className="flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500 transition-colors hover:border-slate-300 hover:bg-slate-100 hover:text-slate-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-400 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer"
+            >
+              <span className="flex items-center gap-2 truncate">
+                <Search className="h-3.5 w-3.5 shrink-0" />
+                <span>Schnellsuche…</span>
+              </span>
+              <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-400 dark:border-[#3b2d5e] dark:bg-[#171126]">
+                Strg+K
+              </kbd>
+            </button>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto">{renderNavList()}</div>
 

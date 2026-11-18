@@ -909,6 +909,85 @@ export function buildTimesheetPdf(
   doc.text('Ort, Datum', marginLeft, y + 4.5);
   doc.text('Unterschrift / Leistungsbestätigung Kunde', pageWidth - marginRight - 65, y + 4.5);
 
+  // Attached work photo documentation (2-column grid)
+  const photoItems: { entry: TimeEntry; dataUrl: string; caption?: string; capturedAt: string }[] = [];
+  for (const entry of sorted) {
+    if (entry.photos && entry.photos.length > 0) {
+      for (const ph of entry.photos) {
+        if (ph.dataUrl && ph.dataUrl.startsWith('data:image/')) {
+          photoItems.push({
+            entry,
+            dataUrl: ph.dataUrl,
+            caption: ph.caption,
+            capturedAt: ph.capturedAt,
+          });
+        }
+      }
+    }
+  }
+
+  if (photoItems.length > 0) {
+    doc.addPage();
+    let py = 20;
+    doc.setFont(font, 'bold');
+    doc.setFontSize(13);
+    doc.setTextColor(accentR, accentG, accentB);
+    doc.text(`Fotodokumentation der Einsätze (${photoItems.length})`, marginLeft, py);
+    py += 8;
+
+    const colGap = 8;
+    const cardW = (contentWidth - colGap) / 2;
+    const imgH = 52;
+    const cardH = imgH + 18;
+
+    photoItems.forEach((item, idx) => {
+      const col = idx % 2;
+      if (col === 0 && py + cardH > 272) {
+        doc.addPage();
+        py = 20;
+      }
+      const x = marginLeft + col * (cardW + colGap);
+
+      doc.setDrawColor(226, 232, 240);
+      doc.setFillColor(248, 250, 252);
+      doc.roundedRect(x, py, cardW, cardH, 2, 2, 'FD');
+
+      try {
+        const format = item.dataUrl.includes('image/png') ? 'PNG' : 'JPEG';
+        doc.addImage(item.dataUrl, format, x + 2, py + 2, cardW - 4, imgH, undefined, 'FAST');
+      } catch {
+        doc.setFont(font, 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.text('Foto konnte nicht eingebettet werden', x + 4, py + imgH / 2);
+      }
+
+      doc.setFont(font, 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(15, 23, 42);
+      const headerTxt = doc.splitTextToSize(
+        `${formatDateDE(item.entry.startTime)} · ${item.entry.title}`,
+        cardW - 6
+      )[0];
+      doc.text(headerTxt || '', x + 3, py + imgH + 6.5);
+
+      doc.setFont(font, 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(100, 116, 139);
+      const subText = [item.caption, item.entry.location?.address]
+        .filter(Boolean)
+        .join(' · ');
+      if (subText) {
+        const subLine = doc.splitTextToSize(subText, cardW - 6)[0];
+        doc.text(subLine || '', x + 3, py + imgH + 11.5);
+      }
+
+      if (col === 1 || idx === photoItems.length - 1) {
+        py += cardH + 6;
+      }
+    });
+  }
+
   drawFooter(doc, company, font);
   return doc;
 }
@@ -1108,6 +1187,14 @@ export async function downloadPaymentReminderPdf(
 ): Promise<void> {
   const doc = await buildPaymentReminderPdf(invoice, company);
   await openOrSavePdfDoc(doc, `Zahlungserinnerung-${invoice.invoiceNumber}.pdf`);
+}
+
+export async function getPaymentReminderPdfBase64(
+  invoice: Invoice,
+  company: CompanyProfile
+): Promise<string> {
+  const doc = await buildPaymentReminderPdf(invoice, company);
+  return docToBase64(doc);
 }
 
 export function getAcceptanceProtocolPdfBase64(

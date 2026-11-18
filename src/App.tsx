@@ -3,10 +3,15 @@ import {
   AlertCircle,
   CheckCircle2,
   Cloud,
+  Download,
   FilePlus2,
   Info,
+  Loader2,
+  MapPin,
   Moon,
   Play,
+  Search,
+  Sparkles,
   Square,
   Sun,
   X,
@@ -14,6 +19,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityProgressOverlay } from './components/ActivityProgressOverlay';
 import { AnalyticsView } from './components/AnalyticsView';
+import { AppLockScreen } from './components/AppLockScreen';
 import { CalendarView } from './components/CalendarView';
 import {
   ConfirmActionDialog,
@@ -23,6 +29,7 @@ import {
 } from './components/ConfirmActionDialog';
 import { CustomersView } from './components/CustomersView';
 import { ExpensesView } from './components/ExpensesView';
+import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { InvoicesView } from './components/InvoicesView';
 import { NextcloudSettingsView } from './components/NextcloudSettingsView';
 import { NfcTasksView } from './components/NfcTasksView';
@@ -55,6 +62,7 @@ import type {
   RecurringInvoiceTemplate,
   TaxRate,
   TimeEntry,
+  WorkPhoto,
 } from './types';
 import {
   NextcloudConflictError,
@@ -77,7 +85,14 @@ import {
   syncNativeWidgetState,
   triggerNfcHaptic,
 } from './utils/apiClient';
+import {
+  checkGithubReleaseUpdate,
+  downloadAndInstallReleaseUpdate,
+  sanitizeGithubRepo,
+  type GithubReleaseUpdateInfo,
+} from './utils/appUpdater';
 import { createBackupVersion } from './utils/backupVersions';
+import { computeCustomerBudgetStatus } from './utils/budgetHelpers';
 import { isBackupDue } from './utils/exportBackup';
 import {
   addDaysISO,
@@ -192,6 +207,16 @@ export default function App() {
   const [pushConflictAt, setPushConflictAt] = useState<string | null>(null);
   const [notificationStatus, setNotificationStatus] =
     useState<NativeNotificationStatus | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [isAppLocked, setIsAppLocked] = useState(false);
+  const [geoExitPrompt, setGeoExitPrompt] = useState<{
+    timerId: string;
+    ruleName: string;
+    timerTitle: string;
+    distanceMeters: number;
+  } | null>(null);
+  const [availableUpdate, setAvailableUpdate] = useState<GithubReleaseUpdateInfo | null>(null);
+  const [installingBannerUpdate, setInstallingBannerUpdate] = useState(false);
 
   const checkNotificationStatus = useCallback(async () => {
     if (!isNativeCapacitor()) return;
@@ -207,8 +232,12 @@ export default function App() {
 
   const deepLinkHandledRef = useRef(false);
   const autoBackupCheckedRef = useRef(false);
+  const updateCheckedRef = useRef(false);
+  const initialLockEvaluatedRef = useRef(false);
+  const appHiddenAtRef = useRef<number | null>(null);
   const reminderFiredKeyRef = useRef<string | null>(null);
   const geoCooldownRef = useRef<Map<string, number>>(new Map());
+  const geoExitSnoozeRef = useRef<Map<string, number>>(new Map());
   const sectionHistoryRef = useRef<NavSection[]>([]);
   const touchStartRef = useRef<{
     x: number;
@@ -369,6 +398,7 @@ export default function App() {
           entryType: isInternal ? 'internal' : 'project',
           internalCategory: isInternal ? timer.internalCategory : undefined,
           location: timer.location ?? null,
+          photos: timer.photos && timer.photos.length > 0 ? timer.photos : undefined,
           createdAt: nowIso,
         };
         nextTimeEntries = [finished, ...nextTimeEntries];
@@ -698,6 +728,36 @@ export default function App() {
         setDb(loadedDb);
         void syncNativeWidgetState(loadedDb);
 
+        // Evaluate initial App Lock (PIN / Biometrics) once DB is ready
+        if (!initialLockEvaluatedRef.current) {
+          initialLockEvaluatedRef.current = true;
+          if (
+            loadedDb.company.appLockEnabled &&
+            (Boolean(loadedDb.company.appLockPinHash) || isNativeCapacitor())
+          ) {
+            setIsAppLocked(true);
+          }
+        }
+
+        // Silent GitHub Release Update check on startup if configured
+        const configuredRepo = sanitizeGithubRepo(loadedDb.company.githubUpdateRepo);
+        if (
+          !updateCheckedRef.current &&
+          loadedDb.company.autoCheckUpdates !== false &&
+          configuredRepo
+        ) {
+          updateCheckedRef.current = true;
+          void checkGithubReleaseUpdate(configuredRepo)
+            .then((info) => {
+              if (active && info.available) {
+                setAvailableUpdate(info);
+              }
+            })
+            .catch(() => {
+              // Silent fallback when offline or rate-limited
+            });
+        }
+
         // Run cold-start location capture & CalDAV sync AFTER dbRef.current is committed
         if (coldStartedTimer) {
           attachAutoLocationToTimer(coldStartedTimer.id, {
@@ -907,6 +967,85 @@ export default function App() {
     return () => clearInterval(interval);
   }, [db.activeTimer]);
 
+  // Clear geofence exit banner automatically if timer stopped or changed
+  useEffect(() => {
+    if (!db.activeTimer || (geoExitPrompt && geoExitPrompt.timerId !== db.activeTimer.id)) {
+      setGeoExitPrompt(null);
+    }
+  }, [db.activeTimer, geoExitPrompt]);
+
+  // Global Quick Search keyboard shortcut (Ctrl+K / Cmd+K)
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        if (isAppLocked) return;
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isAppLocked]);
+
+  // Auto-Lock App when returning from background after configured timeout
+  useEffect(() => {
+    const canLock = () =>
+      Boolean(dbRef.current.company.appLockEnabled) &&
+      (Boolean(dbRef.current.company.appLockPinHash) || isNativeCapacitor());
+
+    const handleBackground = () => {
+      if (canLock() && appHiddenAtRef.current === null) {
+        appHiddenAtRef.current = Date.now();
+      }
+    };
+
+    const handleForeground = () => {
+      if (!canLock()) {
+        appHiddenAtRef.current = null;
+        return;
+      }
+      if (appHiddenAtRef.current !== null) {
+        const timeoutMs = Math.max(0, dbRef.current.company.appLockTimeoutMinutes ?? 1) * 60_000;
+        if (Date.now() - appHiddenAtRef.current >= timeoutMs) {
+          setIsAppLocked(true);
+        }
+        appHiddenAtRef.current = null;
+      }
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        handleBackground();
+      } else {
+        handleForeground();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    let appStateHandle: { remove: () => Promise<void> } | null = null;
+    let cancelled = false;
+    if (isNativeCapacitor()) {
+      void CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+        if (!isActive) {
+          handleBackground();
+        } else {
+          handleForeground();
+        }
+      })
+        .then((h) => {
+          if (cancelled) void h.remove();
+          else appStateHandle = h;
+        })
+        .catch(() => {});
+    }
+
+    return () => {
+      cancelled = true;
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      if (appStateHandle) void appStateHandle.remove();
+    };
+  }, []);
+
   // Persistent Android status-bar timer notification
   useEffect(() => {
     if (loading) return;
@@ -1074,6 +1213,7 @@ export default function App() {
         entryType: prevInternal ? 'internal' : 'project',
         internalCategory: prevInternal ? prev.internalCategory : undefined,
         location: prev.location ?? null,
+        photos: prev.photos && prev.photos.length > 0 ? prev.photos : undefined,
         createdAt: nowIso,
       };
       nextTimeEntries = [finishedPrev, ...nextTimeEntries];
@@ -1097,13 +1237,29 @@ export default function App() {
       entryType: isInternal ? 'internal' : 'project',
       internalCategory: isInternal ? (payload.internalCategory || 'Sonstiges') : undefined,
       location: payload.location ?? null,
+      photos: [],
     };
     const nextDb: AppDatabase = { ...currentDb, timeEntries: nextTimeEntries, activeTimer: timer };
     void persistDb(nextDb);
+
+    let budgetHint = '';
+    let budgetExceeded = false;
+    if (!isInternal) {
+      const cust = nextDb.customers.find((c) => c.id === payload.customerId);
+      const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, timer);
+      if (bStatus.hasBudget && bStatus.severity === 'exceeded') {
+        budgetHint = ` · Achtung: Kundenkontingent überschritten (${bStatus.primaryPct} %)`;
+        budgetExceeded = true;
+      } else if (bStatus.hasBudget && bStatus.severity === 'warning') {
+        budgetHint = ` · Kontingent zu ${bStatus.primaryPct} % ausgeschöpft`;
+      }
+    }
+
     notify(
-      stoppedPreviousTitle
+      (stoppedPreviousTitle
         ? `"${stoppedPreviousTitle}" gespeichert · Gestartet: ${timer.title}`
-        : `Timer gestartet: ${timer.title}`
+        : `Timer gestartet: ${timer.title}`) + budgetHint,
+      budgetExceeded
     );
     if (!payload.location) {
       attachAutoLocationToTimer(timer.id, {
@@ -1144,10 +1300,53 @@ export default function App() {
     [persistDb]
   );
 
+  const handleUpdateActiveTimerPhotos = useCallback(
+    (photos: WorkPhoto[]) => {
+      const current = dbRef.current;
+      if (!current.activeTimer) return;
+      void persistDb({
+        ...current,
+        activeTimer: {
+          ...current.activeTimer,
+          photos,
+        },
+      });
+    },
+    [persistDb]
+  );
+
+  const handleDeductBreakMinutes = useCallback(
+    (minutes: number) => {
+      const current = dbRef.current;
+      const active = current.activeTimer;
+      if (!active || minutes <= 0) return;
+      const elapsedMs = getActiveTimerElapsedMs(active);
+      const maxDeductMs = Math.max(0, elapsedMs - 60_000);
+      const deductMs = Math.min(minutes * 60_000, maxDeductMs);
+      if (deductMs < 60_000) {
+        notify('Die bisherige Laufzeit ist zu kurz für diesen Pausenabzug.', true);
+        return;
+      }
+      const updatedTimer: ActiveTimer = {
+        ...active,
+        accumulatedPausedMs: (active.accumulatedPausedMs ?? 0) + deductMs,
+      };
+      void persistDb({
+        ...current,
+        activeTimer: updatedTimer,
+      });
+      notify(
+        `${Math.round(deductMs / 60_000)} Min. Pause von „${active.title}“ abgezogen.`
+      );
+    },
+    [notify, persistDb]
+  );
+
   const handleStopTimer = useCallback(() => {
     const currentDb = dbRef.current;
     if (!currentDb.activeTimer) return;
     const active = currentDb.activeTimer;
+    setGeoExitPrompt(null);
     if (active.source === 'geo' && active.geoFenceRuleId) {
       geoCooldownRef.current.set(active.geoFenceRuleId, Date.now());
     }
@@ -1194,6 +1393,7 @@ export default function App() {
       entryType: isInternal ? 'internal' : 'project',
       internalCategory: isInternal ? active.internalCategory : undefined,
       location: active.location ?? null,
+      photos: active.photos && active.photos.length > 0 ? active.photos : undefined,
       travelDistanceKm,
       travelCostNet,
       travelBilledInvoiceId: null,
@@ -1207,12 +1407,27 @@ export default function App() {
     };
     void persistDb(nextDb);
     pushFinishedEntryToNextcloudCalendar(entry, nextDb);
+
+    let budgetSuffix = '';
+    let budgetExceeded = false;
+    if (!isInternal) {
+      const cust = nextDb.customers.find((c) => c.id === entry.customerId);
+      const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, null);
+      if (bStatus.hasBudget && bStatus.severity === 'exceeded') {
+        budgetSuffix = ` · Kontingent für ${cust?.companyName} überschritten (${bStatus.primaryPct} %)!`;
+        budgetExceeded = true;
+      } else if (bStatus.hasBudget && bStatus.severity === 'warning') {
+        budgetSuffix = ` · Kontingent bei ${bStatus.primaryPct} %`;
+      }
+    }
+
     notify(
-      isInternal
+      (isInternal
         ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).`
         : travelCostNet && travelCostNet > 0
           ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.`
-          : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`
+          : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) + budgetSuffix,
+      budgetExceeded
     );
   }, [notify, persistDb, pushFinishedEntryToNextcloudCalendar]);
 
@@ -1234,7 +1449,7 @@ export default function App() {
         const active = latestDb.activeTimer;
         const nowMs = Date.now();
 
-        // 1. Check auto-stop on exit if a geofence-started timer is currently running
+        // 1. Check auto-stop or exit confirmation if a geofence-started timer is currently running
         if (active && active.source === 'geo' && active.geoFenceRuleId) {
           const runningRule = (latestDb.geoFenceRules ?? []).find(
             (r) => r.id === active.geoFenceRuleId
@@ -1247,10 +1462,38 @@ export default function App() {
               runningRule.lng
             );
             if (dist > runningRule.radiusMeters * 1.35) {
+              const exitMode = latestDb.company.geoExitConfirmMode ?? 'ask';
+              if (exitMode === 'auto') {
+                triggerNfcHaptic('stop');
+                handleStopTimer();
+                notify(
+                  `Ortsregel "${runningRule.name}" verlassen (${Math.round(dist)} m) — Aufgabe automatisch gestoppt.`
+                );
+                return;
+              }
+
+              const snoozeUntil = geoExitSnoozeRef.current.get(active.id) ?? 0;
+              if (!manual && nowMs < snoozeUntil) {
+                return;
+              }
+              setGeoExitPrompt({
+                timerId: active.id,
+                ruleName: runningRule.name,
+                timerTitle: active.title,
+                distanceMeters: Math.round(dist),
+              });
               triggerNfcHaptic('stop');
-              handleStopTimer();
-              notify(
-                `Ortsregel "${runningRule.name}" verlassen (${Math.round(dist)} m) — Aufgabe automatisch gestoppt.`
+              const soundPreset = latestDb.company.timerReminderSound ?? 'chime';
+              const systemSoundUri =
+                latestDb.company.timerReminderSystemSoundUri?.trim() || undefined;
+              if (isNativeCapacitor()) {
+                void playNativeReminderTone(soundPreset, systemSoundUri);
+              } else {
+                playReminderSound(soundPreset);
+              }
+              void showWebReminderNotification(
+                `Ortsbereich „${runningRule.name}“ verlassen`,
+                `Soll „${active.title}“ jetzt gestoppt werden?`
               );
               return;
             }
@@ -1830,6 +2073,52 @@ export default function App() {
         inv.id === invoiceId ? { ...inv, status } : inv
       ),
     });
+  };
+
+  const handleMarkInvoicesPaid = useCallback(
+    (invoiceIds: string[]) => {
+      if (invoiceIds.length === 0) return;
+      const idSet = new Set(invoiceIds);
+      const currentDb = dbRef.current;
+      let changed = 0;
+      const nextInvoices = currentDb.invoices.map((inv) => {
+        if (idSet.has(inv.id) && inv.status !== 'Bezahlt') {
+          changed += 1;
+          return { ...inv, status: 'Bezahlt' as InvoiceStatus };
+        }
+        return inv;
+      });
+      if (changed === 0) return;
+      void persistDb({
+        ...currentDb,
+        invoices: nextInvoices,
+      });
+      notify(
+        changed === 1
+          ? '1 Rechnung per Kontoabgleich als bezahlt markiert.'
+          : `${changed} Rechnungen per Kontoabgleich als bezahlt markiert.`
+      );
+    },
+    [notify, persistDb]
+  );
+
+  const handleInstallBannerUpdate = async () => {
+    if (!availableUpdate) return;
+    setInstallingBannerUpdate(true);
+    try {
+      const res = await downloadAndInstallReleaseUpdate(availableUpdate);
+      notify(res.message, Boolean(res.needsPermission));
+      if (res.startedInstall) {
+        setAvailableUpdate(null);
+      }
+    } catch (err) {
+      notify(
+        err instanceof Error ? err.message : 'Update-Installation fehlgeschlagen.',
+        true
+      );
+    } finally {
+      setInstallingBannerUpdate(false);
+    }
   };
 
   const handleMarkInvoiceUploaded = (invoiceId: string, uploadedAt: string) => {
@@ -2651,6 +2940,7 @@ export default function App() {
           onStopTimer={handleStopTimer}
           theme={theme}
           onToggleTheme={toggleTheme}
+          onOpenSearch={() => setSearchOpen(true)}
         />
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -2665,6 +2955,19 @@ export default function App() {
             </div>
 
             <div className="flex items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                title="Globale Schnellsuche (Strg+K)"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-3 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200/75 dark:hover:bg-[#2a2045] dark:hover:text-white cursor-pointer"
+              >
+                <Search className="h-3.5 w-3.5" />
+                <span>Suchen…</span>
+                <kbd className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-500 dark:border-[#493773] dark:bg-[#171126] dark:text-violet-300">
+                  Strg+K
+                </kbd>
+              </button>
+
               <PWAInstallButton />
 
               {/* Header Quick-Start Dropdown (Last 3 Tasks) */}
@@ -2785,6 +3088,91 @@ export default function App() {
         {/* Main Viewport */}
         <main className="mx-auto w-full max-w-6xl flex-1 p-4 sm:p-6">
 
+          {/* GitHub Release App Update Banner */}
+          {availableUpdate && (
+            <div className="no-print mb-5 flex flex-col gap-3 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-xs font-medium text-emerald-950 dark:border-emerald-700/60 dark:bg-emerald-950/40 dark:text-emerald-100 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-2.5">
+                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <div>
+                  <span className="font-semibold">
+                    TaktWerk Update {availableUpdate.tagName} verfügbar
+                  </span>
+                  <span className="ml-1.5 opacity-80">
+                    (Installiert: v{availableUpdate.currentVersion})
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                {availableUpdate.apkDownloadUrl && (
+                  <button
+                    type="button"
+                    disabled={installingBannerUpdate}
+                    onClick={() => void handleInstallBannerUpdate()}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 cursor-pointer"
+                  >
+                    {installingBannerUpdate ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <Download className="h-3.5 w-3.5" />
+                    )}
+                    {isNativeCapacitor() ? 'Jetzt installieren' : 'APK laden'}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setAvailableUpdate(null)}
+                  className="rounded-lg border border-emerald-300 px-2.5 py-1.5 text-xs font-medium hover:bg-emerald-100 dark:border-emerald-800 dark:hover:bg-emerald-900/40 cursor-pointer"
+                >
+                  Später
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Smart Geofence Exit Confirmation Banner */}
+          {geoExitPrompt && (
+            <div className="no-print mb-5 flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3.5 text-xs text-amber-950 shadow-sm dark:border-amber-700/70 dark:bg-amber-950/45 dark:text-amber-100 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-2.5">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                <div className="space-y-0.5">
+                  <div className="font-semibold">
+                    Ortsbereich „{geoExitPrompt.ruleName}“ verlassen ({geoExitPrompt.distanceMeters} m)
+                  </div>
+                  <div className="opacity-85">
+                    Soll die laufende Aufgabe „{geoExitPrompt.timerTitle}“ jetzt gestoppt und gespeichert werden?
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGeoExitPrompt(null);
+                    handleStopTimer();
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500 cursor-pointer"
+                >
+                  <Square className="h-3 w-3 fill-current" />
+                  Timer stoppen &amp; speichern
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    geoExitSnoozeRef.current.set(
+                      geoExitPrompt.timerId,
+                      Date.now() + 15 * 60_000
+                    );
+                    setGeoExitPrompt(null);
+                    notify('Timer läuft weiter (erneute Prüfung in 15 Minuten).');
+                  }}
+                  className="rounded-lg border border-amber-300 bg-white/80 px-2.5 py-1.5 text-xs font-medium text-amber-950 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-100 dark:hover:bg-amber-900/50 cursor-pointer"
+                >
+                  Weiterlaufen lassen (15 Min.)
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Multi-device Nextcloud Conflict Notice */}
           {remoteNewerAt && (
             <div className="no-print mb-5 flex flex-col gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/50 dark:text-amber-200 sm:flex-row sm:items-center sm:justify-between">
@@ -2894,6 +3282,9 @@ export default function App() {
                   onStartTimer={handleStartTimer}
                   onUpdateActiveTimerNotes={handleUpdateActiveTimerNotes}
                   onUpdateActiveTimerLocation={handleUpdateActiveTimerLocation}
+                  onUpdateActiveTimerPhotos={handleUpdateActiveTimerPhotos}
+                  onDeductBreakMinutes={handleDeductBreakMinutes}
+                  nextcloudConfigured={nextcloud.configured}
                   onPauseTimer={handlePauseTimer}
                   onResumeTimer={handleResumeTimer}
                   onStopTimer={handleStopTimer}
@@ -3020,6 +3411,7 @@ export default function App() {
                   onCreateInvoice={handleCreateInvoice}
                   onUpdateInvoice={handleUpdateInvoice}
                   onUpdateInvoiceStatus={handleUpdateInvoiceStatus}
+                  onMarkInvoicesPaid={handleMarkInvoicesPaid}
                   onMarkInvoiceUploaded={handleMarkInvoiceUploaded}
                   onSaveSignature={handleSaveSignature}
                   onDeleteSignature={handleDeleteSignature}
@@ -3104,6 +3496,24 @@ export default function App() {
         undo={undoBanner}
         onDismiss={() => setUndoBanner(null)}
       />
+      <GlobalSearchModal
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        db={db}
+        onNavigate={navigateToSection}
+        onTriggerNfcTask={(task) => {
+          handleTriggerNfcTag(task.tagUid);
+          navigateToSection('tracker');
+        }}
+      />
+      {isAppLocked && (
+        <AppLockScreen
+          companyName={db.company.companyName}
+          pinHash={db.company.appLockPinHash}
+          biometricEnabled={db.company.appLockBiometric !== false}
+          onUnlock={() => setIsAppLocked(false)}
+        />
+      )}
       <OfflineIndicator />
     </div>
   );

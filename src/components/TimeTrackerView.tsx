@@ -1,13 +1,17 @@
 import {
+  AlertTriangle,
   Bell,
   BellRing,
   Calendar as CalendarIcon,
+  Camera,
   Car,
   CheckSquare,
+  Coffee,
   Compass,
   Download,
   FilePlus2,
   FileText,
+  Gauge,
   LocateFixed,
   MapPin,
   Nfc,
@@ -19,8 +23,10 @@ import {
   Square,
   StickyNote,
   Trash2,
+  X,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type {
   ActiveTimer,
   CalendarAppointment,
@@ -32,8 +38,14 @@ import type {
   Product,
   TaxRate,
   TimeEntry,
+  WorkPhoto,
 } from '../types';
+import { computeCustomerBudgetStatus } from '../utils/budgetHelpers';
 import { captureCurrentLocation, computeTravelFromBase } from '../utils/geolocation';
+import {
+  compressWorkPhotoFile,
+  uploadWorkPhotoToNextcloud,
+} from '../utils/photoHelpers';
 import type { NativeNotificationStatus } from '../utils/taktwerkNative';
 import { downloadOrShareTextFile, timeEntriesToCsv } from '../utils/exportBackup';
 import {
@@ -74,6 +86,9 @@ interface TimeTrackerViewProps {
   }) => void;
   onUpdateActiveTimerNotes?: (notes: string) => void;
   onUpdateActiveTimerLocation?: (location: LocationSnapshot | null) => void;
+  onUpdateActiveTimerPhotos?: (photos: WorkPhoto[]) => void;
+  onDeductBreakMinutes?: (minutes: number) => void;
+  nextcloudConfigured?: boolean;
   onPauseTimer: () => void;
   onResumeTimer: () => void;
   onStopTimer: () => void;
@@ -108,6 +123,9 @@ export function TimeTrackerView({
   onStartTimer,
   onUpdateActiveTimerNotes,
   onUpdateActiveTimerLocation,
+  onUpdateActiveTimerPhotos,
+  onDeductBreakMinutes,
+  nextcloudConfigured = false,
   onPauseTimer,
   onResumeTimer,
   onStopTimer,
@@ -166,7 +184,15 @@ export function TimeTrackerView({
     serviceProducts[0]?.id ?? products[0]?.id ?? ''
   );
   const [manualBillable, setManualBillable] = useState(true);
+  const [manualPhotos, setManualPhotos] = useState<WorkPhoto[]>([]);
   const [manualError, setManualError] = useState('');
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [lightboxData, setLightboxData] = useState<{
+    title: string;
+    photos: WorkPhoto[];
+  } | null>(null);
+  const activePhotoInputRef = useRef<HTMLInputElement>(null);
+  const manualPhotoInputRef = useRef<HTMLInputElement>(null);
 
   const [filterCustomerId, setFilterCustomerId] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'open' | 'billed'>('all');
@@ -304,6 +330,72 @@ export function TimeTrackerView({
     }
   };
 
+  const handleAddActivePhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
+    if (files.length === 0 || !activeTimer || !onUpdateActiveTimerPhotos) return;
+    setPhotoBusy(true);
+    try {
+      const existing = activeTimer.photos ?? [];
+      const added: WorkPhoto[] = [];
+      for (const file of files.slice(0, 6)) {
+        const photo = await compressWorkPhotoFile(file);
+        if (nextcloudConfigured) {
+          try {
+            photo.nextcloudPath = await uploadWorkPhotoToNextcloud(photo, activeTimer.title);
+          } catch {
+            // Keep photo locally even if upload fails
+          }
+        }
+        added.push(photo);
+      }
+      onUpdateActiveTimerPhotos([...existing, ...added]);
+      onNotify(
+        added.length === 1
+          ? 'Einsatzfoto gespeichert.'
+          : `${added.length} Einsatzfotos gespeichert.`
+      );
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Foto konnte nicht verarbeitet werden.',
+        true
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  };
+
+  const handleAddManualPhotos = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = '';
+    if (files.length === 0) return;
+    setPhotoBusy(true);
+    try {
+      const taskName = manualTitle.trim() || 'Einsatz';
+      const added: WorkPhoto[] = [];
+      for (const file of files.slice(0, 6)) {
+        const photo = await compressWorkPhotoFile(file);
+        if (nextcloudConfigured) {
+          try {
+            photo.nextcloudPath = await uploadWorkPhotoToNextcloud(photo, taskName);
+          } catch {
+            // Keep local copy
+          }
+        }
+        added.push(photo);
+      }
+      setManualPhotos((prev) => [...prev, ...added]);
+      onNotify(`${added.length} Einsatzfoto(s) hinzugefügt.`);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'Foto konnte nicht verarbeitet werden.',
+        true
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  };
+
   const handleStartClick = (e: React.FormEvent) => {
     e.preventDefault();
     if (startMode === 'internal') {
@@ -352,6 +444,7 @@ export function TimeTrackerView({
     setManualCustomerId(customers[0]?.id ?? '');
     setManualProductId(serviceProducts[0]?.id ?? products[0]?.id ?? '');
     setManualBillable(true);
+    setManualPhotos([]);
     setManualError('');
     setShowManualForm(true);
   };
@@ -369,6 +462,7 @@ export function TimeTrackerView({
     setManualCustomerId(entry.customerId);
     setManualProductId(entry.productId);
     setManualBillable(entry.billable);
+    setManualPhotos(entry.photos ?? []);
     setManualError('');
     setShowManualForm(true);
   };
@@ -422,6 +516,7 @@ export function TimeTrackerView({
             ? ((prod?.taxRate ?? editingEntry.taxRate) as TaxRate)
             : editingEntry.taxRate,
         billable: isInt ? false : manualBillable,
+        photos: manualPhotos.length > 0 ? manualPhotos : undefined,
       };
       onUpdateEntry(updated);
     } else {
@@ -442,6 +537,7 @@ export function TimeTrackerView({
         billable: isInt ? false : manualBillable,
         billedInvoiceId: null,
         source: 'manual',
+        photos: manualPhotos.length > 0 ? manualPhotos : undefined,
         createdAt: new Date().toISOString(),
       };
       onAddManualEntry(entry);
@@ -450,6 +546,7 @@ export function TimeTrackerView({
     setEditingEntry(null);
     setManualTitle('');
     setManualNotes('');
+    setManualPhotos([]);
     setShowManualForm(false);
   };
 
@@ -529,6 +626,39 @@ export function TimeTrackerView({
         ];
   const isActiveInternal =
     activeTimer?.entryType === 'internal' || (activeTimer ? !activeTimer.customerId : false);
+
+  const activeCustomerBudget = useMemo(() => {
+    if (!activeTimer || isActiveInternal) return null;
+    const cust = customerMap.get(activeTimer.customerId);
+    const st = computeCustomerBudgetStatus(cust, timeEntries, activeTimer);
+    return st.hasBudget ? st : null;
+  }, [activeTimer, customerMap, isActiveInternal, timeEntries]);
+
+  const draftCustomerBudget = useMemo(() => {
+    if (activeTimer || startMode === 'internal' || !effectiveCustomerId) return null;
+    const cust = customerMap.get(effectiveCustomerId);
+    const st = computeCustomerBudgetStatus(cust, timeEntries, null);
+    return st.hasBudget ? st : null;
+  }, [activeTimer, customerMap, effectiveCustomerId, startMode, timeEntries]);
+
+  const breakAssistantEnabled = company.breakAssistantEnabled !== false;
+  const breakTriggerHours = company.breakTriggerHours ?? 6;
+  const breakDefaultMinutes = company.breakDefaultMinutes ?? 30;
+  const overnightReminderHour = company.overnightReminderHour ?? 20;
+
+  const showBreakAlert =
+    Boolean(activeTimer) &&
+    breakAssistantEnabled &&
+    elapsedSeconds >= breakTriggerHours * 3600;
+
+  const showOvernightAlert = useMemo(() => {
+    if (!activeTimer || !breakAssistantEnabled) return false;
+    const startDateStr = activeTimer.startTime.slice(0, 10);
+    const todayStr = toInputDate();
+    if (startDateStr < todayStr) return true;
+    const nowHour = new Date().getHours();
+    return nowHour >= overnightReminderHour && elapsedSeconds >= 3600;
+  }, [activeTimer, breakAssistantEnabled, elapsedSeconds, overnightReminderHour]);
 
   return (
     <div className="space-y-6">
@@ -739,6 +869,70 @@ export function TimeTrackerView({
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
               />
             </div>
+            <div className="md:col-span-6 space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300">
+                  <Camera className="h-3.5 w-3.5 text-violet-500" />
+                  Einsatzfotos / Fotodokumentation ({manualPhotos.length})
+                </span>
+                <input
+                  ref={manualPhotoInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => void handleAddManualPhotos(e)}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => manualPhotoInputRef.current?.click()}
+                  disabled={photoBusy}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                >
+                  <Camera className="h-3.5 w-3.5" />
+                  {photoBusy ? 'Verarbeite…' : 'Foto hinzufügen'}
+                </button>
+              </div>
+              {manualPhotos.length > 0 && (
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+                  {manualPhotos.map((p) => (
+                    <div
+                      key={p.id}
+                      className="relative overflow-hidden rounded-lg border border-slate-200 bg-white p-1.5 dark:border-[#3b2d5e] dark:bg-[#171126]"
+                    >
+                      <img
+                        src={p.dataUrl}
+                        alt={p.caption || 'Einsatzfoto'}
+                        className="h-20 w-full rounded object-cover"
+                      />
+                      <input
+                        type="text"
+                        value={p.caption ?? ''}
+                        onChange={(e) =>
+                          setManualPhotos((prev) =>
+                            prev.map((item) =>
+                              item.id === p.id ? { ...item, caption: e.target.value } : item
+                            )
+                          )
+                        }
+                        placeholder="Bildbeschreibung…"
+                        className="mt-1 w-full rounded border border-slate-200 bg-slate-50 px-1.5 py-1 text-[11px] text-slate-800 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setManualPhotos((prev) => prev.filter((item) => item.id !== p.id))
+                        }
+                        aria-label="Foto entfernen"
+                        className="absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-950/75 text-white hover:bg-rose-600 cursor-pointer"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             {manualError && (
               <p className="text-xs font-medium text-red-600 dark:text-red-400 md:col-span-6">
                 {manualError}
@@ -946,12 +1140,12 @@ export function TimeTrackerView({
                     )}
                 </div>
               </div>
-              <div className="flex flex-col justify-end lg:col-span-3">
+              <div className="flex flex-col justify-end gap-2 lg:col-span-3">
                 <button
                   type="button"
                   onClick={() => void handleCaptureLocationForActive()}
                   disabled={locating}
-                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer"
+                  className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer"
                 >
                   <LocateFixed className={`h-4 w-4 ${locating ? 'animate-spin' : ''}`} />
                   {locating
@@ -960,8 +1154,211 @@ export function TimeTrackerView({
                       ? 'Standort aktualisieren'
                       : 'Standort erfassen (GPS)'}
                 </button>
+
+                {onUpdateActiveTimerPhotos && (
+                  <>
+                    <input
+                      ref={activePhotoInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => void handleAddActivePhotos(e)}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => activePhotoInputRef.current?.click()}
+                      disabled={photoBusy}
+                      className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:hover:bg-[#2a2045] cursor-pointer"
+                    >
+                      <Camera className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                      {photoBusy
+                        ? 'Foto wird gespeichert…'
+                        : `Einsatzfoto (${activeTimer.photos?.length ?? 0})`}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
+
+            {/* Active Timer Work Photos Strip */}
+            {activeTimer.photos && activeTimer.photos.length > 0 && (
+              <div className="space-y-2 border-t border-slate-100 pt-3 dark:border-[#2e2349]">
+                <div className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Dokumentationsfotos dieser Aufgabe ({activeTimer.photos.length})
+                </div>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {activeTimer.photos.map((p) => (
+                    <div
+                      key={p.id}
+                      className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 p-1.5 dark:border-[#3b2d5e] dark:bg-[#211936]"
+                    >
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setLightboxData({
+                            title: activeTimer.title,
+                            photos: activeTimer.photos ?? [],
+                          })
+                        }
+                        className="block w-full cursor-pointer"
+                      >
+                        <img
+                          src={p.dataUrl}
+                          alt={p.caption || 'Einsatzfoto'}
+                          className="h-20 w-full rounded object-cover"
+                        />
+                      </button>
+                      {onUpdateActiveTimerPhotos && (
+                        <>
+                          <input
+                            type="text"
+                            value={p.caption ?? ''}
+                            onChange={(e) =>
+                              onUpdateActiveTimerPhotos(
+                                (activeTimer.photos ?? []).map((item) =>
+                                  item.id === p.id ? { ...item, caption: e.target.value } : item
+                                )
+                              )
+                            }
+                            placeholder="Beschreibung…"
+                            className="mt-1 w-full rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] text-slate-800 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-100"
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              onUpdateActiveTimerPhotos(
+                                (activeTimer.photos ?? []).filter((item) => item.id !== p.id)
+                              )
+                            }
+                            aria-label="Foto entfernen"
+                            className="absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-950/75 text-white hover:bg-rose-600 cursor-pointer"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Live Customer Budget Bar */}
+            {activeCustomerBudget && (
+              <div
+                className={`rounded-xl border px-3.5 py-2.5 text-xs ${
+                  activeCustomerBudget.severity === 'exceeded'
+                    ? 'border-rose-200 bg-rose-50/70 text-rose-900 dark:border-rose-900/60 dark:bg-rose-950/35 dark:text-rose-200'
+                    : activeCustomerBudget.severity === 'warning'
+                      ? 'border-amber-200 bg-amber-50/70 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/35 dark:text-amber-200'
+                      : 'border-slate-200 bg-slate-50/70 text-slate-700 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-200'
+                }`}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="inline-flex items-center gap-1.5 font-semibold">
+                    <Gauge className="h-3.5 w-3.5" />
+                    Kontingent ({activeCustomerBudget.periodLabel}):{' '}
+                    {activeCustomerBudget.budgetHours !== null
+                      ? `${formatNumber(activeCustomerBudget.usedHours, 1)} / ${formatNumber(
+                          activeCustomerBudget.budgetHours,
+                          1
+                        )} Std.`
+                      : `${formatCurrency(activeCustomerBudget.usedAmountNet)} / ${formatCurrency(
+                          activeCustomerBudget.budgetAmountNet ?? 0
+                        )}`}
+                  </span>
+                  <span className="font-mono font-bold tabular-nums">
+                    {activeCustomerBudget.primaryPct} %
+                    {activeCustomerBudget.severity === 'exceeded'
+                      ? ' · Kontingent überschritten'
+                      : activeCustomerBudget.severity === 'warning'
+                        ? ' · Bald erreicht'
+                        : ''}
+                  </span>
+                </div>
+                <svg
+                  viewBox="0 0 100 4"
+                  preserveAspectRatio="none"
+                  className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full"
+                  aria-hidden="true"
+                >
+                  <rect
+                    x="0"
+                    y="0"
+                    width="100"
+                    height="4"
+                    rx="2"
+                    className="fill-slate-200/80 dark:fill-[#2e2349]"
+                  />
+                  <rect
+                    x="0"
+                    y="0"
+                    width={Math.min(100, Math.max(0, activeCustomerBudget.primaryPct))}
+                    height="4"
+                    rx="2"
+                    className={
+                      activeCustomerBudget.severity === 'exceeded'
+                        ? 'fill-rose-500'
+                        : activeCustomerBudget.severity === 'warning'
+                          ? 'fill-amber-500'
+                          : 'fill-emerald-500'
+                    }
+                  />
+                </svg>
+              </div>
+            )}
+
+            {/* ArbZG Break & Overnight Assistant + Quick Pause Deduction */}
+            {(showBreakAlert || showOvernightAlert || (onDeductBreakMinutes && elapsedSeconds >= 900)) && (
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200/80 bg-amber-50/70 px-3.5 py-2.5 text-xs dark:border-amber-900/50 dark:bg-amber-950/30">
+                <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200">
+                  {showBreakAlert || showOvernightAlert ? (
+                    <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                  ) : (
+                    <Coffee className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                  )}
+                  <span>
+                    {showOvernightAlert
+                      ? 'Timer läuft am späten Abend / seit gestern — vergessen zu stoppen?'
+                      : showBreakAlert
+                        ? `Über ${breakTriggerHours} Std. am Stück aktiv (ArbZG-Hinweis) — Pause direkt abziehen?`
+                        : 'Pause vergessen zu drücken? Schnellabzug:'}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {onDeductBreakMinutes && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => onDeductBreakMinutes(15)}
+                        disabled={elapsedSeconds <= 15 * 60}
+                        className="rounded-lg border border-amber-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-amber-900 hover:bg-amber-100 disabled:opacity-40 dark:border-amber-700/60 dark:bg-[#211936] dark:text-amber-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                      >
+                        −15 Min. Pause
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => onDeductBreakMinutes(breakDefaultMinutes)}
+                        disabled={elapsedSeconds <= breakDefaultMinutes * 60}
+                        className="rounded-lg bg-amber-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-amber-700 disabled:opacity-40 cursor-pointer"
+                      >
+                        −{breakDefaultMinutes} Min. Pause
+                      </button>
+                    </>
+                  )}
+                  {showOvernightAlert && (
+                    <button
+                      type="button"
+                      onClick={onStopTimer}
+                      className="rounded-lg bg-slate-900 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                    >
+                      Jetzt stoppen
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <form onSubmit={handleStartClick} className="space-y-3.5">
@@ -1127,6 +1524,33 @@ export function TimeTrackerView({
                   </button>
                 )}
             </div>
+            {draftCustomerBudget && (
+              <div
+                className={`flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs ${
+                  draftCustomerBudget.severity === 'exceeded'
+                    ? 'border-rose-200 bg-rose-50/70 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/35 dark:text-rose-200'
+                    : draftCustomerBudget.severity === 'warning'
+                      ? 'border-amber-200 bg-amber-50/70 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/35 dark:text-amber-200'
+                      : 'border-slate-200 bg-slate-50/70 text-slate-600 dark:border-[#2e2349] dark:bg-[#211936]/50 dark:text-slate-300'
+                }`}
+              >
+                <span className="inline-flex items-center gap-1.5 font-medium">
+                  <Gauge className="h-3.5 w-3.5 shrink-0" />
+                  Kunden-Kontingent ({draftCustomerBudget.periodLabel}):{' '}
+                  {draftCustomerBudget.budgetHours !== null
+                    ? `${formatNumber(draftCustomerBudget.usedHours, 1)} / ${formatNumber(
+                        draftCustomerBudget.budgetHours,
+                        1
+                      )} Std.`
+                    : `${formatCurrency(draftCustomerBudget.usedAmountNet)} / ${formatCurrency(
+                        draftCustomerBudget.budgetAmountNet ?? 0
+                      )}`}
+                </span>
+                <span className="font-mono font-semibold tabular-nums">
+                  {draftCustomerBudget.primaryPct} %
+                </span>
+              </div>
+            )}
           </form>
         )}
 
@@ -1557,6 +1981,24 @@ export function TimeTrackerView({
                             {entry.notes}
                           </div>
                         )}
+                        {entry.photos && entry.photos.length > 0 && (
+                          <div className="mt-1">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setLightboxData({
+                                  title: entry.title,
+                                  photos: entry.photos ?? [],
+                                })
+                              }
+                              className="inline-flex items-center gap-1 rounded-md border border-violet-200 bg-violet-50 px-2 py-0.5 text-[11px] font-medium text-violet-700 hover:bg-violet-100 dark:border-violet-500/30 dark:bg-violet-500/15 dark:text-violet-300 cursor-pointer"
+                            >
+                              <Camera className="h-3 w-3" />
+                              {entry.photos.length}{' '}
+                              {entry.photos.length === 1 ? 'Foto' : 'Fotos'} ansehen
+                            </button>
+                          </div>
+                        )}
                         {entry.location && (
                           <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px]">
                             <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400">
@@ -1682,6 +2124,69 @@ export function TimeTrackerView({
         </>
         )}
       </section>
+
+      {/* Work Photo Lightbox Modal */}
+      {lightboxData &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Fotodokumentation"
+            onClick={() => setLightboxData(null)}
+            className="fixed inset-0 z-[175] flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-xs"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]"
+            >
+              <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3.5 dark:border-[#2a2045]">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Camera className="h-4 w-4 shrink-0 text-violet-600 dark:text-violet-400" />
+                  <h3 className="truncate font-display text-sm font-bold text-slate-900 dark:text-slate-100">
+                    Einsatzfotos · {lightboxData.title}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxData(null)}
+                  aria-label="Schließen"
+                  className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-200 cursor-pointer"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="grid flex-1 grid-cols-1 gap-4 overflow-y-auto p-5 sm:grid-cols-2">
+                {lightboxData.photos.map((photo, idx) => (
+                  <div
+                    key={photo.id}
+                    className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 dark:border-[#2e2349] dark:bg-[#211936]"
+                  >
+                    <img
+                      src={photo.dataUrl}
+                      alt={photo.caption || `Einsatzfoto ${idx + 1}`}
+                      className="max-h-72 w-full bg-slate-900/5 object-contain"
+                    />
+                    <div className="p-3 text-xs">
+                      <div className="font-medium text-slate-900 dark:text-slate-100">
+                        {photo.caption || `Einsatzfoto #${idx + 1}`}
+                      </div>
+                      <div className="mt-0.5 flex flex-wrap items-center justify-between gap-1 text-[11px] text-slate-500 dark:text-slate-400">
+                        <span>{formatDateTimeDE(photo.capturedAt)}</span>
+                        {photo.nextcloudPath && (
+                          <span className="text-emerald-600 dark:text-emerald-400">
+                            In Nextcloud gesichert
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

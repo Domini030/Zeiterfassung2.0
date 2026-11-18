@@ -124,6 +124,17 @@ export function createDefaultCompany(): CompanyProfile {
       selectedCalendarName: '',
       autoSyncTimeEntries: false,
     },
+    githubUpdateRepo: '',
+    autoCheckUpdates: false,
+    geoExitConfirmMode: 'ask',
+    breakAssistantEnabled: true,
+    breakTriggerHours: 6,
+    breakDefaultMinutes: 30,
+    overnightReminderHour: 20,
+    appLockEnabled: false,
+    appLockBiometric: true,
+    appLockPinHash: '',
+    appLockTimeoutMinutes: 1,
   };
 }
 

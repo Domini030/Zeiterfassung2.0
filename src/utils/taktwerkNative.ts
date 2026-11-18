@@ -204,6 +204,32 @@ export interface TaktWerkNativePluginInterface {
 
   getPendingLaunchNfc(): Promise<{ uidHex?: string | null; payloads?: string[] }>;
 
+  getAppVersion(): Promise<{ versionName: string; versionCode: number }>;
+
+  downloadAndInstallApk(options: {
+    url: string;
+    filename?: string;
+  }): Promise<{ ok: boolean; needsPermission?: boolean; message?: string }>;
+
+  sharePdfWithEmail(options: {
+    filename: string;
+    base64: string;
+    to?: string;
+    subject: string;
+    body: string;
+  }): Promise<void>;
+
+  getBiometricAvailability(): Promise<{
+    available: boolean;
+    hasBiometricHardware: boolean;
+    status: string;
+  }>;
+
+  authenticateBiometric(options?: {
+    title?: string;
+    subtitle?: string;
+  }): Promise<{ authenticated: boolean; cancelled?: boolean; error?: string }>;
+
   addListener(
     eventName: 'nfcTagScanned',
     listenerFunc: (event: NativeNfcScannedEvent) => void

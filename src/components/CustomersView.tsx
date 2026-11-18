@@ -1,4 +1,4 @@
-import { FilePlus2, MapPin, Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { FilePlus2, Gauge, MapPin, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type {
   Customer,
@@ -8,7 +8,8 @@ import type {
   TimeEntry,
   TimeRoundingMinutes,
 } from '../types';
-import { createId, formatCurrency, formatHoursShort } from '../utils/format';
+import { computeCustomerBudgetStatus } from '../utils/budgetHelpers';
+import { createId, formatCurrency, formatHoursShort, formatNumber } from '../utils/format';
 import { DEFAULT_CUSTOMER_CATEGORIES } from '../utils/sampleData';
 import { GeoFenceRuleModal } from './GeoFenceRuleModal';
 import { InfoHintPopup } from './InfoHintPopup';
@@ -65,6 +66,9 @@ export function CustomersView({
   const [vatId, setVatId] = useState('');
   const [paymentTermDays, setPaymentTermDays] = useState(14);
   const [timeRoundingInput, setTimeRoundingInput] = useState<string>('');
+  const [budgetPeriod, setBudgetPeriod] = useState<'monthly' | 'total'>('monthly');
+  const [budgetHoursInput, setBudgetHoursInput] = useState<string>('');
+  const [budgetAmountInput, setBudgetAmountInput] = useState<string>('');
   const [category, setCategory] = useState('');
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
@@ -93,6 +97,9 @@ export function CustomersView({
     setVatId('');
     setPaymentTermDays(14);
     setTimeRoundingInput('');
+    setBudgetPeriod('monthly');
+    setBudgetHoursInput('');
+    setBudgetAmountInput('');
     setCategory('');
     setNotes('');
     setError('');
@@ -117,6 +124,11 @@ export function CustomersView({
         ? String(c.timeRoundingMinutes)
         : ''
     );
+    setBudgetPeriod(c.budgetPeriod ?? 'monthly');
+    setBudgetHoursInput(c.budgetHours && c.budgetHours > 0 ? String(c.budgetHours) : '');
+    setBudgetAmountInput(
+      c.budgetAmountNet && c.budgetAmountNet > 0 ? String(c.budgetAmountNet) : ''
+    );
     setCategory(c.category ?? '');
     setNotes(c.notes);
     setError('');
@@ -129,6 +141,9 @@ export function CustomersView({
       setError('Bitte einen Firmen- oder Kundennamen angeben.');
       return null;
     }
+
+    const parsedBudgetHours = parseFloat(budgetHoursInput.replace(',', '.'));
+    const parsedBudgetNet = parseFloat(budgetAmountInput.replace(',', '.'));
 
     const saved: Customer = {
       id: editing?.id ?? createId('cust'),
@@ -147,6 +162,13 @@ export function CustomersView({
         timeRoundingInput === ''
           ? null
           : (Number(timeRoundingInput) as TimeRoundingMinutes),
+      budgetPeriod,
+      budgetHours:
+        Number.isFinite(parsedBudgetHours) && parsedBudgetHours > 0
+          ? parsedBudgetHours
+          : null,
+      budgetAmountNet:
+        Number.isFinite(parsedBudgetNet) && parsedBudgetNet > 0 ? parsedBudgetNet : null,
       category: category.trim() || undefined,
       notes: notes.trim(),
       createdAt: editing?.createdAt ?? new Date().toISOString(),
@@ -444,6 +466,61 @@ export function CustomersView({
                 className={inputClass}
               />
             </div>
+
+            <div className="grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#2e2349] dark:bg-[#211936]/40 md:col-span-3 md:grid-cols-3">
+              <div className="flex items-center gap-1.5 md:col-span-3">
+                <Gauge className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                <span className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                  Stundenkontingent &amp; Projektbudget (optional)
+                </span>
+                <InfoHintPopup
+                  size="sm"
+                  title="Stundenkontingent & Budget"
+                  text="Lege ein monatliches Retainer-Kontingent oder ein Gesamtprojekt-Budget in Stunden und/oder Euro Netto fest. TaktWerk zeigt dir den aktuellen Verbrauch live an und warnt ab 80 % sowie 100 % Auslastung."
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Zeitraum
+                </label>
+                <ThemedSelect
+                  value={budgetPeriod}
+                  onChange={(v) => setBudgetPeriod(v as 'monthly' | 'total')}
+                  options={[
+                    { value: 'monthly', label: 'Monatliches Kontingent' },
+                    { value: 'total', label: 'Gesamtprojekt-Budget' },
+                  ]}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Stundenkontingent (Std.)
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  step="0.5"
+                  value={budgetHoursInput}
+                  onChange={(e) => setBudgetHoursInput(e.target.value)}
+                  placeholder="z. B. 20"
+                  className={`${inputClass} font-mono`}
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                  Euro-Budget Netto (€)
+                </label>
+                <input
+                  type="number"
+                  min={0}
+                  step="10"
+                  value={budgetAmountInput}
+                  onChange={(e) => setBudgetAmountInput(e.target.value)}
+                  placeholder="z. B. 2500"
+                  className={`${inputClass} font-mono`}
+                />
+              </div>
+            </div>
             {editing && (
               <div className="space-y-2.5 rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#2e2349] dark:bg-[#211936]/40 md:col-span-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -613,6 +690,14 @@ export function CustomersView({
                   const st = statsByCustomer.get(c.id);
                   const hasOpen = (st?.openIds.length ?? 0) > 0;
                   const linkedGeoRules = geoRulesByCustomer.get(c.id) ?? [];
+                  const budget = computeCustomerBudgetStatus(c, timeEntries);
+                  const clampedPct = Math.min(100, Math.max(0, budget.primaryPct));
+                  const barFillClass =
+                    budget.severity === 'exceeded'
+                      ? 'fill-rose-500'
+                      : budget.severity === 'warning'
+                        ? 'fill-amber-500'
+                        : 'fill-emerald-500';
                   return (
                     <tr
                       key={c.id}
@@ -649,6 +734,52 @@ export function CustomersView({
                             </button>
                           )}
                         </div>
+                        {budget.hasBudget && (
+                          <div className="mt-1.5 max-w-xs space-y-1">
+                            <div className="flex items-center justify-between gap-2 text-[11px]">
+                              <span
+                                className={`font-medium ${
+                                  budget.severity === 'exceeded'
+                                    ? 'text-rose-600 dark:text-rose-400'
+                                    : budget.severity === 'warning'
+                                      ? 'text-amber-600 dark:text-amber-400'
+                                      : 'text-slate-600 dark:text-slate-300'
+                                }`}
+                              >
+                                {budget.budgetHours !== null
+                                  ? `${formatNumber(budget.usedHours, 1)} / ${formatNumber(budget.budgetHours, 1)} Std.`
+                                  : `${formatCurrency(budget.usedAmountNet)} / ${formatCurrency(budget.budgetAmountNet ?? 0)}`}{' '}
+                                ({budget.periodLabel})
+                              </span>
+                              <span className="font-mono font-semibold tabular-nums text-slate-700 dark:text-slate-200">
+                                {budget.primaryPct} %
+                              </span>
+                            </div>
+                            <svg
+                              viewBox="0 0 100 5"
+                              preserveAspectRatio="none"
+                              className="h-1.5 w-full overflow-hidden rounded-full"
+                              aria-hidden="true"
+                            >
+                              <rect
+                                x="0"
+                                y="0"
+                                width="100"
+                                height="5"
+                                rx="2.5"
+                                className="fill-slate-200 dark:fill-[#2e2349]"
+                              />
+                              <rect
+                                x="0"
+                                y="0"
+                                width={clampedPct}
+                                height="5"
+                                rx="2.5"
+                                className={barFillClass}
+                              />
+                            </svg>
+                          </div>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-400">
                         <div>{c.street || '—'}</div>

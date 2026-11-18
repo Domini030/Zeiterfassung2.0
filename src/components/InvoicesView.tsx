@@ -14,6 +14,8 @@ import {
   FileCode2,
   FilePlus2,
   FileSpreadsheet,
+  Landmark,
+  Mail,
   MapPin,
   PenTool,
   Pencil,
@@ -84,6 +86,11 @@ import {
   invoicesToCsv,
 } from '../utils/exportBackup';
 import { generateGiroCodeDataUrl } from '../utils/epcQr';
+import {
+  sendDocumentByEmail,
+  type EmailDocumentMode,
+} from '../utils/emailTemplates';
+import { BankReconcileModal } from './BankReconcileModal';
 import { InfoHintPopup } from './InfoHintPopup';
 import { SignaturePadModal } from './SignaturePadModal';
 import { ThemedSelect } from './ThemedSelect';
@@ -111,6 +118,7 @@ interface InvoicesViewProps {
     billedTravelEntryIds?: string[]
   ) => void;
   onUpdateInvoiceStatus: (invoiceId: string, status: InvoiceStatus) => void;
+  onMarkInvoicesPaid?: (invoiceIds: string[]) => void;
   onMarkInvoiceUploaded: (invoiceId: string, uploadedAt: string) => void;
   onSaveSignature?: (invoiceId: string, signature: AcceptanceSignature) => void;
   onDeleteSignature?: (invoiceId: string) => void;
@@ -143,6 +151,7 @@ export function InvoicesView({
   onCreateInvoice,
   onUpdateInvoice,
   onUpdateInvoiceStatus,
+  onMarkInvoicesPaid,
   onMarkInvoiceUploaded,
   onSaveSignature,
   onDeleteSignature,
@@ -159,6 +168,8 @@ export function InvoicesView({
   const [showPreviewMenu, setShowPreviewMenu] = useState(false);
   const [previewGiroCodeUrl, setPreviewGiroCodeUrl] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [sendingEmailId, setSendingEmailId] = useState<string | null>(null);
+  const [reconcileOpen, setReconcileOpen] = useState(false);
   const [signatureModalOpen, setSignatureModalOpen] = useState(false);
 
   const [documentType, setDocumentType] = useState<DocumentType>('invoice');
@@ -966,6 +977,33 @@ export function InvoicesView({
     }
   };
 
+  const handleSendEmail = async (inv: Invoice, mode?: EmailDocumentMode) => {
+    setSendingEmailId(inv.id);
+    try {
+      const res = await sendDocumentByEmail(inv, company, mode);
+      onNotify(res.message);
+    } catch (err) {
+      onNotify(
+        err instanceof Error ? err.message : 'E-Mail-Versand konnte nicht gestartet werden.',
+        true
+      );
+    } finally {
+      setSendingEmailId(null);
+    }
+  };
+
+  const handleApplyReconcilePaid = (invoiceIds: string[]) => {
+    if (invoiceIds.length === 0) return;
+    if (onMarkInvoicesPaid) {
+      onMarkInvoicesPaid(invoiceIds);
+    } else {
+      for (const id of invoiceIds) {
+        onUpdateInvoiceStatus(id, 'Bezahlt');
+      }
+      onNotify(`${invoiceIds.length} Rechnung(en) per Kontoabgleich als bezahlt markiert.`);
+    }
+  };
+
   const getLinkedEntriesForInvoice = (inv: Invoice): TimeEntry[] => {
     const idSet = new Set<string>();
     for (const li of inv.lineItems) {
@@ -1159,14 +1197,24 @@ export function InvoicesView({
         </div>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           {invoices.length > 0 && (
-            <button
-              type="button"
-              onClick={() => void handleExportCsv()}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              <FileSpreadsheet className="h-4 w-4" />
-              CSV-Export
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setReconcileOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <Landmark className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                Kontoabgleich
+              </button>
+              <button
+                type="button"
+                onClick={() => void handleExportCsv()}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                <FileSpreadsheet className="h-4 w-4" />
+                CSV-Export
+              </button>
+            </>
           )}
           <button
             type="button"
@@ -2112,17 +2160,31 @@ export function InvoicesView({
                       )}
 
                       {isInvoiceOverdue(previewInvoice) && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowPreviewMenu(false);
-                            void handlePaymentReminderPdf(previewInvoice);
-                          }}
-                          className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/60 cursor-pointer"
-                        >
-                          <AlertTriangle className="h-3.5 w-3.5" />
-                          Zahlungserinnerung (PDF)
-                        </button>
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowPreviewMenu(false);
+                              void handlePaymentReminderPdf(previewInvoice);
+                            }}
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/60 cursor-pointer"
+                          >
+                            <AlertTriangle className="h-3.5 w-3.5" />
+                            Zahlungserinnerung (PDF)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowPreviewMenu(false);
+                              void handleSendEmail(previewInvoice, 'reminder');
+                            }}
+                            disabled={sendingEmailId === previewInvoice.id}
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50 dark:text-red-300 dark:hover:bg-red-950/60 cursor-pointer"
+                          >
+                            <Mail className="h-3.5 w-3.5" />
+                            Mahnung per E-Mail
+                          </button>
+                        </>
                       )}
 
                       <button
@@ -2224,7 +2286,18 @@ export function InvoicesView({
                   </button>
                 )}
 
-                {/* Directly visible top-bar buttons: Teilen, PDF -> Nextcloud, Löschen, Schließen */}
+                {/* Directly visible top-bar buttons: Per E-Mail, Teilen, PDF -> Nextcloud, Löschen, Schließen */}
+                <button
+                  type="button"
+                  onClick={() => void handleSendEmail(previewInvoice)}
+                  disabled={sendingEmailId === previewInvoice.id}
+                  title="Mit E-Mail-Vorlage & PDF-Anhang versenden"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:text-slate-200 dark:hover:bg-[#231b38] whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  {sendingEmailId === previewInvoice.id ? 'Öffne…' : 'E-Mail'}
+                </button>
+
                 <button
                   type="button"
                   onClick={() => void handleSharePdf(previewInvoice)}
@@ -2615,6 +2688,12 @@ export function InvoicesView({
           }}
         />
       )}
+      <BankReconcileModal
+        open={reconcileOpen}
+        onClose={() => setReconcileOpen(false)}
+        invoices={invoices}
+        onApplyPaid={handleApplyReconcilePaid}
+      />
     </div>
   );
 }
