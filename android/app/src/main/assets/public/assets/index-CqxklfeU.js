@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-B15ZTtJ4.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-CegyW_E2.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-tHKFIk9-.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-D2boogPl.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -14366,6 +14366,15 @@ function formatNumber(value, decimals = 2) {
 		maximumFractionDigits: decimals
 	}).format(value);
 }
+function formatQuantity(quantity) {
+	if (!Number.isFinite(quantity) || quantity === 0) return formatNumber(0, 2);
+	const rounded2 = Math.round(quantity * 100) / 100;
+	if (Math.abs(quantity - rounded2) >= 5e-5) return new Intl.NumberFormat("de-DE", {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 4
+	}).format(quantity);
+	return formatNumber(quantity, 2);
+}
 function formatDuration(totalSeconds) {
 	const safe = Math.max(0, Math.floor(totalSeconds));
 	const hours = Math.floor(safe / 3600);
@@ -14378,7 +14387,10 @@ function formatDuration(totalSeconds) {
 	].join(":");
 }
 function formatHoursShort(totalSeconds) {
-	return `${formatNumber(totalSeconds / 3600, 2)} Std.`;
+	const safe = Math.max(0, Math.floor(totalSeconds));
+	const hours = safe / 3600;
+	if (safe > 0 && Math.round(hours * 100) === 0) return `${safe} Sek.`;
+	return `${formatNumber(hours, 2)} Std.`;
 }
 function formatDateDE(isoString) {
 	if (!isoString) return "—";
@@ -14473,25 +14485,29 @@ function calculateDocumentTotals(lineItems, isSmallBusiness, discountType = "per
 	}
 	const netAfterDiscount = Math.max(0, Math.round((subtotalNet - discountNet) * 100) / 100);
 	const netFactor = subtotalNet > 0 ? netAfterDiscount / subtotalNet : 1;
-	const rateMap = /* @__PURE__ */ new Map();
+	const rawRateNetMap = /* @__PURE__ */ new Map();
 	for (const item of lineItems) {
 		const rate = isSmallBusiness ? 0 : item.taxRate;
-		const prev = rateMap.get(rate) ?? {
-			taxable: 0,
+		const prevNet = rawRateNetMap.get(rate) ?? 0;
+		rawRateNetMap.set(rate, Math.round((prevNet + item.netTotal) * 100) / 100);
+	}
+	const taxBreakdown = Array.from(rawRateNetMap.entries()).map(([rate, rawNet]) => {
+		return {
+			rate,
+			taxable: Math.round(rawNet * netFactor * 100) / 100,
 			tax: 0
 		};
-		const discountedLineNet = Math.round(item.netTotal * netFactor * 100) / 100;
-		const discountedTax = Math.round(discountedLineNet * (rate / 100) * 100) / 100;
-		rateMap.set(rate, {
-			taxable: Math.round((prev.taxable + discountedLineNet) * 100) / 100,
-			tax: Math.round((prev.tax + discountedTax) * 100) / 100
-		});
+	}).sort((a, b) => b.rate - a.rate);
+	if (taxBreakdown.length > 0) {
+		const taxableSum = Math.round(taxBreakdown.reduce((acc, g) => acc + g.taxable, 0) * 100) / 100;
+		const residual = Math.round((netAfterDiscount - taxableSum) * 100) / 100;
+		if (residual !== 0) {
+			let largestIdx = 0;
+			for (let i = 1; i < taxBreakdown.length; i++) if (taxBreakdown[i].taxable > taxBreakdown[largestIdx].taxable) largestIdx = i;
+			taxBreakdown[largestIdx].taxable = Math.max(0, Math.round((taxBreakdown[largestIdx].taxable + residual) * 100) / 100);
+		}
+		for (const grp of taxBreakdown) grp.tax = isSmallBusiness ? 0 : Math.round(grp.taxable * (grp.rate / 100) * 100) / 100;
 	}
-	const taxBreakdown = Array.from(rateMap.entries()).map(([rate, vals]) => ({
-		rate,
-		taxable: vals.taxable,
-		tax: vals.tax
-	})).sort((a, b) => b.rate - a.rate);
 	const taxTotal = isSmallBusiness ? 0 : Math.round(taxBreakdown.reduce((acc, g) => acc + g.tax, 0) * 100) / 100;
 	const grossTotal = Math.round((netAfterDiscount + taxTotal) * 100) / 100;
 	return {
@@ -35176,7 +35192,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-B15ZTtJ4.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-CegyW_E2.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -41004,10 +41020,10 @@ async function buildInvoicePdf(invoice, company) {
 		doc.text(descLines, 32, y);
 		doc.setFont(font, "normal");
 		if (isSmallBiz) {
-			doc.text(`${formatNumber(item.quantity, 2)} ${item.unit}`, 134, y, { align: "right" });
+			doc.text(`${formatQuantity(item.quantity)} ${item.unit}`, 134, y, { align: "right" });
 			doc.text(formatCurrency(item.unitPriceNet), 162, y, { align: "right" });
 		} else {
-			doc.text(`${formatNumber(item.quantity, 2)} ${item.unit}`, 128, y, { align: "right" });
+			doc.text(`${formatQuantity(item.quantity)} ${item.unit}`, 128, y, { align: "right" });
 			doc.text(formatCurrency(item.unitPriceNet), 155, y, { align: "right" });
 			doc.text(`${item.taxRate} %`, 169, y, { align: "right" });
 		}
@@ -41208,7 +41224,7 @@ function buildAcceptanceProtocolPdf(invoice, company) {
 		doc.text(String(index + 1), 22, y);
 		const descLines = doc.splitTextToSize(item.description, 130);
 		doc.text(descLines, 32, y);
-		doc.text(`${formatNumber(item.quantity, 2)} ${item.unit}`, 188, y, { align: "right" });
+		doc.text(`${formatQuantity(item.quantity)} ${item.unit}`, 188, y, { align: "right" });
 		let rowH = descLines.length * 4.2;
 		if (item.detail) {
 			doc.setFont(font, "normal");
@@ -76141,9 +76157,10 @@ function buildXRechnungXml(invoice, company) {
 	const linesXml = invoice.lineItems.map((item, idx) => {
 		const rate = isSmallBiz ? 0 : item.taxRate;
 		const catId = isSmallBiz || rate === 0 ? "E" : "S";
+		const qtyDecimals = Math.abs(item.quantity - Math.round(item.quantity * 100) / 100) >= 5e-5 ? 4 : 2;
 		return `  <cac:InvoiceLine>
     <cbc:ID>${idx + 1}</cbc:ID>
-    <cbc:InvoicedQuantity unitCode="${mapUnitCode(item.unit)}">${item.quantity.toFixed(2)}</cbc:InvoicedQuantity>
+    <cbc:InvoicedQuantity unitCode="${mapUnitCode(item.unit)}">${item.quantity.toFixed(qtyDecimals)}</cbc:InvoicedQuantity>
     <cbc:LineExtensionAmount currencyID="EUR">${item.netTotal.toFixed(2)}</cbc:LineExtensionAmount>
     <cac:Item>
       <cbc:Description>${escapeXml(item.detail || item.description)}</cbc:Description>
@@ -76872,8 +76889,9 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 				const first = group[0];
 				const prod = productMap.get(first.productId);
 				const totalSeconds = roundDurationSeconds(group.reduce((acc, g) => acc + g.durationSeconds, 0), roundingMinutes);
-				const hours = Math.round(totalSeconds / 3600 * 100) / 100;
-				const net = Math.round(hours * first.hourlyRateNet * 100) / 100;
+				const exactHours = totalSeconds / 3600;
+				const hours = Math.round(exactHours * 1e4) / 1e4;
+				const net = Math.round(exactHours * first.hourlyRateNet * 100) / 100;
 				const effectiveTaxRate = isSmallBusiness ? 0 : first.taxRate;
 				const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
 				const taskTitles = Array.from(new Set(group.map((g) => g.title))).join(", ");
@@ -76881,10 +76899,11 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 				const notesSuffix = notesList.length > 0 ? ` · Notizen: ${notesList.join("; ")}` : "";
 				const locations = includeLocation ? Array.from(new Set(group.map((g) => formatEntryLocation(g)).filter(Boolean))) : [];
 				const locSuffix = locations.length > 0 ? ` · Ort: ${locations.join("; ")}` : "";
+				const countLabel = group.length === 1 ? `1 Zeiteintrag (${formatDuration(totalSeconds)})` : `${group.length} Zeiteinträge (${formatDuration(totalSeconds)})`;
 				items.push({
 					id: createId("li"),
 					description: prod?.name ?? first.title,
-					detail: `${group.length} Zeiteinträge: ${taskTitles}${notesSuffix}${locSuffix}`,
+					detail: `${countLabel}: ${taskTitles}${notesSuffix}${locSuffix}`,
 					quantity: hours,
 					unit: "Std.",
 					unitPriceNet: first.hourlyRateNet,
@@ -76899,8 +76918,9 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 		} else for (const e of selectedEntries) {
 			const prod = productMap.get(e.productId);
 			const effectiveSeconds = roundDurationSeconds(e.durationSeconds, roundingMinutes);
-			const hours = Math.round(effectiveSeconds / 3600 * 100) / 100;
-			const net = Math.round(hours * e.hourlyRateNet * 100) / 100;
+			const exactHours = effectiveSeconds / 3600;
+			const hours = Math.round(exactHours * 1e4) / 1e4;
+			const net = Math.round(exactHours * e.hourlyRateNet * 100) / 100;
 			const effectiveTaxRate = isSmallBusiness ? 0 : e.taxRate;
 			const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
 			const locText = includeLocation ? formatEntryLocation(e) : "";
@@ -76908,7 +76928,7 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 			items.push({
 				id: createId("li"),
 				description: `${prod?.name ?? "Leistung"} — ${e.title}`,
-				detail: `${formatDateDE(e.startTime)}${noteText ? ` · ${noteText}` : ""}${locText ? ` · Ort: ${locText}` : ""}`,
+				detail: `${formatDateDE(e.startTime)} (${formatDuration(effectiveSeconds)})${noteText ? ` · ${noteText}` : ""}${locText ? ` · Ort: ${locText}` : ""}`,
 				quantity: hours,
 				unit: "Std.",
 				unitPriceNet: e.hourlyRateNet,
@@ -77410,7 +77430,8 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 								children: unbilledForCustomer.map((entry) => {
 									const prod = productMap.get(entry.productId);
 									const roundedSecs = roundDurationSeconds(entry.durationSeconds, roundingMinutes);
-									const net = roundedSecs / 3600 * entry.hourlyRateNet;
+									const displaySecs = roundingMinutes > 0 && !groupByProduct ? roundedSecs : entry.durationSeconds;
+									const net = Math.round(displaySecs / 3600 * entry.hourlyRateNet * 100) / 100;
 									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 										className: "flex items-center justify-between gap-3 px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-[#211936]/60 cursor-pointer",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -77557,7 +77578,7 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 										className: "flex items-center justify-between sm:col-span-2",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 											className: "font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums",
-											children: formatCurrency(row.quantity * row.unitPriceNet)
+											children: formatCurrency(Math.round(Math.max(0, Number(row.quantity) || 0) * row.unitPriceNet * 100) / 100)
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 											type: "button",
 											onClick: () => setExtraItems((prev) => prev.filter((x) => x.id !== row.id)),
@@ -77643,6 +77664,24 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 											]
 										})]
 									}),
+									selectedEntryIds.length > 0 && (() => {
+										const selEntries = unbilledForCustomer.filter((entry) => selectedEntryIds.includes(entry.id));
+										const rawSum = selEntries.reduce((acc, entry) => acc + entry.durationSeconds, 0);
+										const billedHoursSum = computedLineItems.filter((li) => (li.timeEntryIds?.length ?? 0) > 0).reduce((acc, li) => acc + li.quantity, 0);
+										if (selEntries.length === 0) return null;
+										return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: selEntries.length === 1 ? "1 Zeiteintrag gewählt" : `${selEntries.length} Zeiteinträge gewählt` }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+												className: "font-mono tabular-nums whitespace-nowrap",
+												children: [
+													formatDuration(rawSum),
+													" (",
+													formatQuantity(billedHoursSum),
+													" Std.)"
+												]
+											})]
+										});
+									})(),
 									builderTotals.discountNetAmount > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 										className: "flex justify-between text-xs text-slate-500 dark:text-slate-400",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Zwischensumme Netto" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
@@ -78375,7 +78414,7 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("td", {
 														className: "py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap",
 														children: [
-															formatNumber(item.quantity, 2),
+															formatQuantity(item.quantity),
 															" ",
 															item.unit
 														]
@@ -84869,9 +84908,10 @@ function RecurringInvoicesView({ templates, customers, products, company, onSave
 				children: templates.map((tpl) => {
 					const customer = customerMap.get(tpl.customerId);
 					const isDue = tpl.active && tpl.nextRunDate <= todayIso;
+					const isTplSmallBiz = tpl.isSmallBusiness ?? Boolean(company.smallBusinessMode);
 					const totals = calculateDocumentTotals(tpl.lineItems.map((li) => {
 						const netTotal = Math.round(li.quantity * li.unitPriceNet * 100) / 100;
-						const taxAmount = company.smallBusinessMode ? 0 : Math.round(netTotal * (li.taxRate / 100) * 100) / 100;
+						const taxAmount = isTplSmallBiz ? 0 : Math.round(netTotal * (li.taxRate / 100) * 100) / 100;
 						return {
 							...li,
 							detail: li.detail || "",
@@ -84881,7 +84921,7 @@ function RecurringInvoicesView({ templates, customers, products, company, onSave
 							timeEntryIds: [],
 							productId: li.productId || null
 						};
-					}), Boolean(company.smallBusinessMode), tpl.discountType || "percent", tpl.discountValue || 0);
+					}), isTplSmallBiz, tpl.discountType || "percent", tpl.discountValue || 0);
 					return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center dark:border-[#342653] dark:bg-[#19122c]",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -84944,7 +84984,7 @@ function RecurringInvoicesView({ templates, customers, products, company, onSave
 										children: "Rechnungsbetrag"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 										className: "text-base font-bold text-slate-900 dark:text-white",
-										children: formatCurrency(company.smallBusinessMode ? totals.netTotal : totals.grossTotal)
+										children: formatCurrency(isTplSmallBiz ? totals.netTotal : totals.grossTotal)
 									})]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {

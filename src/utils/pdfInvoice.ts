@@ -9,6 +9,7 @@ import {
   formatDateTimeDE,
   formatDuration,
   formatNumber,
+  formatQuantity,
   getOverdueDays,
   resolveInvoiceAccentRgb,
   toInputDate,
@@ -300,12 +301,12 @@ export async function buildInvoicePdf(
 
     doc.setFont(font, 'normal');
     if (isSmallBiz) {
-      doc.text(`${formatNumber(item.quantity, 2)} ${item.unit}`, marginLeft + 114, y, {
+      doc.text(`${formatQuantity(item.quantity)} ${item.unit}`, marginLeft + 114, y, {
         align: 'right',
       });
       doc.text(formatCurrency(item.unitPriceNet), marginLeft + 142, y, { align: 'right' });
     } else {
-      doc.text(`${formatNumber(item.quantity, 2)} ${item.unit}`, marginLeft + 108, y, {
+      doc.text(`${formatQuantity(item.quantity)} ${item.unit}`, marginLeft + 108, y, {
         align: 'right',
       });
       doc.text(formatCurrency(item.unitPriceNet), marginLeft + 135, y, { align: 'right' });
@@ -574,7 +575,7 @@ export function buildAcceptanceProtocolPdf(
     doc.text(String(index + 1), marginLeft + 2, y);
     const descLines = doc.splitTextToSize(item.description, contentWidth - 40);
     doc.text(descLines, marginLeft + 12, y);
-    doc.text(`${formatNumber(item.quantity, 2)} ${item.unit}`, pageWidth - marginRight - 2, y, {
+    doc.text(`${formatQuantity(item.quantity)} ${item.unit}`, pageWidth - marginRight - 2, y, {
       align: 'right',
     });
     let rowH = descLines.length * 4.2;

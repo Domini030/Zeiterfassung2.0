@@ -29,7 +29,34 @@ jobs:
       - name: Build web assets and sync Capacitor Android
         run: npm run cap:sync
 
-      - name: Build Debug APK
+      - name: Configure consistent signing key & version
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          VERSION_CODE=$((100 + ${{ github.run_number }}))
+          VERSION_NAME="1.1.${{ github.run_number }}"
+          echo "TAKTWERK_VERSION_CODE=${VERSION_CODE}" >> "$GITHUB_ENV"
+          echo "TAKTWERK_VERSION_NAME=${VERSION_NAME}" >> "$GITHUB_ENV"
+          echo "Building TaktWerk Android v${VERSION_NAME} (versionCode ${VERSION_CODE})"
+
+          if [ -n "$KEYSTORE_B64" ]; then
+            KEYSTORE_FILE="${{ runner.temp }}/taktwerk-custom.keystore"
+            echo "$KEYSTORE_B64" | base64 --decode > "$KEYSTORE_FILE"
+            echo "ANDROID_KEYSTORE_PATH=${KEYSTORE_FILE}" >> "$GITHUB_ENV"
+            echo "ANDROID_KEYSTORE_PASSWORD=${KEYSTORE_PASS}" >> "$GITHUB_ENV"
+            echo "ANDROID_KEY_ALIAS=${KEY_ALIAS}" >> "$GITHUB_ENV"
+            echo "ANDROID_KEY_PASSWORD=${KEY_PASS:-$KEYSTORE_PASS}" >> "$GITHUB_ENV"
+            echo "Using custom signing keystore from GitHub Secrets."
+          else
+            keytool -list -keystore android/app/taktwerk-debug.keystore -storetype PKCS12 -storepass android -alias taktwerkdebug
+            echo "Using repository TaktWerk consistent update keystore."
+          fi
+
+      - name: Build consistently signed APK
         working-directory: android
         run: |
           chmod +x gradlew
@@ -38,5 +65,5 @@ jobs:
       - name: Upload TaktWerk APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TaktWerk-Android-APK
+          name: TaktWerk-Android-APK-v${{ env.TAKTWERK_VERSION_NAME }}
           path: android/app/build/outputs/apk/debug/app-debug.apk

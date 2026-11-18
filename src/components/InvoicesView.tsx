@@ -55,7 +55,7 @@ import {
   formatDateTimeDE,
   formatDuration,
   formatInvoiceNumber,
-  formatNumber,
+  formatQuantity,
   formatQuoteNumber,
   getOverdueDays,
   isInvoiceOverdue,
@@ -667,8 +667,9 @@ export function InvoicesView({
         const prod = productMap.get(first.productId);
         const rawSeconds = group.reduce((acc, g) => acc + g.durationSeconds, 0);
         const totalSeconds = roundDurationSeconds(rawSeconds, roundingMinutes);
-        const hours = Math.round((totalSeconds / 3600) * 100) / 100;
-        const net = Math.round(hours * first.hourlyRateNet * 100) / 100;
+        const exactHours = totalSeconds / 3600;
+        const hours = Math.round(exactHours * 10000) / 10000;
+        const net = Math.round(exactHours * first.hourlyRateNet * 100) / 100;
         const effectiveTaxRate: TaxRate = isSmallBusiness ? 0 : first.taxRate;
         const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
         const taskTitles = Array.from(new Set(group.map((g) => g.title))).join(', ');
@@ -685,11 +686,15 @@ export function InvoicesView({
             )
           : [];
         const locSuffix = locations.length > 0 ? ` · Ort: ${locations.join('; ')}` : '';
+        const countLabel =
+          group.length === 1
+            ? `1 Zeiteintrag (${formatDuration(totalSeconds)})`
+            : `${group.length} Zeiteinträge (${formatDuration(totalSeconds)})`;
 
         items.push({
           id: createId('li'),
           description: prod?.name ?? first.title,
-          detail: `${group.length} Zeiteinträge: ${taskTitles}${notesSuffix}${locSuffix}`,
+          detail: `${countLabel}: ${taskTitles}${notesSuffix}${locSuffix}`,
           quantity: hours,
           unit: 'Std.',
           unitPriceNet: first.hourlyRateNet,
@@ -705,8 +710,9 @@ export function InvoicesView({
       for (const e of selectedEntries) {
         const prod = productMap.get(e.productId);
         const effectiveSeconds = roundDurationSeconds(e.durationSeconds, roundingMinutes);
-        const hours = Math.round((effectiveSeconds / 3600) * 100) / 100;
-        const net = Math.round(hours * e.hourlyRateNet * 100) / 100;
+        const exactHours = effectiveSeconds / 3600;
+        const hours = Math.round(exactHours * 10000) / 10000;
+        const net = Math.round(exactHours * e.hourlyRateNet * 100) / 100;
         const effectiveTaxRate: TaxRate = isSmallBusiness ? 0 : e.taxRate;
         const tax = Math.round(net * (effectiveTaxRate / 100) * 100) / 100;
         const locText = includeLocation ? formatEntryLocation(e) : '';
@@ -714,9 +720,9 @@ export function InvoicesView({
         items.push({
           id: createId('li'),
           description: `${prod?.name ?? 'Leistung'} — ${e.title}`,
-          detail: `${formatDateDE(e.startTime)}${noteText ? ` · ${noteText}` : ''}${
-            locText ? ` · Ort: ${locText}` : ''
-          }`,
+          detail: `${formatDateDE(e.startTime)} (${formatDuration(effectiveSeconds)})${
+            noteText ? ` · ${noteText}` : ''
+          }${locText ? ` · Ort: ${locText}` : ''}`,
           quantity: hours,
           unit: 'Std.',
           unitPriceNet: e.hourlyRateNet,
@@ -1354,7 +1360,12 @@ export function InvoicesView({
                       entry.durationSeconds,
                       roundingMinutes
                     );
-                    const net = (roundedSecs / 3600) * entry.hourlyRateNet;
+                    const displaySecs =
+                      roundingMinutes > 0 && !groupByProduct
+                        ? roundedSecs
+                        : entry.durationSeconds;
+                    const net =
+                      Math.round((displaySecs / 3600) * entry.hourlyRateNet * 100) / 100;
                     return (
                       <label
                         key={entry.id}
@@ -1505,7 +1516,9 @@ export function InvoicesView({
                   </div>
                   <div className="flex items-center justify-between sm:col-span-2">
                     <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums">
-                      {formatCurrency(row.quantity * row.unitPriceNet)}
+                      {formatCurrency(
+                        Math.round(Math.max(0, Number(row.quantity) || 0) * row.unitPriceNet * 100) / 100
+                      )}
                     </span>
                     <button
                       type="button"
@@ -1594,6 +1607,29 @@ export function InvoicesView({
                     />
                   </div>
                 </div>
+
+                {selectedEntryIds.length > 0 && (() => {
+                  const selEntries = unbilledForCustomer.filter((entry) =>
+                    selectedEntryIds.includes(entry.id)
+                  );
+                  const rawSum = selEntries.reduce((acc, entry) => acc + entry.durationSeconds, 0);
+                  const billedHoursSum = computedLineItems
+                    .filter((li) => (li.timeEntryIds?.length ?? 0) > 0)
+                    .reduce((acc, li) => acc + li.quantity, 0);
+                  if (selEntries.length === 0) return null;
+                  return (
+                    <div className="flex items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                      <span>
+                        {selEntries.length === 1
+                          ? '1 Zeiteintrag gewählt'
+                          : `${selEntries.length} Zeiteinträge gewählt`}
+                      </span>
+                      <span className="font-mono tabular-nums whitespace-nowrap">
+                        {formatDuration(rawSum)} ({formatQuantity(billedHoursSum)} Std.)
+                      </span>
+                    </div>
+                  );
+                })()}
 
                 {builderTotals.discountNetAmount > 0 && (
                   <>
@@ -2379,7 +2415,7 @@ export function InvoicesView({
                               )}
                             </td>
                             <td className="py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap">
-                              {formatNumber(item.quantity, 2)} {item.unit}
+                              {formatQuantity(item.quantity)} {item.unit}
                             </td>
                             <td className="py-3 px-2 text-right font-mono text-xs tabular-nums align-top whitespace-nowrap">
                               {formatCurrency(item.unitPriceNet)}

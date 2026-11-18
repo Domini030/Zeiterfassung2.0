@@ -26,6 +26,20 @@ export function formatNumber(value: number, decimals = 2): string {
   }).format(value);
 }
 
+export function formatQuantity(quantity: number): string {
+  if (!Number.isFinite(quantity) || quantity === 0) {
+    return formatNumber(0, 2);
+  }
+  const rounded2 = Math.round(quantity * 100) / 100;
+  if (Math.abs(quantity - rounded2) >= 0.00005) {
+    return new Intl.NumberFormat('de-DE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+    }).format(quantity);
+  }
+  return formatNumber(quantity, 2);
+}
+
 export function formatDuration(totalSeconds: number): string {
   const safe = Math.max(0, Math.floor(totalSeconds));
   const hours = Math.floor(safe / 3600);
@@ -39,7 +53,11 @@ export function formatDuration(totalSeconds: number): string {
 }
 
 export function formatHoursShort(totalSeconds: number): string {
-  const hours = totalSeconds / 3600;
+  const safe = Math.max(0, Math.floor(totalSeconds));
+  const hours = safe / 3600;
+  if (safe > 0 && Math.round(hours * 100) === 0) {
+    return `${safe} Sek.`;
+  }
   return `${formatNumber(hours, 2)} Std.`;
 }
 
@@ -235,21 +253,43 @@ export function calculateDocumentTotals(
   const netAfterDiscount = Math.max(0, Math.round((subtotalNet - discountNet) * 100) / 100);
   const netFactor = subtotalNet > 0 ? netAfterDiscount / subtotalNet : 1;
 
-  const rateMap = new Map<number, { taxable: number; tax: number }>();
+  const rawRateNetMap = new Map<number, number>();
   for (const item of lineItems) {
     const rate = isSmallBusiness ? 0 : item.taxRate;
-    const prev = rateMap.get(rate) ?? { taxable: 0, tax: 0 };
-    const discountedLineNet = Math.round(item.netTotal * netFactor * 100) / 100;
-    const discountedTax = Math.round(discountedLineNet * (rate / 100) * 100) / 100;
-    rateMap.set(rate, {
-      taxable: Math.round((prev.taxable + discountedLineNet) * 100) / 100,
-      tax: Math.round((prev.tax + discountedTax) * 100) / 100,
-    });
+    const prevNet = rawRateNetMap.get(rate) ?? 0;
+    rawRateNetMap.set(rate, Math.round((prevNet + item.netTotal) * 100) / 100);
   }
 
-  const taxBreakdown = Array.from(rateMap.entries())
-    .map(([rate, vals]) => ({ rate, taxable: vals.taxable, tax: vals.tax }))
+  const taxBreakdown = Array.from(rawRateNetMap.entries())
+    .map(([rate, rawNet]) => {
+      const taxable = Math.round(rawNet * netFactor * 100) / 100;
+      return { rate, taxable, tax: 0 };
+    })
     .sort((a, b) => b.rate - a.rate);
+
+  // Reconcile any 1-cent rounding residual across multiple tax buckets so sum(taxable) === netAfterDiscount
+  if (taxBreakdown.length > 0) {
+    const taxableSum =
+      Math.round(taxBreakdown.reduce((acc, g) => acc + g.taxable, 0) * 100) / 100;
+    const residual = Math.round((netAfterDiscount - taxableSum) * 100) / 100;
+    if (residual !== 0) {
+      let largestIdx = 0;
+      for (let i = 1; i < taxBreakdown.length; i++) {
+        if (taxBreakdown[i].taxable > taxBreakdown[largestIdx].taxable) {
+          largestIdx = i;
+        }
+      }
+      taxBreakdown[largestIdx].taxable = Math.max(
+        0,
+        Math.round((taxBreakdown[largestIdx].taxable + residual) * 100) / 100
+      );
+    }
+    for (const grp of taxBreakdown) {
+      grp.tax = isSmallBusiness
+        ? 0
+        : Math.round(grp.taxable * (grp.rate / 100) * 100) / 100;
+    }
+  }
 
   const taxTotal = isSmallBusiness
     ? 0

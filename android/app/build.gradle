@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+def customKeystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+def hasCustomKeystore = customKeystorePath != null && !customKeystorePath.trim().isEmpty() && file(customKeystorePath).exists()
+def defaultDebugKeystore = file("taktwerk-debug.keystore")
+def resolvedVersionCode = (System.getenv("TAKTWERK_VERSION_CODE") ?: project.findProperty("taktwerkVersionCode") ?: "2").toString().toInteger()
+def resolvedVersionName = (System.getenv("TAKTWERK_VERSION_NAME") ?: project.findProperty("taktwerkVersionName") ?: "1.1.0").toString()
+
 android {
     namespace = "de.taktwerk.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +13,8 @@ android {
         applicationId "de.taktwerk.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode resolvedVersionCode
+        versionName resolvedVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,10 +22,44 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        debug {
+            if (hasCustomKeystore) {
+                storeFile file(customKeystorePath)
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: "android"
+                keyAlias System.getenv("ANDROID_KEY_ALIAS") ?: "taktwerk"
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD") ?: System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: "android"
+            } else if (defaultDebugKeystore.exists()) {
+                storeFile defaultDebugKeystore
+                storeType "PKCS12"
+                storePassword "android"
+                keyAlias "taktwerkdebug"
+                keyPassword "android"
+            }
+        }
+        release {
+            if (hasCustomKeystore) {
+                storeFile file(customKeystorePath)
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: ""
+                keyAlias System.getenv("ANDROID_KEY_ALIAS") ?: "taktwerk"
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD") ?: System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: ""
+            } else if (defaultDebugKeystore.exists()) {
+                storeFile defaultDebugKeystore
+                storeType "PKCS12"
+                storePassword "android"
+                keyAlias "taktwerkdebug"
+                keyPassword "android"
+            }
+        }
+    }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }

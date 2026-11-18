@@ -95,9 +95,11 @@ export function buildXRechnungXml(invoice: Invoice, company: CompanyProfile): st
     .map((item, idx) => {
       const rate = isSmallBiz ? 0 : item.taxRate;
       const catId = isSmallBiz || rate === 0 ? 'E' : 'S';
+      const qtyDecimals =
+        Math.abs(item.quantity - Math.round(item.quantity * 100) / 100) >= 0.00005 ? 4 : 2;
       return `  <cac:InvoiceLine>
     <cbc:ID>${idx + 1}</cbc:ID>
-    <cbc:InvoicedQuantity unitCode="${mapUnitCode(item.unit)}">${item.quantity.toFixed(2)}</cbc:InvoicedQuantity>
+    <cbc:InvoicedQuantity unitCode="${mapUnitCode(item.unit)}">${item.quantity.toFixed(qtyDecimals)}</cbc:InvoicedQuantity>
     <cbc:LineExtensionAmount currencyID="EUR">${item.netTotal.toFixed(2)}</cbc:LineExtensionAmount>
     <cac:Item>
       <cbc:Description>${escapeXml(item.detail || item.description)}</cbc:Description>

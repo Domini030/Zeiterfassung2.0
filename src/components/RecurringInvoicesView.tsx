@@ -277,9 +277,10 @@ export function RecurringInvoicesView({
           {templates.map((tpl) => {
             const customer = customerMap.get(tpl.customerId);
             const isDue = tpl.active && tpl.nextRunDate <= todayIso;
+            const isTplSmallBiz = tpl.isSmallBusiness ?? Boolean(company.smallBusinessMode);
             const computedLines = tpl.lineItems.map((li) => {
               const netTotal = Math.round(li.quantity * li.unitPriceNet * 100) / 100;
-              const taxAmount = company.smallBusinessMode
+              const taxAmount = isTplSmallBiz
                 ? 0
                 : Math.round(netTotal * (li.taxRate / 100) * 100) / 100;
               return {
@@ -294,7 +295,7 @@ export function RecurringInvoicesView({
             });
             const totals = calculateDocumentTotals(
               computedLines,
-              Boolean(company.smallBusinessMode),
+              isTplSmallBiz,
               tpl.discountType || 'percent',
               tpl.discountValue || 0
             );
@@ -338,7 +339,7 @@ export function RecurringInvoicesView({
                     <p className="text-xs text-slate-500 dark:text-slate-400">Rechnungsbetrag</p>
                     <p className="text-base font-bold text-slate-900 dark:text-white">
                       {formatCurrency(
-                        company.smallBusinessMode ? totals.netTotal : totals.grossTotal
+                        isTplSmallBiz ? totals.netTotal : totals.grossTotal
                       )}
                     </p>
                   </div>
