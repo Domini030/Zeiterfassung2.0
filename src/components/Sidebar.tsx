@@ -10,6 +10,7 @@ import {
   Nfc,
   Package,
   Receipt,
+  RefreshCw,
   Repeat,
   Search,
   Square,
@@ -39,6 +40,8 @@ interface SidebarProps {
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
   onOpenSearch?: () => void;
+  autoSyncing?: boolean;
+  onAutoSyncNow?: () => void;
 }
 
 const NAV_ITEMS: { id: NavSection; label: string; icon: typeof Clock }[] = [
@@ -70,6 +73,8 @@ export function Sidebar({
   theme,
   onToggleTheme,
   onOpenSearch,
+  autoSyncing = false,
+  onAutoSyncNow,
 }: SidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -276,6 +281,26 @@ export function Sidebar({
                 </button>
                 <PWAInstallButton />
               </div>
+
+              {nextcloud.configured && onAutoSyncNow && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    onAutoSyncNow();
+                  }}
+                  disabled={autoSyncing}
+                  className="flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-60 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:bg-[#2a2045] cursor-pointer"
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <RefreshCw className={`h-3.5 w-3.5 ${autoSyncing ? 'animate-spin' : ''}`} />
+                    <span>{autoSyncing ? 'Gleiche Geräte ab…' : 'Geräte jetzt abgleichen'}</span>
+                  </span>
+                  {nextcloud.pendingPush && (
+                    <span className="h-2 w-2 rounded-full bg-amber-500" />
+                  )}
+                </button>
+              )}
 
               <button
                 type="button"

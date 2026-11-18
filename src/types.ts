@@ -484,6 +484,11 @@ export interface CompanyProfile {
 export interface AppDatabase {
   version: number;
   updatedAt: string;
+  syncDeviceId?: string;
+  activeTimerUpdatedAt?: string;
+  companyUpdatedAt?: string;
+  deletedIds?: Record<string, string>;
+  recordUpdatedAt?: Record<string, string>;
   company: CompanyProfile;
   customers: Customer[];
   products: Product[];
@@ -504,8 +509,23 @@ export interface NextcloudConfigInfo {
   username: string;
   folder: string;
   autoSync: boolean;
+  syncIntervalSec?: number;
+  pendingPush?: boolean;
   hasPassword: boolean;
   fromEnv: boolean;
   lastSyncAt: string | null;
   lastSyncError: string | null;
+}
+
+export interface SyncPairingPayload {
+  v: 1;
+  url: string;
+  username: string;
+  appPassword: string;
+  folder: string;
+  autoSync: boolean;
+  syncIntervalSec?: number;
+  calendarUrl?: string;
+  calendarName?: string;
+  autoSyncTimeEntries?: boolean;
 }

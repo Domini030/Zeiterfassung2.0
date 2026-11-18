@@ -10,6 +10,7 @@ import {
   MapPin,
   Moon,
   Play,
+  RefreshCw,
   Search,
   Sparkles,
   Square,
@@ -66,6 +67,8 @@ import type {
 } from './types';
 import {
   NextcloudConflictError,
+  apiApplySyncPairingCode,
+  apiAutoSyncNextcloud,
   apiCheckNextcloudRemote,
   apiDeleteNextcloudInvoiceFiles,
   apiLoadDb,
@@ -113,6 +116,7 @@ import {
 import { extractTagIdFromPayload } from './utils/nfcHelpers';
 import { createEmptyDatabase, createSampleDatabase } from './utils/sampleData';
 import { playReminderSound, showWebReminderNotification } from './utils/soundReminder';
+import { getOrCreateSyncDeviceId, stampDatabaseChanges } from './utils/syncMerge';
 import { TaktWerkNative, type NativeNotificationStatus } from './utils/taktwerkNative';
 
 const SECTION_TITLES: Record<NavSection, string> = {
@@ -159,6 +163,8 @@ const DEFAULT_NC_INFO: NextcloudConfigInfo = {
   username: '',
   folder: '/TaktWerk',
   autoSync: true,
+  syncIntervalSec: 20,
+  pendingPush: false,
   hasPassword: false,
   fromEnv: false,
   lastSyncAt: null,
@@ -183,6 +189,7 @@ export default function App() {
     label: 'TaktWerk wird gestartet…',
   });
   const [saving, setSaving] = useState(false);
+  const [autoSyncing, setAutoSyncing] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [toast, setToast] = useState<{ text: string; isError: boolean; id: number } | null>(
     null
@@ -247,6 +254,14 @@ export default function App() {
     time: number;
   } | null>(null);
   const lastNfcTriggerRef = useRef<{ code: string; at: number } | null>(null);
+  const deviceIdRef = useRef<string>(
+    getOrCreateSyncDeviceId(
+      isDesktopElectron() ? 'windows' : isNativeCapacitor() ? 'android' : 'web'
+    )
+  );
+  const savingRef = useRef(false);
+  const syncInFlightRef = useRef(false);
+  const lastAutoSyncCheckMsRef = useRef(0);
   const dbRef = useRef<AppDatabase>(db);
   useEffect(() => {
     dbRef.current = db;
@@ -327,12 +342,25 @@ export default function App() {
 
   const persistDb = useCallback(
     async (nextDb: AppDatabase) => {
-      dbRef.current = nextDb;
-      setDb(nextDb);
+      const stamped = stampDatabaseChanges(dbRef.current, nextDb, deviceIdRef.current);
+      dbRef.current = stamped;
+      setDb(stamped);
       setSaving(true);
+      savingRef.current = true;
       try {
-        const result = await apiSaveDb(nextDb);
+        const result = await apiSaveDb(stamped);
         setNextcloud(result.nextcloud);
+        if (result.mergedRemoteChanges && result.db) {
+          // Only overwrite state if no newer local write occurred while saving
+          if (dbRef.current.updatedAt === stamped.updatedAt) {
+            dbRef.current = result.db;
+            setDb(result.db);
+            void syncNativeWidgetState(result.db);
+          }
+          setRemoteNewerAt(null);
+          setPushConflictAt(null);
+          notify('Synchronisiert – Änderungen vom anderen Gerät übernommen.');
+        }
         if (result.syncWarning) {
           notify(`Lokal gespeichert, aber Nextcloud-Sync meldet: ${result.syncWarning}`, true);
         }
@@ -342,10 +370,113 @@ export default function App() {
           true
         );
       } finally {
+        savingRef.current = false;
         setSaving(false);
       }
     },
     [notify]
+  );
+
+  const runAutoSync = useCallback(
+    async (options?: { force?: boolean; silent?: boolean }) => {
+      const force = Boolean(options?.force);
+      const silent = Boolean(options?.silent);
+      if (syncInFlightRef.current) return;
+      if (savingRef.current && silent) return;
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        if (!silent) {
+          notify(
+            'Gerät ist offline – Änderungen werden automatisch synchronisiert, sobald wieder Internet besteht.',
+            true
+          );
+        }
+        return;
+      }
+
+      syncInFlightRef.current = true;
+      lastAutoSyncCheckMsRef.current = Date.now();
+      setAutoSyncing(true);
+      try {
+        const res = await apiAutoSyncNextcloud({ force, silent });
+        setNextcloud(res.nextcloud);
+        if (res.localChanged && res.db) {
+          dbRef.current = res.db;
+          setDb(res.db);
+          setRemoteNewerAt(null);
+          setPushConflictAt(null);
+          void syncNativeWidgetState(res.db);
+          notify(
+            res.summary
+              ? `Synchronisiert: ${res.summary}`
+              : 'Datenstand vom anderen Gerät übernommen.'
+          );
+        } else if (!silent) {
+          setRemoteNewerAt(null);
+          setPushConflictAt(null);
+          notify(
+            res.pushed
+              ? 'Lokale Änderungen in Nextcloud übertragen.'
+              : 'Windows & Smartphone sind bereits auf dem gleichen Stand.'
+          );
+        } else if (res.status === 'synced') {
+          setRemoteNewerAt(null);
+          setPushConflictAt(null);
+        }
+      } catch (err) {
+        if (!silent) {
+          notify(
+            err instanceof Error
+              ? err.message
+              : 'Automatische Synchronisation fehlgeschlagen.',
+            true
+          );
+        }
+      } finally {
+        syncInFlightRef.current = false;
+        setAutoSyncing(false);
+      }
+    },
+    [notify]
+  );
+
+  const handleApplyPairingCode = useCallback(
+    async (rawCode: string) => {
+      const { payload, syncResult } = await apiApplySyncPairingCode(rawCode);
+      setNextcloud(syncResult.nextcloud);
+      setRemoteNewerAt(null);
+      setPushConflictAt(null);
+
+      const syncedDb = syncResult.db ?? dbRef.current;
+      if (
+        payload.calendarUrl &&
+        !syncedDb.company.calendarConfig?.selectedCalendarUrl
+      ) {
+        const updatedWithCal: AppDatabase = {
+          ...syncedDb,
+          company: {
+            ...syncedDb.company,
+            calendarConfig: {
+              selectedCalendarUrl: payload.calendarUrl,
+              selectedCalendarName: payload.calendarName ?? '',
+              autoSyncTimeEntries: Boolean(payload.autoSyncTimeEntries),
+            },
+          },
+        };
+        dbRef.current = syncedDb;
+        await persistDb(updatedWithCal);
+      } else if (syncResult.db) {
+        dbRef.current = syncResult.db;
+        setDb(syncResult.db);
+        void syncNativeWidgetState(syncResult.db);
+      }
+
+      notify(
+        syncResult.localChanged
+          ? 'Gerät gekoppelt & Datenstand synchronisiert.'
+          : 'Gerät gekoppelt – automatische Synchronisation ist aktiv.'
+      );
+    },
+    [notify, persistDb]
   );
 
   const triggerNfcOnDb = useCallback(
@@ -675,15 +806,23 @@ export default function App() {
           if (incomingNfc) {
             setLoadProgress({ pct: 72, label: 'NFC-Aufgabe wird ausgeführt…' });
             lastNfcTriggerRef.current = { code: incomingNfc, at: Date.now() };
+            const prevLoadedDb = loadedDb;
             const prevTimer = loadedDb.activeTimer;
             const prevEntryCount = loadedDb.timeEntries.length;
             const result = triggerNfcOnDb(loadedDb, incomingNfc);
-            loadedDb = result.nextDb;
+            loadedDb = result.isError
+              ? result.nextDb
+              : stampDatabaseChanges(prevLoadedDb, result.nextDb, deviceIdRef.current);
             dbRef.current = loadedDb;
             triggerNfcHaptic(result.haptic);
             notify(result.message, result.isError);
             if (!result.isError) {
-              await apiSaveDb(loadedDb);
+              const savedRes = await apiSaveDb(loadedDb);
+              setNextcloud(savedRes.nextcloud);
+              if (savedRes.mergedRemoteChanges && savedRes.db) {
+                loadedDb = savedRes.db;
+                dbRef.current = loadedDb;
+              }
               if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) {
                 coldFinishedEntry = loadedDb.timeEntries[0];
               }
@@ -700,15 +839,23 @@ export default function App() {
               () => ({ action: null, tagUid: null })
             );
             if (widgetAction?.action === 'trigger' && widgetAction.tagUid) {
+              const prevLoadedDb = loadedDb;
               const prevTimer = loadedDb.activeTimer;
               const prevEntryCount = loadedDb.timeEntries.length;
               const result = triggerNfcOnDb(loadedDb, widgetAction.tagUid);
-              loadedDb = result.nextDb;
+              loadedDb = result.isError
+                ? result.nextDb
+                : stampDatabaseChanges(prevLoadedDb, result.nextDb, deviceIdRef.current);
               dbRef.current = loadedDb;
               triggerNfcHaptic(result.haptic);
               notify(result.message, result.isError);
               if (!result.isError) {
-                await apiSaveDb(loadedDb);
+                const savedRes = await apiSaveDb(loadedDb);
+                setNextcloud(savedRes.nextcloud);
+                if (savedRes.mergedRemoteChanges && savedRes.db) {
+                  loadedDb = savedRes.db;
+                  dbRef.current = loadedDb;
+                }
                 if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) {
                   coldFinishedEntry = loadedDb.timeEntries[0];
                 }
@@ -772,11 +919,15 @@ export default function App() {
         }
 
         if (data.nextcloud.configured) {
-          void apiCheckNextcloudRemote().then((check) => {
-            if (active && check.hasNewerRemote && check.remoteUpdatedAt) {
-              setRemoteNewerAt(check.remoteUpdatedAt);
-            }
-          });
+          if (data.nextcloud.autoSync) {
+            void runAutoSync({ force: true, silent: true });
+          } else {
+            void apiCheckNextcloudRemote().then((check) => {
+              if (active && check.hasNewerRemote && check.remoteUpdatedAt) {
+                setRemoteNewerAt(check.remoteUpdatedAt);
+              }
+            });
+          }
         }
 
         // Scheduled Automated Multi-Format Backup Check
@@ -832,6 +983,7 @@ export default function App() {
     notify,
     persistDb,
     pushFinishedEntryToNextcloudCalendar,
+    runAutoSync,
     triggerNfcOnDb,
   ]);
 
@@ -1046,6 +1198,68 @@ export default function App() {
       if (appStateHandle) void appStateHandle.remove();
     };
   }, []);
+
+  // Automatic Cross-Device Synchronization (Windows Desktop <-> Android Smartphone via Nextcloud)
+  useEffect(() => {
+    if (loading || !nextcloud.configured || !nextcloud.autoSync) return;
+
+    const triggerIfStale = () => {
+      if (document.visibilityState !== 'visible') return;
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+      if (Date.now() - lastAutoSyncCheckMsRef.current < 5000) return;
+      void runAutoSync({ force: false, silent: true });
+    };
+
+    const intervalSec = nextcloud.syncIntervalSec ?? 20;
+    const pollTimer =
+      intervalSec > 0
+        ? window.setInterval(() => {
+            if (document.visibilityState !== 'visible') return;
+            if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+            void runAutoSync({ force: false, silent: true });
+          }, Math.max(10, intervalSec) * 1000)
+        : null;
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        triggerIfStale();
+      }
+    };
+    const onFocus = () => {
+      triggerIfStale();
+    };
+    const onOnline = () => {
+      void runAutoSync({ force: true, silent: true });
+    };
+
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('focus', onFocus);
+    window.addEventListener('online', onOnline);
+
+    let appStateHandle: { remove: () => Promise<void> } | null = null;
+    let cancelled = false;
+    if (isNativeCapacitor()) {
+      void CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+        if (isActive) {
+          triggerIfStale();
+        }
+      })
+        .then((h) => {
+          if (cancelled) void h.remove();
+          else appStateHandle = h;
+        })
+        .catch(() => {});
+    }
+
+    return () => {
+      cancelled = true;
+      if (pollTimer !== null) window.clearInterval(pollTimer);
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('online', onOnline);
+      if (appStateHandle) void appStateHandle.remove();
+    };
+  }, [loading, nextcloud.configured, nextcloud.autoSync, nextcloud.syncIntervalSec, runAutoSync]);
 
   // Persistent Android status-bar timer notification
   useEffect(() => {
@@ -2972,6 +3186,8 @@ export default function App() {
           theme={theme}
           onToggleTheme={toggleTheme}
           onOpenSearch={() => setSearchOpen(true)}
+          autoSyncing={autoSyncing}
+          onAutoSyncNow={() => void runAutoSync({ force: true, silent: false })}
         />
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -3008,6 +3224,28 @@ export default function App() {
                 onStartTask={handleQuickStartFromHeader}
                 onOpenTracker={() => navigateToSection('tracker')}
               />
+
+              {nextcloud.configured && (
+                <button
+                  type="button"
+                  onClick={() => void runAutoSync({ force: true, silent: false })}
+                  disabled={autoSyncing}
+                  title={
+                    nextcloud.pendingPush
+                      ? 'Offline-Änderungen warten – jetzt mit Nextcloud abgleichen'
+                      : nextcloud.lastSyncAt
+                        ? `Geräte jetzt abgleichen (Stand ${formatDateTimeDE(nextcloud.lastSyncAt)})`
+                        : 'Geräte jetzt über Nextcloud abgleichen'
+                  }
+                  aria-label="Geräte jetzt über Nextcloud abgleichen"
+                  className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-60 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                >
+                  <RefreshCw className={`h-4 w-4 ${autoSyncing ? 'animate-spin' : ''}`} />
+                  {nextcloud.pendingPush && (
+                    <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-amber-500" />
+                  )}
+                </button>
+              )}
 
               <button
                 type="button"
@@ -3076,7 +3314,7 @@ export default function App() {
               className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${
                 toast.isError
                   ? 'bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300'
-                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(
+                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen|synchronisiert|gekoppelt|übertragen/i.test(
                         toast.text
                       )
                     ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300'
@@ -3085,7 +3323,7 @@ export default function App() {
             >
               {toast.isError ? (
                 <AlertCircle className="h-4 w-4" />
-              ) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(
+              ) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen|synchronisiert|gekoppelt|übertragen/i.test(
                   toast.text
                 ) ? (
                 <CheckCircle2 className="h-4 w-4" />
@@ -3097,7 +3335,7 @@ export default function App() {
               <div className="text-[11px] font-bold uppercase tracking-wider opacity-70">
                 {toast.isError
                   ? 'Achtung'
-                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(
+                  : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen|synchronisiert|gekoppelt|übertragen/i.test(
                         toast.text
                       )
                     ? 'Gespeichert'
@@ -3498,10 +3736,13 @@ export default function App() {
                   company={db.company}
                   geoFenceRules={db.geoFenceRules ?? []}
                   pushConflictAt={pushConflictAt}
+                  autoSyncing={autoSyncing}
                   onDismissConflict={() => setPushConflictAt(null)}
                   onRefreshConfig={setNextcloud}
                   onSyncFromNextcloud={handleSyncFromNextcloud}
                   onSyncToNextcloud={handleSyncToNextcloud}
+                  onAutoSyncNow={() => runAutoSync({ force: true, silent: false })}
+                  onApplyPairingCode={handleApplyPairingCode}
                   onSaveCompany={handleSaveCompany}
                   onSaveGeoFenceRules={handleSaveGeoFenceRules}
                   onCheckGeoFenceNow={() => void evaluateGeoFenceRules(true)}

@@ -170,11 +170,18 @@ export function TimeTrackerView({
 
   const [showManualForm, setShowManualForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<TimeEntry | null>(null);
+  const [editingOriginalTimes, setEditingOriginalTimes] = useState<{
+    startDate: string;
+    endDate: string;
+    startTime: string;
+    endTime: string;
+  } | null>(null);
   const [manualEntryType, setManualEntryType] = useState<'project' | 'internal'>('project');
   const [manualInternalCat, setManualInternalCat] = useState<string>(
     company.internalCategories?.[0] ?? 'Kundenakquise'
   );
   const [manualDate, setManualDate] = useState(toInputDate());
+  const [manualEndDate, setManualEndDate] = useState(toInputDate());
   const [manualStart, setManualStart] = useState('09:00');
   const [manualEnd, setManualEnd] = useState('11:00');
   const [manualTitle, setManualTitle] = useState('');
@@ -193,6 +200,20 @@ export function TimeTrackerView({
   } | null>(null);
   const activePhotoInputRef = useRef<HTMLInputElement>(null);
   const manualPhotoInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!showManualForm || lightboxData) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowManualForm(false);
+        setEditingEntry(null);
+        setEditingOriginalTimes(null);
+        setManualError('');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showManualForm, lightboxData]);
 
   const [filterCustomerId, setFilterCustomerId] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<'all' | 'open' | 'billed'>('all');
@@ -228,10 +249,10 @@ export function TimeTrackerView({
         if (filterCustomerId !== 'all' && entry.customerId !== filterCustomerId) {
           return false;
         }
-        if (filterStatus === 'open' && entry.billedInvoiceId !== null) {
+        if (filterStatus === 'open' && Boolean(entry.billedInvoiceId)) {
           return false;
         }
-        if (filterStatus === 'billed' && entry.billedInvoiceId === null) {
+        if (filterStatus === 'billed' && !entry.billedInvoiceId) {
           return false;
         }
         if (filterActivityType === 'project' && (entry.entryType === 'internal' || !entry.customerId)) {
@@ -432,11 +453,21 @@ export function TimeTrackerView({
     setDraftLocation(null);
   };
 
-  const openCreateManualForm = () => {
+  const closeManualForm = () => {
+    setShowManualForm(false);
     setEditingEntry(null);
+    setEditingOriginalTimes(null);
+    setManualError('');
+  };
+
+  const openCreateManualForm = () => {
+    const today = toInputDate();
+    setEditingEntry(null);
+    setEditingOriginalTimes(null);
     setManualEntryType('project');
     setManualInternalCat(company.internalCategories?.[0] ?? 'Kundenakquise');
-    setManualDate(toInputDate());
+    setManualDate(today);
+    setManualEndDate(today);
     setManualStart('09:00');
     setManualEnd('11:00');
     setManualTitle('');
@@ -450,18 +481,41 @@ export function TimeTrackerView({
   };
 
   const openEditEntryForm = (entry: TimeEntry) => {
+    const parsedStart = new Date(entry.startTime);
+    const safeStart = Number.isNaN(parsedStart.getTime()) ? new Date() : parsedStart;
+    const parsedEnd = new Date(entry.endTime);
+    const safeEnd = Number.isNaN(parsedEnd.getTime())
+      ? new Date(safeStart.getTime() + Math.max(60, entry.durationSeconds || 60) * 1000)
+      : parsedEnd;
+
+    const startDateStr = toInputDate(safeStart);
+    const endDateStr = toInputDate(safeEnd);
+    const startTimeStr = toInputTime(safeStart.toISOString());
+    const endTimeStr = toInputTime(safeEnd.toISOString());
+
     setEditingEntry(entry);
+    setEditingOriginalTimes({
+      startDate: startDateStr,
+      endDate: endDateStr,
+      startTime: startTimeStr,
+      endTime: endTimeStr,
+    });
     const isInt = entry.entryType === 'internal' || !entry.customerId;
     setManualEntryType(isInt ? 'internal' : 'project');
-    setManualInternalCat(entry.internalCategory || company.internalCategories?.[0] || 'Kundenakquise');
-    setManualDate(toInputDate(new Date(entry.startTime)));
-    setManualStart(toInputTime(entry.startTime));
-    setManualEnd(toInputTime(entry.endTime));
-    setManualTitle(entry.title);
-    setManualNotes(entry.notes);
-    setManualCustomerId(entry.customerId);
-    setManualProductId(entry.productId);
-    setManualBillable(entry.billable);
+    setManualInternalCat(
+      entry.internalCategory || company.internalCategories?.[0] || 'Kundenakquise'
+    );
+    setManualDate(startDateStr);
+    setManualEndDate(endDateStr);
+    setManualStart(startTimeStr);
+    setManualEnd(endTimeStr);
+    setManualTitle(entry.title ?? '');
+    setManualNotes(entry.notes ?? '');
+    setManualCustomerId(entry.customerId || customers[0]?.id || '');
+    setManualProductId(
+      entry.productId || serviceProducts[0]?.id || products[0]?.id || ''
+    );
+    setManualBillable(Boolean(entry.billable));
     setManualPhotos(entry.photos ?? []);
     setManualError('');
     setShowManualForm(true);
@@ -477,17 +531,70 @@ export function TimeTrackerView({
       return;
     }
 
-    const startIso = new Date(`${manualDate}T${manualStart}:00`);
-    const endIso = new Date(`${manualDate}T${manualEnd}:00`);
-    if (Number.isNaN(startIso.getTime()) || Number.isNaN(endIso.getTime())) {
-      setManualError('Bitte gültige Start- und Endzeiten eingeben.');
-      return;
-    }
+    let nextStartIsoStr = '';
+    let nextEndIsoStr = '';
+    let nextDurationSec = 0;
 
-    const diffSec = Math.floor((endIso.getTime() - startIso.getTime()) / 1000);
-    if (diffSec <= 0) {
-      setManualError('Die Endzeit muss nach der Startzeit liegen.');
-      return;
+    const origSpanMs = editingOriginalTimes
+      ? new Date(`${editingOriginalTimes.endDate}T00:00:00`).getTime() -
+        new Date(`${editingOriginalTimes.startDate}T00:00:00`).getTime()
+      : 0;
+    const currSpanMs =
+      new Date(`${(manualEndDate || manualDate)}T00:00:00`).getTime() -
+      new Date(`${manualDate}T00:00:00`).getTime();
+
+    const timesUntouched =
+      Boolean(editingEntry && editingOriginalTimes) &&
+      manualStart === editingOriginalTimes?.startTime &&
+      manualEnd === editingOriginalTimes?.endTime &&
+      !Number.isNaN(origSpanMs) &&
+      !Number.isNaN(currSpanMs) &&
+      currSpanMs === origSpanMs;
+
+    if (editingEntry && editingOriginalTimes && timesUntouched) {
+      if (
+        manualDate === editingOriginalTimes.startDate &&
+        manualEndDate === editingOriginalTimes.endDate
+      ) {
+        // Keep exact original timestamps (including seconds) and pause-adjusted duration
+        nextStartIsoStr = editingEntry.startTime;
+        nextEndIsoStr = editingEntry.endTime;
+        nextDurationSec = editingEntry.durationSeconds;
+      } else {
+        const origStartDay = new Date(`${editingOriginalTimes.startDate}T00:00:00`);
+        const newStartDay = new Date(`${manualDate}T00:00:00`);
+        if (Number.isNaN(origStartDay.getTime()) || Number.isNaN(newStartDay.getTime())) {
+          setManualError('Bitte ein gültiges Datum eingeben.');
+          return;
+        }
+        const dayShiftMs = newStartDay.getTime() - origStartDay.getTime();
+        const origStartMs = new Date(editingEntry.startTime).getTime();
+        const origEndMs = new Date(editingEntry.endTime).getTime();
+        if (Number.isNaN(origStartMs) || Number.isNaN(origEndMs)) {
+          setManualError('Bitte gültige Start- und Endzeiten eingeben.');
+          return;
+        }
+        nextStartIsoStr = new Date(origStartMs + dayShiftMs).toISOString();
+        nextEndIsoStr = new Date(origEndMs + dayShiftMs).toISOString();
+        nextDurationSec = editingEntry.durationSeconds;
+      }
+    } else {
+      const effectiveEndDate = manualEndDate || manualDate;
+      const startIso = new Date(`${manualDate}T${manualStart}:00`);
+      const endIso = new Date(`${effectiveEndDate}T${manualEnd}:00`);
+      if (Number.isNaN(startIso.getTime()) || Number.isNaN(endIso.getTime())) {
+        setManualError('Bitte gültige Start- und Endzeiten eingeben.');
+        return;
+      }
+
+      const diffSec = Math.floor((endIso.getTime() - startIso.getTime()) / 1000);
+      if (diffSec <= 0) {
+        setManualError('Die Endzeit muss nach der Startzeit liegen.');
+        return;
+      }
+      nextStartIsoStr = startIso.toISOString();
+      nextEndIsoStr = endIso.toISOString();
+      nextDurationSec = diffSec;
     }
 
     const prod = isInt ? undefined : productMap.get(effectiveManualProductId);
@@ -500,11 +607,11 @@ export function TimeTrackerView({
         internalCategory: isInt ? manualInternalCat : undefined,
         customerId: isInt ? '' : effectiveManualCustomerId,
         productId: isInt ? '' : effectiveManualProductId,
-        title: manualTitle.trim() || (isInt ? manualInternalCat : (prod?.name || 'Arbeitszeit')),
+        title: manualTitle.trim() || (isInt ? manualInternalCat : prod?.name || 'Arbeitszeit'),
         notes: manualNotes.trim(),
-        startTime: startIso.toISOString(),
-        endTime: endIso.toISOString(),
-        durationSeconds: diffSec,
+        startTime: nextStartIsoStr,
+        endTime: nextEndIsoStr,
+        durationSeconds: nextDurationSec,
         hourlyRateNet: isInt
           ? 0
           : productChanged
@@ -527,12 +634,13 @@ export function TimeTrackerView({
         customerId: isInt ? '' : effectiveManualCustomerId,
         productId: isInt ? '' : effectiveManualProductId,
         nfcTaskId: null,
-        title: manualTitle.trim() || (isInt ? manualInternalCat : (prod?.name || 'Manuelle Buchung')),
+        title:
+          manualTitle.trim() || (isInt ? manualInternalCat : prod?.name || 'Manuelle Buchung'),
         notes: manualNotes.trim(),
-        startTime: startIso.toISOString(),
-        endTime: endIso.toISOString(),
-        durationSeconds: diffSec,
-        hourlyRateNet: isInt ? 0 : (prod?.unitPriceNet ?? 0),
+        startTime: nextStartIsoStr,
+        endTime: nextEndIsoStr,
+        durationSeconds: nextDurationSec,
+        hourlyRateNet: isInt ? 0 : prod?.unitPriceNet ?? 0,
         taxRate: (prod?.taxRate ?? 19) as TaxRate,
         billable: isInt ? false : manualBillable,
         billedInvoiceId: null,
@@ -544,6 +652,7 @@ export function TimeTrackerView({
     }
 
     setEditingEntry(null);
+    setEditingOriginalTimes(null);
     setManualTitle('');
     setManualNotes('');
     setManualPhotos([]);
@@ -690,13 +799,7 @@ export function TimeTrackerView({
           </div>
           <button
             type="button"
-            onClick={() => {
-              if (showManualForm && !editingEntry) {
-                setShowManualForm(false);
-              } else {
-                openCreateManualForm();
-              }
-            }}
+            onClick={openCreateManualForm}
             className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#211936] whitespace-nowrap shrink-0 cursor-pointer"
           >
             <Plus className="h-4 w-4" />
@@ -704,278 +807,6 @@ export function TimeTrackerView({
           </button>
         </div>
       </div>
-
-      {/* Manual / Edit Time Entry Form (right beneath header button when toggled) */}
-      {showManualForm && (
-        <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-3">
-              <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
-                {editingEntry ? 'Zeiteintrag bearbeiten' : 'Arbeitszeit manuell nachtragen'}
-              </h2>
-              <div className="inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setManualEntryType('project');
-                    setManualBillable(true);
-                  }}
-                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
-                    manualEntryType === 'project'
-                      ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
-                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
-                  }`}
-                >
-                  Kundenauftrag
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setManualEntryType('internal');
-                    setManualBillable(false);
-                  }}
-                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
-                    manualEntryType === 'internal'
-                      ? 'bg-amber-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
-                  }`}
-                >
-                  Interne Tätigkeit (ohne Kunde)
-                </button>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                setShowManualForm(false);
-                setEditingEntry(null);
-              }}
-              className="text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer"
-            >
-              Schließen
-            </button>
-          </div>
-          <form onSubmit={handleManualSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-6">
-            {manualEntryType === 'internal' ? (
-              <div className="md:col-span-4">
-                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Interne Kategorie (ohne Kunden &amp; ohne Rechnung)
-                </label>
-                <ThemedSelect
-                  value={manualInternalCat}
-                  onChange={setManualInternalCat}
-                  ariaLabel="Interne Kategorie"
-                  options={internalCategoryOptions.map((cat) => ({
-                    value: cat,
-                    label: cat,
-                  }))}
-                />
-              </div>
-            ) : (
-              <>
-                <div className="md:col-span-2">
-                  <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                    Kunde
-                  </label>
-                  <ThemedSelect
-                    value={effectiveManualCustomerId}
-                    onChange={setManualCustomerId}
-                    disabled={customers.length === 0}
-                    options={customers.map((c) => ({
-                      value: c.id,
-                      label: c.companyName,
-                      hint: c.customerNumber,
-                    }))}
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                    Leistung
-                  </label>
-                  <ThemedSelect
-                    value={effectiveManualProductId}
-                    onChange={setManualProductId}
-                    disabled={products.length === 0}
-                    options={products.map((p) => ({
-                      value: p.id,
-                      label: `${p.name} (${formatCurrency(p.unitPriceNet)})`,
-                    }))}
-                  />
-                </div>
-              </>
-            )}
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Datum
-              </label>
-              <input
-                type="date"
-                value={manualDate}
-                onChange={(e) => setManualDate(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Von
-                </label>
-                <input
-                  type="time"
-                  value={manualStart}
-                  onChange={(e) => setManualStart(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                  Bis
-                </label>
-                <input
-                  type="time"
-                  value={manualEnd}
-                  onChange={(e) => setManualEnd(e.target.value)}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-2 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-                />
-              </div>
-            </div>
-            <div className="md:col-span-3">
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Tätigkeitsbeschreibung
-              </label>
-              <input
-                type="text"
-                value={manualTitle}
-                onChange={(e) => setManualTitle(e.target.value)}
-                placeholder={
-                  manualEntryType === 'internal'
-                    ? 'z. B. Studio reinigen, Kaltakquise, Belege sortieren...'
-                    : 'z. B. Kundenworkshop & Dokumentation'
-                }
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              />
-            </div>
-            <div className="md:col-span-3">
-              <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                {manualEntryType === 'internal'
-                  ? 'Notiz zur internen Aufgabe (optional)'
-                  : 'Notiz für Auswertung / Rechnung (optional)'}
-              </label>
-              <input
-                type="text"
-                value={manualNotes}
-                onChange={(e) => setManualNotes(e.target.value)}
-                placeholder="Details zur erbrachten Leistung..."
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-              />
-            </div>
-            <div className="md:col-span-6 space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300">
-                  <Camera className="h-3.5 w-3.5 text-violet-500" />
-                  Einsatzfotos / Fotodokumentation ({manualPhotos.length})
-                </span>
-                <input
-                  ref={manualPhotoInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => void handleAddManualPhotos(e)}
-                  className="hidden"
-                />
-                <button
-                  type="button"
-                  onClick={() => manualPhotoInputRef.current?.click()}
-                  disabled={photoBusy}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
-                >
-                  <Camera className="h-3.5 w-3.5" />
-                  {photoBusy ? 'Verarbeite…' : 'Foto hinzufügen'}
-                </button>
-              </div>
-              {manualPhotos.length > 0 && (
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-                  {manualPhotos.map((p) => (
-                    <div
-                      key={p.id}
-                      className="relative overflow-hidden rounded-lg border border-slate-200 bg-white p-1.5 dark:border-[#3b2d5e] dark:bg-[#171126]"
-                    >
-                      <img
-                        src={p.dataUrl}
-                        alt={p.caption || 'Einsatzfoto'}
-                        className="h-20 w-full rounded object-cover"
-                      />
-                      <input
-                        type="text"
-                        value={p.caption ?? ''}
-                        onChange={(e) =>
-                          setManualPhotos((prev) =>
-                            prev.map((item) =>
-                              item.id === p.id ? { ...item, caption: e.target.value } : item
-                            )
-                          )
-                        }
-                        placeholder="Bildbeschreibung…"
-                        className="mt-1 w-full rounded border border-slate-200 bg-slate-50 px-1.5 py-1 text-[11px] text-slate-800 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setManualPhotos((prev) => prev.filter((item) => item.id !== p.id))
-                        }
-                        aria-label="Foto entfernen"
-                        className="absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-950/75 text-white hover:bg-rose-600 cursor-pointer"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            {manualError && (
-              <p className="text-xs font-medium text-red-600 dark:text-red-400 md:col-span-6">
-                {manualError}
-              </p>
-            )}
-            <div className="flex flex-wrap items-center justify-between gap-3 md:col-span-6">
-              {manualEntryType === 'internal' ? (
-                <span className="text-xs text-amber-700 dark:text-amber-300">
-                  Interne Aufgaben sind nicht abrechenbar und erscheinen in Auswertungen &amp; PDF-Berichten.
-                </span>
-              ) : (
-                <label className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={manualBillable}
-                    onChange={(e) => setManualBillable(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-                  />
-                  Abrechenbar (für Rechnungen verfügbar)
-                </label>
-              )}
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowManualForm(false);
-                    setEditingEntry(null);
-                  }}
-                  className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer"
-                >
-                  Abbrechen
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
-                >
-                  {editingEntry ? 'Änderungen speichern' : 'Eintrag speichern'}
-                </button>
-              </div>
-            </div>
-          </form>
-        </section>
-      )}
 
       {/* Dominant Chronometer / Start-Aufgabe Section (directly under header / Zeit nachtragen) */}
       <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
@@ -2084,27 +1915,55 @@ export function TimeTrackerView({
                         <div className="flex items-center justify-end gap-1">
                           <button
                             type="button"
-                            onClick={() => openEditEntryForm(entry)}
-                            disabled={Boolean(entry.billedInvoiceId)}
+                            onClick={() => {
+                              if (entry.billedInvoiceId) {
+                                onNotify(
+                                  'Dieser Eintrag wurde bereits abgerechnet und ist für Änderungen gesperrt.',
+                                  true
+                                );
+                                return;
+                              }
+                              openEditEntryForm(entry);
+                            }}
+                            aria-label="Eintrag bearbeiten"
+                            aria-disabled={Boolean(entry.billedInvoiceId)}
                             title={
                               entry.billedInvoiceId
                                 ? 'Abgerechnete Einträge können nicht bearbeitet werden'
                                 : 'Eintrag bearbeiten'
                             }
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer"
+                            className={`inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors ${
+                              entry.billedInvoiceId
+                                ? 'cursor-not-allowed text-slate-400 opacity-35'
+                                : 'cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100'
+                            }`}
                           >
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
                           <button
                             type="button"
-                            onClick={() => onDeleteEntry(entry.id)}
-                            disabled={Boolean(entry.billedInvoiceId)}
+                            onClick={() => {
+                              if (entry.billedInvoiceId) {
+                                onNotify(
+                                  'Dieser Eintrag wurde bereits abgerechnet und kann nicht gelöscht werden.',
+                                  true
+                                );
+                                return;
+                              }
+                              onDeleteEntry(entry.id);
+                            }}
+                            aria-label="Eintrag löschen"
+                            aria-disabled={Boolean(entry.billedInvoiceId)}
                             title={
                               entry.billedInvoiceId
                                 ? 'Abgerechnete Einträge können nicht gelöscht werden'
                                 : 'Eintrag löschen'
                             }
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
+                            className={`inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors ${
+                              entry.billedInvoiceId
+                                ? 'cursor-not-allowed text-slate-400 opacity-35'
+                                : 'cursor-pointer text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400'
+                            }`}
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -2124,6 +1983,345 @@ export function TimeTrackerView({
         </>
         )}
       </section>
+
+      {/* Manual / Edit Time Entry Modal (Portal so clicking Pencil in table always opens directly in view) */}
+      {showManualForm &&
+        typeof document !== 'undefined' &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={editingEntry ? 'Zeiteintrag bearbeiten' : 'Arbeitszeit manuell nachtragen'}
+            onClick={closeManualForm}
+            className="fixed inset-0 z-[130] flex items-end justify-center bg-slate-950/60 p-2 backdrop-blur-[1px] sm:items-center sm:p-4"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-3.5 dark:border-[#2e2349]">
+                <div className="flex min-w-0 items-center gap-2">
+                  {editingEntry ? (
+                    <Pencil className="h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" />
+                  ) : (
+                    <Plus className="h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" />
+                  )}
+                  <h2 className="truncate font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                    {editingEntry ? 'Zeiteintrag bearbeiten' : 'Arbeitszeit manuell nachtragen'}
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeManualForm}
+                  aria-label="Schließen"
+                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Scrollable Form */}
+              <form onSubmit={handleManualSubmit} className="flex flex-1 flex-col overflow-hidden">
+                <div className="flex-1 space-y-4 overflow-y-auto p-5">
+                  {/* Activity Type Switcher */}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setManualEntryType('project');
+                          setManualBillable(true);
+                        }}
+                        className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
+                          manualEntryType === 'project'
+                            ? 'bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white'
+                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
+                        }`}
+                      >
+                        Kundenauftrag
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setManualEntryType('internal');
+                          setManualBillable(false);
+                        }}
+                        className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${
+                          manualEntryType === 'internal'
+                            ? 'bg-amber-600 text-white shadow-xs'
+                            : 'text-slate-600 hover:text-slate-900 dark:text-slate-300'
+                        }`}
+                      >
+                        Interne Tätigkeit (ohne Kunde)
+                      </button>
+                    </div>
+                    {editingEntry && (
+                      <span className="font-mono text-xs font-medium text-slate-500 dark:text-slate-400 tabular-nums">
+                        Erfasste Dauer: {formatDuration(editingEntry.durationSeconds)}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+                    {manualEntryType === 'internal' ? (
+                      <div className="sm:col-span-6">
+                        <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                          Interne Kategorie (ohne Kunden &amp; ohne Rechnung)
+                        </label>
+                        <ThemedSelect
+                          value={manualInternalCat}
+                          onChange={setManualInternalCat}
+                          ariaLabel="Interne Kategorie"
+                          options={(manualInternalCat &&
+                          !internalCategoryOptions.includes(manualInternalCat)
+                            ? [manualInternalCat, ...internalCategoryOptions]
+                            : internalCategoryOptions
+                          ).map((cat) => ({
+                            value: cat,
+                            label: cat,
+                          }))}
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        <div className="sm:col-span-3">
+                          <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                            Kunde
+                          </label>
+                          <ThemedSelect
+                            value={effectiveManualCustomerId}
+                            onChange={setManualCustomerId}
+                            disabled={customers.length === 0}
+                            options={customers.map((c) => ({
+                              value: c.id,
+                              label: c.companyName,
+                              hint: c.customerNumber,
+                            }))}
+                          />
+                        </div>
+                        <div className="sm:col-span-3">
+                          <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                            Leistung
+                          </label>
+                          <ThemedSelect
+                            value={effectiveManualProductId}
+                            onChange={setManualProductId}
+                            disabled={products.length === 0}
+                            options={products.map((p) => ({
+                              value: p.id,
+                              label: `${p.name} (${formatCurrency(p.unitPriceNet)})`,
+                            }))}
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    <div className={manualEndDate !== manualDate ? 'sm:col-span-2' : 'sm:col-span-2'}>
+                      <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                        {manualEndDate !== manualDate ? 'Startdatum' : 'Datum'}
+                      </label>
+                      <input
+                        type="date"
+                        value={manualDate}
+                        onChange={(e) => {
+                          const next = e.target.value;
+                          if (manualEndDate === manualDate) {
+                            setManualEndDate(next);
+                          }
+                          setManualDate(next);
+                        }}
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                      />
+                    </div>
+
+                    {manualEndDate !== manualDate && (
+                      <div className="sm:col-span-2">
+                        <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                          Enddatum
+                        </label>
+                        <input
+                          type="date"
+                          value={manualEndDate}
+                          onChange={(e) => setManualEndDate(e.target.value)}
+                          className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                        />
+                      </div>
+                    )}
+
+                    <div
+                      className={`grid grid-cols-2 gap-2 ${
+                        manualEndDate !== manualDate ? 'sm:col-span-2' : 'sm:col-span-4'
+                      }`}
+                    >
+                      <div>
+                        <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                          Von
+                        </label>
+                        <input
+                          type="time"
+                          value={manualStart}
+                          onChange={(e) => setManualStart(e.target.value)}
+                          className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                          Bis
+                        </label>
+                        <input
+                          type="time"
+                          value={manualEnd}
+                          onChange={(e) => setManualEnd(e.target.value)}
+                          className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="sm:col-span-6">
+                      <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                        Tätigkeitsbeschreibung
+                      </label>
+                      <input
+                        type="text"
+                        value={manualTitle}
+                        onChange={(e) => setManualTitle(e.target.value)}
+                        placeholder={
+                          manualEntryType === 'internal'
+                            ? 'z. B. Studio reinigen, Kaltakquise, Belege sortieren...'
+                            : 'z. B. Kundenworkshop & Dokumentation'
+                        }
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-6">
+                      <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                        {manualEntryType === 'internal'
+                          ? 'Notiz zur internen Aufgabe (optional)'
+                          : 'Notiz für Auswertung / Rechnung (optional)'}
+                      </label>
+                      <input
+                        type="text"
+                        value={manualNotes}
+                        onChange={(e) => setManualNotes(e.target.value)}
+                        placeholder="Details zur erbrachten Leistung..."
+                        className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-6 space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300">
+                          <Camera className="h-3.5 w-3.5 text-violet-500" />
+                          Einsatzfotos / Fotodokumentation ({manualPhotos.length})
+                        </span>
+                        <input
+                          ref={manualPhotoInputRef}
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={(e) => void handleAddManualPhotos(e)}
+                          className="hidden"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => manualPhotoInputRef.current?.click()}
+                          disabled={photoBusy}
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer"
+                        >
+                          <Camera className="h-3.5 w-3.5" />
+                          {photoBusy ? 'Verarbeite…' : 'Foto hinzufügen'}
+                        </button>
+                      </div>
+                      {manualPhotos.length > 0 && (
+                        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                          {manualPhotos.map((p) => (
+                            <div
+                              key={p.id}
+                              className="relative overflow-hidden rounded-lg border border-slate-200 bg-white p-1.5 dark:border-[#3b2d5e] dark:bg-[#171126]"
+                            >
+                              <img
+                                src={p.dataUrl}
+                                alt={p.caption || 'Einsatzfoto'}
+                                className="h-20 w-full rounded object-cover"
+                              />
+                              <input
+                                type="text"
+                                value={p.caption ?? ''}
+                                onChange={(e) =>
+                                  setManualPhotos((prev) =>
+                                    prev.map((item) =>
+                                      item.id === p.id ? { ...item, caption: e.target.value } : item
+                                    )
+                                  )
+                                }
+                                placeholder="Bildbeschreibung…"
+                                className="mt-1 w-full rounded border border-slate-200 bg-slate-50 px-1.5 py-1 text-[11px] text-slate-800 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+                              />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setManualPhotos((prev) => prev.filter((item) => item.id !== p.id))
+                                }
+                                aria-label="Foto entfernen"
+                                className="absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-950/75 text-white hover:bg-rose-600 cursor-pointer"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {manualError && (
+                      <p className="text-xs font-medium text-red-600 dark:text-red-400 sm:col-span-6">
+                        {manualError}
+                      </p>
+                    )}
+
+                    <div className="sm:col-span-6">
+                      {manualEntryType === 'internal' ? (
+                        <span className="text-xs text-amber-700 dark:text-amber-300">
+                          Interne Aufgaben sind nicht abrechenbar und erscheinen in Auswertungen &amp; PDF-Berichten.
+                        </span>
+                      ) : (
+                        <label className="flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={manualBillable}
+                            onChange={(e) => setManualBillable(e.target.checked)}
+                            className="h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+                          />
+                          Abrechenbar (für Rechnungen verfügbar)
+                        </label>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sticky Footer */}
+                <div className="flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50/70 px-5 py-3 dark:border-[#2e2349] dark:bg-[#211936]/40">
+                  <button
+                    type="button"
+                    onClick={closeManualForm}
+                    className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer"
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                  >
+                    {editingEntry ? 'Änderungen speichern' : 'Eintrag speichern'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>,
+          document.body
+        )}
 
       {/* Work Photo Lightbox Modal */}
       {lightboxData &&

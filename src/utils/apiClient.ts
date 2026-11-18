@@ -4,8 +4,10 @@ import type {
   AppDatabase,
   AutoBackupFormat,
   CalendarAppointment,
+  NextcloudCalendarConfig,
   NextcloudConfigInfo,
   ReminderSoundPreset,
+  SyncPairingPayload,
 } from '../types';
 import {
   buildIcsEvent,
@@ -20,6 +22,11 @@ import {
 } from './exportBackup';
 import { formatDuration, getActiveTimerElapsedMs } from './format';
 import { createEmptyDatabase, normalizeDatabase } from './sampleData';
+import {
+  decodeSyncPairingCode,
+  encodeSyncPairingCode,
+  mergeDatabases,
+} from './syncMerge';
 import { TaktWerkNative, type NativeNotificationStatus } from './taktwerkNative';
 import { trackActivity } from './activityProgress';
 
@@ -33,9 +40,12 @@ interface StoredLocalNc {
   appPassword: string;
   folder: string;
   autoSync: boolean;
+  syncIntervalSec: number;
+  pendingPush: boolean;
   lastSyncAt: string | null;
   lastSyncError: string | null;
   lastKnownRemoteUpdatedAt?: string | null;
+  lastKnownRemoteEtag?: string | null;
 }
 
 export class NextcloudConflictError extends Error {
@@ -110,9 +120,13 @@ function readNativeNc(): StoredLocalNc {
         appPassword: parsed.appPassword ?? '',
         folder: normalizeFolder(parsed.folder ?? '/TaktWerk'),
         autoSync: parsed.autoSync ?? true,
+        syncIntervalSec:
+          typeof parsed.syncIntervalSec === 'number' ? parsed.syncIntervalSec : 20,
+        pendingPush: Boolean(parsed.pendingPush),
         lastSyncAt: parsed.lastSyncAt ?? null,
         lastSyncError: parsed.lastSyncError ?? null,
         lastKnownRemoteUpdatedAt: parsed.lastKnownRemoteUpdatedAt ?? null,
+        lastKnownRemoteEtag: parsed.lastKnownRemoteEtag ?? null,
       };
     }
   } catch {
@@ -124,9 +138,12 @@ function readNativeNc(): StoredLocalNc {
     appPassword: '',
     folder: '/TaktWerk',
     autoSync: true,
+    syncIntervalSec: 20,
+    pendingPush: false,
     lastSyncAt: null,
     lastSyncError: null,
     lastKnownRemoteUpdatedAt: null,
+    lastKnownRemoteEtag: null,
   };
 }
 
@@ -141,6 +158,8 @@ function toPublicNc(cfg: StoredLocalNc): NextcloudConfigInfo {
     username: cfg.username,
     folder: cfg.folder,
     autoSync: cfg.autoSync,
+    syncIntervalSec: cfg.syncIntervalSec ?? 20,
+    pendingPush: Boolean(cfg.pendingPush),
     hasPassword: Boolean(cfg.appPassword),
     fromEnv: false,
     lastSyncAt: cfg.lastSyncAt,
@@ -191,7 +210,56 @@ function buildWebDavFileUrl(cfg: StoredLocalNc, relativePath: string): string {
   return `${davRoot}/${encodedSegments}`;
 }
 
-async function nativePushNextcloud(cfg: StoredLocalNc, db: AppDatabase): Promise<void> {
+async function nativeProbeNextcloudDbMeta(cfg: StoredLocalNc): Promise<{
+  exists: boolean;
+  etag: string | null;
+  lastModified: string | null;
+}> {
+  const fileUrl = buildWebDavFileUrl(cfg, 'taktwerk-db.json');
+  const propfindBody = `<?xml version="1.0" encoding="utf-8" ?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+    <d:getetag />
+    <d:getlastmodified />
+  </d:prop>
+</d:propfind>`;
+  const res = await TaktWerkNative.caldavRequest({
+    method: 'PROPFIND',
+    url: fileUrl,
+    username: cfg.username,
+    appPassword: cfg.appPassword,
+    depth: '0',
+    contentType: 'application/xml; charset=utf-8',
+    body: propfindBody,
+  });
+  if (res.status === 404) {
+    return { exists: false, etag: null, lastModified: null };
+  }
+  if (res.status === 401 || res.status === 403) {
+    throw new Error('Authentifizierung bei Nextcloud fehlgeschlagen.');
+  }
+  if (res.status !== 207 && (res.status < 200 || res.status >= 300)) {
+    throw new Error(`Nextcloud-Prüfung fehlgeschlagen (HTTP ${res.status}).`);
+  }
+
+  let etag: string | null = null;
+  let lastModified: string | null = null;
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(res.body || '', 'application/xml');
+    const nodes = Array.from(doc.getElementsByTagName('*'));
+    const etagNode = nodes.find((n) => n.localName === 'getetag');
+    const lmNode = nodes.find((n) => n.localName === 'getlastmodified');
+    etag = etagNode?.textContent?.trim() || null;
+    lastModified = lmNode?.textContent?.trim() || null;
+  } catch {
+    const etagMatch = (res.body || '').match(/<[^>]*getetag[^>]*>([^<]+)<\/[^>]*getetag>/i);
+    etag = etagMatch?.[1]?.trim() || null;
+  }
+  return { exists: true, etag, lastModified };
+}
+
+async function nativePushNextcloud(cfg: StoredLocalNc, db: AppDatabase): Promise<string | null> {
   const fileUrl = buildWebDavFileUrl(cfg, 'taktwerk-db.json');
   const folderUrls = buildWebDavFolderUrls(cfg);
   await TaktWerkNative.webdavUploadJson({
@@ -201,6 +269,12 @@ async function nativePushNextcloud(cfg: StoredLocalNc, db: AppDatabase): Promise
     appPassword: cfg.appPassword,
     json: JSON.stringify(db, null, 2),
   });
+  try {
+    const meta = await nativeProbeNextcloudDbMeta(cfg);
+    return meta.etag;
+  } catch {
+    return null;
+  }
 }
 
 async function nativePullNextcloudOptional(cfg: StoredLocalNc): Promise<AppDatabase | null> {
@@ -241,6 +315,7 @@ export async function apiSaveDb(nextDb: AppDatabase): Promise<{
   db: AppDatabase;
   nextcloud: NextcloudConfigInfo;
   syncWarning: string | null;
+  mergedRemoteChanges?: boolean;
 }> {
   if (shouldUseRemoteServer()) {
     const res = await fetch(apiUrl('/api/db'), {
@@ -252,39 +327,73 @@ export async function apiSaveDb(nextDb: AppDatabase): Promise<{
       db?: AppDatabase;
       nextcloud?: NextcloudConfigInfo;
       syncWarning?: string | null;
+      mergedRemoteChanges?: boolean;
       error?: string;
     };
     if (!res.ok) {
       throw new Error(data.error || 'Speichern fehlgeschlagen.');
     }
     return {
-      db: data.db ?? nextDb,
+      db: data.db ? normalizeDatabase(data.db) : nextDb,
       nextcloud: data.nextcloud ?? toPublicNc(readNativeNc()),
       syncWarning: data.syncWarning ?? null,
+      mergedRemoteChanges: Boolean(data.mergedRemoteChanges),
     };
   }
 
-  const updated = { ...nextDb, updatedAt: new Date().toISOString() };
+  const updated: AppDatabase = {
+    ...nextDb,
+    updatedAt: nextDb.updatedAt || new Date().toISOString(),
+  };
   writeNativeDb(updated);
   const ncCfg = readNativeNc();
   let syncWarning: string | null = null;
+  let finalDb: AppDatabase = updated;
+  let mergedRemoteChanges = false;
+
   if (ncCfg.url && ncCfg.username && ncCfg.appPassword && ncCfg.autoSync) {
     try {
-      await nativePushNextcloud(ncCfg, updated);
+      const meta = await nativeProbeNextcloudDbMeta(ncCfg);
+      const remoteChangedSinceLastSync =
+        meta.exists &&
+        (!ncCfg.lastKnownRemoteEtag ||
+          !meta.etag ||
+          meta.etag !== ncCfg.lastKnownRemoteEtag);
+
+      if (remoteChangedSinceLastSync) {
+        const remoteDbRaw = await nativePullNextcloudOptional(ncCfg);
+        if (remoteDbRaw) {
+          const mergeRes = mergeDatabases(
+            normalizeDatabase(updated),
+            normalizeDatabase(remoteDbRaw)
+          );
+          finalDb = mergeRes.merged;
+          mergedRemoteChanges = mergeRes.localChanged;
+          if (mergedRemoteChanges) {
+            writeNativeDb(finalDb);
+          }
+        }
+      }
+
+      const newEtag = await nativePushNextcloud(ncCfg, finalDb);
       ncCfg.lastSyncAt = new Date().toISOString();
-      ncCfg.lastKnownRemoteUpdatedAt = updated.updatedAt;
+      ncCfg.lastKnownRemoteUpdatedAt = finalDb.updatedAt;
+      if (newEtag) ncCfg.lastKnownRemoteEtag = newEtag;
+      ncCfg.pendingPush = false;
       ncCfg.lastSyncError = null;
       writeNativeNc(ncCfg);
     } catch (err) {
       syncWarning = err instanceof Error ? err.message : 'Nextcloud-Sync fehlgeschlagen.';
+      ncCfg.pendingPush = true;
       ncCfg.lastSyncError = syncWarning;
       writeNativeNc(ncCfg);
     }
   }
   return {
-    db: updated,
+    db: finalDb,
     nextcloud: toPublicNc(ncCfg),
     syncWarning,
+    mergedRemoteChanges,
   };
 }
 
@@ -354,9 +463,12 @@ export async function apiTestNextcloud(payload: {
     appPassword: payload.appPassword.trim() || existing.appPassword,
     folder: normalizeFolder(payload.folder || existing.folder),
     autoSync: existing.autoSync,
+    syncIntervalSec: existing.syncIntervalSec ?? 20,
+    pendingPush: existing.pendingPush,
     lastSyncAt: existing.lastSyncAt,
     lastSyncError: null,
     lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt,
+    lastKnownRemoteEtag: existing.lastKnownRemoteEtag,
   };
   if (!cfg.url || !cfg.username || !cfg.appPassword) {
     throw new Error('Bitte Server-URL, Benutzername und App-Passwort angeben.');
@@ -379,6 +491,7 @@ export async function apiSaveNextcloudConfig(payload: {
   appPassword: string;
   folder: string;
   autoSync: boolean;
+  syncIntervalSec?: number;
 }): Promise<NextcloudConfigInfo> {
   if (shouldUseRemoteServer()) {
     const res = await fetch(apiUrl('/api/nextcloud/config'), {
@@ -394,15 +507,27 @@ export async function apiSaveNextcloudConfig(payload: {
   }
 
   const existing = readNativeNc();
+  const nextUrl = payload.url.trim().replace(/\/+$/, '') || existing.url;
+  const nextUser = payload.username.trim() || existing.username;
+  const nextFolder = normalizeFolder(payload.folder || existing.folder);
+  const targetChanged =
+    nextUrl !== existing.url || nextUser !== existing.username || nextFolder !== existing.folder;
+
   const updated: StoredLocalNc = {
-    url: payload.url.trim().replace(/\/+$/, '') || existing.url,
-    username: payload.username.trim() || existing.username,
+    url: nextUrl,
+    username: nextUser,
     appPassword: payload.appPassword.trim() || existing.appPassword,
-    folder: normalizeFolder(payload.folder || existing.folder),
+    folder: nextFolder,
     autoSync: payload.autoSync,
+    syncIntervalSec:
+      typeof payload.syncIntervalSec === 'number'
+        ? Math.max(0, Math.min(3600, Math.round(payload.syncIntervalSec)))
+        : existing.syncIntervalSec ?? 20,
+    pendingPush: targetChanged ? false : existing.pendingPush,
     lastSyncAt: existing.lastSyncAt,
     lastSyncError: null,
-    lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt,
+    lastKnownRemoteUpdatedAt: targetChanged ? null : existing.lastKnownRemoteUpdatedAt,
+    lastKnownRemoteEtag: targetChanged ? null : existing.lastKnownRemoteEtag,
   };
   writeNativeNc(updated);
   return toPublicNc(updated);
@@ -428,12 +553,263 @@ export async function apiClearNextcloudConfig(): Promise<NextcloudConfigInfo> {
     appPassword: '',
     folder: '/TaktWerk',
     autoSync: true,
+    syncIntervalSec: 20,
+    pendingPush: false,
     lastSyncAt: null,
     lastSyncError: null,
     lastKnownRemoteUpdatedAt: null,
+    lastKnownRemoteEtag: null,
   };
   writeNativeNc(empty);
   return toPublicNc(empty);
+}
+
+export interface AutoSyncResult {
+  status: 'unconfigured' | 'up-to-date' | 'synced';
+  localChanged: boolean;
+  pushed: boolean;
+  summary: string;
+  db?: AppDatabase;
+  nextcloud: NextcloudConfigInfo;
+}
+
+export async function apiAutoSyncNextcloud(options?: {
+  force?: boolean;
+  silent?: boolean;
+}): Promise<AutoSyncResult> {
+  const force = Boolean(options?.force);
+  const silent = Boolean(options?.silent);
+
+  const execute = async (
+    update?: (pct: number, detail?: string) => void
+  ): Promise<AutoSyncResult> => {
+    update?.(20, 'Prüfe Datenstand auf Nextcloud…');
+
+    if (shouldUseRemoteServer()) {
+      const res = await fetch(apiUrl('/api/nextcloud/auto-sync'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode: force ? 'force' : 'poll' }),
+      });
+      update?.(80, 'Verarbeite Änderungen…');
+      const data = (await res.json()) as {
+        status?: 'unconfigured' | 'up-to-date' | 'synced';
+        localChanged?: boolean;
+        pushed?: boolean;
+        summary?: string;
+        db?: AppDatabase;
+        nextcloud?: NextcloudConfigInfo;
+        error?: string;
+      };
+      if (!res.ok || !data.nextcloud) {
+        throw new Error(data.error || 'Automatische Synchronisation fehlgeschlagen.');
+      }
+      update?.(100, data.summary || 'Synchronisiert');
+      return {
+        status: data.status ?? 'synced',
+        localChanged: Boolean(data.localChanged),
+        pushed: Boolean(data.pushed),
+        summary: data.summary ?? '',
+        db: data.db ? normalizeDatabase(data.db) : undefined,
+        nextcloud: data.nextcloud,
+      };
+    }
+
+    const cfg = readNativeNc();
+    if (!cfg.url || !cfg.username || !cfg.appPassword) {
+      return {
+        status: 'unconfigured',
+        localChanged: false,
+        pushed: false,
+        summary: '',
+        nextcloud: toPublicNc(cfg),
+      };
+    }
+
+    // Fast 0-byte ETag probe during background polling on Android
+    const meta = await nativeProbeNextcloudDbMeta(cfg);
+    if (!force && !cfg.pendingPush && cfg.lastKnownRemoteEtag && meta.exists && meta.etag) {
+      if (meta.etag === cfg.lastKnownRemoteEtag) {
+        update?.(100, 'Bereits aktuell');
+        return {
+          status: 'up-to-date',
+          localChanged: false,
+          pushed: false,
+          summary: 'Bereits aktuell',
+          nextcloud: toPublicNc(cfg),
+        };
+      }
+    }
+
+    const localDb = normalizeDatabase(readNativeDb());
+    if (!meta.exists) {
+      update?.(65, 'Erstupload nach Nextcloud…');
+      const newEtag = await nativePushNextcloud(cfg, localDb);
+      cfg.lastSyncAt = new Date().toISOString();
+      cfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
+      if (newEtag) cfg.lastKnownRemoteEtag = newEtag;
+      cfg.pendingPush = false;
+      cfg.lastSyncError = null;
+      writeNativeNc(cfg);
+      update?.(100, 'Abgeschlossen');
+      return {
+        status: 'synced',
+        localChanged: false,
+        pushed: true,
+        summary: 'Erstupload abgeschlossen',
+        db: localDb,
+        nextcloud: toPublicNc(cfg),
+      };
+    }
+
+    update?.(50, 'Lade Änderungen von Nextcloud…');
+    const remoteDbRaw = await nativePullNextcloudOptional(cfg);
+    if (!remoteDbRaw) {
+      update?.(100, 'Bereits aktuell');
+      return {
+        status: 'up-to-date',
+        localChanged: false,
+        pushed: false,
+        summary: 'Bereits aktuell',
+        nextcloud: toPublicNc(cfg),
+      };
+    }
+
+    update?.(70, 'Führe Geräte-Änderungen zusammen…');
+    const mergeRes = mergeDatabases(localDb, normalizeDatabase(remoteDbRaw));
+    if (mergeRes.localChanged) {
+      writeNativeDb(mergeRes.merged);
+    }
+
+    let pushed = false;
+    let finalEtag = meta.etag;
+    if (mergeRes.remoteNeedsPush || cfg.pendingPush) {
+      update?.(85, 'Übertrage lokale Änderungen…');
+      finalEtag = (await nativePushNextcloud(cfg, mergeRes.merged)) ?? meta.etag;
+      pushed = true;
+    }
+
+    cfg.lastSyncAt = new Date().toISOString();
+    cfg.lastKnownRemoteUpdatedAt = mergeRes.merged.updatedAt;
+    if (finalEtag) cfg.lastKnownRemoteEtag = finalEtag;
+    cfg.pendingPush = false;
+    cfg.lastSyncError = null;
+    writeNativeNc(cfg);
+
+    update?.(100, mergeRes.summary || 'Synchronisiert');
+    return {
+      status: 'synced',
+      localChanged: mergeRes.localChanged,
+      pushed,
+      summary: mergeRes.summary,
+      db: mergeRes.merged,
+      nextcloud: toPublicNc(cfg),
+    };
+  };
+
+  if (silent) {
+    return execute();
+  }
+  return trackActivity('Synchronisiere Geräte mit Nextcloud…', (update) => execute(update), 15);
+}
+
+export async function apiExportSyncPairingCode(
+  calendarConfig?: NextcloudCalendarConfig
+): Promise<string> {
+  let creds: {
+    url: string;
+    username: string;
+    appPassword: string;
+    folder: string;
+    autoSync: boolean;
+    syncIntervalSec?: number;
+  };
+
+  if (shouldUseRemoteServer()) {
+    const res = await fetch(apiUrl('/api/nextcloud/pairing-code'));
+    const data = (await res.json()) as {
+      url?: string;
+      username?: string;
+      appPassword?: string;
+      folder?: string;
+      autoSync?: boolean;
+      syncIntervalSec?: number;
+      error?: string;
+    };
+    if (!res.ok || !data.url || !data.username || !data.appPassword) {
+      throw new Error(data.error || 'Nextcloud ist noch nicht verbunden.');
+    }
+    creds = {
+      url: data.url,
+      username: data.username,
+      appPassword: data.appPassword,
+      folder: data.folder || '/TaktWerk',
+      autoSync: data.autoSync !== false,
+      syncIntervalSec: data.syncIntervalSec ?? 20,
+    };
+  } else {
+    const cfg = readNativeNc();
+    if (!cfg.url || !cfg.username || !cfg.appPassword) {
+      throw new Error('Nextcloud ist noch nicht verbunden.');
+    }
+    creds = {
+      url: cfg.url,
+      username: cfg.username,
+      appPassword: cfg.appPassword,
+      folder: cfg.folder,
+      autoSync: cfg.autoSync,
+      syncIntervalSec: cfg.syncIntervalSec ?? 20,
+    };
+  }
+
+  const payload: SyncPairingPayload = {
+    v: 1,
+    url: creds.url,
+    username: creds.username,
+    appPassword: creds.appPassword,
+    folder: creds.folder,
+    autoSync: true,
+    syncIntervalSec: creds.syncIntervalSec ?? 20,
+    calendarUrl: calendarConfig?.selectedCalendarUrl || undefined,
+    calendarName: calendarConfig?.selectedCalendarName || undefined,
+    autoSyncTimeEntries: Boolean(calendarConfig?.autoSyncTimeEntries),
+  };
+  return encodeSyncPairingCode(payload);
+}
+
+export async function apiApplySyncPairingCode(rawCode: string): Promise<{
+  payload: SyncPairingPayload;
+  syncResult: AutoSyncResult;
+}> {
+  const payload = decodeSyncPairingCode(rawCode);
+  return trackActivity(
+    'Kopple Gerät & synchronisiere Daten…',
+    async (update) => {
+      update(20, 'Prüfe Nextcloud-Verbindung…');
+      await apiTestNextcloud({
+        url: payload.url,
+        username: payload.username,
+        appPassword: payload.appPassword,
+        folder: payload.folder,
+      });
+
+      update(45, 'Speichere Verbindung & Auto-Sync…');
+      await apiSaveNextcloudConfig({
+        url: payload.url,
+        username: payload.username,
+        appPassword: payload.appPassword,
+        folder: payload.folder,
+        autoSync: true,
+        syncIntervalSec: payload.syncIntervalSec ?? 20,
+      });
+
+      update(70, 'Lade gemeinsamen Datenstand…');
+      const syncResult = await apiAutoSyncNextcloud({ force: true, silent: true });
+      update(100, 'Gerät erfolgreich gekoppelt');
+      return { payload, syncResult };
+    },
+    10
+  );
 }
 
 export async function apiSyncNextcloud(
@@ -487,6 +863,11 @@ export async function apiSyncNextcloud(
 
       if (direction === 'pull') {
         update(50, 'Lade taktwerk-db.json via WebDAV…');
+        const meta = await nativeProbeNextcloudDbMeta(cfg).catch(() => ({
+          exists: true,
+          etag: null,
+          lastModified: null,
+        }));
         const remoteDb = await nativePullNextcloudOptional(cfg);
         if (!remoteDb) {
           throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
@@ -496,6 +877,8 @@ export async function apiSyncNextcloud(
         writeNativeDb(normalized);
         cfg.lastSyncAt = new Date().toISOString();
         cfg.lastKnownRemoteUpdatedAt = normalized.updatedAt || cfg.lastSyncAt;
+        if (meta.etag) cfg.lastKnownRemoteEtag = meta.etag;
+        cfg.pendingPush = false;
         cfg.lastSyncError = null;
         writeNativeNc(cfg);
         update(100, 'Fertig');
@@ -522,9 +905,11 @@ export async function apiSyncNextcloud(
       }
 
       update(70, 'Lade taktwerk-db.json via WebDAV hoch…');
-      await nativePushNextcloud(cfg, localDb);
+      const newEtag = await nativePushNextcloud(cfg, localDb);
       cfg.lastSyncAt = new Date().toISOString();
       cfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
+      if (newEtag) cfg.lastKnownRemoteEtag = newEtag;
+      cfg.pendingPush = false;
       cfg.lastSyncError = null;
       writeNativeNc(cfg);
       update(100, 'Fertig');

@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-XjJlHASV.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-B8gpztFL.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-P57aQPcz.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-ix1ZQNqY.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -12947,6 +12947,30 @@ var ExternalLink = createLucideIcon("external-link", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var EyeOff = createLucideIcon("eye-off", [
+	["path", {
+		d: "M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49",
+		key: "ct8e1f"
+	}],
+	["path", {
+		d: "M14.084 14.158a3 3 0 0 1-4.242-4.242",
+		key: "151rxh"
+	}],
+	["path", {
+		d: "M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143",
+		key: "13bj9a"
+	}],
+	["path", {
+		d: "m2 2 20 20",
+		key: "1ooewy"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Eye = createLucideIcon("eye", [["path", {
 	d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
 	key: "1nclc0"
@@ -13369,6 +13393,19 @@ var Landmark = createLucideIcon("landmark", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Laptop = createLucideIcon("laptop", [["path", {
+	d: "M18 5a2 2 0 0 1 2 2v8.526a2 2 0 0 0 .212.897l1.068 2.127a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45l1.068-2.127A2 2 0 0 0 4 15.526V7a2 2 0 0 1 2-2z",
+	key: "1pdavp"
+}], ["path", {
+	d: "M20.054 15.987H3.946",
+	key: "14rxg9"
+}]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Layers = createLucideIcon("layers", [
 	["path", {
 		d: "M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z",
@@ -13381,6 +13418,29 @@ var Layers = createLucideIcon("layers", [
 	["path", {
 		d: "M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17",
 		key: "kqbvx6"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Link2 = createLucideIcon("link-2", [
+	["path", {
+		d: "M9 17H7A5 5 0 0 1 7 7h2",
+		key: "8i5ue5"
+	}],
+	["path", {
+		d: "M15 7h2a5 5 0 1 1 0 10h-2",
+		key: "1b9ql8"
+	}],
+	["line", {
+		x1: "8",
+		x2: "16",
+		y1: "12",
+		y2: "12",
+		key: "1jonct"
 	}]
 ]);
 /**
@@ -13862,6 +13922,74 @@ var Printer = createLucideIcon("printer", [
 		height: "8",
 		rx: "1",
 		key: "1ue0tg"
+	}]
+]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var QrCode = createLucideIcon("qr-code", [
+	["rect", {
+		width: "5",
+		height: "5",
+		x: "3",
+		y: "3",
+		rx: "1",
+		key: "1tu5fj"
+	}],
+	["rect", {
+		width: "5",
+		height: "5",
+		x: "16",
+		y: "3",
+		rx: "1",
+		key: "1v8r4q"
+	}],
+	["rect", {
+		width: "5",
+		height: "5",
+		x: "3",
+		y: "16",
+		rx: "1",
+		key: "1x03jg"
+	}],
+	["path", {
+		d: "M21 16h-3a2 2 0 0 0-2 2v3",
+		key: "177gqh"
+	}],
+	["path", {
+		d: "M21 21v.01",
+		key: "ents32"
+	}],
+	["path", {
+		d: "M12 7v3a2 2 0 0 1-2 2H7",
+		key: "8crl2c"
+	}],
+	["path", {
+		d: "M3 12h.01",
+		key: "nlz23k"
+	}],
+	["path", {
+		d: "M12 3h.01",
+		key: "n36tog"
+	}],
+	["path", {
+		d: "M12 16v.01",
+		key: "133mhm"
+	}],
+	["path", {
+		d: "M16 12h1",
+		key: "1slzba"
+	}],
+	["path", {
+		d: "M21 12v.01",
+		key: "1lwtk9"
+	}],
+	["path", {
+		d: "M12 21v-1",
+		key: "1880an"
 	}]
 ]);
 /**
@@ -35541,7 +35669,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-XjJlHASV.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-B8gpztFL.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -63266,6 +63394,11 @@ function normalizeDatabase(raw) {
 	return {
 		version: raw.version ?? 2,
 		updatedAt: raw.updatedAt || (/* @__PURE__ */ new Date()).toISOString(),
+		syncDeviceId: raw.syncDeviceId,
+		activeTimerUpdatedAt: raw.activeTimerUpdatedAt,
+		companyUpdatedAt: raw.companyUpdatedAt,
+		deletedIds: raw.deletedIds && typeof raw.deletedIds === "object" ? raw.deletedIds : void 0,
+		recordUpdatedAt: raw.recordUpdatedAt && typeof raw.recordUpdatedAt === "object" ? raw.recordUpdatedAt : void 0,
 		company,
 		customers: Array.isArray(raw.customers) ? raw.customers : [],
 		products: Array.isArray(raw.products) ? raw.products : [],
@@ -65811,13 +65944,195 @@ function unescapeIcsText(val) {
 function escapeIcsText(val) {
 	return val.replace(/\\/g, "\\\\").replace(/\r?\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
 }
-function parseIcsDate(rawVal) {
+var EU_CET_CEST_TIMEZONES = /* @__PURE__ */ new Set([
+	"Europe/Berlin",
+	"Europe/Vienna",
+	"Europe/Zurich",
+	"Europe/Amsterdam",
+	"Europe/Paris",
+	"Europe/Brussels",
+	"Europe/Luxembourg",
+	"Europe/Rome",
+	"Europe/Madrid",
+	"Europe/Prague",
+	"Europe/Warsaw",
+	"Europe/Copenhagen",
+	"Europe/Stockholm",
+	"Europe/Oslo",
+	"Europe/Budapest",
+	"Europe/Bratislava",
+	"Europe/Ljubljana",
+	"Europe/Zagreb",
+	"Europe/Belgrade",
+	"Europe/Vaduz"
+]);
+function isValidIanaTimeZone(tzid) {
+	if (!tzid) return false;
+	try {
+		new Intl.DateTimeFormat("en-US", { timeZone: tzid });
+		return true;
+	} catch {
+		return false;
+	}
+}
+function resolveLocalTimeZone(preferredTimeZone) {
+	if (preferredTimeZone && isValidIanaTimeZone(preferredTimeZone)) return preferredTimeZone;
+	try {
+		const detected = Intl.DateTimeFormat().resolvedOptions().timeZone;
+		if (detected && detected !== "UTC" && detected !== "Etc/UTC" && detected !== "Etc/GMT" && detected !== "GMT" && isValidIanaTimeZone(detected)) return detected;
+	} catch {}
+	return "Europe/Berlin";
+}
+function getDatePartsInTimeZone(date, tzid) {
+	const parts = new Intl.DateTimeFormat("en-GB", {
+		timeZone: tzid,
+		year: "numeric",
+		month: "2-digit",
+		day: "2-digit",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+		hourCycle: "h23"
+	}).formatToParts(date);
+	const pick = (type) => Number(parts.find((p) => p.type === type)?.value ?? 0);
+	const hour = pick("hour");
+	return {
+		year: pick("year"),
+		month: pick("month"),
+		day: pick("day"),
+		hour: hour === 24 ? 0 : hour,
+		minute: pick("minute"),
+		second: pick("second")
+	};
+}
+function getTimeZoneOffsetMinutes(date, tzid) {
+	const p = getDatePartsInTimeZone(date, tzid);
+	const asUtcMs = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+	const wholeSecMs = Math.floor(date.getTime() / 1e3) * 1e3;
+	return Math.round((asUtcMs - wholeSecMs) / 6e4);
+}
+function formatIcsOffset(offsetMinutes) {
+	const sign = offsetMinutes >= 0 ? "+" : "-";
+	const abs = Math.abs(Math.round(offsetMinutes));
+	return `${sign}${String(Math.floor(abs / 60)).padStart(2, "0")}${String(abs % 60).padStart(2, "0")}`;
+}
+function getTimeZoneShortName(date, tzid, fallbackOffsetMinutes) {
+	try {
+		const cleaned = (new Intl.DateTimeFormat("en-US", {
+			timeZone: tzid,
+			timeZoneName: "short"
+		}).formatToParts(date).find((p) => p.type === "timeZoneName")?.value ?? "").replace(/[^A-Za-z0-9+-]/g, "");
+		if (cleaned) return cleaned;
+	} catch {}
+	return formatIcsOffset(fallbackOffsetMinutes);
+}
+function toIcsLocalString(date, tzid) {
+	const p = getDatePartsInTimeZone(date, tzid);
+	const pad = (n) => String(n).padStart(2, "0");
+	return `${String(p.year).padStart(4, "0")}${pad(p.month)}${pad(p.day)}T${pad(p.hour)}${pad(p.minute)}${pad(p.second)}`;
+}
+function zonedWallClockToIso(year, month, day, hour, minute, second, tzid) {
+	const wallUtcMs = Date.UTC(year, month - 1, day, hour, minute, second);
+	let guessMs = wallUtcMs;
+	for (let i = 0; i < 2; i += 1) guessMs = wallUtcMs - getTimeZoneOffsetMinutes(new Date(guessMs), tzid) * 6e4;
+	return new Date(guessMs).toISOString();
+}
+function findOffsetTransitionMs(startMs, endMs, startOffset, tzid) {
+	let lo = startMs;
+	let hi = endMs;
+	while (hi - lo > 6e4) {
+		const mid = Math.floor((lo + hi) / 2);
+		if (getTimeZoneOffsetMinutes(new Date(mid), tzid) === startOffset) lo = mid;
+		else hi = mid;
+	}
+	return hi;
+}
+function buildVTimezoneLines(tzid, referenceDate) {
+	if (EU_CET_CEST_TIMEZONES.has(tzid)) return [
+		"BEGIN:VTIMEZONE",
+		`TZID:${tzid}`,
+		`X-LIC-LOCATION:${tzid}`,
+		"BEGIN:DAYLIGHT",
+		"TZOFFSETFROM:+0100",
+		"TZOFFSETTO:+0200",
+		"TZNAME:CEST",
+		"DTSTART:19700329T020000",
+		"RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU",
+		"END:DAYLIGHT",
+		"BEGIN:STANDARD",
+		"TZOFFSETFROM:+0200",
+		"TZOFFSETTO:+0100",
+		"TZNAME:CET",
+		"DTSTART:19701025T030000",
+		"RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU",
+		"END:STANDARD",
+		"END:VTIMEZONE"
+	];
+	const year = getDatePartsInTimeZone(referenceDate, tzid).year || (/* @__PURE__ */ new Date()).getUTCFullYear();
+	const janDate = new Date(Date.UTC(year, 0, 15, 12, 0, 0));
+	const julDate = new Date(Date.UTC(year, 6, 15, 12, 0, 0));
+	const janOffset = getTimeZoneOffsetMinutes(janDate, tzid);
+	const julOffset = getTimeZoneOffsetMinutes(julDate, tzid);
+	if (janOffset === julOffset) {
+		const offsetStr = formatIcsOffset(janOffset);
+		const tzName = getTimeZoneShortName(janDate, tzid, janOffset);
+		return [
+			"BEGIN:VTIMEZONE",
+			`TZID:${tzid}`,
+			`X-LIC-LOCATION:${tzid}`,
+			"BEGIN:STANDARD",
+			`TZOFFSETFROM:${offsetStr}`,
+			`TZOFFSETTO:${offsetStr}`,
+			`TZNAME:${tzName}`,
+			"DTSTART:19700101T000000",
+			"END:STANDARD",
+			"END:VTIMEZONE"
+		];
+	}
+	const stdOffset = Math.min(janOffset, julOffset);
+	const dstOffset = Math.max(janOffset, julOffset);
+	const t1Ms = findOffsetTransitionMs(janDate.getTime(), julDate.getTime(), janOffset, tzid);
+	const nextJanDate = new Date(Date.UTC(year + 1, 0, 15, 12, 0, 0));
+	const t2Ms = findOffsetTransitionMs(julDate.getTime(), nextJanDate.getTime(), julOffset, tzid);
+	const dstStartMs = janOffset < julOffset ? t1Ms : t2Ms;
+	const stdStartMs = janOffset < julOffset ? t2Ms : t1Ms;
+	const stdName = getTimeZoneShortName(new Date(stdStartMs + 36e5), tzid, stdOffset);
+	const dstName = getTimeZoneShortName(new Date(dstStartMs + 36e5), tzid, dstOffset);
+	return [
+		"BEGIN:VTIMEZONE",
+		`TZID:${tzid}`,
+		`X-LIC-LOCATION:${tzid}`,
+		"BEGIN:DAYLIGHT",
+		`TZOFFSETFROM:${formatIcsOffset(stdOffset)}`,
+		`TZOFFSETTO:${formatIcsOffset(dstOffset)}`,
+		`TZNAME:${dstName}`,
+		`DTSTART:${toIcsLocalString(new Date(dstStartMs), tzid)}`,
+		"END:DAYLIGHT",
+		"BEGIN:STANDARD",
+		`TZOFFSETFROM:${formatIcsOffset(dstOffset)}`,
+		`TZOFFSETTO:${formatIcsOffset(stdOffset)}`,
+		`TZNAME:${stdName}`,
+		`DTSTART:${toIcsLocalString(new Date(stdStartMs), tzid)}`,
+		"END:STANDARD",
+		"END:VTIMEZONE"
+	];
+}
+function extractTzidParam(propHeader) {
+	const segments = propHeader.split(";").slice(1);
+	for (const seg of segments) {
+		const eqIdx = seg.indexOf("=");
+		if (eqIdx <= 0) continue;
+		if (seg.slice(0, eqIdx).trim().toUpperCase() === "TZID") return seg.slice(eqIdx + 1).trim().replace(/^"|"$/g, "");
+	}
+}
+function parseIcsDate(rawVal, tzid) {
 	const val = rawVal.trim();
 	if (/^\d{8}$/.test(val)) return `${val.slice(0, 4)}-${val.slice(4, 6)}-${val.slice(6, 8)}T09:00:00`;
 	const match = val.match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(Z?)$/);
 	if (match) {
 		const [, y, m, d, hh, mm, ss, z] = match;
 		if (z === "Z") return (/* @__PURE__ */ new Date(`${y}-${m}-${d}T${hh}:${mm}:${ss}Z`)).toISOString();
+		if (tzid && isValidIanaTimeZone(tzid)) return zonedWallClockToIso(Number(y), Number(m), Number(d), Number(hh), Number(mm), Number(ss), tzid);
 		return `${y}-${m}-${d}T${hh}:${mm}:${ss}`;
 	}
 	const parsed = new Date(val);
@@ -65829,22 +66144,28 @@ function toIcsUtcString(iso) {
 	const pad = (n) => String(n).padStart(2, "0");
 	return `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
 }
-function buildIcsEvent(appointment) {
+function buildIcsEvent(appointment, preferredTimeZone) {
 	const uid = appointment.uid || `${appointment.id}@taktwerk.app`;
 	const startDate = new Date(appointment.startTime);
 	const safeStartMs = Number.isNaN(startDate.getTime()) ? Date.now() : startDate.getTime();
 	const rawEndDate = new Date(appointment.endTime);
 	const rawEndMs = Number.isNaN(rawEndDate.getTime()) ? safeStartMs + 6e4 : rawEndDate.getTime();
 	const safeEndMs = rawEndMs > safeStartMs ? rawEndMs : safeStartMs + 6e4;
+	const tzid = resolveLocalTimeZone(preferredTimeZone);
+	const safeStartDate = new Date(safeStartMs);
+	const safeEndDate = new Date(safeEndMs);
 	const lines = [
 		"BEGIN:VCALENDAR",
 		"VERSION:2.0",
 		"PRODID:-//TaktWerk//DE",
+		"CALSCALE:GREGORIAN",
+		`X-WR-TIMEZONE:${tzid}`,
+		...buildVTimezoneLines(tzid, safeStartDate),
 		"BEGIN:VEVENT",
 		`UID:${uid}`,
 		`DTSTAMP:${toIcsUtcString((/* @__PURE__ */ new Date()).toISOString())}`,
-		`DTSTART:${toIcsUtcString(new Date(safeStartMs).toISOString())}`,
-		`DTEND:${toIcsUtcString(new Date(safeEndMs).toISOString())}`,
+		`DTSTART;TZID=${tzid}:${toIcsLocalString(safeStartDate, tzid)}`,
+		`DTEND;TZID=${tzid}:${toIcsLocalString(safeEndDate, tzid)}`,
 		`SUMMARY:${escapeIcsText(appointment.title || "TaktWerk Termin")}`
 	];
 	if (appointment.location) lines.push(`LOCATION:${escapeIcsText(appointment.location)}`);
@@ -65856,18 +66177,30 @@ function parseIcsEvents(icsRaw, calendarName) {
 	const lines = icsRaw.replace(/\r?\n[ \t]/g, "").split(/\r?\n/);
 	const events = [];
 	let inEvent = false;
+	let inAlarm = false;
 	let current = {};
+	let currentTzids = {};
 	for (const line of lines) {
 		const trimmed = line.trim();
 		if (trimmed === "BEGIN:VEVENT") {
 			inEvent = true;
+			inAlarm = false;
 			current = {};
+			currentTzids = {};
+			continue;
+		}
+		if (trimmed === "BEGIN:VALARM") {
+			inAlarm = true;
+			continue;
+		}
+		if (trimmed === "END:VALARM") {
+			inAlarm = false;
 			continue;
 		}
 		if (trimmed === "END:VEVENT") {
 			if (inEvent && current.SUMMARY && current.DTSTART) {
-				const startIso = parseIcsDate(current.DTSTART);
-				const endIso = current.DTEND ? parseIcsDate(current.DTEND) : new Date(new Date(startIso).getTime() + 36e5).toISOString();
+				const startIso = parseIcsDate(current.DTSTART, currentTzids.DTSTART);
+				const endIso = current.DTEND ? parseIcsDate(current.DTEND, currentTzids.DTEND) : new Date(new Date(startIso).getTime() + 36e5).toISOString();
 				const uid = current.UID || `${startIso}-${current.SUMMARY}`;
 				events.push({
 					id: `nc-${uid}`,
@@ -65882,15 +66215,20 @@ function parseIcsEvents(icsRaw, calendarName) {
 				});
 			}
 			inEvent = false;
+			inAlarm = false;
 			current = {};
+			currentTzids = {};
 			continue;
 		}
-		if (!inEvent) continue;
+		if (!inEvent || inAlarm) continue;
 		const colonIdx = line.indexOf(":");
 		if (colonIdx <= 0) continue;
-		const rawKey = line.slice(0, colonIdx).split(";")[0].toUpperCase();
+		const propHeader = line.slice(0, colonIdx);
+		const rawKey = propHeader.split(";")[0].toUpperCase();
 		const rawVal = line.slice(colonIdx + 1);
 		current[rawKey] = rawVal;
+		const tzid = extractTzidParam(propHeader);
+		if (tzid) currentTzids[rawKey] = tzid;
 	}
 	return events;
 }
@@ -65929,6 +66267,339 @@ function parseCalDavCalendarDataXml(xmlText, calendarName) {
 		}
 	}
 	return all.sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+}
+// src/utils/syncMerge.ts
+var DEVICE_ID_STORAGE_KEY = "taktwerk-sync-device-id";
+var TOMBSTONE_RETENTION_MS = 7776e6;
+var PAIRING_PREFIX = "TW-SYNC-1:";
+var COLLECTION_KEYS = [
+	"customers",
+	"products",
+	"nfcTasks",
+	"geoFenceRules",
+	"timeEntries",
+	"invoices",
+	"expenses",
+	"recurringExpenses",
+	"recurringInvoices",
+	"calendarEvents"
+];
+function getOrCreateSyncDeviceId(platformHint) {
+	try {
+		if (typeof localStorage !== "undefined") {
+			const existing = localStorage.getItem(DEVICE_ID_STORAGE_KEY);
+			if (existing && existing.trim()) return existing.trim();
+			const generated = `${platformHint === "windows" ? "tw-win" : platformHint === "android" ? "tw-and" : "tw-web"}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+			localStorage.setItem(DEVICE_ID_STORAGE_KEY, generated);
+			return generated;
+		}
+	} catch {}
+	return `tw-srv-${Date.now().toString(36)}`;
+}
+function parseIsoMs(iso) {
+	if (!iso) return 0;
+	const ms = new Date(iso).getTime();
+	return Number.isFinite(ms) ? ms : 0;
+}
+function stableJson(value) {
+	try {
+		return JSON.stringify(value);
+	} catch {
+		return "";
+	}
+}
+function getCollection(db, key) {
+	const list = db[key];
+	return Array.isArray(list) ? list : [];
+}
+function pruneTombstones(deletedIds, nowMs) {
+	const pruned = {};
+	for (const [id, iso] of Object.entries(deletedIds)) {
+		const ms = parseIsoMs(iso);
+		if (ms > 0 && nowMs - ms <= TOMBSTONE_RETENTION_MS) pruned[id] = iso;
+	}
+	return pruned;
+}
+/**
+* Automatically records per-record modification timestamps, deletion tombstones,
+* activeTimerUpdatedAt, and companyUpdatedAt by diffing prevDb against nextDb.
+*/
+function stampDatabaseChanges(prevDb, nextDb, deviceId) {
+	const nowMs = Date.now();
+	const nowIso = new Date(nowMs).toISOString();
+	const nextRecordUpdatedAt = {
+		...prevDb.recordUpdatedAt ?? {},
+		...nextDb.recordUpdatedAt ?? {}
+	};
+	const nextDeletedIds = {
+		...prevDb.deletedIds ?? {},
+		...nextDb.deletedIds ?? {}
+	};
+	const activeIds = /* @__PURE__ */ new Set();
+	for (const key of COLLECTION_KEYS) {
+		const prevList = getCollection(prevDb, key);
+		const nextList = getCollection(nextDb, key);
+		const prevMap = /* @__PURE__ */ new Map();
+		for (const item of prevList) if (item?.id) prevMap.set(item.id, item);
+		const nextIdsInCollection = /* @__PURE__ */ new Set();
+		for (const item of nextList) {
+			if (!item?.id) continue;
+			activeIds.add(item.id);
+			nextIdsInCollection.add(item.id);
+			const prevItem = prevMap.get(item.id);
+			if (!prevItem) {
+				nextRecordUpdatedAt[item.id] = nowIso;
+				delete nextDeletedIds[item.id];
+			} else if (stableJson(prevItem) !== stableJson(item)) {
+				nextRecordUpdatedAt[item.id] = nowIso;
+				delete nextDeletedIds[item.id];
+			} else if (!nextRecordUpdatedAt[item.id]) nextRecordUpdatedAt[item.id] = item.createdAt || prevDb.updatedAt || nowIso;
+		}
+		for (const prevItem of prevList) if (prevItem?.id && !nextIdsInCollection.has(prevItem.id)) {
+			nextDeletedIds[prevItem.id] = nowIso;
+			delete nextRecordUpdatedAt[prevItem.id];
+		}
+	}
+	const cleanRecordUpdatedAt = {};
+	for (const id of activeIds) if (nextRecordUpdatedAt[id]) cleanRecordUpdatedAt[id] = nextRecordUpdatedAt[id];
+	const timerChanged = stableJson(prevDb.activeTimer ?? null) !== stableJson(nextDb.activeTimer ?? null);
+	const companyChanged = stableJson(prevDb.company) !== stableJson(nextDb.company);
+	return {
+		...nextDb,
+		updatedAt: nowIso,
+		syncDeviceId: deviceId || nextDb.syncDeviceId || prevDb.syncDeviceId,
+		activeTimerUpdatedAt: timerChanged ? nowIso : nextDb.activeTimerUpdatedAt || prevDb.activeTimerUpdatedAt || prevDb.updatedAt,
+		companyUpdatedAt: companyChanged ? nowIso : nextDb.companyUpdatedAt || prevDb.companyUpdatedAt || prevDb.updatedAt,
+		deletedIds: pruneTombstones(nextDeletedIds, nowMs),
+		recordUpdatedAt: cleanRecordUpdatedAt
+	};
+}
+function getRecordTimestampMs(db, item) {
+	if (!item) return 0;
+	return parseIsoMs(db.recordUpdatedAt?.[item.id]) || parseIsoMs(item.createdAt) || parseIsoMs(db.updatedAt);
+}
+function mergeCompanyProfiles(localDb, remoteDb) {
+	const localMs = parseIsoMs(localDb.companyUpdatedAt || localDb.updatedAt);
+	const remoteMs = parseIsoMs(remoteDb.companyUpdatedAt || remoteDb.updatedAt);
+	if (stableJson(localDb.company) === stableJson(remoteDb.company)) {
+		const newerIso = remoteMs >= localMs ? remoteDb.companyUpdatedAt || remoteDb.updatedAt : localDb.companyUpdatedAt || localDb.updatedAt;
+		return {
+			company: localDb.company,
+			companyUpdatedAt: newerIso,
+			fromRemote: false,
+			fromLocal: false
+		};
+	}
+	const remoteWins = remoteMs > localMs;
+	const primary = remoteWins ? remoteDb.company : localDb.company;
+	const secondary = remoteWins ? localDb.company : remoteDb.company;
+	const mergedCompany = {
+		...secondary,
+		...primary,
+		nextInvoiceSequence: Math.max(localDb.company.nextInvoiceSequence ?? 1, remoteDb.company.nextInvoiceSequence ?? 1),
+		nextQuoteSequence: Math.max(localDb.company.nextQuoteSequence ?? 1, remoteDb.company.nextQuoteSequence ?? 1),
+		nextProductSequence: Math.max(localDb.company.nextProductSequence ?? 1, remoteDb.company.nextProductSequence ?? 1),
+		autoBackup: primary.autoBackup ? {
+			...secondary.autoBackup,
+			...primary.autoBackup,
+			lastRunAt: parseIsoMs(localDb.company.autoBackup?.lastRunAt) >= parseIsoMs(remoteDb.company.autoBackup?.lastRunAt) ? localDb.company.autoBackup?.lastRunAt ?? null : remoteDb.company.autoBackup?.lastRunAt ?? null
+		} : secondary.autoBackup
+	};
+	const mergedJson = stableJson(mergedCompany);
+	return {
+		company: mergedCompany,
+		companyUpdatedAt: remoteWins ? remoteDb.companyUpdatedAt || remoteDb.updatedAt : localDb.companyUpdatedAt || localDb.updatedAt,
+		fromRemote: mergedJson !== stableJson(localDb.company),
+		fromLocal: mergedJson !== stableJson(remoteDb.company)
+	};
+}
+/**
+* Deterministic bidirectional record-level merge between localDb and remoteDb.
+* Preserves offline additions/edits on both Windows and Smartphone, respects deletions
+* via tombstones, syncs live activeTimer state, and avoids invoice number collisions.
+*/
+function mergeDatabases(localDb, remoteDb) {
+	const nowMs = Date.now();
+	const mergedDeletedIds = {};
+	const allTombstoneIds = /* @__PURE__ */ new Set([...Object.keys(localDb.deletedIds ?? {}), ...Object.keys(remoteDb.deletedIds ?? {})]);
+	for (const id of allTombstoneIds) {
+		const lIso = localDb.deletedIds?.[id];
+		const rIso = remoteDb.deletedIds?.[id];
+		const lMs = parseIsoMs(lIso);
+		const chosen = parseIsoMs(rIso) >= lMs ? rIso : lIso;
+		if (chosen) mergedDeletedIds[id] = chosen;
+	}
+	let localChanged = false;
+	let remoteNeedsPush = false;
+	let addedFromRemote = 0;
+	let updatedFromRemote = 0;
+	let removedFromRemote = 0;
+	const mergedRecordUpdatedAt = {};
+	const mergedCollections = {};
+	for (const key of COLLECTION_KEYS) {
+		const localList = getCollection(localDb, key);
+		const remoteList = getCollection(remoteDb, key);
+		const localMap = /* @__PURE__ */ new Map();
+		for (const item of localList) if (item?.id) localMap.set(item.id, item);
+		const remoteMap = /* @__PURE__ */ new Map();
+		for (const item of remoteList) if (item?.id) remoteMap.set(item.id, item);
+		const orderedIds = [];
+		const seen = /* @__PURE__ */ new Set();
+		const firstList = parseIsoMs(remoteDb.updatedAt) >= parseIsoMs(localDb.updatedAt) ? remoteList : localList;
+		const secondList = firstList === remoteList ? localList : remoteList;
+		for (const item of firstList) if (item?.id && !seen.has(item.id)) {
+			seen.add(item.id);
+			orderedIds.push(item.id);
+		}
+		for (const item of secondList) if (item?.id && !seen.has(item.id)) {
+			seen.add(item.id);
+			orderedIds.push(item.id);
+		}
+		const resultList = [];
+		for (const id of orderedIds) {
+			const localItem = localMap.get(id);
+			const remoteItem = remoteMap.get(id);
+			const localModMs = getRecordTimestampMs(localDb, localItem);
+			const remoteModMs = getRecordTimestampMs(remoteDb, remoteItem);
+			const deletedMs = parseIsoMs(mergedDeletedIds[id]);
+			const newestModMs = Math.max(localModMs, remoteModMs);
+			if (deletedMs > 0 && deletedMs >= newestModMs) {
+				if (localItem) {
+					localChanged = true;
+					removedFromRemote += 1;
+				}
+				if (remoteItem) remoteNeedsPush = true;
+				continue;
+			}
+			if (deletedMs > 0 && newestModMs > deletedMs) delete mergedDeletedIds[id];
+			if (localItem && !remoteItem) {
+				resultList.push(localItem);
+				mergedRecordUpdatedAt[id] = localDb.recordUpdatedAt?.[id] || localItem.createdAt || localDb.updatedAt;
+				remoteNeedsPush = true;
+			} else if (!localItem && remoteItem) {
+				resultList.push(remoteItem);
+				mergedRecordUpdatedAt[id] = remoteDb.recordUpdatedAt?.[id] || remoteItem.createdAt || remoteDb.updatedAt;
+				localChanged = true;
+				addedFromRemote += 1;
+			} else if (localItem && remoteItem) {
+				if (stableJson(localItem) === stableJson(remoteItem)) {
+					resultList.push(localItem);
+					const bestMs = Math.max(localModMs, remoteModMs);
+					mergedRecordUpdatedAt[id] = bestMs > 0 ? new Date(bestMs).toISOString() : localDb.updatedAt;
+				} else if (remoteModMs > localModMs) {
+					resultList.push(remoteItem);
+					mergedRecordUpdatedAt[id] = remoteDb.recordUpdatedAt?.[id] || remoteItem.createdAt || remoteDb.updatedAt;
+					localChanged = true;
+					updatedFromRemote += 1;
+				} else {
+					resultList.push(localItem);
+					mergedRecordUpdatedAt[id] = localDb.recordUpdatedAt?.[id] || localItem.createdAt || localDb.updatedAt;
+					remoteNeedsPush = true;
+				}
+			}
+		}
+		mergedCollections[key] = resultList;
+	}
+	const localTimerMs = parseIsoMs(localDb.activeTimerUpdatedAt || localDb.activeTimer?.startTime || localDb.updatedAt);
+	const remoteTimerMs = parseIsoMs(remoteDb.activeTimerUpdatedAt || remoteDb.activeTimer?.startTime || remoteDb.updatedAt);
+	let mergedActiveTimer = localDb.activeTimer ?? null;
+	let mergedActiveTimerUpdatedAt = localDb.activeTimerUpdatedAt || localDb.updatedAt;
+	if (stableJson(localDb.activeTimer ?? null) !== stableJson(remoteDb.activeTimer ?? null)) {
+		if (remoteTimerMs > localTimerMs) {
+			mergedActiveTimer = remoteDb.activeTimer ?? null;
+			mergedActiveTimerUpdatedAt = remoteDb.activeTimerUpdatedAt || remoteDb.updatedAt;
+			localChanged = true;
+		} else {
+			mergedActiveTimer = localDb.activeTimer ?? null;
+			mergedActiveTimerUpdatedAt = localDb.activeTimerUpdatedAt || localDb.updatedAt;
+			remoteNeedsPush = true;
+		}
+	} else mergedActiveTimerUpdatedAt = remoteTimerMs >= localTimerMs ? remoteDb.activeTimerUpdatedAt || remoteDb.updatedAt : localDb.activeTimerUpdatedAt || localDb.updatedAt;
+	const companyMerge = mergeCompanyProfiles(localDb, remoteDb);
+	if (companyMerge.fromRemote) localChanged = true;
+	if (companyMerge.fromLocal) remoteNeedsPush = true;
+	const latestUpdatedMs = Math.max(parseIsoMs(localDb.updatedAt), parseIsoMs(remoteDb.updatedAt), localChanged && remoteNeedsPush ? nowMs : 0);
+	const mergedUpdatedAt = latestUpdatedMs > 0 ? new Date(latestUpdatedMs).toISOString() : new Date(nowMs).toISOString();
+	const merged = {
+		version: Math.max(localDb.version ?? 2, remoteDb.version ?? 2),
+		updatedAt: mergedUpdatedAt,
+		syncDeviceId: remoteNeedsPush ? localDb.syncDeviceId || remoteDb.syncDeviceId : remoteDb.syncDeviceId || localDb.syncDeviceId,
+		activeTimerUpdatedAt: mergedActiveTimerUpdatedAt,
+		companyUpdatedAt: companyMerge.companyUpdatedAt,
+		deletedIds: pruneTombstones(mergedDeletedIds, nowMs),
+		recordUpdatedAt: mergedRecordUpdatedAt,
+		company: companyMerge.company,
+		customers: mergedCollections.customers ?? [],
+		products: mergedCollections.products ?? [],
+		nfcTasks: mergedCollections.nfcTasks ?? [],
+		geoFenceRules: mergedCollections.geoFenceRules ?? [],
+		timeEntries: mergedCollections.timeEntries ?? [],
+		activeTimer: mergedActiveTimer,
+		invoices: mergedCollections.invoices ?? [],
+		expenses: mergedCollections.expenses ?? [],
+		recurringExpenses: mergedCollections.recurringExpenses ?? [],
+		recurringInvoices: mergedCollections.recurringInvoices ?? [],
+		calendarEvents: mergedCollections.calendarEvents ?? []
+	};
+	const parts = [];
+	if (addedFromRemote > 0) parts.push(`${addedFromRemote} neu`);
+	if (updatedFromRemote > 0) parts.push(`${updatedFromRemote} aktualisiert`);
+	if (removedFromRemote > 0) parts.push(`${removedFromRemote} entfernt`);
+	const summary = parts.length > 0 ? parts.join(", ") : localChanged ? "Gerätestatus & Einstellungen übernommen" : remoteNeedsPush ? "Lokale Änderungen hochgeladen" : "Bereits aktuell";
+	return {
+		merged,
+		localChanged,
+		remoteNeedsPush,
+		addedFromRemote,
+		updatedFromRemote,
+		removedFromRemote,
+		summary
+	};
+}
+function utf8ToBase64Url(input) {
+	const bytes = new TextEncoder().encode(input);
+	let binary = "";
+	for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+	return (typeof btoa === "function" ? btoa(binary) : Buffer.from(bytes).toString("base64")).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function base64UrlToUtf8(input) {
+	const padded = input.replace(/-/g, "+").replace(/_/g, "/");
+	const padLen = (4 - padded.length % 4) % 4;
+	const normalized = padded + "=".repeat(padLen);
+	if (typeof atob === "function") {
+		const binary = atob(normalized);
+		const bytes = new Uint8Array(binary.length);
+		for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+		return new TextDecoder().decode(bytes);
+	}
+	return Buffer.from(normalized, "base64").toString("utf-8");
+}
+function encodeSyncPairingCode(payload) {
+	return `${PAIRING_PREFIX}${utf8ToBase64Url(JSON.stringify(payload))}`;
+}
+function decodeSyncPairingCode(rawInput) {
+	const cleaned = rawInput.trim().replace(/\s+/g, "");
+	if (!cleaned.startsWith(PAIRING_PREFIX)) throw new Error("Ungültiger Kopplungscode. Der Code muss mit \"TW-SYNC-1:\" beginnen.");
+	const encoded = cleaned.slice(10);
+	let parsed;
+	try {
+		parsed = JSON.parse(base64UrlToUtf8(encoded));
+	} catch {
+		throw new Error("Kopplungscode konnte nicht gelesen werden. Bitte vollständig kopieren.");
+	}
+	if (!parsed || parsed.v !== 1 || !parsed.url || !parsed.username || !parsed.appPassword) throw new Error("Kopplungscode ist unvollständig (Nextcloud-Zugangsdaten fehlen).");
+	return {
+		v: 1,
+		url: String(parsed.url).trim(),
+		username: String(parsed.username).trim(),
+		appPassword: String(parsed.appPassword).trim(),
+		folder: String(parsed.folder || "/TaktWerk").trim(),
+		autoSync: parsed.autoSync !== false,
+		syncIntervalSec: typeof parsed.syncIntervalSec === "number" ? parsed.syncIntervalSec : 20,
+		calendarUrl: parsed.calendarUrl ? String(parsed.calendarUrl).trim() : void 0,
+		calendarName: parsed.calendarName ? String(parsed.calendarName).trim() : void 0,
+		autoSyncTimeEntries: Boolean(parsed.autoSyncTimeEntries)
+	};
 }
 // src/utils/apiClient.ts
 var SERVER_URL_KEY = "taktwerk-server-url";
@@ -65989,9 +66660,12 @@ function readNativeNc() {
 				appPassword: parsed.appPassword ?? "",
 				folder: normalizeFolder(parsed.folder ?? "/TaktWerk"),
 				autoSync: parsed.autoSync ?? true,
+				syncIntervalSec: typeof parsed.syncIntervalSec === "number" ? parsed.syncIntervalSec : 20,
+				pendingPush: Boolean(parsed.pendingPush),
 				lastSyncAt: parsed.lastSyncAt ?? null,
 				lastSyncError: parsed.lastSyncError ?? null,
-				lastKnownRemoteUpdatedAt: parsed.lastKnownRemoteUpdatedAt ?? null
+				lastKnownRemoteUpdatedAt: parsed.lastKnownRemoteUpdatedAt ?? null,
+				lastKnownRemoteEtag: parsed.lastKnownRemoteEtag ?? null
 			};
 		}
 	} catch {}
@@ -66001,9 +66675,12 @@ function readNativeNc() {
 		appPassword: "",
 		folder: "/TaktWerk",
 		autoSync: true,
+		syncIntervalSec: 20,
+		pendingPush: false,
 		lastSyncAt: null,
 		lastSyncError: null,
-		lastKnownRemoteUpdatedAt: null
+		lastKnownRemoteUpdatedAt: null,
+		lastKnownRemoteEtag: null
 	};
 }
 function writeNativeNc(cfg) {
@@ -66016,6 +66693,8 @@ function toPublicNc(cfg) {
 		username: cfg.username,
 		folder: cfg.folder,
 		autoSync: cfg.autoSync,
+		syncIntervalSec: cfg.syncIntervalSec ?? 20,
+		pendingPush: Boolean(cfg.pendingPush),
 		hasPassword: Boolean(cfg.appPassword),
 		fromEnv: false,
 		lastSyncAt: cfg.lastSyncAt,
@@ -66045,6 +66724,48 @@ function buildWebDavFolderUrls(cfg, subFolder) {
 function buildWebDavFileUrl(cfg, relativePath) {
 	return `${buildDavRoot(cfg)}/${`${normalizeFolder(cfg.folder)}/${relativePath.replace(/^\/+/, "")}`.split("/").filter(Boolean).map((seg) => encodeURIComponent(seg)).join("/")}`;
 }
+async function nativeProbeNextcloudDbMeta(cfg) {
+	const fileUrl = buildWebDavFileUrl(cfg, "taktwerk-db.json");
+	const res = await TaktWerkNative.caldavRequest({
+		method: "PROPFIND",
+		url: fileUrl,
+		username: cfg.username,
+		appPassword: cfg.appPassword,
+		depth: "0",
+		contentType: "application/xml; charset=utf-8",
+		body: `<?xml version="1.0" encoding="utf-8" ?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+    <d:getetag />
+    <d:getlastmodified />
+  </d:prop>
+</d:propfind>`
+	});
+	if (res.status === 404) return {
+		exists: false,
+		etag: null,
+		lastModified: null
+	};
+	if (res.status === 401 || res.status === 403) throw new Error("Authentifizierung bei Nextcloud fehlgeschlagen.");
+	if (res.status !== 207 && (res.status < 200 || res.status >= 300)) throw new Error(`Nextcloud-Prüfung fehlgeschlagen (HTTP ${res.status}).`);
+	let etag = null;
+	let lastModified = null;
+	try {
+		const doc = new DOMParser().parseFromString(res.body || "", "application/xml");
+		const nodes = Array.from(doc.getElementsByTagName("*"));
+		const etagNode = nodes.find((n) => n.localName === "getetag");
+		const lmNode = nodes.find((n) => n.localName === "getlastmodified");
+		etag = etagNode?.textContent?.trim() || null;
+		lastModified = lmNode?.textContent?.trim() || null;
+	} catch {
+		etag = (res.body || "").match(/<[^>]*getetag[^>]*>([^<]+)<\/[^>]*getetag>/i)?.[1]?.trim() || null;
+	}
+	return {
+		exists: true,
+		etag,
+		lastModified
+	};
+}
 async function nativePushNextcloud(cfg, db) {
 	const fileUrl = buildWebDavFileUrl(cfg, "taktwerk-db.json");
 	const folderUrls = buildWebDavFolderUrls(cfg);
@@ -66055,6 +66776,11 @@ async function nativePushNextcloud(cfg, db) {
 		appPassword: cfg.appPassword,
 		json: JSON.stringify(db, null, 2)
 	});
+	try {
+		return (await nativeProbeNextcloudDbMeta(cfg)).etag;
+	} catch {
+		return null;
+	}
 }
 async function nativePullNextcloudOptional(cfg) {
 	const fileUrl = buildWebDavFileUrl(cfg, "taktwerk-db.json");
@@ -66091,33 +66817,50 @@ async function apiSaveDb(nextDb) {
 		const data = await res.json();
 		if (!res.ok) throw new Error(data.error || "Speichern fehlgeschlagen.");
 		return {
-			db: data.db ?? nextDb,
+			db: data.db ? normalizeDatabase(data.db) : nextDb,
 			nextcloud: data.nextcloud ?? toPublicNc(readNativeNc()),
-			syncWarning: data.syncWarning ?? null
+			syncWarning: data.syncWarning ?? null,
+			mergedRemoteChanges: Boolean(data.mergedRemoteChanges)
 		};
 	}
 	const updated = {
 		...nextDb,
-		updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+		updatedAt: nextDb.updatedAt || (/* @__PURE__ */ new Date()).toISOString()
 	};
 	writeNativeDb(updated);
 	const ncCfg = readNativeNc();
 	let syncWarning = null;
+	let finalDb = updated;
+	let mergedRemoteChanges = false;
 	if (ncCfg.url && ncCfg.username && ncCfg.appPassword && ncCfg.autoSync) try {
-		await nativePushNextcloud(ncCfg, updated);
+		const meta = await nativeProbeNextcloudDbMeta(ncCfg);
+		if (meta.exists && (!ncCfg.lastKnownRemoteEtag || !meta.etag || meta.etag !== ncCfg.lastKnownRemoteEtag)) {
+			const remoteDbRaw = await nativePullNextcloudOptional(ncCfg);
+			if (remoteDbRaw) {
+				const mergeRes = mergeDatabases(normalizeDatabase(updated), normalizeDatabase(remoteDbRaw));
+				finalDb = mergeRes.merged;
+				mergedRemoteChanges = mergeRes.localChanged;
+				if (mergedRemoteChanges) writeNativeDb(finalDb);
+			}
+		}
+		const newEtag = await nativePushNextcloud(ncCfg, finalDb);
 		ncCfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
-		ncCfg.lastKnownRemoteUpdatedAt = updated.updatedAt;
+		ncCfg.lastKnownRemoteUpdatedAt = finalDb.updatedAt;
+		if (newEtag) ncCfg.lastKnownRemoteEtag = newEtag;
+		ncCfg.pendingPush = false;
 		ncCfg.lastSyncError = null;
 		writeNativeNc(ncCfg);
 	} catch (err) {
 		syncWarning = err instanceof Error ? err.message : "Nextcloud-Sync fehlgeschlagen.";
+		ncCfg.pendingPush = true;
 		ncCfg.lastSyncError = syncWarning;
 		writeNativeNc(ncCfg);
 	}
 	return {
-		db: updated,
+		db: finalDb,
 		nextcloud: toPublicNc(ncCfg),
-		syncWarning
+		syncWarning,
+		mergedRemoteChanges
 	};
 }
 async function apiCheckNextcloudRemote() {
@@ -66176,9 +66919,12 @@ async function apiTestNextcloud(payload) {
 		appPassword: payload.appPassword.trim() || existing.appPassword,
 		folder: normalizeFolder(payload.folder || existing.folder),
 		autoSync: existing.autoSync,
+		syncIntervalSec: existing.syncIntervalSec ?? 20,
+		pendingPush: existing.pendingPush,
 		lastSyncAt: existing.lastSyncAt,
 		lastSyncError: null,
-		lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt
+		lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt,
+		lastKnownRemoteEtag: existing.lastKnownRemoteEtag
 	};
 	if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Bitte Server-URL, Benutzername und App-Passwort angeben.");
 	const folderUrls = buildWebDavFolderUrls(cfg, "Rechnungen");
@@ -66204,15 +66950,22 @@ async function apiSaveNextcloudConfig(payload) {
 		return data.nextcloud;
 	}
 	const existing = readNativeNc();
+	const nextUrl = payload.url.trim().replace(/\/+$/, "") || existing.url;
+	const nextUser = payload.username.trim() || existing.username;
+	const nextFolder = normalizeFolder(payload.folder || existing.folder);
+	const targetChanged = nextUrl !== existing.url || nextUser !== existing.username || nextFolder !== existing.folder;
 	const updated = {
-		url: payload.url.trim().replace(/\/+$/, "") || existing.url,
-		username: payload.username.trim() || existing.username,
+		url: nextUrl,
+		username: nextUser,
 		appPassword: payload.appPassword.trim() || existing.appPassword,
-		folder: normalizeFolder(payload.folder || existing.folder),
+		folder: nextFolder,
 		autoSync: payload.autoSync,
+		syncIntervalSec: typeof payload.syncIntervalSec === "number" ? Math.max(0, Math.min(3600, Math.round(payload.syncIntervalSec))) : existing.syncIntervalSec ?? 20,
+		pendingPush: targetChanged ? false : existing.pendingPush,
 		lastSyncAt: existing.lastSyncAt,
 		lastSyncError: null,
-		lastKnownRemoteUpdatedAt: existing.lastKnownRemoteUpdatedAt
+		lastKnownRemoteUpdatedAt: targetChanged ? null : existing.lastKnownRemoteUpdatedAt,
+		lastKnownRemoteEtag: targetChanged ? null : existing.lastKnownRemoteEtag
 	};
 	writeNativeNc(updated);
 	return toPublicNc(updated);
@@ -66233,12 +66986,191 @@ async function apiClearNextcloudConfig() {
 		appPassword: "",
 		folder: "/TaktWerk",
 		autoSync: true,
+		syncIntervalSec: 20,
+		pendingPush: false,
 		lastSyncAt: null,
 		lastSyncError: null,
-		lastKnownRemoteUpdatedAt: null
+		lastKnownRemoteUpdatedAt: null,
+		lastKnownRemoteEtag: null
 	};
 	writeNativeNc(empty);
 	return toPublicNc(empty);
+}
+async function apiAutoSyncNextcloud(options) {
+	const force = Boolean(options?.force);
+	const silent = Boolean(options?.silent);
+	const execute = async (update) => {
+		update?.(20, "Prüfe Datenstand auf Nextcloud…");
+		if (shouldUseRemoteServer()) {
+			const res = await fetch(apiUrl("/api/nextcloud/auto-sync"), {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ mode: force ? "force" : "poll" })
+			});
+			update?.(80, "Verarbeite Änderungen…");
+			const data = await res.json();
+			if (!res.ok || !data.nextcloud) throw new Error(data.error || "Automatische Synchronisation fehlgeschlagen.");
+			update?.(100, data.summary || "Synchronisiert");
+			return {
+				status: data.status ?? "synced",
+				localChanged: Boolean(data.localChanged),
+				pushed: Boolean(data.pushed),
+				summary: data.summary ?? "",
+				db: data.db ? normalizeDatabase(data.db) : void 0,
+				nextcloud: data.nextcloud
+			};
+		}
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) return {
+			status: "unconfigured",
+			localChanged: false,
+			pushed: false,
+			summary: "",
+			nextcloud: toPublicNc(cfg)
+		};
+		const meta = await nativeProbeNextcloudDbMeta(cfg);
+		if (!force && !cfg.pendingPush && cfg.lastKnownRemoteEtag && meta.exists && meta.etag) {
+			if (meta.etag === cfg.lastKnownRemoteEtag) {
+				update?.(100, "Bereits aktuell");
+				return {
+					status: "up-to-date",
+					localChanged: false,
+					pushed: false,
+					summary: "Bereits aktuell",
+					nextcloud: toPublicNc(cfg)
+				};
+			}
+		}
+		const localDb = normalizeDatabase(readNativeDb());
+		if (!meta.exists) {
+			update?.(65, "Erstupload nach Nextcloud…");
+			const newEtag = await nativePushNextcloud(cfg, localDb);
+			cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
+			cfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
+			if (newEtag) cfg.lastKnownRemoteEtag = newEtag;
+			cfg.pendingPush = false;
+			cfg.lastSyncError = null;
+			writeNativeNc(cfg);
+			update?.(100, "Abgeschlossen");
+			return {
+				status: "synced",
+				localChanged: false,
+				pushed: true,
+				summary: "Erstupload abgeschlossen",
+				db: localDb,
+				nextcloud: toPublicNc(cfg)
+			};
+		}
+		update?.(50, "Lade Änderungen von Nextcloud…");
+		const remoteDbRaw = await nativePullNextcloudOptional(cfg);
+		if (!remoteDbRaw) {
+			update?.(100, "Bereits aktuell");
+			return {
+				status: "up-to-date",
+				localChanged: false,
+				pushed: false,
+				summary: "Bereits aktuell",
+				nextcloud: toPublicNc(cfg)
+			};
+		}
+		update?.(70, "Führe Geräte-Änderungen zusammen…");
+		const mergeRes = mergeDatabases(localDb, normalizeDatabase(remoteDbRaw));
+		if (mergeRes.localChanged) writeNativeDb(mergeRes.merged);
+		let pushed = false;
+		let finalEtag = meta.etag;
+		if (mergeRes.remoteNeedsPush || cfg.pendingPush) {
+			update?.(85, "Übertrage lokale Änderungen…");
+			finalEtag = await nativePushNextcloud(cfg, mergeRes.merged) ?? meta.etag;
+			pushed = true;
+		}
+		cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
+		cfg.lastKnownRemoteUpdatedAt = mergeRes.merged.updatedAt;
+		if (finalEtag) cfg.lastKnownRemoteEtag = finalEtag;
+		cfg.pendingPush = false;
+		cfg.lastSyncError = null;
+		writeNativeNc(cfg);
+		update?.(100, mergeRes.summary || "Synchronisiert");
+		return {
+			status: "synced",
+			localChanged: mergeRes.localChanged,
+			pushed,
+			summary: mergeRes.summary,
+			db: mergeRes.merged,
+			nextcloud: toPublicNc(cfg)
+		};
+	};
+	if (silent) return execute();
+	return trackActivity("Synchronisiere Geräte mit Nextcloud…", (update) => execute(update), 15);
+}
+async function apiExportSyncPairingCode(calendarConfig) {
+	let creds;
+	if (shouldUseRemoteServer()) {
+		const res = await fetch(apiUrl("/api/nextcloud/pairing-code"));
+		const data = await res.json();
+		if (!res.ok || !data.url || !data.username || !data.appPassword) throw new Error(data.error || "Nextcloud ist noch nicht verbunden.");
+		creds = {
+			url: data.url,
+			username: data.username,
+			appPassword: data.appPassword,
+			folder: data.folder || "/TaktWerk",
+			autoSync: data.autoSync !== false,
+			syncIntervalSec: data.syncIntervalSec ?? 20
+		};
+	} else {
+		const cfg = readNativeNc();
+		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht verbunden.");
+		creds = {
+			url: cfg.url,
+			username: cfg.username,
+			appPassword: cfg.appPassword,
+			folder: cfg.folder,
+			autoSync: cfg.autoSync,
+			syncIntervalSec: cfg.syncIntervalSec ?? 20
+		};
+	}
+	return encodeSyncPairingCode({
+		v: 1,
+		url: creds.url,
+		username: creds.username,
+		appPassword: creds.appPassword,
+		folder: creds.folder,
+		autoSync: true,
+		syncIntervalSec: creds.syncIntervalSec ?? 20,
+		calendarUrl: calendarConfig?.selectedCalendarUrl || void 0,
+		calendarName: calendarConfig?.selectedCalendarName || void 0,
+		autoSyncTimeEntries: Boolean(calendarConfig?.autoSyncTimeEntries)
+	});
+}
+async function apiApplySyncPairingCode(rawCode) {
+	const payload = decodeSyncPairingCode(rawCode);
+	return trackActivity("Kopple Gerät & synchronisiere Daten…", async (update) => {
+		update(20, "Prüfe Nextcloud-Verbindung…");
+		await apiTestNextcloud({
+			url: payload.url,
+			username: payload.username,
+			appPassword: payload.appPassword,
+			folder: payload.folder
+		});
+		update(45, "Speichere Verbindung & Auto-Sync…");
+		await apiSaveNextcloudConfig({
+			url: payload.url,
+			username: payload.username,
+			appPassword: payload.appPassword,
+			folder: payload.folder,
+			autoSync: true,
+			syncIntervalSec: payload.syncIntervalSec ?? 20
+		});
+		update(70, "Lade gemeinsamen Datenstand…");
+		const syncResult = await apiAutoSyncNextcloud({
+			force: true,
+			silent: true
+		});
+		update(100, "Gerät erfolgreich gekoppelt");
+		return {
+			payload,
+			syncResult
+		};
+	}, 10);
 }
 async function apiSyncNextcloud(direction, force = false) {
 	return trackActivity(direction === "push" ? "Datenbank wird auf Nextcloud hochgeladen…" : "Datenbank wird von Nextcloud geladen…", async (update) => {
@@ -66267,6 +67199,11 @@ async function apiSyncNextcloud(direction, force = false) {
 		if (!cfg.url || !cfg.username || !cfg.appPassword) throw new Error("Nextcloud ist noch nicht konfiguriert.");
 		if (direction === "pull") {
 			update(50, "Lade taktwerk-db.json via WebDAV…");
+			const meta = await nativeProbeNextcloudDbMeta(cfg).catch(() => ({
+				exists: true,
+				etag: null,
+				lastModified: null
+			}));
 			const remoteDb = await nativePullNextcloudOptional(cfg);
 			if (!remoteDb) throw new Error(`Keine Datei "${cfg.folder}/taktwerk-db.json" in Nextcloud gefunden.`);
 			update(85, "Speichere lokal…");
@@ -66274,6 +67211,8 @@ async function apiSyncNextcloud(direction, force = false) {
 			writeNativeDb(normalized);
 			cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
 			cfg.lastKnownRemoteUpdatedAt = normalized.updatedAt || cfg.lastSyncAt;
+			if (meta.etag) cfg.lastKnownRemoteEtag = meta.etag;
+			cfg.pendingPush = false;
 			cfg.lastSyncError = null;
 			writeNativeNc(cfg);
 			update(100, "Fertig");
@@ -66294,9 +67233,11 @@ async function apiSyncNextcloud(direction, force = false) {
 			}
 		}
 		update(70, "Lade taktwerk-db.json via WebDAV hoch…");
-		await nativePushNextcloud(cfg, localDb);
+		const newEtag = await nativePushNextcloud(cfg, localDb);
 		cfg.lastSyncAt = (/* @__PURE__ */ new Date()).toISOString();
 		cfg.lastKnownRemoteUpdatedAt = localDb.updatedAt;
+		if (newEtag) cfg.lastKnownRemoteEtag = newEtag;
+		cfg.pendingPush = false;
 		cfg.lastSyncError = null;
 		writeNativeNc(cfg);
 		update(100, "Fertig");
@@ -81719,17 +82660,37 @@ var START_SECTION_OPTIONS = [
 		label: "Wiederkehrend / Verträge"
 	}
 ];
-function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConflictAt, onDismissConflict, onRefreshConfig, onSyncFromNextcloud, onSyncToNextcloud, onSaveCompany, onSaveGeoFenceRules, onCheckGeoFenceNow, checkingGeoFence = false, onImportDatabase, onLoadSampleData, onResetEmpty, onNotify, theme = "light" }) {
+function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConflictAt, autoSyncing = false, onDismissConflict, onRefreshConfig, onSyncFromNextcloud, onSyncToNextcloud, onAutoSyncNow, onApplyPairingCode, onSaveCompany, onSaveGeoFenceRules, onCheckGeoFenceNow, checkingGeoFence = false, onImportDatabase, onLoadSampleData, onResetEmpty, onNotify, theme = "light" }) {
 	const [activeTab, setActiveTab] = (0, import_react.useState)("general");
 	const [ncUrl, setNcUrl] = (0, import_react.useState)(nextcloud.url);
 	const [ncUsername, setNcUsername] = (0, import_react.useState)(nextcloud.username);
 	const [ncPassword, setNcPassword] = (0, import_react.useState)("");
 	const [ncFolder, setNcFolder] = (0, import_react.useState)(nextcloud.folder || "/TaktWerk");
 	const [ncAutoSync, setNcAutoSync] = (0, import_react.useState)(nextcloud.autoSync);
+	const [ncSyncIntervalSec, setNcSyncIntervalSec] = (0, import_react.useState)(nextcloud.syncIntervalSec ?? 20);
 	const [testing, setTesting] = (0, import_react.useState)(false);
 	const [savingNc, setSavingNc] = (0, import_react.useState)(false);
+	const [savingSyncQuick, setSavingSyncQuick] = (0, import_react.useState)(false);
 	const [syncing, setSyncing] = (0, import_react.useState)(null);
 	const [testResult, setTestResult] = (0, import_react.useState)(null);
+	const [pairingCode, setPairingCode] = (0, import_react.useState)(null);
+	const [pairingQrUrl, setPairingQrUrl] = (0, import_react.useState)(null);
+	const [generatingPairing, setGeneratingPairing] = (0, import_react.useState)(false);
+	const [pairingInput, setPairingInput] = (0, import_react.useState)("");
+	const [applyingPairing, setApplyingPairing] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		setNcUrl(nextcloud.url);
+		setNcUsername(nextcloud.username);
+		setNcFolder(nextcloud.folder || "/TaktWerk");
+		setNcAutoSync(nextcloud.autoSync);
+		setNcSyncIntervalSec(nextcloud.syncIntervalSec ?? 20);
+	}, [
+		nextcloud.url,
+		nextcloud.username,
+		nextcloud.folder,
+		nextcloud.autoSync,
+		nextcloud.syncIntervalSec
+	]);
 	const [companyForm, setCompanyForm] = (0, import_react.useState)(company);
 	(0, import_react.useEffect)(() => {
 		setCompanyForm(company);
@@ -82152,7 +83113,8 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 				username: ncUsername,
 				appPassword: ncPassword,
 				folder: ncFolder,
-				autoSync: ncAutoSync
+				autoSync: ncAutoSync,
+				syncIntervalSec: ncSyncIntervalSec
 			}));
 			setNcPassword("");
 			onNotify("Nextcloud-WebDAV-Verbindung gespeichert.");
@@ -82162,6 +83124,91 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 			setSavingNc(false);
 		}
 	};
+	const handleQuickAutoSyncChange = async (nextAutoSync, nextIntervalSec) => {
+		setNcAutoSync(nextAutoSync);
+		setNcSyncIntervalSec(nextIntervalSec);
+		if (!nextcloud.configured) return;
+		setSavingSyncQuick(true);
+		try {
+			onRefreshConfig(await apiSaveNextcloudConfig({
+				url: nextcloud.url,
+				username: nextcloud.username,
+				appPassword: "",
+				folder: nextcloud.folder,
+				autoSync: nextAutoSync,
+				syncIntervalSec: nextIntervalSec
+			}));
+			onNotify(nextAutoSync ? nextIntervalSec > 0 ? `Automatische Geräte-Synchronisation aktiv (alle ${nextIntervalSec} Sek.).` : "Automatische Geräte-Synchronisation aktiv (bei App-Start & Fensterwechsel)." : "Automatische Hintergrund-Synchronisation pausiert.");
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Sync-Einstellung konnte nicht gespeichert werden.", true);
+		} finally {
+			setSavingSyncQuick(false);
+		}
+	};
+	const handleGeneratePairingCode = async () => {
+		if (pairingCode) {
+			setPairingCode(null);
+			setPairingQrUrl(null);
+			return;
+		}
+		setGeneratingPairing(true);
+		try {
+			const code = await apiExportSyncPairingCode(companyForm.calendarConfig);
+			const qr = await import_browser.toDataURL(code, {
+				width: 220,
+				margin: 1,
+				color: {
+					dark: "#0f172a",
+					light: "#ffffff"
+				}
+			});
+			setPairingCode(code);
+			setPairingQrUrl(qr);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Kopplungscode konnte nicht erzeugt werden.", true);
+		} finally {
+			setGeneratingPairing(false);
+		}
+	};
+	const handleCopyPairingCode = async () => {
+		if (!pairingCode) return;
+		try {
+			await navigator.clipboard.writeText(pairingCode);
+			onNotify("Kopplungscode in Zwischenablage kopiert.");
+		} catch {
+			try {
+				const ta = document.createElement("textarea");
+				ta.value = pairingCode;
+				ta.setAttribute("readonly", "true");
+				document.body.appendChild(ta);
+				ta.select();
+				document.execCommand("copy");
+				document.body.removeChild(ta);
+				onNotify("Kopplungscode in Zwischenablage kopiert.");
+			} catch {
+				onNotify("Code konnte nicht kopiert werden – bitte manuell markieren.", true);
+			}
+		}
+	};
+	const handleApplyPairingSubmit = async (e) => {
+		e.preventDefault();
+		const trimmed = pairingInput.trim();
+		if (!trimmed) {
+			onNotify("Bitte füge zuerst einen Kopplungscode (TW-SYNC-1:...) ein.", true);
+			return;
+		}
+		setApplyingPairing(true);
+		try {
+			await onApplyPairingCode(trimmed);
+			setPairingInput("");
+			setPairingCode(null);
+			setPairingQrUrl(null);
+		} catch (err) {
+			onNotify(err instanceof Error ? err.message : "Kopplung fehlgeschlagen. Bitte Code und Internetverbindung prüfen.", true);
+		} finally {
+			setApplyingPairing(false);
+		}
+	};
 	const handleClearNextcloud = async () => {
 		try {
 			onRefreshConfig(await apiClearNextcloudConfig());
@@ -82169,6 +83216,8 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 			setNcUsername("");
 			setNcPassword("");
 			setNcFolder("/TaktWerk");
+			setPairingCode(null);
+			setPairingQrUrl(null);
 			setTestResult(null);
 			onNotify("Nextcloud-Verbindung getrennt.");
 		} catch (err) {
@@ -84499,6 +85548,225 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 								children: "Server speichern"
 							})]
 						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-start gap-2.5",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300",
+										children: desktopApp ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Laptop, { className: "h-5 w-5" }) : nativeApp ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, { className: "h-5 w-5" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Monitor, { className: "h-5 w-5" })
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+											children: "Windows & Smartphone automatisch synchronisieren"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+											size: "sm",
+											title: "Automatische Geräte-Synchronisation",
+											text: "Hält deine Windows Desktop-App und dein Android-Smartphone vollautomatisch und konfliktfrei über deine eigene Nextcloud synchron – inklusive laufender Timer, Zeiten, Kunden, Produkte, NFC-Aufgaben und Rechnungen."
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+										className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
+										children: [
+											"Aktuelles Gerät:",
+											" ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "font-semibold text-slate-700 dark:text-slate-200",
+												children: desktopApp ? "Windows Desktop-App" : nativeApp ? "Android Smartphone-App" : "Web-App (Browser)"
+											}),
+											nextcloud.configured && nextcloud.lastSyncAt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [" · Letzter Abgleich: ", formatDateTimeDE(nextcloud.lastSyncAt)] })
+										]
+									})] })]
+								}), nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => void onAutoSyncNow(),
+									disabled: autoSyncing,
+									className: "inline-flex items-center justify-center gap-1.5 rounded-lg ui-accent-btn px-3.5 py-2 text-xs font-semibold text-white disabled:opacity-60 whitespace-nowrap shrink-0 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, { className: `h-3.5 w-3.5 ${autoSyncing ? "animate-spin" : ""}` }), autoSyncing ? "Gleiche ab…" : "Jetzt abgleichen"]
+								})]
+							}),
+							nextcloud.pendingPush && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TriangleAlert, { className: "mt-0.5 h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Lokale Offline-Änderungen warten noch auf Übertragung. Sie werden automatisch hochgeladen, sobald deine Nextcloud wieder erreichbar ist." })]
+							}),
+							nextcloud.configured ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-4 md:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 text-sm text-slate-800 dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-200 cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "checkbox",
+										checked: ncAutoSync,
+										disabled: savingSyncQuick,
+										onChange: (e) => void handleQuickAutoSyncChange(e.target.checked, ncSyncIntervalSec),
+										className: "mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 accent-violet-600"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "font-semibold",
+										children: "Automatischer Echtzeit-Abgleich aktiv"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
+										children: "Übernimmt Änderungen vom anderen Gerät im Hintergrund und führt gleichzeitige Bearbeitungen konfliktfrei zusammen."
+									})] })]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#3b2d5e] dark:bg-[#211936]/70",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300",
+											children: "Prüf-Intervall im Hintergrund"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+											value: String(ncSyncIntervalSec),
+											disabled: !ncAutoSync || savingSyncQuick,
+											onChange: (val) => void handleQuickAutoSyncChange(ncAutoSync, Number(val)),
+											ariaLabel: "Synchronisations-Intervall wählen",
+											options: [
+												{
+													value: "15",
+													label: "Alle 15 Sekunden (Sehr schnell)"
+												},
+												{
+													value: "20",
+													label: "Alle 20 Sekunden (Empfohlen)"
+												},
+												{
+													value: "30",
+													label: "Alle 30 Sekunden"
+												},
+												{
+													value: "60",
+													label: "Alle 60 Sekunden (Datensparend)"
+												},
+												{
+													value: "0",
+													label: "Nur bei App-Start, Fokus & Änderungen"
+												}
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1.5 text-[11px] text-slate-500 dark:text-slate-400",
+											children: "Sparsame ETag-Prüfung: Lädt nur dann Daten, wenn sich auf dem anderen Gerät wirklich etwas geändert hat."
+										})
+									]
+								})]
+							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "text-xs leading-relaxed text-slate-600 dark:text-slate-300",
+								children: [
+									"Verbinde beide Geräte mit derselben Nextcloud und demselben Zielordner (z. B.",
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
+										className: "rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] dark:bg-[#211936]",
+										children: "/TaktWerk"
+									}),
+									"). Hast du das erste Gerät bereits eingerichtet, kannst du unten einfach den",
+									" ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "font-semibold",
+										children: "1-Klick-Kopplungscode"
+									}),
+									" einfügen."
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-xl border border-slate-200/90 bg-slate-50/60 p-4 dark:border-[#3b2d5e] dark:bg-[#130d21]/80 space-y-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link2, { className: "h-4 w-4 text-violet-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+										className: "text-sm font-semibold text-slate-900 dark:text-slate-100",
+										children: "1-Klick Geräte-Kopplung (Windows ↔ Smartphone)"
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: `grid grid-cols-1 gap-4 ${nextcloud.configured ? "lg:grid-cols-2" : ""}`,
+									children: [nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "rounded-lg border border-slate-200 bg-white p-4 dark:border-[#2e2349] dark:bg-[#171126] space-y-3",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center justify-between gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-xs font-semibold text-slate-800 dark:text-slate-200",
+													children: "Zweites Gerät verbinden (Code erzeugen)"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => void handleGeneratePairingCode(),
+													disabled: generatingPairing,
+													className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0",
+													children: [generatingPairing ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : pairingCode ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(EyeOff, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QrCode, { className: "h-3.5 w-3.5" }), pairingCode ? "Verbergen" : "Code & QR anzeigen"]
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-xs text-slate-500 dark:text-slate-400",
+												children: "Überträgt Nextcloud-Zugang, Zielordner, Auto-Sync-Intervall und CalDAV-Kalender in einem Schritt auf dein anderes Gerät."
+											}),
+											pairingCode && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "space-y-3 pt-1",
+												children: [
+													pairingQrUrl && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex flex-col items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-[#3b2d5e] dark:bg-[#130d21]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+															src: pairingQrUrl,
+															alt: "TaktWerk Geräte-Kopplung QR-Code",
+															className: "h-44 w-44 rounded-lg border border-slate-200 bg-white p-1.5"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-[11px] text-slate-500 dark:text-slate-400",
+															children: "Mit Handy-Kamera / QR-Scanner lesen & unten einfügen"
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "rounded-lg border border-slate-200 bg-slate-50 p-2.5 font-mono text-[11px] text-slate-700 break-all select-all dark:border-[#3b2d5e] dark:bg-[#130d21] dark:text-slate-300",
+														children: pairingCode
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex flex-wrap items-center justify-between gap-2",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+															type: "button",
+															onClick: () => void handleCopyPairingCode(),
+															className: "inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Copy, { className: "h-3.5 w-3.5" }), "Kopplungscode kopieren"]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-[11px] text-amber-700 dark:text-amber-300",
+															children: "Enthält dein App-Passwort – nur für eigene Geräte nutzen."
+														})]
+													})
+												]
+											})
+										]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+										onSubmit: (e) => void handleApplyPairingSubmit(e),
+										className: "rounded-lg border border-slate-200 bg-white p-4 dark:border-[#2e2349] dark:bg-[#171126] space-y-3 flex flex-col justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "space-y-2",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+													className: "block text-xs font-semibold text-slate-800 dark:text-slate-200",
+													children: "Kopplungscode von anderem Gerät einfügen"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-xs text-slate-500 dark:text-slate-400",
+													children: "Kopiere den Code auf deinem bereits eingerichteten Gerät (Windows oder Smartphone) und füge ihn hier ein:"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+													rows: 3,
+													value: pairingInput,
+													onChange: (e) => setPairingInput(e.target.value),
+													placeholder: "TW-SYNC-1:...",
+													className: `${inputClass} font-mono text-xs resize-none`
+												})
+											]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "flex items-center justify-end",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "submit",
+												disabled: applyingPairing || !pairingInput.trim(),
+												className: "inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+												children: [applyingPairing ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-3.5 w-3.5 animate-spin" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link2, { className: "h-3.5 w-3.5" }), applyingPairing ? "Kopple & synchronisiere…" : "Koppeln & synchronisieren"]
+											})
+										})]
+									})]
+								})]
+							})
+						]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 						className: "rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]",
@@ -88786,7 +90054,7 @@ var NAV_ITEMS = [
 		icon: Cloud
 	}
 ];
-function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, openTimeCount, unpaidInvoiceCount, dueRecurringCount = 0, activeTimer, elapsedSeconds, recentQuickTasks, onQuickStartTask, onStopTimer, theme, onToggleTheme, onOpenSearch }) {
+function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, openTimeCount, unpaidInvoiceCount, dueRecurringCount = 0, activeTimer, elapsedSeconds, recentQuickTasks, onQuickStartTask, onStopTimer, theme, onToggleTheme, onOpenSearch, autoSyncing = false, onAutoSyncNow }) {
 	const [mobileOpen, setMobileOpen] = (0, import_react.useState)(false);
 	(0, import_react.useEffect)(() => {
 		if (!mobileOpen) return;
@@ -88935,35 +90203,51 @@ function Sidebar({ activeSection, sectionTitle, onSelectSection, nextcloud, open
 					renderNavList(),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "space-y-2 border-t border-slate-200 p-3 dark:border-[#2e2349]",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center justify-between gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-								type: "button",
-								onClick: onToggleTheme,
-								className: "flex flex-1 items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:bg-[#2a2045] cursor-pointer",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Erscheinungsbild" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "inline-flex items-center gap-1.5 font-semibold",
-									children: theme === "dark" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Moon, { className: "h-3.5 w-3.5 text-violet-400" }), "Dunkel"] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sun, { className: "h-3.5 w-3.5 text-amber-500" }), "Hell"] })
-								})]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PWAInstallButton, {})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => handleNav("settings"),
-							className: "w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left transition-colors hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936] dark:hover:bg-[#2a2045] cursor-pointer",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex items-center justify-between gap-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-xs font-semibold text-slate-800 dark:text-slate-200",
-									children: "Speicherziel"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-xs font-medium text-slate-600 dark:text-violet-300",
-									children: nextcloud.configured ? "Nextcloud" : "Lokal"
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: onToggleTheme,
+									className: "flex flex-1 items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:bg-[#2a2045] cursor-pointer",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Erscheinungsbild" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "inline-flex items-center gap-1.5 font-semibold",
+										children: theme === "dark" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Moon, { className: "h-3.5 w-3.5 text-violet-400" }), "Dunkel"] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sun, { className: "h-3.5 w-3.5 text-amber-500" }), "Hell"] })
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PWAInstallButton, {})]
+							}),
+							nextcloud.configured && onAutoSyncNow && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => {
+									setMobileOpen(false);
+									onAutoSyncNow();
+								},
+								disabled: autoSyncing,
+								className: "flex w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-60 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:bg-[#2a2045] cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "inline-flex items-center gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, { className: `h-3.5 w-3.5 ${autoSyncing ? "animate-spin" : ""}` }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: autoSyncing ? "Gleiche Geräte ab…" : "Geräte jetzt abgleichen" })]
+								}), nextcloud.pendingPush && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-2 w-2 rounded-full bg-amber-500" })]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => handleNav("settings"),
+								className: "w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left transition-colors hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936] dark:hover:bg-[#2a2045] cursor-pointer",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center justify-between gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-xs font-semibold text-slate-800 dark:text-slate-200",
+										children: "Speicherziel"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-xs font-medium text-slate-600 dark:text-violet-300",
+										children: nextcloud.configured ? "Nextcloud" : "Lokal"
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-0.5 truncate text-[11px] text-slate-500 dark:text-slate-400",
+									children: nextcloud.configured ? nextcloud.url.replace(/^https?:\/\//, "") : "Nextcloud jetzt verbinden"
 								})]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "mt-0.5 truncate text-[11px] text-slate-500 dark:text-slate-400",
-								children: nextcloud.configured ? nextcloud.url.replace(/^https?:\/\//, "") : "Nextcloud jetzt verbinden"
-							})]
-						})]
+							})
+						]
 					})
 				]
 			})]
@@ -89114,9 +90398,11 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 	const [internalCategory, setInternalCategory] = (0, import_react.useState)(company.internalCategories?.[0] ?? "Kundenakquise");
 	const [showManualForm, setShowManualForm] = (0, import_react.useState)(false);
 	const [editingEntry, setEditingEntry] = (0, import_react.useState)(null);
+	const [editingOriginalTimes, setEditingOriginalTimes] = (0, import_react.useState)(null);
 	const [manualEntryType, setManualEntryType] = (0, import_react.useState)("project");
 	const [manualInternalCat, setManualInternalCat] = (0, import_react.useState)(company.internalCategories?.[0] ?? "Kundenakquise");
 	const [manualDate, setManualDate] = (0, import_react.useState)(toInputDate());
+	const [manualEndDate, setManualEndDate] = (0, import_react.useState)(toInputDate());
 	const [manualStart, setManualStart] = (0, import_react.useState)("09:00");
 	const [manualEnd, setManualEnd] = (0, import_react.useState)("11:00");
 	const [manualTitle, setManualTitle] = (0, import_react.useState)("");
@@ -89130,6 +90416,19 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 	const [lightboxData, setLightboxData] = (0, import_react.useState)(null);
 	const activePhotoInputRef = (0, import_react.useRef)(null);
 	const manualPhotoInputRef = (0, import_react.useRef)(null);
+	(0, import_react.useEffect)(() => {
+		if (!showManualForm || lightboxData) return;
+		const handleKeyDown = (e) => {
+			if (e.key === "Escape") {
+				setShowManualForm(false);
+				setEditingEntry(null);
+				setEditingOriginalTimes(null);
+				setManualError("");
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [showManualForm, lightboxData]);
 	const [filterCustomerId, setFilterCustomerId] = (0, import_react.useState)("all");
 	const [filterStatus, setFilterStatus] = (0, import_react.useState)("all");
 	const [filterActivityType, setFilterActivityType] = (0, import_react.useState)("all");
@@ -89143,8 +90442,8 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 	const filteredEntries = (0, import_react.useMemo)(() => {
 		return [...timeEntries].filter((entry) => {
 			if (filterCustomerId !== "all" && entry.customerId !== filterCustomerId) return false;
-			if (filterStatus === "open" && entry.billedInvoiceId !== null) return false;
-			if (filterStatus === "billed" && entry.billedInvoiceId === null) return false;
+			if (filterStatus === "open" && Boolean(entry.billedInvoiceId)) return false;
+			if (filterStatus === "billed" && !entry.billedInvoiceId) return false;
 			if (filterActivityType === "project" && (entry.entryType === "internal" || !entry.customerId)) return false;
 			if (filterActivityType === "internal" && entry.entryType !== "internal" && entry.customerId) return false;
 			return true;
@@ -89277,11 +90576,20 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 		setNotes("");
 		setDraftLocation(null);
 	};
-	const openCreateManualForm = () => {
+	const closeManualForm = () => {
+		setShowManualForm(false);
 		setEditingEntry(null);
+		setEditingOriginalTimes(null);
+		setManualError("");
+	};
+	const openCreateManualForm = () => {
+		const today = toInputDate();
+		setEditingEntry(null);
+		setEditingOriginalTimes(null);
 		setManualEntryType("project");
 		setManualInternalCat(company.internalCategories?.[0] ?? "Kundenakquise");
-		setManualDate(toInputDate());
+		setManualDate(today);
+		setManualEndDate(today);
 		setManualStart("09:00");
 		setManualEnd("11:00");
 		setManualTitle("");
@@ -89294,18 +90602,33 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 		setShowManualForm(true);
 	};
 	const openEditEntryForm = (entry) => {
+		const parsedStart = new Date(entry.startTime);
+		const safeStart = Number.isNaN(parsedStart.getTime()) ? /* @__PURE__ */ new Date() : parsedStart;
+		const parsedEnd = new Date(entry.endTime);
+		const safeEnd = Number.isNaN(parsedEnd.getTime()) ? new Date(safeStart.getTime() + Math.max(60, entry.durationSeconds || 60) * 1e3) : parsedEnd;
+		const startDateStr = toInputDate(safeStart);
+		const endDateStr = toInputDate(safeEnd);
+		const startTimeStr = toInputTime(safeStart.toISOString());
+		const endTimeStr = toInputTime(safeEnd.toISOString());
 		setEditingEntry(entry);
+		setEditingOriginalTimes({
+			startDate: startDateStr,
+			endDate: endDateStr,
+			startTime: startTimeStr,
+			endTime: endTimeStr
+		});
 		const isInt = entry.entryType === "internal" || !entry.customerId;
 		setManualEntryType(isInt ? "internal" : "project");
 		setManualInternalCat(entry.internalCategory || company.internalCategories?.[0] || "Kundenakquise");
-		setManualDate(toInputDate(new Date(entry.startTime)));
-		setManualStart(toInputTime(entry.startTime));
-		setManualEnd(toInputTime(entry.endTime));
-		setManualTitle(entry.title);
-		setManualNotes(entry.notes);
-		setManualCustomerId(entry.customerId);
-		setManualProductId(entry.productId);
-		setManualBillable(entry.billable);
+		setManualDate(startDateStr);
+		setManualEndDate(endDateStr);
+		setManualStart(startTimeStr);
+		setManualEnd(endTimeStr);
+		setManualTitle(entry.title ?? "");
+		setManualNotes(entry.notes ?? "");
+		setManualCustomerId(entry.customerId || customers[0]?.id || "");
+		setManualProductId(entry.productId || serviceProducts[0]?.id || products[0]?.id || "");
+		setManualBillable(Boolean(entry.billable));
 		setManualPhotos(entry.photos ?? []);
 		setManualError("");
 		setShowManualForm(true);
@@ -89318,16 +90641,51 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 			setManualError("Bitte Kunde und Leistung auswählen.");
 			return;
 		}
-		const startIso = /* @__PURE__ */ new Date(`${manualDate}T${manualStart}:00`);
-		const endIso = /* @__PURE__ */ new Date(`${manualDate}T${manualEnd}:00`);
-		if (Number.isNaN(startIso.getTime()) || Number.isNaN(endIso.getTime())) {
-			setManualError("Bitte gültige Start- und Endzeiten eingeben.");
-			return;
-		}
-		const diffSec = Math.floor((endIso.getTime() - startIso.getTime()) / 1e3);
-		if (diffSec <= 0) {
-			setManualError("Die Endzeit muss nach der Startzeit liegen.");
-			return;
+		let nextStartIsoStr = "";
+		let nextEndIsoStr = "";
+		let nextDurationSec = 0;
+		const origSpanMs = editingOriginalTimes ? (/* @__PURE__ */ new Date(`${editingOriginalTimes.endDate}T00:00:00`)).getTime() - (/* @__PURE__ */ new Date(`${editingOriginalTimes.startDate}T00:00:00`)).getTime() : 0;
+		const currSpanMs = (/* @__PURE__ */ new Date(`${manualEndDate || manualDate}T00:00:00`)).getTime() - (/* @__PURE__ */ new Date(`${manualDate}T00:00:00`)).getTime();
+		const timesUntouched = Boolean(editingEntry && editingOriginalTimes) && manualStart === editingOriginalTimes?.startTime && manualEnd === editingOriginalTimes?.endTime && !Number.isNaN(origSpanMs) && !Number.isNaN(currSpanMs) && currSpanMs === origSpanMs;
+		if (editingEntry && editingOriginalTimes && timesUntouched) {
+			if (manualDate === editingOriginalTimes.startDate && manualEndDate === editingOriginalTimes.endDate) {
+				nextStartIsoStr = editingEntry.startTime;
+				nextEndIsoStr = editingEntry.endTime;
+				nextDurationSec = editingEntry.durationSeconds;
+			} else {
+				const origStartDay = /* @__PURE__ */ new Date(`${editingOriginalTimes.startDate}T00:00:00`);
+				const newStartDay = /* @__PURE__ */ new Date(`${manualDate}T00:00:00`);
+				if (Number.isNaN(origStartDay.getTime()) || Number.isNaN(newStartDay.getTime())) {
+					setManualError("Bitte ein gültiges Datum eingeben.");
+					return;
+				}
+				const dayShiftMs = newStartDay.getTime() - origStartDay.getTime();
+				const origStartMs = new Date(editingEntry.startTime).getTime();
+				const origEndMs = new Date(editingEntry.endTime).getTime();
+				if (Number.isNaN(origStartMs) || Number.isNaN(origEndMs)) {
+					setManualError("Bitte gültige Start- und Endzeiten eingeben.");
+					return;
+				}
+				nextStartIsoStr = new Date(origStartMs + dayShiftMs).toISOString();
+				nextEndIsoStr = new Date(origEndMs + dayShiftMs).toISOString();
+				nextDurationSec = editingEntry.durationSeconds;
+			}
+		} else {
+			const effectiveEndDate = manualEndDate || manualDate;
+			const startIso = /* @__PURE__ */ new Date(`${manualDate}T${manualStart}:00`);
+			const endIso = /* @__PURE__ */ new Date(`${effectiveEndDate}T${manualEnd}:00`);
+			if (Number.isNaN(startIso.getTime()) || Number.isNaN(endIso.getTime())) {
+				setManualError("Bitte gültige Start- und Endzeiten eingeben.");
+				return;
+			}
+			const diffSec = Math.floor((endIso.getTime() - startIso.getTime()) / 1e3);
+			if (diffSec <= 0) {
+				setManualError("Die Endzeit muss nach der Startzeit liegen.");
+				return;
+			}
+			nextStartIsoStr = startIso.toISOString();
+			nextEndIsoStr = endIso.toISOString();
+			nextDurationSec = diffSec;
 		}
 		const prod = isInt ? void 0 : productMap.get(effectiveManualProductId);
 		if (editingEntry) {
@@ -89340,9 +90698,9 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 				productId: isInt ? "" : effectiveManualProductId,
 				title: manualTitle.trim() || (isInt ? manualInternalCat : prod?.name || "Arbeitszeit"),
 				notes: manualNotes.trim(),
-				startTime: startIso.toISOString(),
-				endTime: endIso.toISOString(),
-				durationSeconds: diffSec,
+				startTime: nextStartIsoStr,
+				endTime: nextEndIsoStr,
+				durationSeconds: nextDurationSec,
 				hourlyRateNet: isInt ? 0 : productChanged ? prod?.unitPriceNet ?? editingEntry.hourlyRateNet : editingEntry.hourlyRateNet,
 				taxRate: isInt ? 19 : productChanged ? prod?.taxRate ?? editingEntry.taxRate : editingEntry.taxRate,
 				billable: isInt ? false : manualBillable,
@@ -89357,9 +90715,9 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 			nfcTaskId: null,
 			title: manualTitle.trim() || (isInt ? manualInternalCat : prod?.name || "Manuelle Buchung"),
 			notes: manualNotes.trim(),
-			startTime: startIso.toISOString(),
-			endTime: endIso.toISOString(),
-			durationSeconds: diffSec,
+			startTime: nextStartIsoStr,
+			endTime: nextEndIsoStr,
+			durationSeconds: nextDurationSec,
 			hourlyRateNet: isInt ? 0 : prod?.unitPriceNet ?? 0,
 			taxRate: prod?.taxRate ?? 19,
 			billable: isInt ? false : manualBillable,
@@ -89369,6 +90727,7 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 			createdAt: (/* @__PURE__ */ new Date()).toISOString()
 		});
 		setEditingEntry(null);
+		setEditingOriginalTimes(null);
 		setManualTitle("");
 		setManualNotes("");
 		setManualPhotos([]);
@@ -89491,251 +90850,9 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 						})] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							type: "button",
-							onClick: () => {
-								if (showManualForm && !editingEntry) setShowManualForm(false);
-								else openCreateManualForm();
-							},
+							onClick: openCreateManualForm,
 							className: "inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#211936] whitespace-nowrap shrink-0 cursor-pointer",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Zeit nachtragen"]
-						})
-					]
-				})]
-			}),
-			showManualForm && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "mb-4 flex flex-wrap items-center justify-between gap-3",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex flex-wrap items-center gap-3",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-							className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
-							children: editingEntry ? "Zeiteintrag bearbeiten" : "Arbeitszeit manuell nachtragen"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => {
-									setManualEntryType("project");
-									setManualBillable(true);
-								},
-								className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${manualEntryType === "project" ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300"}`,
-								children: "Kundenauftrag"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: () => {
-									setManualEntryType("internal");
-									setManualBillable(false);
-								},
-								className: `rounded-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${manualEntryType === "internal" ? "bg-amber-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300"}`,
-								children: "Interne Tätigkeit (ohne Kunde)"
-							})]
-						})]
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-						type: "button",
-						onClick: () => {
-							setShowManualForm(false);
-							setEditingEntry(null);
-						},
-						className: "text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 cursor-pointer",
-						children: "Schließen"
-					})]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-					onSubmit: handleManualSubmit,
-					className: "grid grid-cols-1 gap-4 md:grid-cols-6",
-					children: [
-						manualEntryType === "internal" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "md:col-span-4",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Interne Kategorie (ohne Kunden & ohne Rechnung)"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-								value: manualInternalCat,
-								onChange: setManualInternalCat,
-								ariaLabel: "Interne Kategorie",
-								options: internalCategoryOptions.map((cat) => ({
-									value: cat,
-									label: cat
-								}))
-							})]
-						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "md:col-span-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Kunde"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-								value: effectiveManualCustomerId,
-								onChange: setManualCustomerId,
-								disabled: customers.length === 0,
-								options: customers.map((c) => ({
-									value: c.id,
-									label: c.companyName,
-									hint: c.customerNumber
-								}))
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "md:col-span-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Leistung"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
-								value: effectiveManualProductId,
-								onChange: setManualProductId,
-								disabled: products.length === 0,
-								options: products.map((p) => ({
-									value: p.id,
-									label: `${p.name} (${formatCurrency(p.unitPriceNet)})`
-								}))
-							})]
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Datum"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-							type: "date",
-							value: manualDate,
-							onChange: (e) => setManualDate(e.target.value),
-							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-						})] }),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "grid grid-cols-2 gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Von"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "time",
-								value: manualStart,
-								onChange: (e) => setManualStart(e.target.value),
-								className: "w-full rounded-lg border border-slate-300 bg-white px-2 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-							})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Bis"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "time",
-								value: manualEnd,
-								onChange: (e) => setManualEnd(e.target.value),
-								className: "w-full rounded-lg border border-slate-300 bg-white px-2 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-							})] })]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "md:col-span-3",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: "Tätigkeitsbeschreibung"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: manualTitle,
-								onChange: (e) => setManualTitle(e.target.value),
-								placeholder: manualEntryType === "internal" ? "z. B. Studio reinigen, Kaltakquise, Belege sortieren..." : "z. B. Kundenworkshop & Dokumentation",
-								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "md:col-span-3",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
-								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: manualEntryType === "internal" ? "Notiz zur internen Aufgabe (optional)" : "Notiz für Auswertung / Rechnung (optional)"
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-								type: "text",
-								value: manualNotes,
-								onChange: (e) => setManualNotes(e.target.value),
-								placeholder: "Details zur erbrachten Leistung...",
-								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
-							})]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "md:col-span-6 space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex flex-wrap items-center justify-between gap-2",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-										className: "inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5 text-violet-500" }),
-											"Einsatzfotos / Fotodokumentation (",
-											manualPhotos.length,
-											")"
-										]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										ref: manualPhotoInputRef,
-										type: "file",
-										accept: "image/*",
-										multiple: true,
-										onChange: (e) => void handleAddManualPhotos(e),
-										className: "hidden"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: () => manualPhotoInputRef.current?.click(),
-										disabled: photoBusy,
-										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5" }), photoBusy ? "Verarbeite…" : "Foto hinzufügen"]
-									})
-								]
-							}), manualPhotos.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4",
-								children: manualPhotos.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "relative overflow-hidden rounded-lg border border-slate-200 bg-white p-1.5 dark:border-[#3b2d5e] dark:bg-[#171126]",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-											src: p.dataUrl,
-											alt: p.caption || "Einsatzfoto",
-											className: "h-20 w-full rounded object-cover"
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-											type: "text",
-											value: p.caption ?? "",
-											onChange: (e) => setManualPhotos((prev) => prev.map((item) => item.id === p.id ? {
-												...item,
-												caption: e.target.value
-											} : item)),
-											placeholder: "Bildbeschreibung…",
-											className: "mt-1 w-full rounded border border-slate-200 bg-slate-50 px-1.5 py-1 text-[11px] text-slate-800 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-											type: "button",
-											onClick: () => setManualPhotos((prev) => prev.filter((item) => item.id !== p.id)),
-											"aria-label": "Foto entfernen",
-											className: "absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-950/75 text-white hover:bg-rose-600 cursor-pointer",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
-										})
-									]
-								}, p.id))
-							})]
-						}),
-						manualError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-							className: "text-xs font-medium text-red-600 dark:text-red-400 md:col-span-6",
-							children: manualError
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex flex-wrap items-center justify-between gap-3 md:col-span-6",
-							children: [manualEntryType === "internal" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "text-xs text-amber-700 dark:text-amber-300",
-								children: "Interne Aufgaben sind nicht abrechenbar und erscheinen in Auswertungen & PDF-Berichten."
-							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-								className: "flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-									type: "checkbox",
-									checked: manualBillable,
-									onChange: (e) => setManualBillable(e.target.checked),
-									className: "h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-								}), "Abrechenbar (für Rechnungen verfügbar)"]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex gap-2",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									onClick: () => {
-										setShowManualForm(false);
-										setEditingEntry(null);
-									},
-									className: "rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
-									children: "Abbrechen"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "submit",
-									className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
-									children: editingEntry ? "Änderungen speichern" : "Eintrag speichern"
-								})]
-							})]
 						})
 					]
 				})]
@@ -90667,17 +91784,31 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 												className: "flex items-center justify-end gap-1",
 												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 													type: "button",
-													onClick: () => openEditEntryForm(entry),
-													disabled: Boolean(entry.billedInvoiceId),
+													onClick: () => {
+														if (entry.billedInvoiceId) {
+															onNotify("Dieser Eintrag wurde bereits abgerechnet und ist für Änderungen gesperrt.", true);
+															return;
+														}
+														openEditEntryForm(entry);
+													},
+													"aria-label": "Eintrag bearbeiten",
+													"aria-disabled": Boolean(entry.billedInvoiceId),
 													title: entry.billedInvoiceId ? "Abgerechnete Einträge können nicht bearbeitet werden" : "Eintrag bearbeiten",
-													className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-[#231b38] dark:hover:text-slate-100 cursor-pointer",
+													className: `inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors ${entry.billedInvoiceId ? "cursor-not-allowed text-slate-400 opacity-35" : "cursor-pointer text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-[#231b38] dark:hover:text-slate-100"}`,
 													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-3.5 w-3.5" })
 												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 													type: "button",
-													onClick: () => onDeleteEntry(entry.id),
-													disabled: Boolean(entry.billedInvoiceId),
+													onClick: () => {
+														if (entry.billedInvoiceId) {
+															onNotify("Dieser Eintrag wurde bereits abgerechnet und kann nicht gelöscht werden.", true);
+															return;
+														}
+														onDeleteEntry(entry.id);
+													},
+													"aria-label": "Eintrag löschen",
+													"aria-disabled": Boolean(entry.billedInvoiceId),
 													title: entry.billedInvoiceId ? "Abgerechnete Einträge können nicht gelöscht werden" : "Eintrag löschen",
-													className: "inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-30 dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
+													className: `inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors ${entry.billedInvoiceId ? "cursor-not-allowed text-slate-400 opacity-35" : "cursor-pointer text-slate-400 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/60 dark:hover:text-red-400"}`,
 													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-4 w-4" })
 												})]
 											})
@@ -90696,6 +91827,279 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 					]
 				})] })]
 			}),
+			showManualForm && typeof document !== "undefined" && (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				role: "dialog",
+				"aria-modal": "true",
+				"aria-label": editingEntry ? "Zeiteintrag bearbeiten" : "Arbeitszeit manuell nachtragen",
+				onClick: closeManualForm,
+				className: "fixed inset-0 z-[130] flex items-end justify-center bg-slate-950/60 p-2 backdrop-blur-[1px] sm:items-center sm:p-4",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					onClick: (e) => e.stopPropagation(),
+					className: "flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-[#3b2d5e] dark:bg-[#171126]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between gap-3 border-b border-slate-200 px-5 py-3.5 dark:border-[#2e2349]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex min-w-0 items-center gap-2",
+							children: [editingEntry ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pencil, { className: "h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4 shrink-0 text-blue-700 dark:text-violet-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "truncate font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+								children: editingEntry ? "Zeiteintrag bearbeiten" : "Arbeitszeit manuell nachtragen"
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: closeManualForm,
+							"aria-label": "Schließen",
+							className: "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-[#2a2045] dark:hover:text-slate-100 cursor-pointer",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-4 w-4" })
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+						onSubmit: handleManualSubmit,
+						className: "flex flex-1 flex-col overflow-hidden",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex-1 space-y-4 overflow-y-auto p-5",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center justify-between gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "inline-flex items-center gap-1 rounded-lg bg-slate-100 p-1 dark:bg-[#211936]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => {
+											setManualEntryType("project");
+											setManualBillable(true);
+										},
+										className: `rounded-md px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${manualEntryType === "project" ? "bg-white text-slate-900 shadow-xs dark:bg-violet-600 dark:text-white" : "text-slate-600 hover:text-slate-900 dark:text-slate-300"}`,
+										children: "Kundenauftrag"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => {
+											setManualEntryType("internal");
+											setManualBillable(false);
+										},
+										className: `rounded-md px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${manualEntryType === "internal" ? "bg-amber-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300"}`,
+										children: "Interne Tätigkeit (ohne Kunde)"
+									})]
+								}), editingEntry && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "font-mono text-xs font-medium text-slate-500 dark:text-slate-400 tabular-nums",
+									children: ["Erfasste Dauer: ", formatDuration(editingEntry.durationSeconds)]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 gap-4 sm:grid-cols-6",
+								children: [
+									manualEntryType === "internal" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "sm:col-span-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: "Interne Kategorie (ohne Kunden & ohne Rechnung)"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+											value: manualInternalCat,
+											onChange: setManualInternalCat,
+											ariaLabel: "Interne Kategorie",
+											options: (manualInternalCat && !internalCategoryOptions.includes(manualInternalCat) ? [manualInternalCat, ...internalCategoryOptions] : internalCategoryOptions).map((cat) => ({
+												value: cat,
+												label: cat
+											}))
+										})]
+									}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "sm:col-span-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: "Kunde"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+											value: effectiveManualCustomerId,
+											onChange: setManualCustomerId,
+											disabled: customers.length === 0,
+											options: customers.map((c) => ({
+												value: c.id,
+												label: c.companyName,
+												hint: c.customerNumber
+											}))
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "sm:col-span-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: "Leistung"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
+											value: effectiveManualProductId,
+											onChange: setManualProductId,
+											disabled: products.length === 0,
+											options: products.map((p) => ({
+												value: p.id,
+												label: `${p.name} (${formatCurrency(p.unitPriceNet)})`
+											}))
+										})]
+									})] }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: manualEndDate !== manualDate ? "sm:col-span-2" : "sm:col-span-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: manualEndDate !== manualDate ? "Startdatum" : "Datum"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "date",
+											value: manualDate,
+											onChange: (e) => {
+												const next = e.target.value;
+												if (manualEndDate === manualDate) setManualEndDate(next);
+												setManualDate(next);
+											},
+											className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+										})]
+									}),
+									manualEndDate !== manualDate && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "sm:col-span-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: "Enddatum"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "date",
+											value: manualEndDate,
+											onChange: (e) => setManualEndDate(e.target.value),
+											className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: `grid grid-cols-2 gap-2 ${manualEndDate !== manualDate ? "sm:col-span-2" : "sm:col-span-4"}`,
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: "Von"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "time",
+											value: manualStart,
+											onChange: (e) => setManualStart(e.target.value),
+											className: "w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+										})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: "Bis"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "time",
+											value: manualEnd,
+											onChange: (e) => setManualEnd(e.target.value),
+											className: "w-full rounded-lg border border-slate-300 bg-white px-2.5 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+										})] })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "sm:col-span-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: "Tätigkeitsbeschreibung"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "text",
+											value: manualTitle,
+											onChange: (e) => setManualTitle(e.target.value),
+											placeholder: manualEntryType === "internal" ? "z. B. Studio reinigen, Kaltakquise, Belege sortieren..." : "z. B. Kundenworkshop & Dokumentation",
+											className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "sm:col-span-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+											className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
+											children: manualEntryType === "internal" ? "Notiz zur internen Aufgabe (optional)" : "Notiz für Auswertung / Rechnung (optional)"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "text",
+											value: manualNotes,
+											onChange: (e) => setManualNotes(e.target.value),
+											placeholder: "Details zur erbrachten Leistung...",
+											className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "sm:col-span-6 space-y-2 rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-[#2e2349] dark:bg-[#211936]/50",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-wrap items-center justify-between gap-2",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5 text-violet-500" }),
+														"Einsatzfotos / Fotodokumentation (",
+														manualPhotos.length,
+														")"
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													ref: manualPhotoInputRef,
+													type: "file",
+													accept: "image/*",
+													multiple: true,
+													onChange: (e) => void handleAddManualPhotos(e),
+													className: "hidden"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													onClick: () => manualPhotoInputRef.current?.click(),
+													disabled: photoBusy,
+													className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-200 dark:hover:bg-[#2a2045] cursor-pointer",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Camera, { className: "h-3.5 w-3.5" }), photoBusy ? "Verarbeite…" : "Foto hinzufügen"]
+												})
+											]
+										}), manualPhotos.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "grid grid-cols-2 gap-2 sm:grid-cols-3",
+											children: manualPhotos.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "relative overflow-hidden rounded-lg border border-slate-200 bg-white p-1.5 dark:border-[#3b2d5e] dark:bg-[#171126]",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+														src: p.dataUrl,
+														alt: p.caption || "Einsatzfoto",
+														className: "h-20 w-full rounded object-cover"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "text",
+														value: p.caption ?? "",
+														onChange: (e) => setManualPhotos((prev) => prev.map((item) => item.id === p.id ? {
+															...item,
+															caption: e.target.value
+														} : item)),
+														placeholder: "Bildbeschreibung…",
+														className: "mt-1 w-full rounded border border-slate-200 bg-slate-50 px-1.5 py-1 text-[11px] text-slate-800 focus:border-violet-500 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => setManualPhotos((prev) => prev.filter((item) => item.id !== p.id)),
+														"aria-label": "Foto entfernen",
+														className: "absolute right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-slate-950/75 text-white hover:bg-rose-600 cursor-pointer",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X$1, { className: "h-3 w-3" })
+													})
+												]
+											}, p.id))
+										})]
+									}),
+									manualError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-xs font-medium text-red-600 dark:text-red-400 sm:col-span-6",
+										children: manualError
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "sm:col-span-6",
+										children: manualEntryType === "internal" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "text-xs text-amber-700 dark:text-amber-300",
+											children: "Interne Aufgaben sind nicht abrechenbar und erscheinen in Auswertungen & PDF-Berichten."
+										}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+											className: "flex items-center gap-2 text-xs font-medium text-slate-700 dark:text-slate-300 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "checkbox",
+												checked: manualBillable,
+												onChange: (e) => setManualBillable(e.target.checked),
+												className: "h-4 w-4 rounded border-slate-300 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+											}), "Abrechenbar (für Rechnungen verfügbar)"]
+										})
+									})
+								]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center justify-end gap-2 border-t border-slate-200 bg-slate-50/70 px-5 py-3 dark:border-[#2e2349] dark:bg-[#211936]/40",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: closeManualForm,
+								className: "rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#171126] dark:text-slate-300 dark:hover:bg-[#231b38] cursor-pointer",
+								children: "Abbrechen"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "submit",
+								className: "rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+								children: editingEntry ? "Änderungen speichern" : "Eintrag speichern"
+							})]
+						})]
+					})]
+				})
+			}), document.body),
 			lightboxData && typeof document !== "undefined" && (0, import_react_dom.createPortal)(/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				role: "dialog",
 				"aria-modal": "true",
@@ -90790,6 +92194,8 @@ var DEFAULT_NC_INFO = {
 	username: "",
 	folder: "/TaktWerk",
 	autoSync: true,
+	syncIntervalSec: 20,
+	pendingPush: false,
 	hasPassword: false,
 	fromEnv: false,
 	lastSyncAt: null,
@@ -90810,6 +92216,7 @@ function App() {
 		label: "TaktWerk wird gestartet…"
 	});
 	const [saving, setSaving] = (0, import_react.useState)(false);
+	const [autoSyncing, setAutoSyncing] = (0, import_react.useState)(false);
 	const [elapsedSeconds, setElapsedSeconds] = (0, import_react.useState)(0);
 	const [toast, setToast] = (0, import_react.useState)(null);
 	const [confirmDialog, setConfirmDialog] = (0, import_react.useState)(null);
@@ -90850,6 +92257,10 @@ function App() {
 	const sectionHistoryRef = (0, import_react.useRef)([]);
 	const touchStartRef = (0, import_react.useRef)(null);
 	const lastNfcTriggerRef = (0, import_react.useRef)(null);
+	const deviceIdRef = (0, import_react.useRef)(getOrCreateSyncDeviceId(isDesktopElectron() ? "windows" : isNativeCapacitor() ? "android" : "web"));
+	const savingRef = (0, import_react.useRef)(false);
+	const syncInFlightRef = (0, import_react.useRef)(false);
+	const lastAutoSyncCheckMsRef = (0, import_react.useRef)(0);
 	const dbRef = (0, import_react.useRef)(db);
 	(0, import_react.useEffect)(() => {
 		dbRef.current = db;
@@ -90911,19 +92322,99 @@ function App() {
 		return () => clearTimeout(id);
 	}, [toast]);
 	const persistDb = (0, import_react.useCallback)(async (nextDb) => {
-		dbRef.current = nextDb;
-		setDb(nextDb);
+		const stamped = stampDatabaseChanges(dbRef.current, nextDb, deviceIdRef.current);
+		dbRef.current = stamped;
+		setDb(stamped);
 		setSaving(true);
+		savingRef.current = true;
 		try {
-			const result = await apiSaveDb(nextDb);
+			const result = await apiSaveDb(stamped);
 			setNextcloud(result.nextcloud);
+			if (result.mergedRemoteChanges && result.db) {
+				if (dbRef.current.updatedAt === stamped.updatedAt) {
+					dbRef.current = result.db;
+					setDb(result.db);
+					syncNativeWidgetState(result.db);
+				}
+				setRemoteNewerAt(null);
+				setPushConflictAt(null);
+				notify("Synchronisiert – Änderungen vom anderen Gerät übernommen.");
+			}
 			if (result.syncWarning) notify(`Lokal gespeichert, aber Nextcloud-Sync meldet: ${result.syncWarning}`, true);
 		} catch (err) {
 			notify(err instanceof Error ? err.message : "Fehler beim Speichern der Daten.", true);
 		} finally {
+			savingRef.current = false;
 			setSaving(false);
 		}
 	}, [notify]);
+	const runAutoSync = (0, import_react.useCallback)(async (options) => {
+		const force = Boolean(options?.force);
+		const silent = Boolean(options?.silent);
+		if (syncInFlightRef.current) return;
+		if (savingRef.current && silent) return;
+		if (typeof navigator !== "undefined" && navigator.onLine === false) {
+			if (!silent) notify("Gerät ist offline – Änderungen werden automatisch synchronisiert, sobald wieder Internet besteht.", true);
+			return;
+		}
+		syncInFlightRef.current = true;
+		lastAutoSyncCheckMsRef.current = Date.now();
+		setAutoSyncing(true);
+		try {
+			const res = await apiAutoSyncNextcloud({
+				force,
+				silent
+			});
+			setNextcloud(res.nextcloud);
+			if (res.localChanged && res.db) {
+				dbRef.current = res.db;
+				setDb(res.db);
+				setRemoteNewerAt(null);
+				setPushConflictAt(null);
+				syncNativeWidgetState(res.db);
+				notify(res.summary ? `Synchronisiert: ${res.summary}` : "Datenstand vom anderen Gerät übernommen.");
+			} else if (!silent) {
+				setRemoteNewerAt(null);
+				setPushConflictAt(null);
+				notify(res.pushed ? "Lokale Änderungen in Nextcloud übertragen." : "Windows & Smartphone sind bereits auf dem gleichen Stand.");
+			} else if (res.status === "synced") {
+				setRemoteNewerAt(null);
+				setPushConflictAt(null);
+			}
+		} catch (err) {
+			if (!silent) notify(err instanceof Error ? err.message : "Automatische Synchronisation fehlgeschlagen.", true);
+		} finally {
+			syncInFlightRef.current = false;
+			setAutoSyncing(false);
+		}
+	}, [notify]);
+	const handleApplyPairingCode = (0, import_react.useCallback)(async (rawCode) => {
+		const { payload, syncResult } = await apiApplySyncPairingCode(rawCode);
+		setNextcloud(syncResult.nextcloud);
+		setRemoteNewerAt(null);
+		setPushConflictAt(null);
+		const syncedDb = syncResult.db ?? dbRef.current;
+		if (payload.calendarUrl && !syncedDb.company.calendarConfig?.selectedCalendarUrl) {
+			const updatedWithCal = {
+				...syncedDb,
+				company: {
+					...syncedDb.company,
+					calendarConfig: {
+						selectedCalendarUrl: payload.calendarUrl,
+						selectedCalendarName: payload.calendarName ?? "",
+						autoSyncTimeEntries: Boolean(payload.autoSyncTimeEntries)
+					}
+				}
+			};
+			dbRef.current = syncedDb;
+			await persistDb(updatedWithCal);
+		} else if (syncResult.db) {
+			dbRef.current = syncResult.db;
+			setDb(syncResult.db);
+			syncNativeWidgetState(syncResult.db);
+		}
+		notify(syncResult.localChanged ? "Gerät gekoppelt & Datenstand synchronisiert." : "Gerät gekoppelt – automatische Synchronisation ist aktiv.");
+	}, [notify, persistDb]);
 	const triggerNfcOnDb = (0, import_react.useCallback)((sourceDb, tagUid) => {
 		const task = sourceDb.nfcTasks.find((t) => t.tagUid.toLowerCase() === tagUid.trim().toLowerCase());
 		if (!task) return {
@@ -91151,15 +92642,21 @@ function App() {
 							code: incomingNfc,
 							at: Date.now()
 						};
+						const prevLoadedDb = loadedDb;
 						const prevTimer = loadedDb.activeTimer;
 						const prevEntryCount = loadedDb.timeEntries.length;
 						const result = triggerNfcOnDb(loadedDb, incomingNfc);
-						loadedDb = result.nextDb;
+						loadedDb = result.isError ? result.nextDb : stampDatabaseChanges(prevLoadedDb, result.nextDb, deviceIdRef.current);
 						dbRef.current = loadedDb;
 						triggerNfcHaptic(result.haptic);
 						notify(result.message, result.isError);
 						if (!result.isError) {
-							await apiSaveDb(loadedDb);
+							const savedRes = await apiSaveDb(loadedDb);
+							setNextcloud(savedRes.nextcloud);
+							if (savedRes.mergedRemoteChanges && savedRes.db) {
+								loadedDb = savedRes.db;
+								dbRef.current = loadedDb;
+							}
 							if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) coldFinishedEntry = loadedDb.timeEntries[0];
 							if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
 						} else {
@@ -91176,15 +92673,21 @@ function App() {
 							tagUid: null
 						}));
 						if (widgetAction?.action === "trigger" && widgetAction.tagUid) {
+							const prevLoadedDb = loadedDb;
 							const prevTimer = loadedDb.activeTimer;
 							const prevEntryCount = loadedDb.timeEntries.length;
 							const result = triggerNfcOnDb(loadedDb, widgetAction.tagUid);
-							loadedDb = result.nextDb;
+							loadedDb = result.isError ? result.nextDb : stampDatabaseChanges(prevLoadedDb, result.nextDb, deviceIdRef.current);
 							dbRef.current = loadedDb;
 							triggerNfcHaptic(result.haptic);
 							notify(result.message, result.isError);
 							if (!result.isError) {
-								await apiSaveDb(loadedDb);
+								const savedRes = await apiSaveDb(loadedDb);
+								setNextcloud(savedRes.nextcloud);
+								if (savedRes.mergedRemoteChanges && savedRes.db) {
+									loadedDb = savedRes.db;
+									dbRef.current = loadedDb;
+								}
 								if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) coldFinishedEntry = loadedDb.timeEntries[0];
 								if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
 							}
@@ -91216,9 +92719,15 @@ function App() {
 					startedAtIso: coldStartedTimer.startTime
 				});
 				if (coldFinishedEntry) pushFinishedEntryToNextcloudCalendar(coldFinishedEntry, loadedDb);
-				if (data.nextcloud.configured) apiCheckNextcloudRemote().then((check) => {
-					if (active && check.hasNewerRemote && check.remoteUpdatedAt) setRemoteNewerAt(check.remoteUpdatedAt);
-				});
+				if (data.nextcloud.configured) {
+					if (data.nextcloud.autoSync) runAutoSync({
+						force: true,
+						silent: true
+					});
+					else apiCheckNextcloudRemote().then((check) => {
+						if (active && check.hasNewerRemote && check.remoteUpdatedAt) setRemoteNewerAt(check.remoteUpdatedAt);
+					});
+				}
 				if (!autoBackupCheckedRef.current && isBackupDue(loadedDb)) {
 					autoBackupCheckedRef.current = true;
 					const backupCfg = loadedDb.company.autoBackup;
@@ -91267,6 +92776,7 @@ function App() {
 		notify,
 		persistDb,
 		pushFinishedEntryToNextcloudCalendar,
+		runAutoSync,
 		triggerNfcOnDb
 	]);
 	const handleGlobalNfcCode = (0, import_react.useCallback)((rawCode) => {
@@ -91415,6 +92925,64 @@ function App() {
 			if (appStateHandle) appStateHandle.remove();
 		};
 	}, []);
+	(0, import_react.useEffect)(() => {
+		if (loading || !nextcloud.configured || !nextcloud.autoSync) return;
+		const triggerIfStale = () => {
+			if (document.visibilityState !== "visible") return;
+			if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+			if (Date.now() - lastAutoSyncCheckMsRef.current < 5e3) return;
+			runAutoSync({
+				force: false,
+				silent: true
+			});
+		};
+		const intervalSec = nextcloud.syncIntervalSec ?? 20;
+		const pollTimer = intervalSec > 0 ? window.setInterval(() => {
+			if (document.visibilityState !== "visible") return;
+			if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+			runAutoSync({
+				force: false,
+				silent: true
+			});
+		}, Math.max(10, intervalSec) * 1e3) : null;
+		const onVisibility = () => {
+			if (document.visibilityState === "visible") triggerIfStale();
+		};
+		const onFocus = () => {
+			triggerIfStale();
+		};
+		const onOnline = () => {
+			runAutoSync({
+				force: true,
+				silent: true
+			});
+		};
+		document.addEventListener("visibilitychange", onVisibility);
+		window.addEventListener("focus", onFocus);
+		window.addEventListener("online", onOnline);
+		let appStateHandle = null;
+		let cancelled = false;
+		if (isNativeCapacitor()) App$1.addListener("appStateChange", ({ isActive }) => {
+			if (isActive) triggerIfStale();
+		}).then((h) => {
+			if (cancelled) h.remove();
+			else appStateHandle = h;
+		}).catch(() => {});
+		return () => {
+			cancelled = true;
+			if (pollTimer !== null) window.clearInterval(pollTimer);
+			document.removeEventListener("visibilitychange", onVisibility);
+			window.removeEventListener("focus", onFocus);
+			window.removeEventListener("online", onOnline);
+			if (appStateHandle) appStateHandle.remove();
+		};
+	}, [
+		loading,
+		nextcloud.configured,
+		nextcloud.autoSync,
+		nextcloud.syncIntervalSec,
+		runAutoSync
+	]);
 	(0, import_react.useEffect)(() => {
 		if (loading) return;
 		const customerName = db.activeTimer ? db.activeTimer.entryType === "internal" || !db.activeTimer.customerId ? `Intern${db.activeTimer.internalCategory ? ` · ${db.activeTimer.internalCategory}` : ""}` : db.customers.find((c) => c.id === db.activeTimer.customerId)?.companyName ?? "" : "";
@@ -92885,7 +94453,12 @@ function App() {
 					onStopTimer: handleStopTimer,
 					theme,
 					onToggleTheme: toggleTheme,
-					onOpenSearch: () => setSearchOpen(true)
+					onOpenSearch: () => setSearchOpen(true),
+					autoSyncing,
+					onAutoSyncNow: () => void runAutoSync({
+						force: true,
+						silent: false
+					})
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex min-w-0 flex-1 flex-col",
 					children: [
@@ -92931,6 +94504,18 @@ function App() {
 										onStartTask: handleQuickStartFromHeader,
 										onOpenTracker: () => navigateToSection("tracker")
 									}),
+									nextcloud.configured && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => void runAutoSync({
+											force: true,
+											silent: false
+										}),
+										disabled: autoSyncing,
+										title: nextcloud.pendingPush ? "Offline-Änderungen warten – jetzt mit Nextcloud abgleichen" : nextcloud.lastSyncAt ? `Geräte jetzt abgleichen (Stand ${formatDateTimeDE(nextcloud.lastSyncAt)})` : "Geräte jetzt über Nextcloud abgleichen",
+										"aria-label": "Geräte jetzt über Nextcloud abgleichen",
+										className: "relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-60 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200 dark:hover:bg-[#2a2045] cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, { className: `h-4 w-4 ${autoSyncing ? "animate-spin" : ""}` }), nextcloud.pendingPush && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-amber-500" })]
+									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 										type: "button",
 										onClick: toggleTheme,
@@ -92971,14 +94556,14 @@ function App() {
 							className: `no-print fixed top-16 lg:top-4 left-1/2 -translate-x-1/2 z-[80] w-[calc(100%-2rem)] max-w-md rounded-2xl border backdrop-blur-md shadow-2xl px-4 py-3 tw-popup-enter flex items-start gap-3 ${toast.isError ? "border-red-300/80 bg-red-50/90 text-red-950 dark:border-red-700/70 dark:bg-[#2a121b]/90 dark:text-red-100" : "border-violet-200/90 bg-white/85 text-slate-900 dark:border-violet-500/40 dark:bg-[#19122c]/85 dark:text-slate-100"}`,
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: `mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${toast.isError ? "bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300" : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300" : "bg-violet-100 text-violet-700 dark:bg-violet-900/60 dark:text-violet-300"}`,
-									children: toast.isError ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "h-4 w-4" }) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Info, { className: "h-4 w-4" })
+									className: `mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${toast.isError ? "bg-red-100 text-red-700 dark:bg-red-900/60 dark:text-red-300" : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen|synchronisiert|gekoppelt|übertragen/i.test(toast.text) ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300" : "bg-violet-100 text-violet-700 dark:bg-violet-900/60 dark:text-violet-300"}`,
+									children: toast.isError ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "h-4 w-4" }) : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen|synchronisiert|gekoppelt|übertragen/i.test(toast.text) ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Info, { className: "h-4 w-4" })
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "min-w-0 flex-1",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 										className: "text-[11px] font-bold uppercase tracking-wider opacity-70",
-										children: toast.isError ? "Achtung" : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen/i.test(toast.text) ? "Gespeichert" : "Hinweis"
+										children: toast.isError ? "Achtung" : /gespeichert|erstellt|aktualisiert|hochgeladen|abgeschlossen|aktiviert|gestoppt|gestartet|gelöscht|archiviert|wiederhergestellt|verbucht|eingetragen|synchronisiert|gekoppelt|übertragen/i.test(toast.text) ? "Gespeichert" : "Hinweis"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 										className: "text-sm font-medium leading-snug",
 										children: toast.text
@@ -93333,10 +94918,16 @@ function App() {
 										company: db.company,
 										geoFenceRules: db.geoFenceRules ?? [],
 										pushConflictAt,
+										autoSyncing,
 										onDismissConflict: () => setPushConflictAt(null),
 										onRefreshConfig: setNextcloud,
 										onSyncFromNextcloud: handleSyncFromNextcloud,
 										onSyncToNextcloud: handleSyncToNextcloud,
+										onAutoSyncNow: () => runAutoSync({
+											force: true,
+											silent: false
+										}),
+										onApplyPairingCode: handleApplyPairingCode,
 										onSaveCompany: handleSaveCompany,
 										onSaveGeoFenceRules: handleSaveGeoFenceRules,
 										onCheckGeoFenceNow: () => void evaluateGeoFenceRules(true),

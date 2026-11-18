@@ -626,6 +626,15 @@ export function normalizeDatabase(raw: AppDatabase): AppDatabase {
   return {
     version: raw.version ?? 2,
     updatedAt: raw.updatedAt || new Date().toISOString(),
+    syncDeviceId: raw.syncDeviceId,
+    activeTimerUpdatedAt: raw.activeTimerUpdatedAt,
+    companyUpdatedAt: raw.companyUpdatedAt,
+    deletedIds:
+      raw.deletedIds && typeof raw.deletedIds === 'object' ? raw.deletedIds : undefined,
+    recordUpdatedAt:
+      raw.recordUpdatedAt && typeof raw.recordUpdatedAt === 'object'
+        ? raw.recordUpdatedAt
+        : undefined,
     company,
     customers: Array.isArray(raw.customers) ? raw.customers : [],
     products: Array.isArray(raw.products) ? raw.products : [],

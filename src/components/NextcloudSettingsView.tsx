@@ -10,10 +10,12 @@ import {
   Cloud,
   Coffee,
   Compass,
+  Copy,
   Database,
   Download,
   DownloadCloud,
   ExternalLink,
+  EyeOff,
   FileArchive,
   FileSpreadsheet,
   FileText,
@@ -21,6 +23,8 @@ import {
   FolderOpen,
   History,
   ImagePlus,
+  Laptop,
+  Link2,
   Loader2,
   Lock,
   Mail,
@@ -31,6 +35,7 @@ import {
   Palette,
   Pencil,
   Plus,
+  QrCode,
   Radar,
   RefreshCw,
   RotateCcw,
@@ -45,6 +50,7 @@ import {
   Volume2,
   X,
 } from 'lucide-react';
+import QRCode from 'qrcode';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type {
   AppDatabase,
@@ -69,6 +75,7 @@ import type {
 import {
   apiClearNextcloudConfig,
   apiDiscoverNextcloudCalendars,
+  apiExportSyncPairingCode,
   apiRunMultiFormatBackup,
   apiSaveNextcloudConfig,
   apiTestNextcloud,
@@ -153,10 +160,13 @@ interface NextcloudSettingsViewProps {
   company: CompanyProfile;
   geoFenceRules: GeoFenceRule[];
   pushConflictAt: string | null;
+  autoSyncing?: boolean;
   onDismissConflict: () => void;
   onRefreshConfig: (nextcloud: NextcloudConfigInfo) => void;
   onSyncFromNextcloud: () => Promise<void>;
   onSyncToNextcloud: (force?: boolean) => Promise<void>;
+  onAutoSyncNow: () => Promise<void>;
+  onApplyPairingCode: (code: string) => Promise<void>;
   onSaveCompany: (company: CompanyProfile) => void;
   onSaveGeoFenceRules: (rules: GeoFenceRule[]) => void;
   onCheckGeoFenceNow?: () => void;
@@ -204,10 +214,13 @@ export function NextcloudSettingsView({
   company,
   geoFenceRules,
   pushConflictAt,
+  autoSyncing = false,
   onDismissConflict,
   onRefreshConfig,
   onSyncFromNextcloud,
   onSyncToNextcloud,
+  onAutoSyncNow,
+  onApplyPairingCode,
   onSaveCompany,
   onSaveGeoFenceRules,
   onCheckGeoFenceNow,
@@ -225,12 +238,37 @@ export function NextcloudSettingsView({
   const [ncPassword, setNcPassword] = useState('');
   const [ncFolder, setNcFolder] = useState(nextcloud.folder || '/TaktWerk');
   const [ncAutoSync, setNcAutoSync] = useState(nextcloud.autoSync);
+  const [ncSyncIntervalSec, setNcSyncIntervalSec] = useState<number>(
+    nextcloud.syncIntervalSec ?? 20
+  );
   const [testing, setTesting] = useState(false);
   const [savingNc, setSavingNc] = useState(false);
+  const [savingSyncQuick, setSavingSyncQuick] = useState(false);
   const [syncing, setSyncing] = useState<'push' | 'pull' | null>(null);
   const [testResult, setTestResult] = useState<{ ok: boolean; text: string } | null>(
     null
   );
+
+  // 1-Click Cross-Device Pairing (Windows <-> Smartphone) state
+  const [pairingCode, setPairingCode] = useState<string | null>(null);
+  const [pairingQrUrl, setPairingQrUrl] = useState<string | null>(null);
+  const [generatingPairing, setGeneratingPairing] = useState(false);
+  const [pairingInput, setPairingInput] = useState('');
+  const [applyingPairing, setApplyingPairing] = useState(false);
+
+  useEffect(() => {
+    setNcUrl(nextcloud.url);
+    setNcUsername(nextcloud.username);
+    setNcFolder(nextcloud.folder || '/TaktWerk');
+    setNcAutoSync(nextcloud.autoSync);
+    setNcSyncIntervalSec(nextcloud.syncIntervalSec ?? 20);
+  }, [
+    nextcloud.url,
+    nextcloud.username,
+    nextcloud.folder,
+    nextcloud.autoSync,
+    nextcloud.syncIntervalSec,
+  ]);
 
   const [companyForm, setCompanyForm] = useState<CompanyProfile>(company);
   useEffect(() => {
@@ -751,6 +789,7 @@ export function NextcloudSettingsView({
         appPassword: ncPassword,
         folder: ncFolder,
         autoSync: ncAutoSync,
+        syncIntervalSec: ncSyncIntervalSec,
       });
       onRefreshConfig(nextNc);
       setNcPassword('');
@@ -765,6 +804,114 @@ export function NextcloudSettingsView({
     }
   };
 
+  const handleQuickAutoSyncChange = async (nextAutoSync: boolean, nextIntervalSec: number) => {
+    setNcAutoSync(nextAutoSync);
+    setNcSyncIntervalSec(nextIntervalSec);
+    if (!nextcloud.configured) return;
+    setSavingSyncQuick(true);
+    try {
+      const updated = await apiSaveNextcloudConfig({
+        url: nextcloud.url,
+        username: nextcloud.username,
+        appPassword: '',
+        folder: nextcloud.folder,
+        autoSync: nextAutoSync,
+        syncIntervalSec: nextIntervalSec,
+      });
+      onRefreshConfig(updated);
+      onNotify(
+        nextAutoSync
+          ? nextIntervalSec > 0
+            ? `Automatische Geräte-Synchronisation aktiv (alle ${nextIntervalSec} Sek.).`
+            : 'Automatische Geräte-Synchronisation aktiv (bei App-Start & Fensterwechsel).'
+          : 'Automatische Hintergrund-Synchronisation pausiert.'
+      );
+    } catch (err) {
+      onNotify(
+        err instanceof Error
+          ? err.message
+          : 'Sync-Einstellung konnte nicht gespeichert werden.',
+        true
+      );
+    } finally {
+      setSavingSyncQuick(false);
+    }
+  };
+
+  const handleGeneratePairingCode = async () => {
+    if (pairingCode) {
+      setPairingCode(null);
+      setPairingQrUrl(null);
+      return;
+    }
+    setGeneratingPairing(true);
+    try {
+      const code = await apiExportSyncPairingCode(companyForm.calendarConfig);
+      const qr = await QRCode.toDataURL(code, {
+        width: 220,
+        margin: 1,
+        color: { dark: '#0f172a', light: '#ffffff' },
+      });
+      setPairingCode(code);
+      setPairingQrUrl(qr);
+    } catch (err) {
+      onNotify(
+        err instanceof Error
+          ? err.message
+          : 'Kopplungscode konnte nicht erzeugt werden.',
+        true
+      );
+    } finally {
+      setGeneratingPairing(false);
+    }
+  };
+
+  const handleCopyPairingCode = async () => {
+    if (!pairingCode) return;
+    try {
+      await navigator.clipboard.writeText(pairingCode);
+      onNotify('Kopplungscode in Zwischenablage kopiert.');
+    } catch {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = pairingCode;
+        ta.setAttribute('readonly', 'true');
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        onNotify('Kopplungscode in Zwischenablage kopiert.');
+      } catch {
+        onNotify('Code konnte nicht kopiert werden – bitte manuell markieren.', true);
+      }
+    }
+  };
+
+  const handleApplyPairingSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = pairingInput.trim();
+    if (!trimmed) {
+      onNotify('Bitte füge zuerst einen Kopplungscode (TW-SYNC-1:...) ein.', true);
+      return;
+    }
+    setApplyingPairing(true);
+    try {
+      await onApplyPairingCode(trimmed);
+      setPairingInput('');
+      setPairingCode(null);
+      setPairingQrUrl(null);
+    } catch (err) {
+      onNotify(
+        err instanceof Error
+          ? err.message
+          : 'Kopplung fehlgeschlagen. Bitte Code und Internetverbindung prüfen.',
+        true
+      );
+    } finally {
+      setApplyingPairing(false);
+    }
+  };
+
   const handleClearNextcloud = async () => {
     try {
       const cleared = await apiClearNextcloudConfig();
@@ -773,6 +920,8 @@ export function NextcloudSettingsView({
       setNcUsername('');
       setNcPassword('');
       setNcFolder('/TaktWerk');
+      setPairingCode(null);
+      setPairingQrUrl(null);
       setTestResult(null);
       onNotify('Nextcloud-Verbindung getrennt.');
     } catch (err) {
@@ -3318,6 +3467,236 @@ export function NextcloudSettingsView({
               </form>
             </section>
           )}
+
+          {/* Automatische Geräte-Synchronisation (Windows <-> Smartphone) */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126] space-y-5">
+            <div className="flex flex-col gap-3 border-b border-slate-200 pb-4 dark:border-[#2e2349] sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-2.5">
+                <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-50 text-violet-700 dark:bg-violet-950/60 dark:text-violet-300">
+                  {desktopApp ? (
+                    <Laptop className="h-5 w-5" />
+                  ) : nativeApp ? (
+                    <Smartphone className="h-5 w-5" />
+                  ) : (
+                    <Monitor className="h-5 w-5" />
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                      Windows &amp; Smartphone automatisch synchronisieren
+                    </h2>
+                    <InfoHintPopup
+                      size="sm"
+                      title="Automatische Geräte-Synchronisation"
+                      text="Hält deine Windows Desktop-App und dein Android-Smartphone vollautomatisch und konfliktfrei über deine eigene Nextcloud synchron – inklusive laufender Timer, Zeiten, Kunden, Produkte, NFC-Aufgaben und Rechnungen."
+                    />
+                  </div>
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    Aktuelles Gerät:{' '}
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">
+                      {desktopApp
+                        ? 'Windows Desktop-App'
+                        : nativeApp
+                          ? 'Android Smartphone-App'
+                          : 'Web-App (Browser)'}
+                    </span>
+                    {nextcloud.configured && nextcloud.lastSyncAt && (
+                      <span> · Letzter Abgleich: {formatDateTimeDE(nextcloud.lastSyncAt)}</span>
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              {nextcloud.configured && (
+                <button
+                  type="button"
+                  onClick={() => void onAutoSyncNow()}
+                  disabled={autoSyncing}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg ui-accent-btn px-3.5 py-2 text-xs font-semibold text-white disabled:opacity-60 whitespace-nowrap shrink-0 cursor-pointer"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 ${autoSyncing ? 'animate-spin' : ''}`} />
+                  {autoSyncing ? 'Gleiche ab…' : 'Jetzt abgleichen'}
+                </button>
+              )}
+            </div>
+
+            {nextcloud.pendingPush && (
+              <div className="flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-900 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-200">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>
+                  Lokale Offline-Änderungen warten noch auf Übertragung. Sie werden automatisch hochgeladen, sobald deine Nextcloud wieder erreichbar ist.
+                </span>
+              </div>
+            )}
+
+            {nextcloud.configured ? (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <label className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 text-sm text-slate-800 dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={ncAutoSync}
+                    disabled={savingSyncQuick}
+                    onChange={(e) =>
+                      void handleQuickAutoSyncChange(e.target.checked, ncSyncIntervalSec)
+                    }
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 accent-violet-600"
+                  />
+                  <div>
+                    <div className="font-semibold">Automatischer Echtzeit-Abgleich aktiv</div>
+                    <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                      Übernimmt Änderungen vom anderen Gerät im Hintergrund und führt gleichzeitige Bearbeitungen konfliktfrei zusammen.
+                    </p>
+                  </div>
+                </label>
+
+                <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 dark:border-[#3b2d5e] dark:bg-[#211936]/70">
+                  <label className="mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Prüf-Intervall im Hintergrund
+                  </label>
+                  <ThemedSelect
+                    value={String(ncSyncIntervalSec)}
+                    disabled={!ncAutoSync || savingSyncQuick}
+                    onChange={(val) =>
+                      void handleQuickAutoSyncChange(ncAutoSync, Number(val))
+                    }
+                    ariaLabel="Synchronisations-Intervall wählen"
+                    options={[
+                      { value: '15', label: 'Alle 15 Sekunden (Sehr schnell)' },
+                      { value: '20', label: 'Alle 20 Sekunden (Empfohlen)' },
+                      { value: '30', label: 'Alle 30 Sekunden' },
+                      { value: '60', label: 'Alle 60 Sekunden (Datensparend)' },
+                      { value: '0', label: 'Nur bei App-Start, Fokus & Änderungen' },
+                    ]}
+                  />
+                  <p className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    Sparsame ETag-Prüfung: Lädt nur dann Daten, wenn sich auf dem anderen Gerät wirklich etwas geändert hat.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+                Verbinde beide Geräte mit derselben Nextcloud und demselben Zielordner (z. B.{' '}
+                <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] dark:bg-[#211936]">
+                  /TaktWerk
+                </code>
+                ). Hast du das erste Gerät bereits eingerichtet, kannst du unten einfach den{' '}
+                <span className="font-semibold">1-Klick-Kopplungscode</span> einfügen.
+              </p>
+            )}
+
+            {/* 1-Klick Geräte-Kopplung (QR-Code / Code einfügen) */}
+            <div className="rounded-xl border border-slate-200/90 bg-slate-50/60 p-4 dark:border-[#3b2d5e] dark:bg-[#130d21]/80 space-y-4">
+              <div className="flex items-center gap-2">
+                <Link2 className="h-4 w-4 text-violet-700 dark:text-violet-400" />
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  1-Klick Geräte-Kopplung (Windows ↔ Smartphone)
+                </h3>
+              </div>
+
+              <div
+                className={`grid grid-cols-1 gap-4 ${
+                  nextcloud.configured ? 'lg:grid-cols-2' : ''
+                }`}
+              >
+                {nextcloud.configured && (
+                  <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-[#2e2349] dark:bg-[#171126] space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                        Zweites Gerät verbinden (Code erzeugen)
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => void handleGeneratePairingCode()}
+                        disabled={generatingPairing}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer shrink-0"
+                      >
+                        {generatingPairing ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : pairingCode ? (
+                          <EyeOff className="h-3.5 w-3.5" />
+                        ) : (
+                          <QrCode className="h-3.5 w-3.5" />
+                        )}
+                        {pairingCode ? 'Verbergen' : 'Code & QR anzeigen'}
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Überträgt Nextcloud-Zugang, Zielordner, Auto-Sync-Intervall und CalDAV-Kalender in einem Schritt auf dein anderes Gerät.
+                    </p>
+
+                    {pairingCode && (
+                      <div className="space-y-3 pt-1">
+                        {pairingQrUrl && (
+                          <div className="flex flex-col items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-[#3b2d5e] dark:bg-[#130d21]">
+                            <img
+                              src={pairingQrUrl}
+                              alt="TaktWerk Geräte-Kopplung QR-Code"
+                              className="h-44 w-44 rounded-lg border border-slate-200 bg-white p-1.5"
+                            />
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                              Mit Handy-Kamera / QR-Scanner lesen &amp; unten einfügen
+                            </span>
+                          </div>
+                        )}
+                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-2.5 font-mono text-[11px] text-slate-700 break-all select-all dark:border-[#3b2d5e] dark:bg-[#130d21] dark:text-slate-300">
+                          {pairingCode}
+                        </div>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <button
+                            type="button"
+                            onClick={() => void handleCopyPairingCode()}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                          >
+                            <Copy className="h-3.5 w-3.5" />
+                            Kopplungscode kopieren
+                          </button>
+                          <span className="text-[11px] text-amber-700 dark:text-amber-300">
+                            Enthält dein App-Passwort – nur für eigene Geräte nutzen.
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <form
+                  onSubmit={(e) => void handleApplyPairingSubmit(e)}
+                  className="rounded-lg border border-slate-200 bg-white p-4 dark:border-[#2e2349] dark:bg-[#171126] space-y-3 flex flex-col justify-between"
+                >
+                  <div className="space-y-2">
+                    <label className="block text-xs font-semibold text-slate-800 dark:text-slate-200">
+                      Kopplungscode von anderem Gerät einfügen
+                    </label>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Kopiere den Code auf deinem bereits eingerichteten Gerät (Windows oder Smartphone) und füge ihn hier ein:
+                    </p>
+                    <textarea
+                      rows={3}
+                      value={pairingInput}
+                      onChange={(e) => setPairingInput(e.target.value)}
+                      placeholder="TW-SYNC-1:..."
+                      className={`${inputClass} font-mono text-xs resize-none`}
+                    />
+                  </div>
+                  <div className="flex items-center justify-end">
+                    <button
+                      type="submit"
+                      disabled={applyingPairing || !pairingInput.trim()}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 disabled:opacity-50 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                    >
+                      {applyingPairing ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Link2 className="h-3.5 w-3.5" />
+                      )}
+                      {applyingPairing ? 'Kopple & synchronisiere…' : 'Koppeln & synchronisieren'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
 
           {/* WebDAV */}
           <section className="rounded-xl border border-slate-200 bg-white p-6 dark:border-[#2e2349] dark:bg-[#171126]">
