@@ -149,6 +149,7 @@ export function createEmptyDatabase(): AppDatabase {
     geoFenceRules: [],
     timeEntries: [],
     activeTimer: null,
+    pausedTimers: [],
     invoices: [],
     expenses: [],
     recurringInvoices: [],
@@ -628,6 +629,7 @@ export function normalizeDatabase(raw: AppDatabase): AppDatabase {
     updatedAt: raw.updatedAt || new Date().toISOString(),
     syncDeviceId: raw.syncDeviceId,
     activeTimerUpdatedAt: raw.activeTimerUpdatedAt,
+    pausedTimersUpdatedAt: raw.pausedTimersUpdatedAt,
     companyUpdatedAt: raw.companyUpdatedAt,
     deletedIds:
       raw.deletedIds && typeof raw.deletedIds === 'object' ? raw.deletedIds : undefined,
@@ -639,10 +641,22 @@ export function normalizeDatabase(raw: AppDatabase): AppDatabase {
     customers: Array.isArray(raw.customers) ? raw.customers : [],
     products: Array.isArray(raw.products) ? raw.products : [],
     nfcTasks: Array.isArray(raw.nfcTasks)
-      ? raw.nfcTasks.map((t) => ({
-          ...t,
-          entryType: t.entryType ?? (t.customerId ? 'project' : 'internal'),
-        }))
+      ? raw.nfcTasks.map((t) => {
+          const actionMode = t.actionMode ?? 'task';
+          const previousTimerAction =
+            t.previousTimerAction ?? (t.autoStopPrevious === false ? 'discard' : 'stop');
+          return {
+            ...t,
+            actionMode,
+            previousTimerAction,
+            autoResumePausedOnStop:
+              t.autoResumePausedOnStop ?? previousTimerAction === 'pause',
+            entryType:
+              actionMode === 'pauseToggle'
+                ? 'internal'
+                : (t.entryType ?? (t.customerId ? 'project' : 'internal')),
+          };
+        })
       : [],
     geoFenceRules: Array.isArray(raw.geoFenceRules) ? raw.geoFenceRules : [],
     timeEntries: Array.isArray(raw.timeEntries)
@@ -652,6 +666,7 @@ export function normalizeDatabase(raw: AppDatabase): AppDatabase {
         }))
       : [],
     activeTimer: raw.activeTimer ?? null,
+    pausedTimers: Array.isArray(raw.pausedTimers) ? raw.pausedTimers : [],
     invoices: Array.isArray(raw.invoices)
       ? raw.invoices.map((inv) => ({
           ...inv,

@@ -56,6 +56,7 @@ import type {
   LocationSnapshot,
   NavSection,
   NextcloudConfigInfo,
+  NfcPreviousTimerAction,
   NfcTask,
   Product,
   RecurringExpense,
@@ -155,6 +156,100 @@ const NAV_ORDER: NavSection[] = [
   'recurring',
   'settings',
 ];
+
+function parkTimer(
+  timer: ActiveTimer,
+  nowIso: string,
+  pausedByNfcTaskId?: string | null
+): ActiveTimer {
+  return {
+    ...timer,
+    pausedAt: timer.pausedAt || nowIso,
+    pausedByNfcTaskId: pausedByNfcTaskId ?? timer.pausedByNfcTaskId ?? null,
+  };
+}
+
+function resumeParkedTimerAt(timer: ActiveTimer, nowMs: number): ActiveTimer {
+  let addedPause = 0;
+  if (timer.pausedAt) {
+    const pausedMs = new Date(timer.pausedAt).getTime();
+    if (!Number.isNaN(pausedMs)) {
+      addedPause = Math.max(0, nowMs - pausedMs);
+    }
+  }
+  return {
+    ...timer,
+    pausedAt: null,
+    accumulatedPausedMs: (timer.accumulatedPausedMs ?? 0) + addedPause,
+    pausedByNfcTaskId: null,
+  };
+}
+
+function resolveNfcPreviousAction(task: NfcTask): NfcPreviousTimerAction {
+  if (
+    task.previousTimerAction === 'pause' ||
+    task.previousTimerAction === 'stop' ||
+    task.previousTimerAction === 'discard'
+  ) {
+    return task.previousTimerAction;
+  }
+  return task.autoStopPrevious ? 'stop' : 'discard';
+}
+
+function finalizeTimerToEntry(
+  timer: ActiveTimer,
+  endDate: Date,
+  company: CompanyProfile
+): TimeEntry {
+  const isInternal = timer.entryType === 'internal' || !timer.customerId;
+  const endMs = Number.isNaN(endDate.getTime()) ? Date.now() : endDate.getTime();
+  const endIso = new Date(endMs).toISOString();
+  const durationSeconds = Math.max(
+    1,
+    Math.floor(getActiveTimerElapsedMs(timer, endMs) / 1000)
+  );
+  let travelDistanceKm: number | undefined;
+  let travelCostNet: number | undefined;
+  if (
+    !isInternal &&
+    company.autoCalculateTravelOnStop &&
+    company.homeBaseLocation &&
+    timer.location
+  ) {
+    const calc = computeTravelFromBase(
+      company.homeBaseLocation,
+      timer.location,
+      company.travelRatePerKm ?? 0.3,
+      company.travelRoundTripDefault !== false
+    );
+    travelDistanceKm = calc.distanceKm;
+    travelCostNet = calc.costNet;
+  }
+  return {
+    id: createId('time'),
+    customerId: isInternal ? '' : timer.customerId,
+    productId: isInternal ? '' : timer.productId,
+    nfcTaskId: timer.nfcTaskId,
+    title: timer.title,
+    notes: timer.notes,
+    startTime: timer.startTime,
+    endTime: endIso,
+    durationSeconds,
+    hourlyRateNet: isInternal ? 0 : timer.hourlyRateNet,
+    taxRate: (isInternal ? 0 : timer.taxRate) as TaxRate,
+    billable: !isInternal,
+    billedInvoiceId: null,
+    source: timer.source,
+    entryType: isInternal ? 'internal' : 'project',
+    internalCategory: isInternal ? timer.internalCategory : undefined,
+    location: timer.location ?? null,
+    photos: timer.photos && timer.photos.length > 0 ? timer.photos : undefined,
+    travelDistanceKm,
+    travelCostNet,
+    travelBilledInvoiceId: null,
+    createdAt: endIso,
+  };
+}
 
 function advanceRecurringDate(isoDate: string, interval: RecurringInterval): string {
   const [y, m, d] = isoDate.split('-').map((n) => Number(n));
@@ -510,6 +605,7 @@ export default function App() {
       message: string;
       isError?: boolean;
       haptic: 'start' | 'stop' | 'error';
+      startedNewTimer?: boolean;
     } => {
       const task = sourceDb.nfcTasks.find(
         (t) => t.tagUid.toLowerCase() === tagUid.trim().toLowerCase()
@@ -524,39 +620,11 @@ export default function App() {
       }
 
       const now = new Date();
+      const nowMs = now.getTime();
       const nowIso = now.toISOString();
       let nextTimeEntries = [...sourceDb.timeEntries];
       let nextActiveTimer: ActiveTimer | null = sourceDb.activeTimer;
-
-      const finalizeActive = (timer: ActiveTimer) => {
-        const isInternal = timer.entryType === 'internal' || !timer.customerId;
-        const duration = Math.max(
-          1,
-          Math.floor(getActiveTimerElapsedMs(timer, now.getTime()) / 1000)
-        );
-        const finished: TimeEntry = {
-          id: createId('time'),
-          customerId: isInternal ? '' : timer.customerId,
-          productId: isInternal ? '' : timer.productId,
-          nfcTaskId: timer.nfcTaskId,
-          title: timer.title,
-          notes: timer.notes,
-          startTime: timer.startTime,
-          endTime: nowIso,
-          durationSeconds: duration,
-          hourlyRateNet: isInternal ? 0 : timer.hourlyRateNet,
-          taxRate: (isInternal ? 0 : timer.taxRate) as TaxRate,
-          billable: !isInternal,
-          billedInvoiceId: null,
-          source: timer.source,
-          entryType: isInternal ? 'internal' : 'project',
-          internalCategory: isInternal ? timer.internalCategory : undefined,
-          location: timer.location ?? null,
-          photos: timer.photos && timer.photos.length > 0 ? timer.photos : undefined,
-          createdAt: nowIso,
-        };
-        nextTimeEntries = [finished, ...nextTimeEntries];
-      };
+      let nextPausedTimers: ActiveTimer[] = [...(sourceDb.pausedTimers ?? [])];
 
       const nextTasks = sourceDb.nfcTasks.map((t) =>
         t.id === task.id
@@ -564,27 +632,116 @@ export default function App() {
           : t
       );
 
+      // Mode 1: Pure Pause / Resume NFC Tag
+      if (task.actionMode === 'pauseToggle') {
+        if (nextActiveTimer) {
+          if (nextActiveTimer.pausedAt) {
+            const resumed = resumeParkedTimerAt(nextActiveTimer, nowMs);
+            return {
+              nextDb: {
+                ...sourceDb,
+                nfcTasks: nextTasks,
+                activeTimer: resumed,
+              },
+              message: `Auftrag „${resumed.title}“ per NFC-Tag fortgesetzt.`,
+              haptic: 'start',
+            };
+          }
+          const paused: ActiveTimer = {
+            ...nextActiveTimer,
+            pausedAt: nowIso,
+          };
+          return {
+            nextDb: {
+              ...sourceDb,
+              nfcTasks: nextTasks,
+              activeTimer: paused,
+            },
+            message: `Auftrag „${paused.title}“ pausiert — beim nächsten Scan läuft er weiter.`,
+            haptic: 'stop',
+          };
+        }
+
+        if (nextPausedTimers.length > 0) {
+          const [head, ...rest] = nextPausedTimers;
+          const resumed = resumeParkedTimerAt(head, nowMs);
+          return {
+            nextDb: {
+              ...sourceDb,
+              nfcTasks: nextTasks,
+              activeTimer: resumed,
+              pausedTimers: rest,
+            },
+            message: `Pausierter Auftrag „${resumed.title}“ per NFC-Tag fortgesetzt.`,
+            haptic: 'start',
+          };
+        }
+
+        return {
+          nextDb: {
+            ...sourceDb,
+            nfcTasks: nextTasks,
+          },
+          message: 'Aktuell läuft kein Auftrag zum Pausieren oder Fortsetzen.',
+          haptic: 'stop',
+        };
+      }
+
+      // Mode 2: Normal NFC Task (Project or Internal)
       const isInternalTask = task.entryType === 'internal' || !task.customerId;
 
       if (nextActiveTimer && nextActiveTimer.nfcTaskId === task.id && task.toggleOnRescan) {
-        finalizeActive(nextActiveTimer);
+        const finished = finalizeTimerToEntry(nextActiveTimer, now, sourceDb.company);
+        nextTimeEntries = [finished, ...nextTimeEntries];
+
+        let resumedParked: ActiveTimer | null = null;
+        if (task.autoResumePausedOnStop && nextPausedTimers.length > 0) {
+          const matchIdx = nextPausedTimers.findIndex(
+            (t) => t.pausedByNfcTaskId === task.id
+          );
+          const pickIdx = matchIdx >= 0 ? matchIdx : 0;
+          const [picked] = nextPausedTimers.splice(pickIdx, 1);
+          if (picked) {
+            resumedParked = resumeParkedTimerAt(picked, nowMs);
+          }
+        }
+
         return {
           nextDb: {
             ...sourceDb,
             nfcTasks: nextTasks,
             timeEntries: nextTimeEntries,
-            activeTimer: null,
+            activeTimer: resumedParked,
+            pausedTimers: nextPausedTimers,
           },
-          message: isInternalTask
-            ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert.`
-            : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
+          message: resumedParked
+            ? `„${task.title}“ gespeichert · „${resumedParked.title}“ läuft weiter.`
+            : isInternalTask
+              ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert.`
+              : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
           haptic: 'stop',
         };
       }
 
-      if (nextActiveTimer && task.autoStopPrevious) {
-        finalizeActive(nextActiveTimer);
-        nextActiveTimer = null;
+      let previousHandledNote = '';
+      if (nextActiveTimer) {
+        const prevAction = resolveNfcPreviousAction(task);
+        if (prevAction === 'pause') {
+          const parked = parkTimer(nextActiveTimer, nowIso, task.id);
+          nextPausedTimers = [
+            parked,
+            ...nextPausedTimers.filter((t) => t.id !== parked.id),
+          ];
+          previousHandledNote = ` („${parked.title}“ pausiert & geparkt)`;
+          nextActiveTimer = null;
+        } else if (prevAction === 'stop') {
+          const finishedPrev = finalizeTimerToEntry(nextActiveTimer, now, sourceDb.company);
+          nextTimeEntries = [finishedPrev, ...nextTimeEntries];
+          previousHandledNote = ` („${finishedPrev.title}“ gespeichert)`;
+          nextActiveTimer = null;
+        } else {
+          nextActiveTimer = null;
+        }
       }
 
       const product = isInternalTask
@@ -617,11 +774,14 @@ export default function App() {
           nfcTasks: nextTasks,
           timeEntries: nextTimeEntries,
           activeTimer: startedTimer,
+          pausedTimers: nextPausedTimers,
         },
-        message: isInternalTask
-          ? `Interne NFC-Aufgabe "${task.title}" (${internalCategory}) gestartet.`
-          : `NFC-Aufgabe "${task.title}" gestartet.`,
+        message:
+          (isInternalTask
+            ? `Interne NFC-Aufgabe "${task.title}" (${internalCategory}) gestartet.`
+            : `NFC-Aufgabe "${task.title}" gestartet.`) + previousHandledNote,
         haptic: 'start',
+        startedNewTimer: true,
       };
     },
     []
@@ -1008,7 +1168,11 @@ export default function App() {
               if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) {
                 coldFinishedEntry = loadedDb.timeEntries[0];
               }
-              if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) {
+              if (
+                result.startedNewTimer &&
+                loadedDb.activeTimer &&
+                loadedDb.activeTimer.id !== prevTimer?.id
+              ) {
                 coldStartedTimer = loadedDb.activeTimer;
               }
             } else {
@@ -1041,7 +1205,11 @@ export default function App() {
                 if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) {
                   coldFinishedEntry = loadedDb.timeEntries[0];
                 }
-                if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) {
+                if (
+                  result.startedNewTimer &&
+                  loadedDb.activeTimer &&
+                  loadedDb.activeTimer.id !== prevTimer?.id
+                ) {
                   coldStartedTimer = loadedDb.activeTimer;
                 }
               }
@@ -1216,7 +1384,11 @@ export default function App() {
       if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) {
         pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
       }
-      if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) {
+      if (
+        result.startedNewTimer &&
+        result.nextDb.activeTimer &&
+        result.nextDb.activeTimer.id !== prevTimer?.id
+      ) {
         attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
           forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
           retries: 2,
@@ -1479,7 +1651,7 @@ export default function App() {
   useEffect(() => {
     if (loading) return;
     void syncNativeWidgetState(db);
-  }, [db.activeTimer, db.timeEntries, db.nfcTasks, db.customers, loading, db]);
+  }, [db.activeTimer, db.pausedTimers, db.timeEntries, db.nfcTasks, db.customers, loading, db]);
 
   // Android Widget Quick-Start Tap Listener & Native Back Button
   useEffect(() => {
@@ -1765,58 +1937,35 @@ export default function App() {
       geoCooldownRef.current.set(active.geoFenceRuleId, Date.now());
     }
     const now = new Date();
-    const durationSeconds = Math.max(
-      1,
-      Math.floor(getActiveTimerElapsedMs(active, now.getTime()) / 1000)
-    );
-
     const isInternal = active.entryType === 'internal' || !active.customerId;
-    let travelDistanceKm: number | undefined;
-    let travelCostNet: number | undefined;
-    if (
-      !isInternal &&
-      currentDb.company.autoCalculateTravelOnStop &&
-      currentDb.company.homeBaseLocation &&
-      active.location
-    ) {
-      const calc = computeTravelFromBase(
-        currentDb.company.homeBaseLocation,
-        active.location,
-        currentDb.company.travelRatePerKm ?? 0.3,
-        currentDb.company.travelRoundTripDefault !== false
-      );
-      travelDistanceKm = calc.distanceKm;
-      travelCostNet = calc.costNet;
+    const entry = finalizeTimerToEntry(active, now, currentDb.company);
+    const durationSeconds = entry.durationSeconds;
+    const travelDistanceKm = entry.travelDistanceKm;
+    const travelCostNet = entry.travelCostNet;
+
+    let nextPausedTimers = [...(currentDb.pausedTimers ?? [])];
+    let resumedParked: ActiveTimer | null = null;
+    if (active.nfcTaskId && nextPausedTimers.length > 0) {
+      const nfcTask = currentDb.nfcTasks.find((t) => t.id === active.nfcTaskId);
+      if (nfcTask?.autoResumePausedOnStop) {
+        const matchIdx = nextPausedTimers.findIndex(
+          (t) => t.pausedByNfcTaskId === active.nfcTaskId
+        );
+        const pickIdx = matchIdx >= 0 ? matchIdx : 0;
+        const [picked] = nextPausedTimers.splice(pickIdx, 1);
+        if (picked) {
+          resumedParked = resumeParkedTimerAt(picked, now.getTime());
+        }
+      }
     }
 
-    const entry: TimeEntry = {
-      id: createId('time'),
-      customerId: isInternal ? '' : active.customerId,
-      productId: isInternal ? '' : active.productId,
-      nfcTaskId: active.nfcTaskId,
-      title: active.title,
-      notes: active.notes,
-      startTime: active.startTime,
-      endTime: now.toISOString(),
-      durationSeconds,
-      hourlyRateNet: isInternal ? 0 : active.hourlyRateNet,
-      taxRate: (isInternal ? 0 : active.taxRate) as TaxRate,
-      billable: !isInternal,
-      billedInvoiceId: null,
-      source: active.source,
-      entryType: isInternal ? 'internal' : 'project',
-      internalCategory: isInternal ? active.internalCategory : undefined,
-      location: active.location ?? null,
-      photos: active.photos && active.photos.length > 0 ? active.photos : undefined,
-      travelDistanceKm,
-      travelCostNet,
-      travelBilledInvoiceId: null,
-      createdAt: now.toISOString(),
-    };
-    void cancelNativeTimerReminder();
+    if (!resumedParked) {
+      void cancelNativeTimerReminder();
+    }
     const nextDb: AppDatabase = {
       ...currentDb,
-      activeTimer: null,
+      activeTimer: resumedParked,
+      pausedTimers: nextPausedTimers,
       timeEntries: [entry, ...currentDb.timeEntries],
     };
     void persistDb(nextDb);
@@ -1826,7 +1975,7 @@ export default function App() {
     let budgetExceeded = false;
     if (!isInternal) {
       const cust = nextDb.customers.find((c) => c.id === entry.customerId);
-      const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, null);
+      const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, resumedParked);
       if (bStatus.hasBudget && bStatus.severity === 'exceeded') {
         budgetSuffix = ` · Kontingent für ${cust?.companyName} überschritten (${bStatus.primaryPct} %)!`;
         budgetExceeded = true;
@@ -1835,12 +1984,15 @@ export default function App() {
       }
     }
 
+    const resumeSuffix = resumedParked ? ` · „${resumedParked.title}“ läuft weiter` : '';
     notify(
       (isInternal
         ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).`
         : travelCostNet && travelCostNet > 0
           ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.`
-          : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) + budgetSuffix,
+          : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) +
+        resumeSuffix +
+        budgetSuffix,
       budgetExceeded
     );
   }, [notify, persistDb, pushFinishedEntryToNextcloudCalendar]);
@@ -2348,6 +2500,108 @@ export default function App() {
     });
   };
 
+  const handleParkActiveTimer = useCallback(() => {
+    const currentDb = dbRef.current;
+    if (!currentDb.activeTimer) return;
+    const nowIso = new Date().toISOString();
+    const parked = parkTimer(currentDb.activeTimer, nowIso, null);
+    const nextPaused = [
+      parked,
+      ...(currentDb.pausedTimers ?? []).filter((t) => t.id !== parked.id),
+    ];
+    void cancelNativeTimerReminder();
+    void persistDb({
+      ...currentDb,
+      activeTimer: null,
+      pausedTimers: nextPaused,
+    });
+    notify(`Auftrag „${parked.title}“ pausiert & geparkt — du kannst jetzt einen neuen starten.`);
+  }, [notify, persistDb]);
+
+  const handleResumePausedTimer = useCallback(
+    (pausedId: string) => {
+      const currentDb = dbRef.current;
+      const list = currentDb.pausedTimers ?? [];
+      const target = list.find((t) => t.id === pausedId);
+      if (!target) return;
+
+      const nowMs = Date.now();
+      const nowIso = new Date(nowMs).toISOString();
+      let remaining = list.filter((t) => t.id !== pausedId);
+      let parkedPrevTitle = '';
+      if (currentDb.activeTimer) {
+        const parkedPrev = parkTimer(currentDb.activeTimer, nowIso, null);
+        remaining = [
+          parkedPrev,
+          ...remaining.filter((t) => t.id !== parkedPrev.id),
+        ];
+        parkedPrevTitle = parkedPrev.title;
+      }
+
+      const resumed = resumeParkedTimerAt(target, nowMs);
+      void persistDb({
+        ...currentDb,
+        activeTimer: resumed,
+        pausedTimers: remaining,
+      });
+      notify(
+        parkedPrevTitle
+          ? `„${parkedPrevTitle}“ pausiert & geparkt · „${resumed.title}“ fortgesetzt.`
+          : `Auftrag „${resumed.title}“ fortgesetzt.`
+      );
+    },
+    [notify, persistDb]
+  );
+
+  const handleStopPausedTimer = useCallback(
+    (pausedId: string) => {
+      const currentDb = dbRef.current;
+      const list = currentDb.pausedTimers ?? [];
+      const target = list.find((t) => t.id === pausedId);
+      if (!target) return;
+
+      const parsedPausedEnd = target.pausedAt ? new Date(target.pausedAt) : new Date();
+      const endDate = Number.isNaN(parsedPausedEnd.getTime()) ? new Date() : parsedPausedEnd;
+      const entry = finalizeTimerToEntry(target, endDate, currentDb.company);
+      const nextPaused = list.filter((t) => t.id !== pausedId);
+      const nextDb: AppDatabase = {
+        ...currentDb,
+        pausedTimers: nextPaused,
+        timeEntries: [entry, ...currentDb.timeEntries],
+      };
+      void persistDb(nextDb);
+      pushFinishedEntryToNextcloudCalendar(entry, nextDb);
+      notify(`Geparkter Auftrag „${entry.title}“ (${formatDuration(entry.durationSeconds)}) gespeichert.`);
+    },
+    [notify, persistDb, pushFinishedEntryToNextcloudCalendar]
+  );
+
+  const handleDiscardPausedTimer = useCallback(
+    (pausedId: string) => {
+      const currentDb = dbRef.current;
+      const target = (currentDb.pausedTimers ?? []).find((t) => t.id === pausedId);
+      if (!target) return;
+      requestConfirmDelete({
+        title: 'Geparkten Auftrag verwerfen?',
+        message: `Der pausierte Auftrag „${target.title}“ wird ohne Speicherung entfernt.`,
+        confirmLabel: 'Verwerfen',
+        tone: 'warning',
+        onConfirm: () => {
+          const latest = dbRef.current;
+          scheduleUndoableDelete(
+            latest,
+            {
+              ...latest,
+              pausedTimers: (latest.pausedTimers ?? []).filter((t) => t.id !== pausedId),
+            },
+            `Geparkter Auftrag „${target.title}“ verworfen`
+          );
+        },
+      });
+    },
+    [requestConfirmDelete, scheduleUndoableDelete]
+  );
+
   const handleAddManualEntry = (entry: TimeEntry) => {
     const currentDb = dbRef.current;
     const nextDb: AppDatabase = {
@@ -2440,7 +2694,11 @@ export default function App() {
     if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) {
       pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
     }
-    if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) {
+    if (
+      result.startedNewTimer &&
+      result.nextDb.activeTimer &&
+      result.nextDb.activeTimer.id !== prevTimer?.id
+    ) {
       attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
         forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
         retries: 2,
@@ -3916,6 +4174,7 @@ export default function App() {
                   invoices={db.invoices}
                   calendarEvents={db.calendarEvents ?? []}
                   activeTimer={db.activeTimer}
+                  pausedTimers={db.pausedTimers ?? []}
                   elapsedSeconds={elapsedSeconds}
                   onStartTimer={handleStartTimer}
                   onUpdateActiveTimerNotes={handleUpdateActiveTimerNotes}
@@ -3925,8 +4184,13 @@ export default function App() {
                   nextcloudConfigured={nextcloud.configured}
                   onPauseTimer={handlePauseTimer}
                   onResumeTimer={handleResumeTimer}
+                  onParkActiveTimer={handleParkActiveTimer}
+                  onResumePausedTimer={handleResumePausedTimer}
+                  onStopPausedTimer={handleStopPausedTimer}
+                  onDiscardPausedTimer={handleDiscardPausedTimer}
                   onStopTimer={handleStopTimer}
                   onDiscardTimer={handleDiscardTimer}
+                  onTriggerNfcTag={handleTriggerNfcTag}
                   onAddManualEntry={handleAddManualEntry}
                   onUpdateEntry={handleUpdateEntry}
                   onDeleteEntry={handleDeleteEntry}
@@ -3990,6 +4254,7 @@ export default function App() {
                   internalCategories={db.company.internalCategories ?? []}
                   nfcTasks={db.nfcTasks}
                   activeTimer={db.activeTimer}
+                  pausedTimers={db.pausedTimers ?? []}
                   incomingUnknownTag={pendingScannedUid}
                   onConsumeIncomingUnknownTag={() => setPendingScannedUid(null)}
                   onWritingStateChange={setIsWritingNfc}

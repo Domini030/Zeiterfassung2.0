@@ -75,6 +75,10 @@ export interface Product {
   createdAt: string;
 }
 
+export type NfcTagActionMode = 'task' | 'pauseToggle';
+
+export type NfcPreviousTimerAction = 'stop' | 'pause' | 'discard';
+
 export interface NfcTask {
   id: string;
   tagUid: string;
@@ -84,6 +88,9 @@ export interface NfcTask {
   internalCategory?: string;
   customerId: string;
   productId: string;
+  actionMode?: NfcTagActionMode;
+  previousTimerAction?: NfcPreviousTimerAction;
+  autoResumePausedOnStop?: boolean;
   autoStopPrevious: boolean;
   toggleOnRescan: boolean;
   triggerCount: number;
@@ -151,6 +158,7 @@ export interface ActiveTimer {
   entryType?: 'project' | 'internal';
   internalCategory?: string;
   photos?: WorkPhoto[];
+  pausedByNfcTaskId?: string | null;
 }
 
 export interface InvoiceLineItem {
@@ -486,6 +494,7 @@ export interface AppDatabase {
   updatedAt: string;
   syncDeviceId?: string;
   activeTimerUpdatedAt?: string;
+  pausedTimersUpdatedAt?: string;
   companyUpdatedAt?: string;
   deletedIds?: Record<string, string>;
   recordUpdatedAt?: Record<string, string>;
@@ -496,6 +505,7 @@ export interface AppDatabase {
   geoFenceRules?: GeoFenceRule[];
   timeEntries: TimeEntry[];
   activeTimer: ActiveTimer | null;
+  pausedTimers?: ActiveTimer[];
   invoices: Invoice[];
   expenses?: Expense[];
   recurringExpenses?: RecurringExpense[];

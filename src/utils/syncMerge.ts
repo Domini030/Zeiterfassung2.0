@@ -142,6 +142,8 @@ export function stampDatabaseChanges(
   }
 
   const timerChanged = stableJson(prevDb.activeTimer ?? null) !== stableJson(nextDb.activeTimer ?? null);
+  const pausedTimersChanged =
+    stableJson(prevDb.pausedTimers ?? []) !== stableJson(nextDb.pausedTimers ?? []);
   const companyChanged = stableJson(prevDb.company) !== stableJson(nextDb.company);
 
   return {
@@ -151,6 +153,9 @@ export function stampDatabaseChanges(
     activeTimerUpdatedAt: timerChanged
       ? nowIso
       : nextDb.activeTimerUpdatedAt || prevDb.activeTimerUpdatedAt || prevDb.updatedAt,
+    pausedTimersUpdatedAt: pausedTimersChanged
+      ? nowIso
+      : nextDb.pausedTimersUpdatedAt || prevDb.pausedTimersUpdatedAt || prevDb.updatedAt,
     companyUpdatedAt: companyChanged
       ? nowIso
       : nextDb.companyUpdatedAt || prevDb.companyUpdatedAt || prevDb.updatedAt,
@@ -417,6 +422,31 @@ export function mergeDatabases(
         : localDb.activeTimerUpdatedAt || localDb.updatedAt;
   }
 
+  // 3b. Merge pausedTimers stack (most recently updated stack wins)
+  const localPausedList = localDb.pausedTimers ?? [];
+  const remotePausedList = remoteDb.pausedTimers ?? [];
+  const localPausedMs = parseIsoMs(localDb.pausedTimersUpdatedAt || localDb.updatedAt);
+  const remotePausedMs = parseIsoMs(remoteDb.pausedTimersUpdatedAt || remoteDb.updatedAt);
+  let mergedPausedTimers = localPausedList;
+  let mergedPausedTimersUpdatedAt = localDb.pausedTimersUpdatedAt || localDb.updatedAt;
+
+  if (stableJson(localPausedList) !== stableJson(remotePausedList)) {
+    if (remotePausedMs > localPausedMs) {
+      mergedPausedTimers = remotePausedList;
+      mergedPausedTimersUpdatedAt = remoteDb.pausedTimersUpdatedAt || remoteDb.updatedAt;
+      localChanged = true;
+    } else {
+      mergedPausedTimers = localPausedList;
+      mergedPausedTimersUpdatedAt = localDb.pausedTimersUpdatedAt || localDb.updatedAt;
+      remoteNeedsPush = true;
+    }
+  } else {
+    mergedPausedTimersUpdatedAt =
+      remotePausedMs >= localPausedMs
+        ? remoteDb.pausedTimersUpdatedAt || remoteDb.updatedAt
+        : localDb.pausedTimersUpdatedAt || localDb.updatedAt;
+  }
+
   // 4. Merge company settings
   const companyMerge = mergeCompanyProfiles(localDb, remoteDb);
   if (companyMerge.fromRemote) localChanged = true;
@@ -438,6 +468,7 @@ export function mergeDatabases(
         ? localDb.syncDeviceId || remoteDb.syncDeviceId
         : remoteDb.syncDeviceId || localDb.syncDeviceId,
     activeTimerUpdatedAt: mergedActiveTimerUpdatedAt,
+    pausedTimersUpdatedAt: mergedPausedTimersUpdatedAt,
     companyUpdatedAt: companyMerge.companyUpdatedAt,
     deletedIds: pruneTombstones(mergedDeletedIds, nowMs),
     recordUpdatedAt: mergedRecordUpdatedAt,
@@ -448,6 +479,7 @@ export function mergeDatabases(
     geoFenceRules: (mergedCollections.geoFenceRules ?? []) as AppDatabase['geoFenceRules'],
     timeEntries: (mergedCollections.timeEntries ?? []) as AppDatabase['timeEntries'],
     activeTimer: mergedActiveTimer,
+    pausedTimers: mergedPausedTimers,
     invoices: (mergedCollections.invoices ?? []) as AppDatabase['invoices'],
     expenses: (mergedCollections.expenses ?? []) as AppDatabase['expenses'],
     recurringExpenses: (mergedCollections.recurringExpenses ?? []) as AppDatabase['recurringExpenses'],

@@ -1604,9 +1604,13 @@ export async function syncNativeWidgetState(db: AppDatabase): Promise<void> {
   if (!isNativeCapacitor()) return;
   try {
     const todayStr = new Date().toISOString().slice(0, 10);
-    const todaySecs = db.timeEntries
+    const bookedTodaySecs = db.timeEntries
       .filter((e) => e.startTime.slice(0, 10) === todayStr)
       .reduce((acc, e) => acc + e.durationSeconds, 0);
+    const pausedTodaySecs = (db.pausedTimers ?? [])
+      .filter((t) => t.startTime.slice(0, 10) === todayStr)
+      .reduce((acc, t) => acc + Math.floor(getActiveTimerElapsedMs(t) / 1000), 0);
+    const todaySecs = bookedTodaySecs + pausedTodaySecs;
     const todayHours = (todaySecs / 3600).toFixed(1).replace('.', ',');
     const custName = db.activeTimer
       ? db.activeTimer.entryType === 'internal' || !db.activeTimer.customerId

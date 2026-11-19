@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-D0AmX0i2.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-2n6fZSAm.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-CQBrW04x.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-Bm6SSd0L.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -35669,7 +35669,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-D0AmX0i2.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-2n6fZSAm.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -62951,6 +62951,7 @@ function createEmptyDatabase() {
 		geoFenceRules: [],
 		timeEntries: [],
 		activeTimer: null,
+		pausedTimers: [],
 		invoices: [],
 		expenses: [],
 		recurringInvoices: [],
@@ -63396,22 +63397,31 @@ function normalizeDatabase(raw) {
 		updatedAt: raw.updatedAt || (/* @__PURE__ */ new Date()).toISOString(),
 		syncDeviceId: raw.syncDeviceId,
 		activeTimerUpdatedAt: raw.activeTimerUpdatedAt,
+		pausedTimersUpdatedAt: raw.pausedTimersUpdatedAt,
 		companyUpdatedAt: raw.companyUpdatedAt,
 		deletedIds: raw.deletedIds && typeof raw.deletedIds === "object" ? raw.deletedIds : void 0,
 		recordUpdatedAt: raw.recordUpdatedAt && typeof raw.recordUpdatedAt === "object" ? raw.recordUpdatedAt : void 0,
 		company,
 		customers: Array.isArray(raw.customers) ? raw.customers : [],
 		products: Array.isArray(raw.products) ? raw.products : [],
-		nfcTasks: Array.isArray(raw.nfcTasks) ? raw.nfcTasks.map((t) => ({
-			...t,
-			entryType: t.entryType ?? (t.customerId ? "project" : "internal")
-		})) : [],
+		nfcTasks: Array.isArray(raw.nfcTasks) ? raw.nfcTasks.map((t) => {
+			const actionMode = t.actionMode ?? "task";
+			const previousTimerAction = t.previousTimerAction ?? (t.autoStopPrevious === false ? "discard" : "stop");
+			return {
+				...t,
+				actionMode,
+				previousTimerAction,
+				autoResumePausedOnStop: t.autoResumePausedOnStop ?? previousTimerAction === "pause",
+				entryType: actionMode === "pauseToggle" ? "internal" : t.entryType ?? (t.customerId ? "project" : "internal")
+			};
+		}) : [],
 		geoFenceRules: Array.isArray(raw.geoFenceRules) ? raw.geoFenceRules : [],
 		timeEntries: Array.isArray(raw.timeEntries) ? raw.timeEntries.map((e) => ({
 			...e,
 			entryType: e.entryType ?? (e.customerId ? "project" : "internal")
 		})) : [],
 		activeTimer: raw.activeTimer ?? null,
+		pausedTimers: Array.isArray(raw.pausedTimers) ? raw.pausedTimers : [],
 		invoices: Array.isArray(raw.invoices) ? raw.invoices.map((inv) => ({
 			...inv,
 			isArchived: inv.isArchived ?? false
@@ -66363,12 +66373,14 @@ function stampDatabaseChanges(prevDb, nextDb, deviceId) {
 	const cleanRecordUpdatedAt = {};
 	for (const id of activeIds) if (nextRecordUpdatedAt[id]) cleanRecordUpdatedAt[id] = nextRecordUpdatedAt[id];
 	const timerChanged = stableJson(prevDb.activeTimer ?? null) !== stableJson(nextDb.activeTimer ?? null);
+	const pausedTimersChanged = stableJson(prevDb.pausedTimers ?? []) !== stableJson(nextDb.pausedTimers ?? []);
 	const companyChanged = stableJson(prevDb.company) !== stableJson(nextDb.company);
 	return {
 		...nextDb,
 		updatedAt: nowIso,
 		syncDeviceId: deviceId || nextDb.syncDeviceId || prevDb.syncDeviceId,
 		activeTimerUpdatedAt: timerChanged ? nowIso : nextDb.activeTimerUpdatedAt || prevDb.activeTimerUpdatedAt || prevDb.updatedAt,
+		pausedTimersUpdatedAt: pausedTimersChanged ? nowIso : nextDb.pausedTimersUpdatedAt || prevDb.pausedTimersUpdatedAt || prevDb.updatedAt,
 		companyUpdatedAt: companyChanged ? nowIso : nextDb.companyUpdatedAt || prevDb.companyUpdatedAt || prevDb.updatedAt,
 		deletedIds: pruneTombstones(nextDeletedIds, nowMs),
 		recordUpdatedAt: cleanRecordUpdatedAt
@@ -66515,6 +66527,23 @@ function mergeDatabases(localDb, remoteDb) {
 			remoteNeedsPush = true;
 		}
 	} else mergedActiveTimerUpdatedAt = remoteTimerMs >= localTimerMs ? remoteDb.activeTimerUpdatedAt || remoteDb.updatedAt : localDb.activeTimerUpdatedAt || localDb.updatedAt;
+	const localPausedList = localDb.pausedTimers ?? [];
+	const remotePausedList = remoteDb.pausedTimers ?? [];
+	const localPausedMs = parseIsoMs(localDb.pausedTimersUpdatedAt || localDb.updatedAt);
+	const remotePausedMs = parseIsoMs(remoteDb.pausedTimersUpdatedAt || remoteDb.updatedAt);
+	let mergedPausedTimers = localPausedList;
+	let mergedPausedTimersUpdatedAt = localDb.pausedTimersUpdatedAt || localDb.updatedAt;
+	if (stableJson(localPausedList) !== stableJson(remotePausedList)) {
+		if (remotePausedMs > localPausedMs) {
+			mergedPausedTimers = remotePausedList;
+			mergedPausedTimersUpdatedAt = remoteDb.pausedTimersUpdatedAt || remoteDb.updatedAt;
+			localChanged = true;
+		} else {
+			mergedPausedTimers = localPausedList;
+			mergedPausedTimersUpdatedAt = localDb.pausedTimersUpdatedAt || localDb.updatedAt;
+			remoteNeedsPush = true;
+		}
+	} else mergedPausedTimersUpdatedAt = remotePausedMs >= localPausedMs ? remoteDb.pausedTimersUpdatedAt || remoteDb.updatedAt : localDb.pausedTimersUpdatedAt || localDb.updatedAt;
 	const companyMerge = mergeCompanyProfiles(localDb, remoteDb);
 	if (companyMerge.fromRemote) localChanged = true;
 	if (companyMerge.fromLocal) remoteNeedsPush = true;
@@ -66525,6 +66554,7 @@ function mergeDatabases(localDb, remoteDb) {
 		updatedAt: mergedUpdatedAt,
 		syncDeviceId: remoteNeedsPush ? localDb.syncDeviceId || remoteDb.syncDeviceId : remoteDb.syncDeviceId || localDb.syncDeviceId,
 		activeTimerUpdatedAt: mergedActiveTimerUpdatedAt,
+		pausedTimersUpdatedAt: mergedPausedTimersUpdatedAt,
 		companyUpdatedAt: companyMerge.companyUpdatedAt,
 		deletedIds: pruneTombstones(mergedDeletedIds, nowMs),
 		recordUpdatedAt: mergedRecordUpdatedAt,
@@ -66535,6 +66565,7 @@ function mergeDatabases(localDb, remoteDb) {
 		geoFenceRules: mergedCollections.geoFenceRules ?? [],
 		timeEntries: mergedCollections.timeEntries ?? [],
 		activeTimer: mergedActiveTimer,
+		pausedTimers: mergedPausedTimers,
 		invoices: mergedCollections.invoices ?? [],
 		expenses: mergedCollections.expenses ?? [],
 		recurringExpenses: mergedCollections.recurringExpenses ?? [],
@@ -67734,7 +67765,7 @@ async function syncNativeWidgetState(db) {
 	if (!isNativeCapacitor()) return;
 	try {
 		const todayStr = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-		const todayHours = (db.timeEntries.filter((e) => e.startTime.slice(0, 10) === todayStr).reduce((acc, e) => acc + e.durationSeconds, 0) / 3600).toFixed(1).replace(".", ",");
+		const todayHours = ((db.timeEntries.filter((e) => e.startTime.slice(0, 10) === todayStr).reduce((acc, e) => acc + e.durationSeconds, 0) + (db.pausedTimers ?? []).filter((t) => t.startTime.slice(0, 10) === todayStr).reduce((acc, t) => acc + Math.floor(getActiveTimerElapsedMs(t) / 1e3), 0)) / 3600).toFixed(1).replace(".", ",");
 		const custName = db.activeTimer ? db.activeTimer.entryType === "internal" || !db.activeTimer.customerId ? `Intern · ${db.activeTimer.internalCategory || "Sonstiges"}` : db.customers.find((c) => c.id === db.activeTimer?.customerId)?.companyName ?? "" : "";
 		const quickTasks = db.nfcTasks.slice(0, 2).map((t) => ({
 			tagUid: t.tagUid,
@@ -87986,11 +88017,12 @@ var FALLBACK_INTERNAL_CATEGORIES = [
 	"Weiterbildung",
 	"Sonstiges"
 ];
-function NfcTasksView({ customers, products, internalCategories, nfcTasks, activeTimer, incomingUnknownTag, onConsumeIncomingUnknownTag, onWritingStateChange, onSaveTask, onDeleteTask, onTriggerTag }) {
+function NfcTasksView({ customers, products, internalCategories, nfcTasks, activeTimer, pausedTimers = [], incomingUnknownTag, onConsumeIncomingUnknownTag, onWritingStateChange, onSaveTask, onDeleteTask, onTriggerTag }) {
 	const effectiveInternalCategories = (0, import_react.useMemo)(() => internalCategories && internalCategories.length > 0 ? internalCategories : FALLBACK_INTERNAL_CATEGORIES, [internalCategories]);
 	const hasProjectMasterData = customers.length > 0 && products.length > 0;
 	const [showForm, setShowForm] = (0, import_react.useState)(false);
 	const [editingId, setEditingId] = (0, import_react.useState)(null);
+	const [actionMode, setActionMode] = (0, import_react.useState)("task");
 	const [taskType, setTaskType] = (0, import_react.useState)(hasProjectMasterData ? "project" : "internal");
 	const [tagUid, setTagUid] = (0, import_react.useState)("");
 	const [title, setTitle] = (0, import_react.useState)("");
@@ -87998,7 +88030,8 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [productId, setProductId] = (0, import_react.useState)(products[0]?.id ?? "");
 	const [internalCategory, setInternalCategory] = (0, import_react.useState)(effectiveInternalCategories[0] ?? "Sonstiges");
-	const [autoStopPrevious, setAutoStopPrevious] = (0, import_react.useState)(true);
+	const [previousTimerAction, setPreviousTimerAction] = (0, import_react.useState)("pause");
+	const [autoResumePausedOnStop, setAutoResumePausedOnStop] = (0, import_react.useState)(true);
 	const [toggleOnRescan, setToggleOnRescan] = (0, import_react.useState)(true);
 	const [formError, setFormError] = (0, import_react.useState)("");
 	const nativeCapacitor = isNativeCapacitor();
@@ -88066,17 +88099,19 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 		setTagUid(incomingUnknownTag.uid);
 		setNfcError(null);
 		setEditingId(null);
+		setActionMode("task");
 		setTitle("");
 		setDescription("");
 		setTaskType(customers.length > 0 && products.length > 0 ? "project" : "internal");
 		setCustomerId((prev) => prev || customers[0]?.id || "");
 		setProductId((prev) => prev || products[0]?.id || "");
 		setInternalCategory((prev) => prev || effectiveInternalCategories[0] || "Sonstiges");
-		setAutoStopPrevious(true);
+		setPreviousTimerAction("pause");
+		setAutoResumePausedOnStop(true);
 		setToggleOnRescan(true);
 		setFormError("");
 		setShowForm(true);
-		setNfcMessage(`Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Du kannst ihn jetzt direkt einem Kundenauftrag oder einer internen Aufgabe zuweisen.`);
+		setNfcMessage(`Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Du kannst ihn jetzt direkt einem Kundenauftrag, einer internen Aufgabe oder als Pause-Tag zuweisen.`);
 		onConsumeIncomingUnknownTag?.();
 	}, [
 		incomingUnknownTag,
@@ -88089,6 +88124,7 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 	const productMap = (0, import_react.useMemo)(() => new Map(products.map((p) => [p.id, p])), [products]);
 	const openNewForm = () => {
 		setEditingId(null);
+		setActionMode("task");
 		setTaskType(hasProjectMasterData ? "project" : "internal");
 		setTagUid(`NFC-${Math.random().toString(36).slice(2, 7).toUpperCase()}`);
 		setTitle("");
@@ -88096,14 +88132,18 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 		setCustomerId(customers[0]?.id ?? "");
 		setProductId(products[0]?.id ?? "");
 		setInternalCategory(effectiveInternalCategories[0] ?? "Sonstiges");
-		setAutoStopPrevious(true);
+		setPreviousTimerAction("pause");
+		setAutoResumePausedOnStop(true);
 		setToggleOnRescan(true);
 		setFormError("");
 		setShowForm(true);
 	};
 	const openEditForm = (task) => {
+		const mode = task.actionMode ?? "task";
 		const isInternal = task.entryType === "internal" || !task.customerId;
+		const prevAction = task.previousTimerAction ?? (task.autoStopPrevious === false ? "discard" : "stop");
 		setEditingId(task.id);
+		setActionMode(mode);
 		setTaskType(isInternal ? "internal" : "project");
 		setTagUid(task.tagUid);
 		setTitle(task.title);
@@ -88111,7 +88151,8 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 		setCustomerId(task.customerId || customers[0]?.id || "");
 		setProductId(task.productId || products[0]?.id || "");
 		setInternalCategory(task.internalCategory || effectiveInternalCategories[0] || "Sonstiges");
-		setAutoStopPrevious(task.autoStopPrevious);
+		setPreviousTimerAction(prevAction);
+		setAutoResumePausedOnStop(task.autoResumePausedOnStop ?? prevAction === "pause");
 		setToggleOnRescan(task.toggleOnRescan);
 		setFormError("");
 		setShowForm(true);
@@ -88120,12 +88161,14 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 		e.preventDefault();
 		setFormError("");
 		const cleanUid = tagUid.trim();
-		if (!cleanUid || !title.trim()) {
+		const isPauseTag = actionMode === "pauseToggle";
+		const resolvedTitle = title.trim() || (isPauseTag ? "Pause / Weiter" : "");
+		if (!cleanUid || !resolvedTitle) {
 			setFormError("Bitte Tag-ID und Aufgabentitel ausfüllen.");
 			return;
 		}
-		if (taskType === "project" && (!customerId || !productId)) {
-			setFormError("Bitte Kunde und Leistung wählen — oder oben auf „Interne Aufgabe (ohne Kunde)“ umschalten.");
+		if (!isPauseTag && taskType === "project" && (!customerId || !productId)) {
+			setFormError("Bitte Kunde und Leistung wählen — oder oben auf „Interne Aufgabe“ bzw. „Nur Pause / Weiter“ umschalten.");
 			return;
 		}
 		if (nfcTasks.find((t) => t.tagUid.toLowerCase() === cleanUid.toLowerCase() && t.id !== editingId)) {
@@ -88136,14 +88179,17 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 		onSaveTask({
 			id: existing?.id ?? createId("nfc"),
 			tagUid: cleanUid,
-			title: title.trim(),
+			title: resolvedTitle,
 			description: description.trim(),
-			entryType: taskType,
-			internalCategory: taskType === "internal" ? internalCategory.trim() || effectiveInternalCategories[0] || "Sonstiges" : void 0,
-			customerId: taskType === "internal" ? "" : customerId,
-			productId: taskType === "internal" ? "" : productId,
-			autoStopPrevious,
-			toggleOnRescan,
+			actionMode,
+			entryType: isPauseTag ? "internal" : taskType,
+			internalCategory: !isPauseTag && taskType === "internal" ? internalCategory.trim() || effectiveInternalCategories[0] || "Sonstiges" : void 0,
+			customerId: isPauseTag || taskType === "internal" ? "" : customerId,
+			productId: isPauseTag || taskType === "internal" ? "" : productId,
+			previousTimerAction: isPauseTag ? "pause" : previousTimerAction,
+			autoResumePausedOnStop: !isPauseTag && previousTimerAction === "pause" ? autoResumePausedOnStop : false,
+			autoStopPrevious: !isPauseTag && previousTimerAction === "stop",
+			toggleOnRescan: isPauseTag ? true : toggleOnRescan,
 			triggerCount: existing?.triggerCount ?? 0,
 			lastTriggeredAt: existing?.lastTriggeredAt ?? null,
 			createdAt: existing?.createdAt ?? (/* @__PURE__ */ new Date()).toISOString()
@@ -88419,18 +88465,36 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 						className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
 						children: editingId ? "NFC-Aufgabe bearbeiten" : "Neue NFC-Aufgabe anlegen"
 					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "grid grid-cols-2 rounded-lg border border-slate-200 bg-slate-100 p-1 dark:border-[#3b2d5e] dark:bg-[#211936]",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: () => setTaskType("project"),
-							className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${taskType === "project" ? "ui-accent-active text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
-							children: "Kundenauftrag"
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: () => setTaskType("internal"),
-							className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${taskType === "internal" ? "bg-amber-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
-							children: "Interne Aufgabe"
-						})]
+						className: "grid grid-cols-3 rounded-lg border border-slate-200 bg-slate-100 p-1 dark:border-[#3b2d5e] dark:bg-[#211936]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => {
+									setActionMode("task");
+									setTaskType("project");
+								},
+								className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${actionMode === "task" && taskType === "project" ? "ui-accent-active text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+								children: "Kundenauftrag"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => {
+									setActionMode("task");
+									setTaskType("internal");
+								},
+								className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${actionMode === "task" && taskType === "internal" ? "bg-amber-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+								children: "Interne Aufgabe"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => {
+									setActionMode("pauseToggle");
+									if (!title.trim()) setTitle("Pause / Weiter");
+								},
+								className: `rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${actionMode === "pauseToggle" ? "bg-emerald-600 text-white shadow-xs" : "text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"}`,
+								children: "Nur Pause / Weiter"
+							})
+						]
 					})]
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
 					onSubmit: handleSave,
@@ -88443,20 +88507,35 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 							type: "text",
 							value: tagUid,
 							onChange: (e) => setTagUid(e.target.value),
-							placeholder: taskType === "internal" ? "z. B. NFC-STUDIO-REINIGUNG" : "z. B. NFC-WERKSTATT-01 oder 04:A1:2B:...",
+							placeholder: actionMode === "pauseToggle" ? "z. B. NFC-PAUSE-01" : taskType === "internal" ? "z. B. NFC-STUDIO-REINIGUNG" : "z. B. NFC-WERKSTATT-01 oder 04:A1:2B:...",
 							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
 						})] }),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-							children: "Aufgabentitel"
+							children: actionMode === "pauseToggle" ? "Bezeichnung des Pause-Tags" : "Aufgabentitel"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 							type: "text",
 							value: title,
 							onChange: (e) => setTitle(e.target.value),
-							placeholder: taskType === "internal" ? "z. B. Studio reinigen oder Kundenakquise" : "z. B. Serverraum Wartung vor Ort",
+							placeholder: actionMode === "pauseToggle" ? "z. B. Kaffeepause, Werkstatt-Unterbrechung" : taskType === "internal" ? "z. B. Studio reinigen oder Kundenakquise" : "z. B. Serverraum Wartung vor Ort",
 							className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
 						})] }),
-						taskType === "project" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+						actionMode === "pauseToggle" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "md:col-span-2 rounded-xl border border-emerald-200 bg-emerald-50/80 p-3.5 text-xs text-emerald-950 dark:border-emerald-800/50 dark:bg-emerald-950/30 dark:text-emerald-200",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "font-semibold",
+								children: "So funktioniert der reine Pause-/Fortsetzen-Tag:"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+								className: "mt-1 text-emerald-900/90 dark:text-emerald-200/90",
+								children: [
+									"Dieser Tag startet keine eigene Aufgabe. Beim ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "1. Scan" }),
+									" pausiert er deinen aktuell laufenden Auftrag (ohne ihn zu beenden). Beim ",
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "2. Scan" }),
+									" läuft genau dieser Auftrag wieder nahtlos weiter."
+								]
+							})]
+						}) : taskType === "project" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 							className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
 							children: "Kunde"
 						}), customers.length > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemedSelect, {
@@ -88507,25 +88586,67 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 							className: "md:col-span-2",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 								className: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
-								children: taskType === "internal" ? "Beschreibung / Standardnotiz (optional)" : "Beschreibung / Standardnotiz für die Rechnung"
+								children: actionMode === "pauseToggle" ? "Notiz / Einsatzort des Tags (optional)" : taskType === "internal" ? "Beschreibung / Standardnotiz (optional)" : "Beschreibung / Standardnotiz für die Rechnung"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 								type: "text",
 								value: description,
 								onChange: (e) => setDescription(e.target.value),
-								placeholder: taskType === "internal" ? "Optionaler Hinweis zur internen Aufgabe..." : "Optionaler Hinweis zum Arbeitsplatz oder Leistungsumfang...",
+								placeholder: actionMode === "pauseToggle" ? "z. B. Pausenbereich, Schreibtisch oder Werkstatt-Tür..." : taskType === "internal" ? "Optionaler Hinweis zur internen Aufgabe..." : "Optionaler Hinweis zum Arbeitsplatz oder Leistungsumfang...",
 								className: "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
 							})]
 						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex flex-wrap gap-6 md:col-span-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+						actionMode === "task" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "md:col-span-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								className: "mb-2 block text-xs font-medium text-slate-600 dark:text-slate-400",
+								children: "Wenn beim Scan bereits ein anderer Auftrag läuft:"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "grid grid-cols-1 gap-2 sm:grid-cols-3",
+								children: [
+									{
+										id: "pause",
+										title: "Pausieren & parken",
+										desc: "Laufendes Projekt bleibt offen & kann danach direkt weiterlaufen."
+									},
+									{
+										id: "stop",
+										title: "Beenden & speichern",
+										desc: "Laufenden Auftrag abschließen und als Zeiteintrag buchen."
+									},
+									{
+										id: "discard",
+										title: "Ohne Speichern ersetzen",
+										desc: "Vorherigen Timer verwerfen und diese Aufgabe starten."
+									}
+								].map((opt) => {
+									const activeOpt = previousTimerAction === opt.id;
+									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => {
+											setPreviousTimerAction(opt.id);
+											if (opt.id === "pause") setAutoResumePausedOnStop(true);
+										},
+										className: `rounded-xl border p-3 text-left transition-colors cursor-pointer ${activeOpt ? "border-blue-600 bg-blue-50/80 text-blue-950 dark:border-violet-500 dark:bg-violet-950/50 dark:text-violet-100" : "border-slate-200 bg-slate-50/70 text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-300 dark:hover:bg-[#2a2045]"}`,
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "text-xs font-semibold",
+											children: opt.title
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "mt-0.5 text-[11px] opacity-80",
+											children: opt.desc
+										})]
+									}, opt.id);
+								})
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col gap-2.5 md:col-span-2",
+							children: [previousTimerAction === "pause" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 								className: "flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 									type: "checkbox",
-									checked: autoStopPrevious,
-									onChange: (e) => setAutoStopPrevious(e.target.checked),
+									checked: autoResumePausedOnStop,
+									onChange: (e) => setAutoResumePausedOnStop(e.target.checked),
 									className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-								}), "Vorherigen Timer automatisch speichern & stoppen"]
+								}), "Beim Beenden / erneuten Scan dieser Aufgabe den pausierten Auftrag automatisch fortsetzen"]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 								className: "flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
@@ -88535,7 +88656,7 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 									className: "h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
 								}), "Bei erneutem Scan derselben Aufgabe Timer stoppen (Ein-/Ausstempeln)"]
 							})]
-						}),
+						})] }),
 						formError && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "text-xs font-medium text-red-600 dark:text-red-400 md:col-span-2",
 							children: formError
@@ -88549,8 +88670,8 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 								children: "Abbrechen"
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 								type: "submit",
-								className: `rounded-lg px-4 py-2 text-sm font-semibold text-white cursor-pointer ${taskType === "internal" ? "bg-amber-600 hover:bg-amber-700" : "ui-accent-active"}`,
-								children: "NFC-Aufgabe speichern"
+								className: `rounded-lg px-4 py-2 text-sm font-semibold text-white cursor-pointer ${actionMode === "pauseToggle" ? "bg-emerald-600 hover:bg-emerald-700" : taskType === "internal" ? "bg-amber-600 hover:bg-amber-700" : "ui-accent-active"}`,
+								children: actionMode === "pauseToggle" ? "Pause-Tag speichern" : "NFC-Aufgabe speichern"
 							})]
 						})
 					]
@@ -88598,10 +88719,13 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 						}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
 							className: "divide-y divide-slate-200 dark:divide-[#2e2349]",
 							children: nfcTasks.map((task) => {
-								const isInternal = task.entryType === "internal" || !task.customerId;
-								const customer = isInternal ? void 0 : customerMap.get(task.customerId);
-								const product = isInternal ? void 0 : productMap.get(task.productId);
+								const isPauseTag = task.actionMode === "pauseToggle";
+								const prevAction = task.previousTimerAction ?? (task.autoStopPrevious === false ? "discard" : "stop");
+								const isInternal = !isPauseTag && (task.entryType === "internal" || !task.customerId);
+								const customer = isInternal || isPauseTag ? void 0 : customerMap.get(task.customerId);
+								const product = isInternal || isPauseTag ? void 0 : productMap.get(task.productId);
 								const isRunning = activeTimer?.nfcTaskId === task.id;
+								const isParked = pausedTimers.some((t) => t.nfcTaskId === task.id);
 								const isCopied = copiedId === task.id;
 								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
 									className: "transition-colors hover:bg-slate-50/75 dark:hover:bg-[#211936]/50",
@@ -88614,18 +88738,41 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 											className: "px-4 py-3",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 												className: "flex flex-wrap items-center gap-1.5 font-medium text-slate-900 dark:text-slate-100",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: task.title }), isInternal && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: "rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-950/70 dark:text-amber-300",
-													children: "Intern"
-												})]
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: task.title }), isPauseTag ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300",
+													children: "Pause-Tag"
+												}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+													isInternal && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-950/70 dark:text-amber-300",
+														children: "Intern"
+													}),
+													prevAction === "pause" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: "inline-flex items-center gap-1 rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-semibold text-blue-800 dark:bg-violet-950/80 dark:text-violet-200",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pause, { className: "h-2.5 w-2.5" }), "Pausiert vorherigen"]
+													}),
+													prevAction === "pause" && task.autoResumePausedOnStop && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: "inline-flex items-center gap-1 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RotateCcw, { className: "h-2.5 w-2.5" }), "Auto-Rückkehr"]
+													}),
+													isParked && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950/70 dark:text-amber-300",
+														children: "Geparkt"
+													})
+												] })]
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 												className: "mt-0.5 text-xs text-slate-500 dark:text-slate-400",
-												children: [isInternal ? `Interne Aufgabe · ${task.internalCategory || "Sonstiges"}` : customer?.companyName ?? "Unbekannter Kunde", task.lastTriggeredAt ? ` · Zuletzt ${formatDateTimeDE(task.lastTriggeredAt)}` : " · Noch nie ausgelöst"]
+												children: [isPauseTag ? "Pausiert aktiven Auftrag / setzt pausierten fort" : isInternal ? `Interne Aufgabe · ${task.internalCategory || "Sonstiges"}` : customer?.companyName ?? "Unbekannter Kunde", task.lastTriggeredAt ? ` · Zuletzt ${formatDateTimeDE(task.lastTriggeredAt)}` : " · Noch nie ausgelöst"]
 											})]
 										}),
 										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
 											className: "px-4 py-3 text-xs text-slate-600 dark:text-slate-300",
-											children: isInternal ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											children: isPauseTag ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "font-medium text-emerald-700 dark:text-emerald-300",
+												children: "Reiner Pausen-Umschalter"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "text-slate-500 dark:text-slate-400",
+												children: task.description || "Kein eigener Zeiteintrag"
+											})] }) : isInternal ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 												className: "font-medium text-amber-700 dark:text-amber-300",
 												children: task.internalCategory || "Interne Tätigkeit"
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -88648,8 +88795,8 @@ function NfcTasksView({ customers, products, internalCategories, nfcTasks, activ
 													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 														type: "button",
 														onClick: () => onTriggerTag(task.tagUid),
-														className: `inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${isRunning ? "ui-accent-btn text-white" : "bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:hover:bg-violet-600"}`,
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3.5 w-3.5 fill-current" }), isRunning ? "Stoppen / Neu" : "Auslösen"]
+														className: `inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${isPauseTag ? "bg-emerald-600 text-white hover:bg-emerald-700" : isRunning ? "ui-accent-btn text-white" : "bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:hover:bg-violet-600"}`,
+														children: [isPauseTag ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pause, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3.5 w-3.5 fill-current" }), isPauseTag ? "Pause / Weiter" : isRunning ? "Stoppen / Neu" : "Auslösen"]
 													}),
 													nfcSupported && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 														type: "button",
@@ -90550,7 +90697,7 @@ async function uploadWorkPhotoToNextcloud(photo, taskTitle) {
 	})).path;
 }
 // src/components/TimeTrackerView.tsx
-function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, invoices = [], calendarEvents = [], activeTimer, elapsedSeconds, onStartTimer, onUpdateActiveTimerNotes, onUpdateActiveTimerLocation, onUpdateActiveTimerPhotos, onDeductBreakMinutes, nextcloudConfigured = false, onPauseTimer, onResumeTimer, onStopTimer, onDiscardTimer, onAddManualEntry, onUpdateEntry, onDeleteEntry, onToggleBillable, onCreateInvoiceFromEntries, onNavigate, onNotify, notificationStatus, onRequestNotificationPermission, onOpenNotificationSettings, onCheckGeoFenceNow, checkingGeoFence = false, geoFenceRuleCount = 0 }) {
+function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, invoices = [], calendarEvents = [], activeTimer, pausedTimers = [], elapsedSeconds, onStartTimer, onUpdateActiveTimerNotes, onUpdateActiveTimerLocation, onUpdateActiveTimerPhotos, onDeductBreakMinutes, nextcloudConfigured = false, onPauseTimer, onResumeTimer, onParkActiveTimer, onResumePausedTimer, onStopPausedTimer, onDiscardPausedTimer, onStopTimer, onDiscardTimer, onTriggerNfcTag, onAddManualEntry, onUpdateEntry, onDeleteEntry, onToggleBillable, onCreateInvoiceFromEntries, onNavigate, onNotify, notificationStatus, onRequestNotificationPermission, onOpenNotificationSettings, onCheckGeoFenceNow, checkingGeoFence = false, geoFenceRuleCount = 0 }) {
 	const serviceProducts = (0, import_react.useMemo)(() => products.filter((p) => p.type === "service"), [products]);
 	const [customerId, setCustomerId] = (0, import_react.useState)(customers[0]?.id ?? "");
 	const [productId, setProductId] = (0, import_react.useState)(serviceProducts[0]?.id ?? products[0]?.id ?? "");
@@ -90628,9 +90775,10 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 	const selectedCustomerIds = (0, import_react.useMemo)(() => Array.from(new Set(selectedEntries.map((e) => e.customerId))), [selectedEntries]);
 	const todayTotalSeconds = (0, import_react.useMemo)(() => {
 		const todayStr = toInputDate();
-		return timeEntries.filter((e) => e.startTime.slice(0, 10) === todayStr).reduce((acc, e) => acc + e.durationSeconds, 0) + (activeTimer ? elapsedSeconds : 0);
+		return timeEntries.filter((e) => e.startTime.slice(0, 10) === todayStr).reduce((acc, e) => acc + e.durationSeconds, 0) + pausedTimers.filter((t) => t.startTime.slice(0, 10) === todayStr).reduce((acc, t) => acc + Math.floor(getActiveTimerElapsedMs(t) / 1e3), 0) + (activeTimer ? elapsedSeconds : 0);
 	}, [
 		timeEntries,
+		pausedTimers,
 		activeTimer,
 		elapsedSeconds
 	]);
@@ -91128,6 +91276,13 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 										className: "inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-800 dark:bg-violet-600 dark:hover:bg-violet-500 whitespace-nowrap shrink-0 cursor-pointer",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-4 w-4 fill-current" }), "Stoppen & Speichern"]
 									}),
+									onParkActiveTimer && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: onParkActiveTimer,
+										title: "Aktiven Auftrag pausieren & parken, um eine andere Aufgabe zu starten",
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3.5 py-3 text-sm font-medium text-amber-900 transition-colors hover:bg-amber-100 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200 dark:hover:bg-amber-950/70 whitespace-nowrap shrink-0 cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { className: "h-4 w-4" }), "Parken & Neu"]
+									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 										type: "button",
 										onClick: onDiscardTimer,
@@ -91456,20 +91611,27 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 							className: "flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Nfc, { className: "h-3.5 w-3.5 text-violet-400" }), "Schnellstart:"]
 						}),
-						nfcTasks.length > 0 ? nfcTasks.slice(0, 3).map((task) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-							type: "button",
-							onClick: () => onStartTimer({
-								customerId: task.customerId,
-								productId: task.productId,
-								title: task.title,
-								notes: task.description,
-								nfcTaskId: task.id,
-								source: "nfc",
-								entryType: "project"
-							}),
-							className: "rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer",
-							children: ["▶ ", task.title]
-						}, task.id)) : customers.length > 0 && serviceProducts.slice(0, 2).map((prod) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+						nfcTasks.length > 0 ? nfcTasks.filter((t) => t.actionMode !== "pauseToggle").slice(0, 3).map((task) => {
+							const isIntTask = task.entryType === "internal" || !task.customerId;
+							return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => {
+									if (onTriggerNfcTag) onTriggerNfcTag(task.tagUid);
+									else onStartTimer({
+										customerId: isIntTask ? "" : task.customerId,
+										productId: isIntTask ? "" : task.productId,
+										title: task.title,
+										notes: task.description,
+										nfcTaskId: task.id,
+										source: "nfc",
+										entryType: isIntTask ? "internal" : "project",
+										internalCategory: isIntTask ? task.internalCategory : void 0
+									});
+								},
+								className: "rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer",
+								children: ["▶ ", task.title]
+							}, task.id);
+						}) : customers.length > 0 && serviceProducts.slice(0, 2).map((prod) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 							type: "button",
 							onClick: () => onStartTimer({
 								customerId: effectiveCustomerId,
@@ -91503,6 +91665,90 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 							children: "NFC-Tags verwalten"
 						})
 					]
+				})]
+			}),
+			pausedTimers.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-xl border border-amber-200 bg-amber-50/60 p-4 dark:border-amber-900/50 dark:bg-[#1c152e]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mb-3 flex flex-wrap items-center justify-between gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Layers, { className: "h-4 w-4 text-amber-600 dark:text-amber-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
+							className: "font-display text-sm font-bold text-slate-900 dark:text-slate-100",
+							children: [
+								"Pausierte / geparkte Aufträge (",
+								pausedTimers.length,
+								")"
+							]
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "text-xs text-slate-600 dark:text-slate-400",
+						children: "Jederzeit nahtlos fortsetzen oder direkt abschließen"
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "space-y-2.5",
+					children: pausedTimers.map((parked) => {
+						const isParkedInternal = parked.entryType === "internal" || !parked.customerId;
+						const parkedCustomer = isParkedInternal ? void 0 : customerMap.get(parked.customerId);
+						const parkedProduct = isParkedInternal ? void 0 : productMap.get(parked.productId);
+						const recordedSec = Math.max(0, Math.floor(getActiveTimerElapsedMs(parked) / 1e3));
+						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col gap-3 rounded-xl border border-amber-200/90 bg-white p-3.5 shadow-xs dark:border-[#3b2d5e] dark:bg-[#171126] sm:flex-row sm:items-center sm:justify-between",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "min-w-0 space-y-1",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-wrap items-center gap-1.5 text-[11px]",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 font-semibold text-amber-900 dark:bg-amber-950/80 dark:text-amber-200",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Pause, { className: "h-2.5 w-2.5" }), "Pausiert"]
+										}),
+										isParkedInternal ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "font-medium text-amber-700 dark:text-amber-300",
+											children: ["Intern · ", parked.internalCategory || "Sonstiges"]
+										}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "font-medium text-slate-600 dark:text-slate-300",
+											children: [parkedCustomer?.companyName ?? "Kunde", parkedProduct ? ` · ${parkedProduct.name}` : ""]
+										}),
+										parked.pausedAt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: "text-slate-400 dark:text-slate-500",
+											children: ["· seit ", formatDateTimeDE(parked.pausedAt)]
+										})
+									]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "truncate font-display text-sm font-bold text-slate-900 dark:text-slate-100",
+									children: parked.title
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap items-center gap-2 shrink-0",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 font-mono text-sm font-bold text-slate-800 tabular-nums dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200",
+										children: formatDuration(recordedSec)
+									}),
+									onResumePausedTimer && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => onResumePausedTimer(parked.id),
+										className: "inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-emerald-700 whitespace-nowrap cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "h-3.5 w-3.5 fill-current" }), activeTimer ? "Wechseln & Fortsetzen" : "Fortsetzen"]
+									}),
+									onStopPausedTimer && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										type: "button",
+										onClick: () => onStopPausedTimer(parked.id),
+										className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap cursor-pointer",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3 w-3 fill-current" }), "Speichern"]
+									}),
+									onDiscardPausedTimer && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => onDiscardPausedTimer(parked.id),
+										title: "Geparkten Auftrag verwerfen",
+										className: "inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-[#3b2d5e] dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "h-3.5 w-3.5" })
+									})
+								]
+							})]
+						}, parked.id);
+					})
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -92345,6 +92591,67 @@ var NAV_ORDER = [
 	"recurring",
 	"settings"
 ];
+function parkTimer(timer, nowIso, pausedByNfcTaskId) {
+	return {
+		...timer,
+		pausedAt: timer.pausedAt || nowIso,
+		pausedByNfcTaskId: pausedByNfcTaskId ?? timer.pausedByNfcTaskId ?? null
+	};
+}
+function resumeParkedTimerAt(timer, nowMs) {
+	let addedPause = 0;
+	if (timer.pausedAt) {
+		const pausedMs = new Date(timer.pausedAt).getTime();
+		if (!Number.isNaN(pausedMs)) addedPause = Math.max(0, nowMs - pausedMs);
+	}
+	return {
+		...timer,
+		pausedAt: null,
+		accumulatedPausedMs: (timer.accumulatedPausedMs ?? 0) + addedPause,
+		pausedByNfcTaskId: null
+	};
+}
+function resolveNfcPreviousAction(task) {
+	if (task.previousTimerAction === "pause" || task.previousTimerAction === "stop" || task.previousTimerAction === "discard") return task.previousTimerAction;
+	return task.autoStopPrevious ? "stop" : "discard";
+}
+function finalizeTimerToEntry(timer, endDate, company) {
+	const isInternal = timer.entryType === "internal" || !timer.customerId;
+	const endMs = Number.isNaN(endDate.getTime()) ? Date.now() : endDate.getTime();
+	const endIso = new Date(endMs).toISOString();
+	const durationSeconds = Math.max(1, Math.floor(getActiveTimerElapsedMs(timer, endMs) / 1e3));
+	let travelDistanceKm;
+	let travelCostNet;
+	if (!isInternal && company.autoCalculateTravelOnStop && company.homeBaseLocation && timer.location) {
+		const calc = computeTravelFromBase(company.homeBaseLocation, timer.location, company.travelRatePerKm ?? .3, company.travelRoundTripDefault !== false);
+		travelDistanceKm = calc.distanceKm;
+		travelCostNet = calc.costNet;
+	}
+	return {
+		id: createId("time"),
+		customerId: isInternal ? "" : timer.customerId,
+		productId: isInternal ? "" : timer.productId,
+		nfcTaskId: timer.nfcTaskId,
+		title: timer.title,
+		notes: timer.notes,
+		startTime: timer.startTime,
+		endTime: endIso,
+		durationSeconds,
+		hourlyRateNet: isInternal ? 0 : timer.hourlyRateNet,
+		taxRate: isInternal ? 0 : timer.taxRate,
+		billable: !isInternal,
+		billedInvoiceId: null,
+		source: timer.source,
+		entryType: isInternal ? "internal" : "project",
+		internalCategory: isInternal ? timer.internalCategory : void 0,
+		location: timer.location ?? null,
+		photos: timer.photos && timer.photos.length > 0 ? timer.photos : void 0,
+		travelDistanceKm,
+		travelCostNet,
+		travelBilledInvoiceId: null,
+		createdAt: endIso
+	};
+}
 function advanceRecurringDate(isoDate, interval) {
 	const [y, m, d] = isoDate.split("-").map((n) => Number(n));
 	if (!y || !m || !d) return toInputDate();
@@ -92599,56 +92906,103 @@ function App() {
 			haptic: "error"
 		};
 		const now = /* @__PURE__ */ new Date();
+		const nowMs = now.getTime();
 		const nowIso = now.toISOString();
 		let nextTimeEntries = [...sourceDb.timeEntries];
 		let nextActiveTimer = sourceDb.activeTimer;
-		const finalizeActive = (timer) => {
-			const isInternal = timer.entryType === "internal" || !timer.customerId;
-			const duration = Math.max(1, Math.floor(getActiveTimerElapsedMs(timer, now.getTime()) / 1e3));
-			nextTimeEntries = [{
-				id: createId("time"),
-				customerId: isInternal ? "" : timer.customerId,
-				productId: isInternal ? "" : timer.productId,
-				nfcTaskId: timer.nfcTaskId,
-				title: timer.title,
-				notes: timer.notes,
-				startTime: timer.startTime,
-				endTime: nowIso,
-				durationSeconds: duration,
-				hourlyRateNet: isInternal ? 0 : timer.hourlyRateNet,
-				taxRate: isInternal ? 0 : timer.taxRate,
-				billable: !isInternal,
-				billedInvoiceId: null,
-				source: timer.source,
-				entryType: isInternal ? "internal" : "project",
-				internalCategory: isInternal ? timer.internalCategory : void 0,
-				location: timer.location ?? null,
-				photos: timer.photos && timer.photos.length > 0 ? timer.photos : void 0,
-				createdAt: nowIso
-			}, ...nextTimeEntries];
-		};
+		let nextPausedTimers = [...sourceDb.pausedTimers ?? []];
 		const nextTasks = sourceDb.nfcTasks.map((t) => t.id === task.id ? {
 			...t,
 			triggerCount: t.triggerCount + 1,
 			lastTriggeredAt: nowIso
 		} : t);
+		if (task.actionMode === "pauseToggle") {
+			if (nextActiveTimer) {
+				if (nextActiveTimer.pausedAt) {
+					const resumed = resumeParkedTimerAt(nextActiveTimer, nowMs);
+					return {
+						nextDb: {
+							...sourceDb,
+							nfcTasks: nextTasks,
+							activeTimer: resumed
+						},
+						message: `Auftrag „${resumed.title}“ per NFC-Tag fortgesetzt.`,
+						haptic: "start"
+					};
+				}
+				const paused = {
+					...nextActiveTimer,
+					pausedAt: nowIso
+				};
+				return {
+					nextDb: {
+						...sourceDb,
+						nfcTasks: nextTasks,
+						activeTimer: paused
+					},
+					message: `Auftrag „${paused.title}“ pausiert — beim nächsten Scan läuft er weiter.`,
+					haptic: "stop"
+				};
+			}
+			if (nextPausedTimers.length > 0) {
+				const [head, ...rest] = nextPausedTimers;
+				const resumed = resumeParkedTimerAt(head, nowMs);
+				return {
+					nextDb: {
+						...sourceDb,
+						nfcTasks: nextTasks,
+						activeTimer: resumed,
+						pausedTimers: rest
+					},
+					message: `Pausierter Auftrag „${resumed.title}“ per NFC-Tag fortgesetzt.`,
+					haptic: "start"
+				};
+			}
+			return {
+				nextDb: {
+					...sourceDb,
+					nfcTasks: nextTasks
+				},
+				message: "Aktuell läuft kein Auftrag zum Pausieren oder Fortsetzen.",
+				haptic: "stop"
+			};
+		}
 		const isInternalTask = task.entryType === "internal" || !task.customerId;
 		if (nextActiveTimer && nextActiveTimer.nfcTaskId === task.id && task.toggleOnRescan) {
-			finalizeActive(nextActiveTimer);
+			nextTimeEntries = [finalizeTimerToEntry(nextActiveTimer, now, sourceDb.company), ...nextTimeEntries];
+			let resumedParked = null;
+			if (task.autoResumePausedOnStop && nextPausedTimers.length > 0) {
+				const matchIdx = nextPausedTimers.findIndex((t) => t.pausedByNfcTaskId === task.id);
+				const pickIdx = matchIdx >= 0 ? matchIdx : 0;
+				const [picked] = nextPausedTimers.splice(pickIdx, 1);
+				if (picked) resumedParked = resumeParkedTimerAt(picked, nowMs);
+			}
 			return {
 				nextDb: {
 					...sourceDb,
 					nfcTasks: nextTasks,
 					timeEntries: nextTimeEntries,
-					activeTimer: null
+					activeTimer: resumedParked,
+					pausedTimers: nextPausedTimers
 				},
-				message: isInternalTask ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert.` : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
+				message: resumedParked ? `„${task.title}“ gespeichert · „${resumedParked.title}“ läuft weiter.` : isInternalTask ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert.` : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
 				haptic: "stop"
 			};
 		}
-		if (nextActiveTimer && task.autoStopPrevious) {
-			finalizeActive(nextActiveTimer);
-			nextActiveTimer = null;
+		let previousHandledNote = "";
+		if (nextActiveTimer) {
+			const prevAction = resolveNfcPreviousAction(task);
+			if (prevAction === "pause") {
+				const parked = parkTimer(nextActiveTimer, nowIso, task.id);
+				nextPausedTimers = [parked, ...nextPausedTimers.filter((t) => t.id !== parked.id)];
+				previousHandledNote = ` („${parked.title}“ pausiert & geparkt)`;
+				nextActiveTimer = null;
+			} else if (prevAction === "stop") {
+				const finishedPrev = finalizeTimerToEntry(nextActiveTimer, now, sourceDb.company);
+				nextTimeEntries = [finishedPrev, ...nextTimeEntries];
+				previousHandledNote = ` („${finishedPrev.title}“ gespeichert)`;
+				nextActiveTimer = null;
+			} else nextActiveTimer = null;
 		}
 		const product = isInternalTask ? void 0 : sourceDb.products.find((p) => p.id === task.productId);
 		const internalCategory = isInternalTask ? task.internalCategory?.trim() || "Sonstiges" : void 0;
@@ -92674,10 +93028,12 @@ function App() {
 				...sourceDb,
 				nfcTasks: nextTasks,
 				timeEntries: nextTimeEntries,
-				activeTimer: startedTimer
+				activeTimer: startedTimer,
+				pausedTimers: nextPausedTimers
 			},
-			message: isInternalTask ? `Interne NFC-Aufgabe "${task.title}" (${internalCategory}) gestartet.` : `NFC-Aufgabe "${task.title}" gestartet.`,
-			haptic: "start"
+			message: (isInternalTask ? `Interne NFC-Aufgabe "${task.title}" (${internalCategory}) gestartet.` : `NFC-Aufgabe "${task.title}" gestartet.`) + previousHandledNote,
+			haptic: "start",
+			startedNewTimer: true
 		};
 	}, []);
 	const attachAutoLocationToTimer = (0, import_react.useCallback)((timerId, options) => {
@@ -92950,7 +93306,7 @@ function App() {
 								dbRef.current = loadedDb;
 							}
 							if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) coldFinishedEntry = loadedDb.timeEntries[0];
-							if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
+							if (result.startedNewTimer && loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
 						} else {
 							setPendingScannedUid({
 								uid: incomingNfc,
@@ -92981,7 +93337,7 @@ function App() {
 									dbRef.current = loadedDb;
 								}
 								if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) coldFinishedEntry = loadedDb.timeEntries[0];
-								if (loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
+								if (result.startedNewTimer && loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
 							}
 						}
 					}
@@ -93111,7 +93467,7 @@ function App() {
 		persistDb(result.nextDb);
 		notify(result.message);
 		if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
-		if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
+		if (result.startedNewTimer && result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
 			forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
 			retries: 2,
 			startedAtIso: result.nextDb.activeTimer.startTime
@@ -93305,6 +93661,7 @@ function App() {
 		syncNativeWidgetState(db);
 	}, [
 		db.activeTimer,
+		db.pausedTimers,
 		db.timeEntries,
 		db.nfcTasks,
 		db.customers,
@@ -93523,43 +93880,26 @@ function App() {
 		setGeoExitPrompt(null);
 		if (active.source === "geo" && active.geoFenceRuleId) geoCooldownRef.current.set(active.geoFenceRuleId, Date.now());
 		const now = /* @__PURE__ */ new Date();
-		const durationSeconds = Math.max(1, Math.floor(getActiveTimerElapsedMs(active, now.getTime()) / 1e3));
 		const isInternal = active.entryType === "internal" || !active.customerId;
-		let travelDistanceKm;
-		let travelCostNet;
-		if (!isInternal && currentDb.company.autoCalculateTravelOnStop && currentDb.company.homeBaseLocation && active.location) {
-			const calc = computeTravelFromBase(currentDb.company.homeBaseLocation, active.location, currentDb.company.travelRatePerKm ?? .3, currentDb.company.travelRoundTripDefault !== false);
-			travelDistanceKm = calc.distanceKm;
-			travelCostNet = calc.costNet;
+		const entry = finalizeTimerToEntry(active, now, currentDb.company);
+		const durationSeconds = entry.durationSeconds;
+		const travelDistanceKm = entry.travelDistanceKm;
+		const travelCostNet = entry.travelCostNet;
+		let nextPausedTimers = [...currentDb.pausedTimers ?? []];
+		let resumedParked = null;
+		if (active.nfcTaskId && nextPausedTimers.length > 0) {
+			if (currentDb.nfcTasks.find((t) => t.id === active.nfcTaskId)?.autoResumePausedOnStop) {
+				const matchIdx = nextPausedTimers.findIndex((t) => t.pausedByNfcTaskId === active.nfcTaskId);
+				const pickIdx = matchIdx >= 0 ? matchIdx : 0;
+				const [picked] = nextPausedTimers.splice(pickIdx, 1);
+				if (picked) resumedParked = resumeParkedTimerAt(picked, now.getTime());
+			}
 		}
-		const entry = {
-			id: createId("time"),
-			customerId: isInternal ? "" : active.customerId,
-			productId: isInternal ? "" : active.productId,
-			nfcTaskId: active.nfcTaskId,
-			title: active.title,
-			notes: active.notes,
-			startTime: active.startTime,
-			endTime: now.toISOString(),
-			durationSeconds,
-			hourlyRateNet: isInternal ? 0 : active.hourlyRateNet,
-			taxRate: isInternal ? 0 : active.taxRate,
-			billable: !isInternal,
-			billedInvoiceId: null,
-			source: active.source,
-			entryType: isInternal ? "internal" : "project",
-			internalCategory: isInternal ? active.internalCategory : void 0,
-			location: active.location ?? null,
-			photos: active.photos && active.photos.length > 0 ? active.photos : void 0,
-			travelDistanceKm,
-			travelCostNet,
-			travelBilledInvoiceId: null,
-			createdAt: now.toISOString()
-		};
-		cancelNativeTimerReminder();
+		if (!resumedParked) cancelNativeTimerReminder();
 		const nextDb = {
 			...currentDb,
-			activeTimer: null,
+			activeTimer: resumedParked,
+			pausedTimers: nextPausedTimers,
 			timeEntries: [entry, ...currentDb.timeEntries]
 		};
 		persistDb(nextDb);
@@ -93568,13 +93908,14 @@ function App() {
 		let budgetExceeded = false;
 		if (!isInternal) {
 			const cust = nextDb.customers.find((c) => c.id === entry.customerId);
-			const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, null);
+			const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, resumedParked);
 			if (bStatus.hasBudget && bStatus.severity === "exceeded") {
 				budgetSuffix = ` · Kontingent für ${cust?.companyName} überschritten (${bStatus.primaryPct} %)!`;
 				budgetExceeded = true;
 			} else if (bStatus.hasBudget && bStatus.severity === "warning") budgetSuffix = ` · Kontingent bei ${bStatus.primaryPct} %`;
 		}
-		notify((isInternal ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).` : travelCostNet && travelCostNet > 0 ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.` : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) + budgetSuffix, budgetExceeded);
+		const resumeSuffix = resumedParked ? ` · „${resumedParked.title}“ läuft weiter` : "";
+		notify((isInternal ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).` : travelCostNet && travelCostNet > 0 ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.` : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) + resumeSuffix + budgetSuffix, budgetExceeded);
 	}, [
 		notify,
 		persistDb,
@@ -93949,6 +94290,80 @@ function App() {
 			}
 		});
 	};
+	const handleParkActiveTimer = (0, import_react.useCallback)(() => {
+		const currentDb = dbRef.current;
+		if (!currentDb.activeTimer) return;
+		const nowIso = (/* @__PURE__ */ new Date()).toISOString();
+		const parked = parkTimer(currentDb.activeTimer, nowIso, null);
+		const nextPaused = [parked, ...(currentDb.pausedTimers ?? []).filter((t) => t.id !== parked.id)];
+		cancelNativeTimerReminder();
+		persistDb({
+			...currentDb,
+			activeTimer: null,
+			pausedTimers: nextPaused
+		});
+		notify(`Auftrag „${parked.title}“ pausiert & geparkt — du kannst jetzt einen neuen starten.`);
+	}, [notify, persistDb]);
+	const handleResumePausedTimer = (0, import_react.useCallback)((pausedId) => {
+		const currentDb = dbRef.current;
+		const list = currentDb.pausedTimers ?? [];
+		const target = list.find((t) => t.id === pausedId);
+		if (!target) return;
+		const nowMs = Date.now();
+		const nowIso = new Date(nowMs).toISOString();
+		let remaining = list.filter((t) => t.id !== pausedId);
+		let parkedPrevTitle = "";
+		if (currentDb.activeTimer) {
+			const parkedPrev = parkTimer(currentDb.activeTimer, nowIso, null);
+			remaining = [parkedPrev, ...remaining.filter((t) => t.id !== parkedPrev.id)];
+			parkedPrevTitle = parkedPrev.title;
+		}
+		const resumed = resumeParkedTimerAt(target, nowMs);
+		persistDb({
+			...currentDb,
+			activeTimer: resumed,
+			pausedTimers: remaining
+		});
+		notify(parkedPrevTitle ? `„${parkedPrevTitle}“ pausiert & geparkt · „${resumed.title}“ fortgesetzt.` : `Auftrag „${resumed.title}“ fortgesetzt.`);
+	}, [notify, persistDb]);
+	const handleStopPausedTimer = (0, import_react.useCallback)((pausedId) => {
+		const currentDb = dbRef.current;
+		const list = currentDb.pausedTimers ?? [];
+		const target = list.find((t) => t.id === pausedId);
+		if (!target) return;
+		const parsedPausedEnd = target.pausedAt ? new Date(target.pausedAt) : /* @__PURE__ */ new Date();
+		const entry = finalizeTimerToEntry(target, Number.isNaN(parsedPausedEnd.getTime()) ? /* @__PURE__ */ new Date() : parsedPausedEnd, currentDb.company);
+		const nextPaused = list.filter((t) => t.id !== pausedId);
+		const nextDb = {
+			...currentDb,
+			pausedTimers: nextPaused,
+			timeEntries: [entry, ...currentDb.timeEntries]
+		};
+		persistDb(nextDb);
+		pushFinishedEntryToNextcloudCalendar(entry, nextDb);
+		notify(`Geparkter Auftrag „${entry.title}“ (${formatDuration(entry.durationSeconds)}) gespeichert.`);
+	}, [
+		notify,
+		persistDb,
+		pushFinishedEntryToNextcloudCalendar
+	]);
+	const handleDiscardPausedTimer = (0, import_react.useCallback)((pausedId) => {
+		const target = (dbRef.current.pausedTimers ?? []).find((t) => t.id === pausedId);
+		if (!target) return;
+		requestConfirmDelete({
+			title: "Geparkten Auftrag verwerfen?",
+			message: `Der pausierte Auftrag „${target.title}“ wird ohne Speicherung entfernt.`,
+			confirmLabel: "Verwerfen",
+			tone: "warning",
+			onConfirm: () => {
+				const latest = dbRef.current;
+				scheduleUndoableDelete(latest, {
+					...latest,
+					pausedTimers: (latest.pausedTimers ?? []).filter((t) => t.id !== pausedId)
+				}, `Geparkter Auftrag „${target.title}“ verworfen`);
+			}
+		});
+	}, [requestConfirmDelete, scheduleUndoableDelete]);
 	const handleAddManualEntry = (entry) => {
 		const currentDb = dbRef.current;
 		const nextDb = {
@@ -94030,7 +94445,7 @@ function App() {
 		persistDb(result.nextDb);
 		notify(result.message);
 		if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
-		if (result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
+		if (result.startedNewTimer && result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
 			forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
 			retries: 2,
 			startedAtIso: result.nextDb.activeTimer.startTime
@@ -95180,6 +95595,7 @@ function App() {
 										invoices: db.invoices,
 										calendarEvents: db.calendarEvents ?? [],
 										activeTimer: db.activeTimer,
+										pausedTimers: db.pausedTimers ?? [],
 										elapsedSeconds,
 										onStartTimer: handleStartTimer,
 										onUpdateActiveTimerNotes: handleUpdateActiveTimerNotes,
@@ -95189,8 +95605,13 @@ function App() {
 										nextcloudConfigured: nextcloud.configured,
 										onPauseTimer: handlePauseTimer,
 										onResumeTimer: handleResumeTimer,
+										onParkActiveTimer: handleParkActiveTimer,
+										onResumePausedTimer: handleResumePausedTimer,
+										onStopPausedTimer: handleStopPausedTimer,
+										onDiscardPausedTimer: handleDiscardPausedTimer,
 										onStopTimer: handleStopTimer,
 										onDiscardTimer: handleDiscardTimer,
+										onTriggerNfcTag: handleTriggerNfcTag,
 										onAddManualEntry: handleAddManualEntry,
 										onUpdateEntry: handleUpdateEntry,
 										onDeleteEntry: handleDeleteEntry,
@@ -95248,6 +95669,7 @@ function App() {
 										internalCategories: db.company.internalCategories ?? [],
 										nfcTasks: db.nfcTasks,
 										activeTimer: db.activeTimer,
+										pausedTimers: db.pausedTimers ?? [],
 										incomingUnknownTag: pendingScannedUid,
 										onConsumeIncomingUnknownTag: () => setPendingScannedUid(null),
 										onWritingStateChange: setIsWritingNfc,

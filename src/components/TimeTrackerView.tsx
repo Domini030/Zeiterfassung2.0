@@ -12,6 +12,7 @@ import {
   FilePlus2,
   FileText,
   Gauge,
+  Layers,
   LocateFixed,
   MapPin,
   Nfc,
@@ -55,6 +56,7 @@ import {
   formatDuration,
   formatHoursShort,
   formatNumber,
+  getActiveTimerElapsedMs,
   isInvoiceOverdue,
   toInputDate,
   toInputTime,
@@ -72,6 +74,7 @@ interface TimeTrackerViewProps {
   invoices?: Invoice[];
   calendarEvents?: CalendarAppointment[];
   activeTimer: ActiveTimer | null;
+  pausedTimers?: ActiveTimer[];
   elapsedSeconds: number;
   onStartTimer: (payload: {
     customerId: string;
@@ -91,8 +94,13 @@ interface TimeTrackerViewProps {
   nextcloudConfigured?: boolean;
   onPauseTimer: () => void;
   onResumeTimer: () => void;
+  onParkActiveTimer?: () => void;
+  onResumePausedTimer?: (pausedId: string) => void;
+  onStopPausedTimer?: (pausedId: string) => void;
+  onDiscardPausedTimer?: (pausedId: string) => void;
   onStopTimer: () => void;
   onDiscardTimer: () => void;
+  onTriggerNfcTag?: (tagUid: string) => void;
   onAddManualEntry: (entry: TimeEntry) => void;
   onUpdateEntry: (entry: TimeEntry) => void;
   onDeleteEntry: (id: string) => void;
@@ -119,6 +127,7 @@ export function TimeTrackerView({
   invoices = [],
   calendarEvents = [],
   activeTimer,
+  pausedTimers = [],
   elapsedSeconds,
   onStartTimer,
   onUpdateActiveTimerNotes,
@@ -128,8 +137,13 @@ export function TimeTrackerView({
   nextcloudConfigured = false,
   onPauseTimer,
   onResumeTimer,
+  onParkActiveTimer,
+  onResumePausedTimer,
+  onStopPausedTimer,
+  onDiscardPausedTimer,
   onStopTimer,
   onDiscardTimer,
+  onTriggerNfcTag,
   onAddManualEntry,
   onUpdateEntry,
   onDeleteEntry,
@@ -301,8 +315,11 @@ export function TimeTrackerView({
     const booked = timeEntries
       .filter((e) => e.startTime.slice(0, 10) === todayStr)
       .reduce((acc, e) => acc + e.durationSeconds, 0);
-    return booked + (activeTimer ? elapsedSeconds : 0);
-  }, [timeEntries, activeTimer, elapsedSeconds]);
+    const parked = pausedTimers
+      .filter((t) => t.startTime.slice(0, 10) === todayStr)
+      .reduce((acc, t) => acc + Math.floor(getActiveTimerElapsedMs(t) / 1000), 0);
+    return booked + parked + (activeTimer ? elapsedSeconds : 0);
+  }, [timeEntries, pausedTimers, activeTimer, elapsedSeconds]);
 
   const overdueInvoicesCount = useMemo(
     () => invoices.filter((inv) => isInvoiceOverdue(inv)).length,
@@ -924,6 +941,17 @@ export function TimeTrackerView({
                   <Square className="h-4 w-4 fill-current" />
                   Stoppen &amp; Speichern
                 </button>
+                {onParkActiveTimer && (
+                  <button
+                    type="button"
+                    onClick={onParkActiveTimer}
+                    title="Aktiven Auftrag pausieren & parken, um eine andere Aufgabe zu starten"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3.5 py-3 text-sm font-medium text-amber-900 transition-colors hover:bg-amber-100 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-200 dark:hover:bg-amber-950/70 whitespace-nowrap shrink-0 cursor-pointer"
+                  >
+                    <Layers className="h-4 w-4" />
+                    Parken &amp; Neu
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={onDiscardTimer}
@@ -1393,26 +1421,37 @@ export function TimeTrackerView({
               Schnellstart:
             </span>
             {nfcTasks.length > 0
-              ? nfcTasks.slice(0, 3).map((task) => (
-                  <button
-                    key={task.id}
-                    type="button"
-                    onClick={() =>
-                      onStartTimer({
-                        customerId: task.customerId,
-                        productId: task.productId,
-                        title: task.title,
-                        notes: task.description,
-                        nfcTaskId: task.id,
-                        source: 'nfc',
-                        entryType: 'project',
-                      })
-                    }
-                    className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
-                  >
-                    ▶ {task.title}
-                  </button>
-                ))
+              ? nfcTasks
+                  .filter((t) => t.actionMode !== 'pauseToggle')
+                  .slice(0, 3)
+                  .map((task) => {
+                    const isIntTask = task.entryType === 'internal' || !task.customerId;
+                    return (
+                      <button
+                        key={task.id}
+                        type="button"
+                        onClick={() => {
+                          if (onTriggerNfcTag) {
+                            onTriggerNfcTag(task.tagUid);
+                          } else {
+                            onStartTimer({
+                              customerId: isIntTask ? '' : task.customerId,
+                              productId: isIntTask ? '' : task.productId,
+                              title: task.title,
+                              notes: task.description,
+                              nfcTaskId: task.id,
+                              source: 'nfc',
+                              entryType: isIntTask ? 'internal' : 'project',
+                              internalCategory: isIntTask ? task.internalCategory : undefined,
+                            });
+                          }
+                        }}
+                        className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-100 dark:hover:border-violet-500 dark:hover:bg-[#2c2147] whitespace-nowrap shrink-0 cursor-pointer"
+                      >
+                        ▶ {task.title}
+                      </button>
+                    );
+                  })
               : customers.length > 0 &&
                 serviceProducts.slice(0, 2).map((prod) => (
                   <button
@@ -1463,6 +1502,108 @@ export function TimeTrackerView({
           </div>
         )}
       </section>
+
+      {/* Parked / Paused Timers ("Parkplatz" for interrupted projects) */}
+      {pausedTimers.length > 0 && (
+        <section className="rounded-xl border border-amber-200 bg-amber-50/60 p-4 dark:border-amber-900/50 dark:bg-[#1c152e]">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Layers className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+              <h2 className="font-display text-sm font-bold text-slate-900 dark:text-slate-100">
+                Pausierte / geparkte Aufträge ({pausedTimers.length})
+              </h2>
+            </div>
+            <span className="text-xs text-slate-600 dark:text-slate-400">
+              Jederzeit nahtlos fortsetzen oder direkt abschließen
+            </span>
+          </div>
+          <div className="space-y-2.5">
+            {pausedTimers.map((parked) => {
+              const isParkedInternal = parked.entryType === 'internal' || !parked.customerId;
+              const parkedCustomer = isParkedInternal
+                ? undefined
+                : customerMap.get(parked.customerId);
+              const parkedProduct = isParkedInternal
+                ? undefined
+                : productMap.get(parked.productId);
+              const recordedSec = Math.max(
+                0,
+                Math.floor(getActiveTimerElapsedMs(parked) / 1000)
+              );
+
+              return (
+                <div
+                  key={parked.id}
+                  className="flex flex-col gap-3 rounded-xl border border-amber-200/90 bg-white p-3.5 shadow-xs dark:border-[#3b2d5e] dark:bg-[#171126] sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0 space-y-1">
+                    <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                      <span className="inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 font-semibold text-amber-900 dark:bg-amber-950/80 dark:text-amber-200">
+                        <Pause className="h-2.5 w-2.5" />
+                        Pausiert
+                      </span>
+                      {isParkedInternal ? (
+                        <span className="font-medium text-amber-700 dark:text-amber-300">
+                          Intern · {parked.internalCategory || 'Sonstiges'}
+                        </span>
+                      ) : (
+                        <span className="font-medium text-slate-600 dark:text-slate-300">
+                          {parkedCustomer?.companyName ?? 'Kunde'}
+                          {parkedProduct ? ` · ${parkedProduct.name}` : ''}
+                        </span>
+                      )}
+                      {parked.pausedAt && (
+                        <span className="text-slate-400 dark:text-slate-500">
+                          · seit {formatDateTimeDE(parked.pausedAt)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="truncate font-display text-sm font-bold text-slate-900 dark:text-slate-100">
+                      {parked.title}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <span className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 font-mono text-sm font-bold text-slate-800 tabular-nums dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-violet-200">
+                      {formatDuration(recordedSec)}
+                    </span>
+                    {onResumePausedTimer && (
+                      <button
+                        type="button"
+                        onClick={() => onResumePausedTimer(parked.id)}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-emerald-700 whitespace-nowrap cursor-pointer"
+                      >
+                        <Play className="h-3.5 w-3.5 fill-current" />
+                        {activeTimer ? 'Wechseln & Fortsetzen' : 'Fortsetzen'}
+                      </button>
+                    )}
+                    {onStopPausedTimer && (
+                      <button
+                        type="button"
+                        onClick={() => onStopPausedTimer(parked.id)}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-200 dark:hover:bg-[#2a2045] whitespace-nowrap cursor-pointer"
+                      >
+                        <Square className="h-3 w-3 fill-current" />
+                        Speichern
+                      </button>
+                    )}
+                    {onDiscardPausedTimer && (
+                      <button
+                        type="button"
+                        onClick={() => onDiscardPausedTimer(parked.id)}
+                        title="Geparkten Auftrag verwerfen"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-[#3b2d5e] dark:hover:bg-red-950/60 dark:hover:text-red-400 cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Overview Widgets Bar (positioned beneath the task start box) */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

@@ -2260,6 +2260,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
     }
   }
 
+  .border-amber-200\/90 {
+    border-color: #fee685e6;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .border-amber-200\/90 {
+      border-color: color-mix(in oklab, var(--color-amber-200) 90%, transparent);
+    }
+  }
+
   .border-amber-300 {
     border-color: var(--color-amber-300);
   }
@@ -2502,6 +2512,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
     background-color: var(--color-amber-50);
   }
 
+  .bg-amber-50\/60 {
+    background-color: #fffbeb99;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-amber-50\/60 {
+      background-color: color-mix(in oklab, var(--color-amber-50) 60%, transparent);
+    }
+  }
+
   .bg-amber-50\/70 {
     background-color: #fffbebb3;
   }
@@ -2576,6 +2596,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
     }
   }
 
+  .bg-blue-50\/80 {
+    background-color: #eff6ffcc;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-blue-50\/80 {
+      background-color: color-mix(in oklab, var(--color-blue-50) 80%, transparent);
+    }
+  }
+
   .bg-blue-100 {
     background-color: var(--color-blue-100);
   }
@@ -2623,6 +2653,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
   @supports (color: color-mix(in lab, red, red)) {
     .bg-emerald-50\/70 {
       background-color: color-mix(in oklab, var(--color-emerald-50) 70%, transparent);
+    }
+  }
+
+  .bg-emerald-50\/80 {
+    background-color: #ecfdf5cc;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-emerald-50\/80 {
+      background-color: color-mix(in oklab, var(--color-emerald-50) 80%, transparent);
     }
   }
 
@@ -3542,6 +3582,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
     color: var(--color-blue-900);
   }
 
+  .text-blue-950 {
+    color: var(--color-blue-950);
+  }
+
   .text-emerald-300 {
     color: var(--color-emerald-300);
   }
@@ -3564,6 +3608,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
   .text-emerald-900 {
     color: var(--color-emerald-900);
+  }
+
+  .text-emerald-900\/90 {
+    color: #004e3be6;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .text-emerald-900\/90 {
+      color: color-mix(in oklab, var(--color-emerald-900) 90%, transparent);
+    }
   }
 
   .text-emerald-950 {
@@ -3940,6 +3994,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
     .hover\:border-blue-400:hover {
       border-color: var(--color-blue-400);
+    }
+
+    .hover\:border-red-200:hover {
+      border-color: var(--color-red-200);
     }
 
     .hover\:border-slate-300:hover {
@@ -4730,6 +4788,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
     border-color: var(--color-emerald-800);
   }
 
+  .dark\:border-emerald-800\/50:where(.dark, .dark *) {
+    border-color: #005f4680;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:border-emerald-800\/50:where(.dark, .dark *) {
+      border-color: color-mix(in oklab, var(--color-emerald-800) 50%, transparent);
+    }
+  }
+
   .dark\:border-emerald-800\/60:where(.dark, .dark *) {
     border-color: #005f4699;
   }
@@ -4912,6 +4980,10 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
   .dark\:bg-\[\#0e0a18\]:where(.dark, .dark *) {
     background-color: #0e0a18;
+  }
+
+  .dark\:bg-\[\#1c152e\]:where(.dark, .dark *) {
+    background-color: #1c152e;
   }
 
   .dark\:bg-\[\#1d1433\]\/95:where(.dark, .dark *) {
@@ -5139,6 +5211,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
   @supports (color: color-mix(in lab, red, red)) {
     .dark\:bg-amber-950\/70:where(.dark, .dark *) {
       background-color: color-mix(in oklab, var(--color-amber-950) 70%, transparent);
+    }
+  }
+
+  .dark\:bg-amber-950\/80:where(.dark, .dark *) {
+    background-color: #461901cc;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:bg-amber-950\/80:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-amber-950) 80%, transparent);
     }
   }
 
@@ -5458,6 +5540,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
     }
   }
 
+  .dark\:bg-violet-950\/80:where(.dark, .dark *) {
+    background-color: #2f0d68cc;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:bg-violet-950\/80:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-violet-950) 80%, transparent);
+    }
+  }
+
   .dark\:fill-\[\#2a2045\]:where(.dark, .dark *) {
     fill: #2a2045;
   }
@@ -5530,6 +5622,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
   .dark\:text-emerald-200:where(.dark, .dark *) {
     color: var(--color-emerald-200);
+  }
+
+  .dark\:text-emerald-200\/90:where(.dark, .dark *) {
+    color: #a4f4cfe6;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:text-emerald-200\/90:where(.dark, .dark *) {
+      color: color-mix(in oklab, var(--color-emerald-200) 90%, transparent);
+    }
   }
 
   .dark\:text-emerald-300:where(.dark, .dark *) {
@@ -5816,6 +5918,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
     @supports (color: color-mix(in lab, red, red)) {
       .dark\:hover\:bg-amber-900\/50:where(.dark, .dark *):hover {
         background-color: color-mix(in oklab, var(--color-amber-900) 50%, transparent);
+      }
+    }
+
+    .dark\:hover\:bg-amber-950\/70:where(.dark, .dark *):hover {
+      background-color: #461901b3;
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .dark\:hover\:bg-amber-950\/70:where(.dark, .dark *):hover {
+        background-color: color-mix(in oklab, var(--color-amber-950) 70%, transparent);
       }
     }
 

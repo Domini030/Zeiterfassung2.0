@@ -2,15 +2,24 @@ import {
   Check,
   Copy,
   Nfc,
+  Pause,
   Pencil,
   Play,
   Plus,
   Radio,
+  RotateCcw,
   Smartphone,
   Trash2,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ActiveTimer, Customer, NfcTask, Product } from '../types';
+import type {
+  ActiveTimer,
+  Customer,
+  NfcPreviousTimerAction,
+  NfcTagActionMode,
+  NfcTask,
+  Product,
+} from '../types';
 import { isNativeCapacitor } from '../utils/apiClient';
 import { createId, formatCurrency, formatDateTimeDE } from '../utils/format';
 import {
@@ -52,6 +61,7 @@ interface NfcTasksViewProps {
   internalCategories?: string[];
   nfcTasks: NfcTask[];
   activeTimer: ActiveTimer | null;
+  pausedTimers?: ActiveTimer[];
   incomingUnknownTag?: { uid: string; at: number } | null;
   onConsumeIncomingUnknownTag?: () => void;
   onWritingStateChange?: (writing: boolean) => void;
@@ -74,6 +84,7 @@ export function NfcTasksView({
   internalCategories,
   nfcTasks,
   activeTimer,
+  pausedTimers = [],
   incomingUnknownTag,
   onConsumeIncomingUnknownTag,
   onWritingStateChange,
@@ -93,6 +104,7 @@ export function NfcTasksView({
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [actionMode, setActionMode] = useState<NfcTagActionMode>('task');
   const [taskType, setTaskType] = useState<'project' | 'internal'>(
     hasProjectMasterData ? 'project' : 'internal'
   );
@@ -104,7 +116,9 @@ export function NfcTasksView({
   const [internalCategory, setInternalCategory] = useState(
     effectiveInternalCategories[0] ?? 'Sonstiges'
   );
-  const [autoStopPrevious, setAutoStopPrevious] = useState(true);
+  const [previousTimerAction, setPreviousTimerAction] =
+    useState<NfcPreviousTimerAction>('pause');
+  const [autoResumePausedOnStop, setAutoResumePausedOnStop] = useState(true);
   const [toggleOnRescan, setToggleOnRescan] = useState(true);
   const [formError, setFormError] = useState('');
 
@@ -189,18 +203,20 @@ export function NfcTasksView({
     setTagUid(incomingUnknownTag.uid);
     setNfcError(null);
     setEditingId(null);
+    setActionMode('task');
     setTitle('');
     setDescription('');
     setTaskType(customers.length > 0 && products.length > 0 ? 'project' : 'internal');
     setCustomerId((prev) => prev || customers[0]?.id || '');
     setProductId((prev) => prev || products[0]?.id || '');
     setInternalCategory((prev) => prev || effectiveInternalCategories[0] || 'Sonstiges');
-    setAutoStopPrevious(true);
+    setPreviousTimerAction('pause');
+    setAutoResumePausedOnStop(true);
     setToggleOnRescan(true);
     setFormError('');
     setShowForm(true);
     setNfcMessage(
-      `Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Du kannst ihn jetzt direkt einem Kundenauftrag oder einer internen Aufgabe zuweisen.`
+      `Unbekannter Tag "${incomingUnknownTag.uid}" erkannt. Du kannst ihn jetzt direkt einem Kundenauftrag, einer internen Aufgabe oder als Pause-Tag zuweisen.`
     );
     onConsumeIncomingUnknownTag?.();
   }, [
@@ -222,6 +238,7 @@ export function NfcTasksView({
 
   const openNewForm = () => {
     setEditingId(null);
+    setActionMode('task');
     setTaskType(hasProjectMasterData ? 'project' : 'internal');
     setTagUid(`NFC-${Math.random().toString(36).slice(2, 7).toUpperCase()}`);
     setTitle('');
@@ -229,15 +246,20 @@ export function NfcTasksView({
     setCustomerId(customers[0]?.id ?? '');
     setProductId(products[0]?.id ?? '');
     setInternalCategory(effectiveInternalCategories[0] ?? 'Sonstiges');
-    setAutoStopPrevious(true);
+    setPreviousTimerAction('pause');
+    setAutoResumePausedOnStop(true);
     setToggleOnRescan(true);
     setFormError('');
     setShowForm(true);
   };
 
   const openEditForm = (task: NfcTask) => {
+    const mode: NfcTagActionMode = task.actionMode ?? 'task';
     const isInternal = task.entryType === 'internal' || !task.customerId;
+    const prevAction: NfcPreviousTimerAction =
+      task.previousTimerAction ?? (task.autoStopPrevious === false ? 'discard' : 'stop');
     setEditingId(task.id);
+    setActionMode(mode);
     setTaskType(isInternal ? 'internal' : 'project');
     setTagUid(task.tagUid);
     setTitle(task.title);
@@ -247,7 +269,10 @@ export function NfcTasksView({
     setInternalCategory(
       task.internalCategory || effectiveInternalCategories[0] || 'Sonstiges'
     );
-    setAutoStopPrevious(task.autoStopPrevious);
+    setPreviousTimerAction(prevAction);
+    setAutoResumePausedOnStop(
+      task.autoResumePausedOnStop ?? prevAction === 'pause'
+    );
     setToggleOnRescan(task.toggleOnRescan);
     setFormError('');
     setShowForm(true);
@@ -257,14 +282,17 @@ export function NfcTasksView({
     e.preventDefault();
     setFormError('');
     const cleanUid = tagUid.trim();
-    if (!cleanUid || !title.trim()) {
+    const isPauseTag = actionMode === 'pauseToggle';
+    const resolvedTitle = title.trim() || (isPauseTag ? 'Pause / Weiter' : '');
+
+    if (!cleanUid || !resolvedTitle) {
       setFormError('Bitte Tag-ID und Aufgabentitel ausfüllen.');
       return;
     }
 
-    if (taskType === 'project' && (!customerId || !productId)) {
+    if (!isPauseTag && taskType === 'project' && (!customerId || !productId)) {
       setFormError(
-        'Bitte Kunde und Leistung wählen — oder oben auf „Interne Aufgabe (ohne Kunde)“ umschalten.'
+        'Bitte Kunde und Leistung wählen — oder oben auf „Interne Aufgabe“ bzw. „Nur Pause / Weiter“ umschalten.'
       );
       return;
     }
@@ -281,17 +309,21 @@ export function NfcTasksView({
     const saved: NfcTask = {
       id: existing?.id ?? createId('nfc'),
       tagUid: cleanUid,
-      title: title.trim(),
+      title: resolvedTitle,
       description: description.trim(),
-      entryType: taskType,
+      actionMode,
+      entryType: isPauseTag ? 'internal' : taskType,
       internalCategory:
-        taskType === 'internal'
+        !isPauseTag && taskType === 'internal'
           ? internalCategory.trim() || effectiveInternalCategories[0] || 'Sonstiges'
           : undefined,
-      customerId: taskType === 'internal' ? '' : customerId,
-      productId: taskType === 'internal' ? '' : productId,
-      autoStopPrevious,
-      toggleOnRescan,
+      customerId: isPauseTag || taskType === 'internal' ? '' : customerId,
+      productId: isPauseTag || taskType === 'internal' ? '' : productId,
+      previousTimerAction: isPauseTag ? 'pause' : previousTimerAction,
+      autoResumePausedOnStop:
+        !isPauseTag && previousTimerAction === 'pause' ? autoResumePausedOnStop : false,
+      autoStopPrevious: !isPauseTag && previousTimerAction === 'stop',
+      toggleOnRescan: isPauseTag ? true : toggleOnRescan,
       triggerCount: existing?.triggerCount ?? 0,
       lastTriggeredAt: existing?.lastTriggeredAt ?? null,
       createdAt: existing?.createdAt ?? new Date().toISOString(),
@@ -663,12 +695,15 @@ export function NfcTasksView({
             <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
               {editingId ? 'NFC-Aufgabe bearbeiten' : 'Neue NFC-Aufgabe anlegen'}
             </h2>
-            <div className="grid grid-cols-2 rounded-lg border border-slate-200 bg-slate-100 p-1 dark:border-[#3b2d5e] dark:bg-[#211936]">
+            <div className="grid grid-cols-3 rounded-lg border border-slate-200 bg-slate-100 p-1 dark:border-[#3b2d5e] dark:bg-[#211936]">
               <button
                 type="button"
-                onClick={() => setTaskType('project')}
+                onClick={() => {
+                  setActionMode('task');
+                  setTaskType('project');
+                }}
                 className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-                  taskType === 'project'
+                  actionMode === 'task' && taskType === 'project'
                     ? 'ui-accent-active text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
                 }`}
@@ -677,14 +712,33 @@ export function NfcTasksView({
               </button>
               <button
                 type="button"
-                onClick={() => setTaskType('internal')}
+                onClick={() => {
+                  setActionMode('task');
+                  setTaskType('internal');
+                }}
                 className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-                  taskType === 'internal'
+                  actionMode === 'task' && taskType === 'internal'
                     ? 'bg-amber-600 text-white shadow-xs'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
                 }`}
               >
                 Interne Aufgabe
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setActionMode('pauseToggle');
+                  if (!title.trim()) {
+                    setTitle('Pause / Weiter');
+                  }
+                }}
+                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
+                  actionMode === 'pauseToggle'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
+                }`}
+              >
+                Nur Pause / Weiter
               </button>
             </div>
           </div>
@@ -699,31 +753,44 @@ export function NfcTasksView({
                 value={tagUid}
                 onChange={(e) => setTagUid(e.target.value)}
                 placeholder={
-                  taskType === 'internal'
-                    ? 'z. B. NFC-STUDIO-REINIGUNG'
-                    : 'z. B. NFC-WERKSTATT-01 oder 04:A1:2B:...'
+                  actionMode === 'pauseToggle'
+                    ? 'z. B. NFC-PAUSE-01'
+                    : taskType === 'internal'
+                      ? 'z. B. NFC-STUDIO-REINIGUNG'
+                      : 'z. B. NFC-WERKSTATT-01 oder 04:A1:2B:...'
                 }
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
               />
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                Aufgabentitel
+                {actionMode === 'pauseToggle' ? 'Bezeichnung des Pause-Tags' : 'Aufgabentitel'}
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={
-                  taskType === 'internal'
-                    ? 'z. B. Studio reinigen oder Kundenakquise'
-                    : 'z. B. Serverraum Wartung vor Ort'
+                  actionMode === 'pauseToggle'
+                    ? 'z. B. Kaffeepause, Werkstatt-Unterbrechung'
+                    : taskType === 'internal'
+                      ? 'z. B. Studio reinigen oder Kundenakquise'
+                      : 'z. B. Serverraum Wartung vor Ort'
                 }
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
               />
             </div>
 
-            {taskType === 'project' ? (
+            {actionMode === 'pauseToggle' ? (
+              <div className="md:col-span-2 rounded-xl border border-emerald-200 bg-emerald-50/80 p-3.5 text-xs text-emerald-950 dark:border-emerald-800/50 dark:bg-emerald-950/30 dark:text-emerald-200">
+                <p className="font-semibold">
+                  So funktioniert der reine Pause-/Fortsetzen-Tag:
+                </p>
+                <p className="mt-1 text-emerald-900/90 dark:text-emerald-200/90">
+                  Dieser Tag startet keine eigene Aufgabe. Beim <strong>1. Scan</strong> pausiert er deinen aktuell laufenden Auftrag (ohne ihn zu beenden). Beim <strong>2. Scan</strong> läuft genau dieser Auftrag wieder nahtlos weiter.
+                </p>
+              </div>
+            ) : taskType === 'project' ? (
               <>
                 <div>
                   <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
@@ -798,42 +865,103 @@ export function NfcTasksView({
 
             <div className="md:col-span-2">
               <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">
-                {taskType === 'internal'
-                  ? 'Beschreibung / Standardnotiz (optional)'
-                  : 'Beschreibung / Standardnotiz für die Rechnung'}
+                {actionMode === 'pauseToggle'
+                  ? 'Notiz / Einsatzort des Tags (optional)'
+                  : taskType === 'internal'
+                    ? 'Beschreibung / Standardnotiz (optional)'
+                    : 'Beschreibung / Standardnotiz für die Rechnung'}
               </label>
               <input
                 type="text"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder={
-                  taskType === 'internal'
-                    ? 'Optionaler Hinweis zur internen Aufgabe...'
-                    : 'Optionaler Hinweis zum Arbeitsplatz oder Leistungsumfang...'
+                  actionMode === 'pauseToggle'
+                    ? 'z. B. Pausenbereich, Schreibtisch oder Werkstatt-Tür...'
+                    : taskType === 'internal'
+                      ? 'Optionaler Hinweis zur internen Aufgabe...'
+                      : 'Optionaler Hinweis zum Arbeitsplatz oder Leistungsumfang...'
                 }
                 className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-600 focus:outline-none dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 dark:focus:border-violet-500"
               />
             </div>
-            <div className="flex flex-wrap gap-6 md:col-span-2">
-              <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={autoStopPrevious}
-                  onChange={(e) => setAutoStopPrevious(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-                />
-                Vorherigen Timer automatisch speichern &amp; stoppen
-              </label>
-              <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={toggleOnRescan}
-                  onChange={(e) => setToggleOnRescan(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
-                />
-                Bei erneutem Scan derselben Aufgabe Timer stoppen (Ein-/Ausstempeln)
-              </label>
-            </div>
+
+            {actionMode === 'task' && (
+              <>
+                <div className="md:col-span-2">
+                  <label className="mb-2 block text-xs font-medium text-slate-600 dark:text-slate-400">
+                    Wenn beim Scan bereits ein anderer Auftrag läuft:
+                  </label>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    {(
+                      [
+                        {
+                          id: 'pause',
+                          title: 'Pausieren & parken',
+                          desc: 'Laufendes Projekt bleibt offen & kann danach direkt weiterlaufen.',
+                        },
+                        {
+                          id: 'stop',
+                          title: 'Beenden & speichern',
+                          desc: 'Laufenden Auftrag abschließen und als Zeiteintrag buchen.',
+                        },
+                        {
+                          id: 'discard',
+                          title: 'Ohne Speichern ersetzen',
+                          desc: 'Vorherigen Timer verwerfen und diese Aufgabe starten.',
+                        },
+                      ] as const
+                    ).map((opt) => {
+                      const activeOpt = previousTimerAction === opt.id;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => {
+                            setPreviousTimerAction(opt.id);
+                            if (opt.id === 'pause') {
+                              setAutoResumePausedOnStop(true);
+                            }
+                          }}
+                          className={`rounded-xl border p-3 text-left transition-colors cursor-pointer ${
+                            activeOpt
+                              ? 'border-blue-600 bg-blue-50/80 text-blue-950 dark:border-violet-500 dark:bg-violet-950/50 dark:text-violet-100'
+                              : 'border-slate-200 bg-slate-50/70 text-slate-700 hover:bg-slate-100 dark:border-[#3b2d5e] dark:bg-[#211936]/70 dark:text-slate-300 dark:hover:bg-[#2a2045]'
+                          }`}
+                        >
+                          <div className="text-xs font-semibold">{opt.title}</div>
+                          <div className="mt-0.5 text-[11px] opacity-80">{opt.desc}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2.5 md:col-span-2">
+                  {previousTimerAction === 'pause' && (
+                    <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={autoResumePausedOnStop}
+                        onChange={(e) => setAutoResumePausedOnStop(e.target.checked)}
+                        className="h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+                      />
+                      Beim Beenden / erneuten Scan dieser Aufgabe den pausierten Auftrag automatisch fortsetzen
+                    </label>
+                  )}
+                  <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={toggleOnRescan}
+                      onChange={(e) => setToggleOnRescan(e.target.checked)}
+                      className="h-4 w-4 rounded border-slate-300 text-blue-700 accent-violet-600 dark:border-[#3b2d5e] dark:bg-[#211936]"
+                    />
+                    Bei erneutem Scan derselben Aufgabe Timer stoppen (Ein-/Ausstempeln)
+                  </label>
+                </div>
+              </>
+            )}
+
             {formError && (
               <p className="text-xs font-medium text-red-600 dark:text-red-400 md:col-span-2">
                 {formError}
@@ -850,12 +978,14 @@ export function NfcTasksView({
               <button
                 type="submit"
                 className={`rounded-lg px-4 py-2 text-sm font-semibold text-white cursor-pointer ${
-                  taskType === 'internal'
-                    ? 'bg-amber-600 hover:bg-amber-700'
-                    : 'ui-accent-active'
+                  actionMode === 'pauseToggle'
+                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    : taskType === 'internal'
+                      ? 'bg-amber-600 hover:bg-amber-700'
+                      : 'ui-accent-active'
                 }`}
               >
-                NFC-Aufgabe speichern
+                {actionMode === 'pauseToggle' ? 'Pause-Tag speichern' : 'NFC-Aufgabe speichern'}
               </button>
             </div>
           </form>
@@ -887,10 +1017,14 @@ export function NfcTasksView({
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-[#2e2349]">
                 {nfcTasks.map((task) => {
-                  const isInternal = task.entryType === 'internal' || !task.customerId;
-                  const customer = isInternal ? undefined : customerMap.get(task.customerId);
-                  const product = isInternal ? undefined : productMap.get(task.productId);
+                  const isPauseTag = task.actionMode === 'pauseToggle';
+                  const prevAction: NfcPreviousTimerAction =
+                    task.previousTimerAction ?? (task.autoStopPrevious === false ? 'discard' : 'stop');
+                  const isInternal = !isPauseTag && (task.entryType === 'internal' || !task.customerId);
+                  const customer = isInternal || isPauseTag ? undefined : customerMap.get(task.customerId);
+                  const product = isInternal || isPauseTag ? undefined : productMap.get(task.productId);
                   const isRunning = activeTimer?.nfcTaskId === task.id;
+                  const isParked = pausedTimers.some((t) => t.nfcTaskId === task.id);
                   const isCopied = copiedId === task.id;
 
                   return (
@@ -904,23 +1038,59 @@ export function NfcTasksView({
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap items-center gap-1.5 font-medium text-slate-900 dark:text-slate-100">
                           <span>{task.title}</span>
-                          {isInternal && (
-                            <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
-                              Intern
+                          {isPauseTag ? (
+                            <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+                              Pause-Tag
                             </span>
+                          ) : (
+                            <>
+                              {isInternal && (
+                                <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
+                                  Intern
+                                </span>
+                              )}
+                              {prevAction === 'pause' && (
+                                <span className="inline-flex items-center gap-1 rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-semibold text-blue-800 dark:bg-violet-950/80 dark:text-violet-200">
+                                  <Pause className="h-2.5 w-2.5" />
+                                  Pausiert vorherigen
+                                </span>
+                              )}
+                              {prevAction === 'pause' && task.autoResumePausedOnStop && (
+                                <span className="inline-flex items-center gap-1 rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+                                  <RotateCcw className="h-2.5 w-2.5" />
+                                  Auto-Rückkehr
+                                </span>
+                              )}
+                              {isParked && (
+                                <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950/70 dark:text-amber-300">
+                                  Geparkt
+                                </span>
+                              )}
+                            </>
                           )}
                         </div>
                         <div className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                          {isInternal
-                            ? `Interne Aufgabe · ${task.internalCategory || 'Sonstiges'}`
-                            : customer?.companyName ?? 'Unbekannter Kunde'}
+                          {isPauseTag
+                            ? 'Pausiert aktiven Auftrag / setzt pausierten fort'
+                            : isInternal
+                              ? `Interne Aufgabe · ${task.internalCategory || 'Sonstiges'}`
+                              : customer?.companyName ?? 'Unbekannter Kunde'}
                           {task.lastTriggeredAt
                             ? ` · Zuletzt ${formatDateTimeDE(task.lastTriggeredAt)}`
                             : ' · Noch nie ausgelöst'}
                         </div>
                       </td>
                       <td className="px-4 py-3 text-xs text-slate-600 dark:text-slate-300">
-                        {isInternal ? (
+                        {isPauseTag ? (
+                          <>
+                            <div className="font-medium text-emerald-700 dark:text-emerald-300">
+                              Reiner Pausen-Umschalter
+                            </div>
+                            <div className="text-slate-500 dark:text-slate-400">
+                              {task.description || 'Kein eigener Zeiteintrag'}
+                            </div>
+                          </>
+                        ) : isInternal ? (
                           <>
                             <div className="font-medium text-amber-700 dark:text-amber-300">
                               {task.internalCategory || 'Interne Tätigkeit'}
@@ -949,13 +1119,23 @@ export function NfcTasksView({
                             type="button"
                             onClick={() => onTriggerTag(task.tagUid)}
                             className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                              isRunning
-                                ? 'ui-accent-btn text-white'
-                                : 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:hover:bg-violet-600'
+                              isPauseTag
+                                ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                                : isRunning
+                                  ? 'ui-accent-btn text-white'
+                                  : 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-[#2a2045] dark:hover:bg-violet-600'
                             }`}
                           >
-                            <Play className="h-3.5 w-3.5 fill-current" />
-                            {isRunning ? 'Stoppen / Neu' : 'Auslösen'}
+                            {isPauseTag ? (
+                              <Pause className="h-3.5 w-3.5" />
+                            ) : (
+                              <Play className="h-3.5 w-3.5 fill-current" />
+                            )}
+                            {isPauseTag
+                              ? 'Pause / Weiter'
+                              : isRunning
+                                ? 'Stoppen / Neu'
+                                : 'Auslösen'}
                           </button>
 
                           {nfcSupported && (
