@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-B8gpztFL.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-D0AmX0i2.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-ix1ZQNqY.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-CQBrW04x.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -35669,7 +35669,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-B8gpztFL.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-D0AmX0i2.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -67752,6 +67752,80 @@ async function syncNativeWidgetState(db) {
 		});
 	} catch {}
 }
+async function getNativeLocationPermissionStatus() {
+	if (!isNativeCapacitor()) return null;
+	try {
+		return await TaktWerkNative.getLocationPermissionStatus();
+	} catch {
+		return null;
+	}
+}
+async function requestNativeBackgroundLocationPermission() {
+	if (!isNativeCapacitor()) return null;
+	try {
+		return await TaktWerkNative.requestBackgroundLocationPermission();
+	} catch {
+		return null;
+	}
+}
+async function openNativeLocationSettings() {
+	if (!isNativeCapacitor()) return;
+	try {
+		await TaktWerkNative.openLocationPermissionSettings();
+	} catch {}
+}
+async function openNativeBatterySettings() {
+	if (!isNativeCapacitor()) return;
+	try {
+		await TaktWerkNative.openBatterySettings();
+	} catch {}
+}
+async function syncNativeGeoFenceMonitoring(db) {
+	if (!isNativeCapacitor()) return null;
+	try {
+		const enabledRules = (db.geoFenceRules ?? []).filter((r) => r.enabled).map((r) => {
+			const cust = db.customers.find((c) => c.id === r.customerId);
+			const prod = db.products.find((p) => p.id === r.productId);
+			return {
+				id: r.id,
+				name: r.name,
+				lat: r.lat,
+				lng: r.lng,
+				radiusMeters: r.radiusMeters,
+				customerId: r.customerId || "",
+				customerName: cust?.companyName || "",
+				productId: r.productId || "",
+				taskTitle: r.taskTitle || r.name,
+				notes: r.notes || "",
+				address: r.address || r.name,
+				autoStopOnExit: Boolean(r.autoStopOnExit),
+				hourlyRateNet: prod?.unitPriceNet ?? 0,
+				taxRate: prod?.taxRate ?? 19
+			};
+		});
+		return await TaktWerkNative.syncGeoFenceMonitoring({
+			enabled: Boolean(db.company.autoLocationStartEnabled) && enabledRules.length > 0,
+			intervalSec: Math.max(20, db.company.geoFenceCheckIntervalSec ?? 60),
+			exitConfirmMode: db.company.geoExitConfirmMode === "auto" ? "auto" : "ask",
+			hasActiveTimer: Boolean(db.activeTimer),
+			activeGeoRuleId: db.activeTimer?.source === "geo" && db.activeTimer.geoFenceRuleId ? db.activeTimer.geoFenceRuleId : "",
+			soundPreset: db.company.timerReminderSound ?? "chime",
+			systemSoundUri: db.company.timerReminderSystemSoundUri?.trim() || "",
+			rulesJson: JSON.stringify(enabledRules)
+		});
+	} catch {
+		return null;
+	}
+}
+async function consumeNativePendingGeoEvents() {
+	if (!isNativeCapacitor()) return [];
+	try {
+		const res = await TaktWerkNative.consumePendingGeoEvents();
+		return Array.isArray(res?.events) ? res.events : [];
+	} catch {
+		return [];
+	}
+}
 // src/components/CalendarView.tsx
 function CalendarView({ company, customers, products, timeEntries, invoices, calendarEvents, nextcloud, onSaveCalendarEvents, onStartTimerFromAppointment, onNavigateSettings, onNotify }) {
 	const [viewDate, setViewDate] = (0, import_react.useState)(() => {
@@ -82660,7 +82734,7 @@ var START_SECTION_OPTIONS = [
 		label: "Wiederkehrend / Verträge"
 	}
 ];
-function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConflictAt, autoSyncing = false, onDismissConflict, onRefreshConfig, onSyncFromNextcloud, onSyncToNextcloud, onAutoSyncNow, onApplyPairingCode, onSaveCompany, onSaveGeoFenceRules, onCheckGeoFenceNow, checkingGeoFence = false, onImportDatabase, onLoadSampleData, onResetEmpty, onNotify, theme = "light" }) {
+function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConflictAt, autoSyncing = false, onDismissConflict, onRefreshConfig, onSyncFromNextcloud, onSyncToNextcloud, onAutoSyncNow, onApplyPairingCode, onSaveCompany, onSaveGeoFenceRules, onCheckGeoFenceNow, checkingGeoFence = false, locationPermStatus = null, onRequestBackgroundLocation, onOpenLocationSettings, onOpenBatterySettings, onImportDatabase, onLoadSampleData, onResetEmpty, onNotify, theme = "light" }) {
 	const [activeTab, setActiveTab] = (0, import_react.useState)("general");
 	const [ncUrl, setNcUrl] = (0, import_react.useState)(nextcloud.url);
 	const [ncUsername, setNcUsername] = (0, import_react.useState)(nextcloud.username);
@@ -86931,6 +87005,100 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 											className: "w-full md:w-auto rounded-lg border border-slate-300 bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:border-violet-600 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
 											children: "Ortsautomatik-Einstellung speichern"
 										})
+									})
+								]
+							}),
+							nativeApp && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: `rounded-xl border p-4 space-y-3 ${locationPermStatus?.backgroundGranted && locationPermStatus?.gpsEnabled ? "border-emerald-200 bg-emerald-50/60 dark:border-emerald-800/60 dark:bg-emerald-950/30" : "border-amber-200 bg-amber-50/70 dark:border-amber-800/60 dark:bg-amber-950/35"}`,
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: `h-4 w-4 shrink-0 ${locationPermStatus?.backgroundGranted && locationPermStatus?.gpsEnabled ? "text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-400"}` }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "text-xs font-semibold text-slate-900 dark:text-slate-100",
+												children: "Android Hintergrund-Standort & Berechtigungsstatus"
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: `inline-flex items-center self-start rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${locationPermStatus?.backgroundGranted && locationPermStatus?.gpsEnabled ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200" : "bg-amber-100 text-amber-900 dark:bg-amber-900/60 dark:text-amber-200"}`,
+											children: locationPermStatus?.backgroundGranted ? locationPermStatus.serviceRunning ? "Hintergrund-Überwachung aktiv" : "Hintergrund-Standort erteilt" : "„Immer zulassen“ erforderlich"
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "grid grid-cols-1 gap-2 text-xs sm:grid-cols-3",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-lg border border-slate-200/80 bg-white/80 px-3 py-2 dark:border-[#2e2349] dark:bg-[#171126]/80",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "text-[11px] text-slate-500 dark:text-slate-400",
+													children: "Standort (App)"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: `font-semibold ${locationPermStatus?.foregroundGranted ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"}`,
+													children: locationPermStatus?.foregroundGranted ? "Erteilt" : "Fehlt"
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-lg border border-slate-200/80 bg-white/80 px-3 py-2 dark:border-[#2e2349] dark:bg-[#171126]/80",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "text-[11px] text-slate-500 dark:text-slate-400",
+													children: "Hintergrund („Immer zulassen“)"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: `font-semibold ${locationPermStatus?.backgroundGranted ? "text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-400"}`,
+													children: locationPermStatus?.backgroundGranted ? "Immer erlaubt" : "Fehlt"
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-lg border border-slate-200/80 bg-white/80 px-3 py-2 dark:border-[#2e2349] dark:bg-[#171126]/80",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "text-[11px] text-slate-500 dark:text-slate-400",
+													children: "Akku-Optimierung"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: `font-semibold ${locationPermStatus?.batteryOptimizationIgnored ? "text-emerald-700 dark:text-emerald-400" : "text-slate-700 dark:text-slate-300"}`,
+													children: locationPermStatus?.batteryOptimizationIgnored ? "Uneingeschränkt" : "Standard (evtl. gedrosselt)"
+												})]
+											})
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+										className: "text-xs leading-relaxed text-slate-700 dark:text-slate-300",
+										children: [
+											"Damit Aufgaben an eingetragenen Orten sofort starten – auch wenn TaktWerk minimiert oder geschlossen ist –, muss in Android der Standortzugriff auf",
+											" ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "font-semibold",
+												children: "„Immer zulassen“"
+											}),
+											" ",
+											"(und idealerweise Akku auf ",
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "font-semibold",
+												children: "„Uneingeschränkt“"
+											}),
+											") stehen."
+										]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap gap-2",
+										children: [
+											!locationPermStatus?.backgroundGranted && onRequestBackgroundLocation && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												onClick: () => void onRequestBackgroundLocation(),
+												className: "inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), "Hintergrund-Standort („Immer zulassen“) erlauben"]
+											}),
+											onOpenLocationSettings && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												type: "button",
+												onClick: () => void onOpenLocationSettings(),
+												className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer",
+												children: "App-Berechtigungen öffnen"
+											}),
+											!locationPermStatus?.batteryOptimizationIgnored && onOpenBatterySettings && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												type: "button",
+												onClick: () => void onOpenBatterySettings(),
+												className: "inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer",
+												children: "Akku-Einstellung prüfen"
+											})
+										]
 									})
 								]
 							}),
@@ -92233,6 +92401,8 @@ function App() {
 	const [remoteNewerAt, setRemoteNewerAt] = (0, import_react.useState)(null);
 	const [pushConflictAt, setPushConflictAt] = (0, import_react.useState)(null);
 	const [notificationStatus, setNotificationStatus] = (0, import_react.useState)(null);
+	const [locationPermStatus, setLocationPermStatus] = (0, import_react.useState)(null);
+	const processedGeoEventIdsRef = (0, import_react.useRef)(/* @__PURE__ */ new Set());
 	const [searchOpen, setSearchOpen] = (0, import_react.useState)(false);
 	const [isAppLocked, setIsAppLocked] = (0, import_react.useState)(false);
 	const [geoExitPrompt, setGeoExitPrompt] = (0, import_react.useState)(null);
@@ -92242,6 +92412,11 @@ function App() {
 		if (!isNativeCapacitor()) return;
 		const status = await getNativeNotificationStatus();
 		if (status) setNotificationStatus(status);
+	}, []);
+	const checkLocationPermStatus = (0, import_react.useCallback)(async () => {
+		if (!isNativeCapacitor()) return;
+		const status = await getNativeLocationPermissionStatus();
+		if (status) setLocationPermStatus(status);
 	}, []);
 	(0, import_react.useEffect)(() => {
 		checkNotificationStatus();
@@ -92585,6 +92760,123 @@ function App() {
 			notify(`Nextcloud-Kalender-Übernahme fehlgeschlagen: ${err instanceof Error ? err.message : "Verbindung prüfen"}`, true);
 		});
 	}, [notify]);
+	const applyGeoEventsToDb = (0, import_react.useCallback)((sourceDb, events) => {
+		let working = sourceDb;
+		let mutated = false;
+		const finishedEntries = [];
+		let lastToast = null;
+		let exitPrompt = null;
+		for (const ev of events) {
+			if (!ev || !ev.eventId || processedGeoEventIdsRef.current.has(ev.eventId)) continue;
+			processedGeoEventIdsRef.current.add(ev.eventId);
+			if (processedGeoEventIdsRef.current.size > 60) {
+				const first = processedGeoEventIdsRef.current.values().next().value;
+				if (first) processedGeoEventIdsRef.current.delete(first);
+			}
+			if (ev.type === "enter") {
+				if (working.activeTimer) continue;
+				const matchedRule = (working.geoFenceRules ?? []).find((r) => r.id === ev.ruleId);
+				const prod = working.products.find((p) => p.id === (matchedRule?.productId || ev.productId));
+				const custId = matchedRule?.customerId ?? ev.customerId ?? "";
+				const prodId = matchedRule?.productId ?? ev.productId ?? "";
+				const title = matchedRule?.taskTitle || ev.taskTitle || ev.ruleName || "Ortsautomatik";
+				const timer = {
+					id: createId("timer"),
+					entryType: custId ? "project" : "internal",
+					customerId: custId,
+					productId: prodId,
+					nfcTaskId: null,
+					geoFenceRuleId: ev.ruleId,
+					title,
+					notes: matchedRule?.notes ?? ev.notes ?? "",
+					startTime: ev.timestampIso || (/* @__PURE__ */ new Date()).toISOString(),
+					pausedAt: null,
+					accumulatedPausedMs: 0,
+					hourlyRateNet: prod?.unitPriceNet ?? ev.hourlyRateNet ?? 0,
+					taxRate: (prod?.taxRate ?? ev.taxRate ?? 19) || 19,
+					source: "geo",
+					location: {
+						lat: ev.lat,
+						lng: ev.lng,
+						accuracyMeters: ev.accuracyMeters || 25,
+						capturedAt: ev.timestampIso || (/* @__PURE__ */ new Date()).toISOString(),
+						address: matchedRule?.address || ev.address || ev.ruleName
+					}
+				};
+				geoCooldownRef.current.set(ev.ruleId, ev.timestampMs || Date.now());
+				working = {
+					...working,
+					activeTimer: timer
+				};
+				mutated = true;
+				exitPrompt = null;
+				lastToast = `Ortsautomatik (${ev.ruleName}): „${timer.title}“ automatisch gestartet.`;
+			} else if (ev.type === "exit_auto") {
+				const active = working.activeTimer;
+				if (active && active.source === "geo" && active.geoFenceRuleId === ev.ruleId) {
+					const endMs = ev.timestampMs || Date.now();
+					const endIso = ev.timestampIso || new Date(endMs).toISOString();
+					const durationSeconds = Math.max(1, Math.floor(getActiveTimerElapsedMs(active, endMs) / 1e3));
+					const isInternal = active.entryType === "internal" || !active.customerId;
+					let travelDistanceKm;
+					let travelCostNet;
+					if (!isInternal && working.company.autoCalculateTravelOnStop && working.company.homeBaseLocation && active.location) {
+						const calc = computeTravelFromBase(working.company.homeBaseLocation, active.location, working.company.travelRatePerKm ?? .3, working.company.travelRoundTripDefault !== false);
+						travelDistanceKm = calc.distanceKm;
+						travelCostNet = calc.costNet;
+					}
+					const entry = {
+						id: createId("time"),
+						customerId: isInternal ? "" : active.customerId,
+						productId: isInternal ? "" : active.productId,
+						nfcTaskId: active.nfcTaskId,
+						title: active.title,
+						notes: active.notes,
+						startTime: active.startTime,
+						endTime: endIso,
+						durationSeconds,
+						hourlyRateNet: isInternal ? 0 : active.hourlyRateNet,
+						taxRate: isInternal ? 0 : active.taxRate,
+						billable: !isInternal,
+						billedInvoiceId: null,
+						source: active.source,
+						entryType: isInternal ? "internal" : "project",
+						internalCategory: isInternal ? active.internalCategory : void 0,
+						location: active.location ?? null,
+						photos: active.photos && active.photos.length > 0 ? active.photos : void 0,
+						travelDistanceKm,
+						travelCostNet,
+						travelBilledInvoiceId: null,
+						createdAt: endIso
+					};
+					geoCooldownRef.current.set(ev.ruleId, endMs);
+					working = {
+						...working,
+						activeTimer: null,
+						timeEntries: [entry, ...working.timeEntries]
+					};
+					finishedEntries.push(entry);
+					mutated = true;
+					exitPrompt = null;
+					lastToast = `Ortsautomatik (${ev.ruleName} verlassen): „${entry.title}“ gespeichert.`;
+				}
+			} else if (ev.type === "exit_ask") {
+				const active = working.activeTimer;
+				if (active && active.source === "geo" && active.geoFenceRuleId === ev.ruleId) exitPrompt = {
+					timerId: active.id,
+					ruleName: ev.ruleName,
+					timerTitle: active.title,
+					distanceMeters: ev.distanceMeters
+				};
+			}
+		}
+		return {
+			nextDb: mutated ? working : sourceDb,
+			finishedEntries,
+			lastToast,
+			exitPrompt
+		};
+	}, []);
 	(0, import_react.useEffect)(() => {
 		let active = true;
 		(async () => {
@@ -92695,6 +92987,20 @@ function App() {
 					}
 				}
 				if (!sectionOverridden && loadedDb.company.defaultStartSection) setSection(loadedDb.company.defaultStartSection);
+				if (isNativeCapacitor()) {
+					const pendingGeo = await consumeNativePendingGeoEvents();
+					if (pendingGeo.length > 0) {
+						const { nextDb, finishedEntries } = applyGeoEventsToDb(loadedDb, pendingGeo);
+						if (nextDb !== loadedDb) {
+							loadedDb = stampDatabaseChanges(loadedDb, nextDb, deviceIdRef.current);
+							await apiSaveDb(loadedDb);
+							for (const finished of finishedEntries) pushFinishedEntryToNextcloudCalendar(finished, loadedDb);
+						}
+					}
+					getNativeLocationPermissionStatus().then((st) => {
+						if (active && st) setLocationPermStatus(st);
+					});
+				}
 				setLoadProgress({
 					pct: 88,
 					label: "Oberfläche & Widgets werden synchronisiert…"
@@ -93376,6 +93682,37 @@ function App() {
 		notify,
 		persistDb
 	]);
+	const processNativeGeoEvents = (0, import_react.useCallback)((events) => {
+		if (!events || events.length === 0) return;
+		const { nextDb, finishedEntries, lastToast, exitPrompt } = applyGeoEventsToDb(dbRef.current, events);
+		if (nextDb !== dbRef.current) {
+			persistDb(nextDb);
+			for (const finished of finishedEntries) pushFinishedEntryToNextcloudCalendar(finished, nextDb);
+		}
+		if (exitPrompt) setGeoExitPrompt(exitPrompt);
+		else if (nextDb.activeTimer === null) setGeoExitPrompt(null);
+		if (lastToast) notify(lastToast);
+	}, [
+		applyGeoEventsToDb,
+		notify,
+		persistDb,
+		pushFinishedEntryToNextcloudCalendar
+	]);
+	const handleRequestBackgroundLocation = (0, import_react.useCallback)(async () => {
+		if (!isNativeCapacitor()) return;
+		const res = await requestNativeBackgroundLocationPermission();
+		if (res) {
+			setLocationPermStatus(res);
+			if (res.backgroundGranted) {
+				syncNativeGeoFenceMonitoring(dbRef.current).then((synced) => {
+					if (synced) setLocationPermStatus(synced);
+				});
+				notify("Hintergrund-Standort („Immer zulassen“) aktiviert — Ortsautomatik läuft jetzt auch bei geschlossener App!");
+			} else if (res.openedSettings) notify("Bitte wähle unter Berechtigungen → Standort die Option „Immer zulassen“.", false);
+			else if (!res.foregroundGranted) notify("Bitte erlaube zuerst den Standortzugriff für TaktWerk.", true);
+			else notify("Für automatischen Start bei geschlossener App wird „Immer zulassen“ benötigt.", true);
+		}
+	}, [notify]);
 	(0, import_react.useEffect)(() => {
 		if (loading) return;
 		if (!db.company.autoLocationStartEnabled) return;
@@ -93402,6 +93739,64 @@ function App() {
 		db.company.geoFenceCheckIntervalSec,
 		db.geoFenceRules,
 		evaluateGeoFenceRules
+	]);
+	(0, import_react.useEffect)(() => {
+		if (loading || !isNativeCapacitor()) return;
+		syncNativeGeoFenceMonitoring(db).then((st) => {
+			if (st) setLocationPermStatus(st);
+		});
+	}, [
+		loading,
+		db.company.autoLocationStartEnabled,
+		db.company.geoFenceCheckIntervalSec,
+		db.company.geoExitConfirmMode,
+		db.company.timerReminderSound,
+		db.company.timerReminderSystemSoundUri,
+		db.geoFenceRules,
+		db.activeTimer,
+		db.customers,
+		db.products
+	]);
+	(0, import_react.useEffect)(() => {
+		if (loading || !isNativeCapacitor()) return;
+		let listenerHandle = null;
+		let appStateHandle = null;
+		let cancelled = false;
+		const refreshOnForeground = () => {
+			checkLocationPermStatus();
+			syncNativeGeoFenceMonitoring(dbRef.current).then((st) => {
+				if (st) setLocationPermStatus(st);
+			});
+			consumeNativePendingGeoEvents().then((events) => {
+				if (events.length > 0) processNativeGeoEvents(events);
+			});
+		};
+		TaktWerkNative.addListener("geoFenceEvent", (ev) => {
+			processNativeGeoEvents([ev]);
+		}).then((h) => {
+			if (cancelled) h.remove();
+			else listenerHandle = h;
+		}).catch(() => {});
+		App$1.addListener("appStateChange", ({ isActive }) => {
+			if (isActive) refreshOnForeground();
+		}).then((h) => {
+			if (cancelled) h.remove();
+			else appStateHandle = h;
+		}).catch(() => {});
+		const onVisibility = () => {
+			if (document.visibilityState === "visible") refreshOnForeground();
+		};
+		document.addEventListener("visibilitychange", onVisibility);
+		return () => {
+			cancelled = true;
+			document.removeEventListener("visibilitychange", onVisibility);
+			if (listenerHandle) listenerHandle.remove();
+			if (appStateHandle) appStateHandle.remove();
+		};
+	}, [
+		loading,
+		checkLocationPermStatus,
+		processNativeGeoEvents
 	]);
 	const handlePauseTimer = (0, import_react.useCallback)(() => {
 		if (!dbRef.current.activeTimer || dbRef.current.activeTimer.pausedAt) return;
@@ -94616,6 +95011,35 @@ function App() {
 										})]
 									})]
 								}),
+								!loading && isNativeCapacitor() && db.company.autoLocationStartEnabled && (db.geoFenceRules ?? []).some((r) => r.enabled) && locationPermStatus && !locationPermStatus.backgroundGranted && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "no-print mb-5 flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-950 shadow-sm dark:border-amber-700/70 dark:bg-amber-950/45 dark:text-amber-100 sm:flex-row sm:items-center sm:justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-start gap-2.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "space-y-0.5",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "font-semibold",
+												children: "Hintergrund-Standort („Immer zulassen“) fehlt für die Ortsautomatik"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "opacity-85",
+												children: locationPermStatus.foregroundGranted ? "Aktuell hat TaktWerk nur Standortzugriff „Bei Nutzung der App“. Damit Aufgaben auch bei geschlossener oder minimierter App automatisch starten, stelle Standort auf „Immer zulassen“." : "TaktWerk benötigt Standortzugriff („Immer zulassen“), um an deinen gespeicherten Orten im Hintergrund automatisch zu starten."
+											})]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-wrap items-center gap-2 shrink-0",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+											type: "button",
+											onClick: () => void handleRequestBackgroundLocation(),
+											className: "inline-flex items-center gap-1.5 rounded-lg bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500 cursor-pointer",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MapPin, { className: "h-3.5 w-3.5" }), "Jetzt erlauben"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => void openNativeLocationSettings(),
+											className: "rounded-lg border border-amber-300 bg-white/80 px-2.5 py-1.5 text-xs font-medium text-amber-950 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-100 dark:hover:bg-amber-900/50 cursor-pointer",
+											children: "App-Einstellungen"
+										})]
+									})]
+								}),
 								geoExitPrompt && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 									className: "no-print mb-5 flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3.5 text-xs text-amber-950 shadow-sm dark:border-amber-700/70 dark:bg-amber-950/45 dark:text-amber-100 sm:flex-row sm:items-center sm:justify-between",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -94932,6 +95356,10 @@ function App() {
 										onSaveGeoFenceRules: handleSaveGeoFenceRules,
 										onCheckGeoFenceNow: () => void evaluateGeoFenceRules(true),
 										checkingGeoFence,
+										locationPermStatus,
+										onRequestBackgroundLocation: handleRequestBackgroundLocation,
+										onOpenLocationSettings: openNativeLocationSettings,
+										onOpenBatterySettings: openNativeBatterySettings,
 										onImportDatabase: handleImportDatabase,
 										onLoadSampleData: handleLoadSampleData,
 										onResetEmpty: handleResetEmpty,

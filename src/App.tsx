@@ -78,13 +78,19 @@ import {
   apiSyncNextcloud,
   apiUploadNextcloudFile,
   cancelNativeTimerReminder,
+  consumeNativePendingGeoEvents,
+  getNativeLocationPermissionStatus,
   getNativeNotificationStatus,
   isNativeCapacitor,
+  openNativeBatterySettings,
+  openNativeLocationSettings,
   openNativeNotificationSettings,
   playNativeReminderTone,
+  requestNativeBackgroundLocationPermission,
   requestNativeNotificationPermission,
   scheduleNativeTimerReminder,
   syncActiveTimerNotification,
+  syncNativeGeoFenceMonitoring,
   syncNativeWidgetState,
   triggerNfcHaptic,
 } from './utils/apiClient';
@@ -117,7 +123,12 @@ import { extractTagIdFromPayload } from './utils/nfcHelpers';
 import { createEmptyDatabase, createSampleDatabase } from './utils/sampleData';
 import { playReminderSound, showWebReminderNotification } from './utils/soundReminder';
 import { getOrCreateSyncDeviceId, stampDatabaseChanges } from './utils/syncMerge';
-import { TaktWerkNative, type NativeNotificationStatus } from './utils/taktwerkNative';
+import {
+  TaktWerkNative,
+  type NativeGeoFenceEvent,
+  type NativeLocationPermissionStatus,
+  type NativeNotificationStatus,
+} from './utils/taktwerkNative';
 
 const SECTION_TITLES: Record<NavSection, string> = {
   tracker: 'Zeiterfassung',
@@ -215,6 +226,9 @@ export default function App() {
   const [pushConflictAt, setPushConflictAt] = useState<string | null>(null);
   const [notificationStatus, setNotificationStatus] =
     useState<NativeNotificationStatus | null>(null);
+  const [locationPermStatus, setLocationPermStatus] =
+    useState<NativeLocationPermissionStatus | null>(null);
+  const processedGeoEventIdsRef = useRef<Set<string>>(new Set());
   const [searchOpen, setSearchOpen] = useState(false);
   const [isAppLocked, setIsAppLocked] = useState(false);
   const [geoExitPrompt, setGeoExitPrompt] = useState<{
@@ -231,6 +245,14 @@ export default function App() {
     const status = await getNativeNotificationStatus();
     if (status) {
       setNotificationStatus(status);
+    }
+  }, []);
+
+  const checkLocationPermStatus = useCallback(async () => {
+    if (!isNativeCapacitor()) return;
+    const status = await getNativeLocationPermissionStatus();
+    if (status) {
+      setLocationPermStatus(status);
     }
   }, []);
 
@@ -750,6 +772,166 @@ export default function App() {
     [notify]
   );
 
+  const applyGeoEventsToDb = useCallback(
+    (
+      sourceDb: AppDatabase,
+      events: NativeGeoFenceEvent[]
+    ): {
+      nextDb: AppDatabase;
+      finishedEntries: TimeEntry[];
+      lastToast: string | null;
+      exitPrompt: {
+        timerId: string;
+        ruleName: string;
+        timerTitle: string;
+        distanceMeters: number;
+      } | null;
+    } => {
+      let working = sourceDb;
+      let mutated = false;
+      const finishedEntries: TimeEntry[] = [];
+      let lastToast: string | null = null;
+      let exitPrompt: {
+        timerId: string;
+        ruleName: string;
+        timerTitle: string;
+        distanceMeters: number;
+      } | null = null;
+
+      for (const ev of events) {
+        if (!ev || !ev.eventId || processedGeoEventIdsRef.current.has(ev.eventId)) {
+          continue;
+        }
+        processedGeoEventIdsRef.current.add(ev.eventId);
+        if (processedGeoEventIdsRef.current.size > 60) {
+          const first = processedGeoEventIdsRef.current.values().next().value;
+          if (first) processedGeoEventIdsRef.current.delete(first);
+        }
+
+        if (ev.type === 'enter') {
+          if (working.activeTimer) {
+            continue;
+          }
+          const matchedRule = (working.geoFenceRules ?? []).find((r) => r.id === ev.ruleId);
+          const prod = working.products.find(
+            (p) => p.id === (matchedRule?.productId || ev.productId)
+          );
+          const custId = matchedRule?.customerId ?? ev.customerId ?? '';
+          const prodId = matchedRule?.productId ?? ev.productId ?? '';
+          const title = matchedRule?.taskTitle || ev.taskTitle || ev.ruleName || 'Ortsautomatik';
+          const timer: ActiveTimer = {
+            id: createId('timer'),
+            entryType: custId ? 'project' : 'internal',
+            customerId: custId,
+            productId: prodId,
+            nfcTaskId: null,
+            geoFenceRuleId: ev.ruleId,
+            title,
+            notes: matchedRule?.notes ?? ev.notes ?? '',
+            startTime: ev.timestampIso || new Date().toISOString(),
+            pausedAt: null,
+            accumulatedPausedMs: 0,
+            hourlyRateNet: prod?.unitPriceNet ?? ev.hourlyRateNet ?? 0,
+            taxRate: ((prod?.taxRate ?? ev.taxRate ?? 19) || 19) as TaxRate,
+            source: 'geo',
+            location: {
+              lat: ev.lat,
+              lng: ev.lng,
+              accuracyMeters: ev.accuracyMeters || 25,
+              capturedAt: ev.timestampIso || new Date().toISOString(),
+              address: matchedRule?.address || ev.address || ev.ruleName,
+            },
+          };
+          geoCooldownRef.current.set(ev.ruleId, ev.timestampMs || Date.now());
+          working = { ...working, activeTimer: timer };
+          mutated = true;
+          exitPrompt = null;
+          lastToast = `Ortsautomatik (${ev.ruleName}): „${timer.title}“ automatisch gestartet.`;
+        } else if (ev.type === 'exit_auto') {
+          const active = working.activeTimer;
+          if (active && active.source === 'geo' && active.geoFenceRuleId === ev.ruleId) {
+            const endMs = ev.timestampMs || Date.now();
+            const endIso = ev.timestampIso || new Date(endMs).toISOString();
+            const durationSeconds = Math.max(
+              1,
+              Math.floor(getActiveTimerElapsedMs(active, endMs) / 1000)
+            );
+            const isInternal = active.entryType === 'internal' || !active.customerId;
+            let travelDistanceKm: number | undefined;
+            let travelCostNet: number | undefined;
+            if (
+              !isInternal &&
+              working.company.autoCalculateTravelOnStop &&
+              working.company.homeBaseLocation &&
+              active.location
+            ) {
+              const calc = computeTravelFromBase(
+                working.company.homeBaseLocation,
+                active.location,
+                working.company.travelRatePerKm ?? 0.3,
+                working.company.travelRoundTripDefault !== false
+              );
+              travelDistanceKm = calc.distanceKm;
+              travelCostNet = calc.costNet;
+            }
+            const entry: TimeEntry = {
+              id: createId('time'),
+              customerId: isInternal ? '' : active.customerId,
+              productId: isInternal ? '' : active.productId,
+              nfcTaskId: active.nfcTaskId,
+              title: active.title,
+              notes: active.notes,
+              startTime: active.startTime,
+              endTime: endIso,
+              durationSeconds,
+              hourlyRateNet: isInternal ? 0 : active.hourlyRateNet,
+              taxRate: (isInternal ? 0 : active.taxRate) as TaxRate,
+              billable: !isInternal,
+              billedInvoiceId: null,
+              source: active.source,
+              entryType: isInternal ? 'internal' : 'project',
+              internalCategory: isInternal ? active.internalCategory : undefined,
+              location: active.location ?? null,
+              photos: active.photos && active.photos.length > 0 ? active.photos : undefined,
+              travelDistanceKm,
+              travelCostNet,
+              travelBilledInvoiceId: null,
+              createdAt: endIso,
+            };
+            geoCooldownRef.current.set(ev.ruleId, endMs);
+            working = {
+              ...working,
+              activeTimer: null,
+              timeEntries: [entry, ...working.timeEntries],
+            };
+            finishedEntries.push(entry);
+            mutated = true;
+            exitPrompt = null;
+            lastToast = `Ortsautomatik (${ev.ruleName} verlassen): „${entry.title}“ gespeichert.`;
+          }
+        } else if (ev.type === 'exit_ask') {
+          const active = working.activeTimer;
+          if (active && active.source === 'geo' && active.geoFenceRuleId === ev.ruleId) {
+            exitPrompt = {
+              timerId: active.id,
+              ruleName: ev.ruleName,
+              timerTitle: active.title,
+              distanceMeters: ev.distanceMeters,
+            };
+          }
+        }
+      }
+
+      return {
+        nextDb: mutated ? working : sourceDb,
+        finishedEntries,
+        lastToast,
+        exitPrompt,
+      };
+    },
+    []
+  );
+
   // Initial Load + URL Deep-Link (?nfc=<tagId> or Capacitor taktwerk://nfc/<tagId>)
   useEffect(() => {
     let active = true;
@@ -869,6 +1051,23 @@ export default function App() {
 
         if (!sectionOverridden && loadedDb.company.defaultStartSection) {
           setSection(loadedDb.company.defaultStartSection);
+        }
+
+        if (isNativeCapacitor()) {
+          const pendingGeo = await consumeNativePendingGeoEvents();
+          if (pendingGeo.length > 0) {
+            const { nextDb, finishedEntries } = applyGeoEventsToDb(loadedDb, pendingGeo);
+            if (nextDb !== loadedDb) {
+              loadedDb = stampDatabaseChanges(loadedDb, nextDb, deviceIdRef.current);
+              await apiSaveDb(loadedDb);
+              for (const finished of finishedEntries) {
+                pushFinishedEntryToNextcloudCalendar(finished, loadedDb);
+              }
+            }
+          }
+          void getNativeLocationPermissionStatus().then((st) => {
+            if (active && st) setLocationPermStatus(st);
+          });
         }
 
         setLoadProgress({ pct: 88, label: 'Oberfläche & Widgets werden synchronisiert…' });
@@ -1791,6 +1990,59 @@ export default function App() {
     [handleStopTimer, notify, persistDb]
   );
 
+  const processNativeGeoEvents = useCallback(
+    (events: NativeGeoFenceEvent[]) => {
+      if (!events || events.length === 0) return;
+      const { nextDb, finishedEntries, lastToast, exitPrompt } = applyGeoEventsToDb(
+        dbRef.current,
+        events
+      );
+      if (nextDb !== dbRef.current) {
+        void persistDb(nextDb);
+        for (const finished of finishedEntries) {
+          pushFinishedEntryToNextcloudCalendar(finished, nextDb);
+        }
+      }
+      if (exitPrompt) {
+        setGeoExitPrompt(exitPrompt);
+      } else if (nextDb.activeTimer === null) {
+        setGeoExitPrompt(null);
+      }
+      if (lastToast) {
+        notify(lastToast);
+      }
+    },
+    [applyGeoEventsToDb, notify, persistDb, pushFinishedEntryToNextcloudCalendar]
+  );
+
+  const handleRequestBackgroundLocation = useCallback(async () => {
+    if (!isNativeCapacitor()) return;
+    const res = await requestNativeBackgroundLocationPermission();
+    if (res) {
+      setLocationPermStatus(res);
+      if (res.backgroundGranted) {
+        void syncNativeGeoFenceMonitoring(dbRef.current).then((synced) => {
+          if (synced) setLocationPermStatus(synced);
+        });
+        notify(
+          'Hintergrund-Standort („Immer zulassen“) aktiviert — Ortsautomatik läuft jetzt auch bei geschlossener App!'
+        );
+      } else if (res.openedSettings) {
+        notify(
+          'Bitte wähle unter Berechtigungen → Standort die Option „Immer zulassen“.',
+          false
+        );
+      } else if (!res.foregroundGranted) {
+        notify('Bitte erlaube zuerst den Standortzugriff für TaktWerk.', true);
+      } else {
+        notify(
+          'Für automatischen Start bei geschlossener App wird „Immer zulassen“ benötigt.',
+          true
+        );
+      }
+    }
+  }, [notify]);
+
   useEffect(() => {
     if (loading) return;
     if (!db.company.autoLocationStartEnabled) return;
@@ -1826,6 +2078,76 @@ export default function App() {
     db.geoFenceRules,
     evaluateGeoFenceRules,
   ]);
+
+  // Native Android background geofence monitoring sync & live/pending event listener
+  useEffect(() => {
+    if (loading || !isNativeCapacitor()) return;
+    void syncNativeGeoFenceMonitoring(db).then((st) => {
+      if (st) setLocationPermStatus(st);
+    });
+  }, [
+    loading,
+    db.company.autoLocationStartEnabled,
+    db.company.geoFenceCheckIntervalSec,
+    db.company.geoExitConfirmMode,
+    db.company.timerReminderSound,
+    db.company.timerReminderSystemSoundUri,
+    db.geoFenceRules,
+    db.activeTimer,
+    db.customers,
+    db.products,
+  ]);
+
+  useEffect(() => {
+    if (loading || !isNativeCapacitor()) return;
+    let listenerHandle: { remove: () => Promise<void> } | null = null;
+    let appStateHandle: { remove: () => Promise<void> } | null = null;
+    let cancelled = false;
+
+    const refreshOnForeground = () => {
+      void checkLocationPermStatus();
+      void syncNativeGeoFenceMonitoring(dbRef.current).then((st) => {
+        if (st) setLocationPermStatus(st);
+      });
+      void consumeNativePendingGeoEvents().then((events) => {
+        if (events.length > 0) {
+          processNativeGeoEvents(events);
+        }
+      });
+    };
+
+    void TaktWerkNative.addListener('geoFenceEvent', (ev) => {
+      processNativeGeoEvents([ev]);
+    })
+      .then((h) => {
+        if (cancelled) void h.remove();
+        else listenerHandle = h;
+      })
+      .catch(() => {});
+
+    void CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) refreshOnForeground();
+    })
+      .then((h) => {
+        if (cancelled) void h.remove();
+        else appStateHandle = h;
+      })
+      .catch(() => {});
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        refreshOnForeground();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      cancelled = true;
+      document.removeEventListener('visibilitychange', onVisibility);
+      if (listenerHandle) void listenerHandle.remove();
+      if (appStateHandle) void appStateHandle.remove();
+    };
+  }, [loading, checkLocationPermStatus, processNativeGeoEvents]);
 
   const handlePauseTimer = useCallback(() => {
     if (!dbRef.current.activeTimer || dbRef.current.activeTimer.pausedAt) return;
@@ -3404,6 +3726,47 @@ export default function App() {
             </div>
           )}
 
+          {/* Android Missing Background Location Permission Banner */}
+          {!loading &&
+            isNativeCapacitor() &&
+            db.company.autoLocationStartEnabled &&
+            (db.geoFenceRules ?? []).some((r) => r.enabled) &&
+            locationPermStatus &&
+            !locationPermStatus.backgroundGranted && (
+              <div className="no-print mb-5 flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs text-amber-950 shadow-sm dark:border-amber-700/70 dark:bg-amber-950/45 dark:text-amber-100 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-2.5">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <div className="space-y-0.5">
+                    <div className="font-semibold">
+                      Hintergrund-Standort („Immer zulassen“) fehlt für die Ortsautomatik
+                    </div>
+                    <div className="opacity-85">
+                      {locationPermStatus.foregroundGranted
+                        ? 'Aktuell hat TaktWerk nur Standortzugriff „Bei Nutzung der App“. Damit Aufgaben auch bei geschlossener oder minimierter App automatisch starten, stelle Standort auf „Immer zulassen“.'
+                        : 'TaktWerk benötigt Standortzugriff („Immer zulassen“), um an deinen gespeicherten Orten im Hintergrund automatisch zu starten.'}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => void handleRequestBackgroundLocation()}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-amber-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-amber-800 dark:bg-amber-600 dark:hover:bg-amber-500 cursor-pointer"
+                  >
+                    <MapPin className="h-3.5 w-3.5" />
+                    Jetzt erlauben
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void openNativeLocationSettings()}
+                    className="rounded-lg border border-amber-300 bg-white/80 px-2.5 py-1.5 text-xs font-medium text-amber-950 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-100 dark:hover:bg-amber-900/50 cursor-pointer"
+                  >
+                    App-Einstellungen
+                  </button>
+                </div>
+              </div>
+            )}
+
           {/* Smart Geofence Exit Confirmation Banner */}
           {geoExitPrompt && (
             <div className="no-print mb-5 flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3.5 text-xs text-amber-950 shadow-sm dark:border-amber-700/70 dark:bg-amber-950/45 dark:text-amber-100 sm:flex-row sm:items-center sm:justify-between">
@@ -3747,6 +4110,10 @@ export default function App() {
                   onSaveGeoFenceRules={handleSaveGeoFenceRules}
                   onCheckGeoFenceNow={() => void evaluateGeoFenceRules(true)}
                   checkingGeoFence={checkingGeoFence}
+                  locationPermStatus={locationPermStatus}
+                  onRequestBackgroundLocation={handleRequestBackgroundLocation}
+                  onOpenLocationSettings={openNativeLocationSettings}
+                  onOpenBatterySettings={openNativeBatterySettings}
                   onImportDatabase={handleImportDatabase}
                   onLoadSampleData={handleLoadSampleData}
                   onResetEmpty={handleResetEmpty}

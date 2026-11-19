@@ -38,6 +38,45 @@ export interface NativeWidgetActionEvent {
   tagUid?: string;
 }
 
+export type LocationPermissionOverallStatus =
+  | 'OK'
+  | 'FOREGROUND_REQUIRED'
+  | 'BACKGROUND_REQUIRED'
+  | 'GPS_DISABLED';
+
+export interface NativeLocationPermissionStatus {
+  supported: boolean;
+  foregroundGranted: boolean;
+  fineGranted: boolean;
+  backgroundGranted: boolean;
+  gpsEnabled: boolean;
+  batteryOptimizationIgnored: boolean;
+  serviceRunning: boolean;
+  openedSettings?: boolean;
+  status: LocationPermissionOverallStatus;
+}
+
+export interface NativeGeoFenceEvent {
+  eventId: string;
+  type: 'enter' | 'exit_auto' | 'exit_ask';
+  ruleId: string;
+  ruleName: string;
+  taskTitle: string;
+  notes: string;
+  customerId: string;
+  customerName: string;
+  productId: string;
+  hourlyRateNet: number;
+  taxRate: number;
+  address: string;
+  timestampIso: string;
+  timestampMs: number;
+  lat: number;
+  lng: number;
+  accuracyMeters: number;
+  distanceMeters: number;
+}
+
 export interface NativeSystemSoundItem {
   uri: string;
   title: string;
@@ -111,6 +150,27 @@ export interface TaktWerkNativePluginInterface {
     contentType?: string;
     body?: string;
   }): Promise<{ status: number; body: string }>;
+
+  getLocationPermissionStatus(): Promise<NativeLocationPermissionStatus>;
+
+  requestBackgroundLocationPermission(): Promise<NativeLocationPermissionStatus>;
+
+  openLocationPermissionSettings(): Promise<void>;
+
+  openBatterySettings(): Promise<void>;
+
+  syncGeoFenceMonitoring(options: {
+    enabled: boolean;
+    intervalSec: number;
+    exitConfirmMode: 'ask' | 'auto';
+    hasActiveTimer: boolean;
+    activeGeoRuleId: string;
+    soundPreset: string;
+    systemSoundUri: string;
+    rulesJson: string;
+  }): Promise<NativeLocationPermissionStatus>;
+
+  consumePendingGeoEvents(): Promise<{ events: NativeGeoFenceEvent[] }>;
 
   getCurrentLocation(): Promise<{
     lat: number;
@@ -248,6 +308,11 @@ export interface TaktWerkNativePluginInterface {
   addListener(
     eventName: 'widgetActionTriggered',
     listenerFunc: (event: NativeWidgetActionEvent) => void
+  ): Promise<PluginListenerHandle>;
+
+  addListener(
+    eventName: 'geoFenceEvent',
+    listenerFunc: (event: NativeGeoFenceEvent) => void
   ): Promise<PluginListenerHandle>;
 }
 

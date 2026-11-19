@@ -86,7 +86,8 @@ import okhttp3.Response;
     name = "TaktWerkNative",
     permissions = {
         @Permission(alias = "notifications", strings = { Manifest.permission.POST_NOTIFICATIONS }),
-        @Permission(alias = "location", strings = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION })
+        @Permission(alias = "location", strings = { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION }),
+        @Permission(alias = "backgroundLocation", strings = { Manifest.permission.ACCESS_BACKGROUND_LOCATION })
     }
 )
 public class TaktWerkNativePlugin extends Plugin {
@@ -115,6 +116,7 @@ public class TaktWerkNativePlugin extends Plugin {
     private boolean foregroundDispatchActive = false;
     private volatile Ringtone activePreviewRingtone = null;
     private final Handler previewStopHandler = new Handler(Looper.getMainLooper());
+    private volatile long bgLocationRequestStartedMs = 0L;
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient.Builder()
@@ -126,11 +128,25 @@ public class TaktWerkNativePlugin extends Plugin {
     @Override
     public void load() {
         super.load();
+        GeoFenceEngine.setActivePlugin(this);
         Activity activity = getActivity();
         if (activity != null && activity.getIntent() != null) {
             Intent launchIntent = activity.getIntent();
             handleWidgetUri(launchIntent, false);
             captureLaunchNfcIntent(launchIntent);
+        }
+    }
+
+    @Override
+    protected void handleOnDestroy() {
+        GeoFenceEngine.setActivePlugin(null);
+        super.handleOnDestroy();
+    }
+
+    public void emitGeoFenceEvent(JSObject event) {
+        Activity activity = getActivity();
+        if (activity != null && event != null) {
+            activity.runOnUiThread(() -> notifyListeners("geoFenceEvent", event, true));
         }
     }
 
@@ -1444,11 +1460,188 @@ public class TaktWerkNativePlugin extends Plugin {
     }
 
     private boolean hasLocationPermission(Context context) {
-        boolean fine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED;
-        boolean coarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED;
-        return fine || coarse;
+        return GeoFenceEngine.hasForegroundLocationPermission(context);
+    }
+
+    private JSObject buildLocationPermissionStatus(Context context, boolean openedSettings) {
+        boolean foregroundGranted = GeoFenceEngine.hasForegroundLocationPermission(context);
+        boolean fineGranted = GeoFenceEngine.hasFineLocationPermission(context);
+        boolean backgroundGranted = GeoFenceEngine.hasBackgroundLocationPermission(context);
+        boolean gpsEnabled = GeoFenceEngine.isGpsEnabled(context);
+        boolean batteryIgnored = GeoFenceEngine.isBatteryOptimizationIgnored(context);
+        boolean serviceRunning = GeoFenceEngine.isMonitorServiceRunning(context);
+
+        String status;
+        if (!foregroundGranted) {
+            status = "FOREGROUND_REQUIRED";
+        } else if (!backgroundGranted) {
+            status = "BACKGROUND_REQUIRED";
+        } else if (!gpsEnabled) {
+            status = "GPS_DISABLED";
+        } else {
+            status = "OK";
+        }
+
+        JSObject res = new JSObject();
+        res.put("supported", true);
+        res.put("foregroundGranted", foregroundGranted);
+        res.put("fineGranted", fineGranted);
+        res.put("backgroundGranted", backgroundGranted);
+        res.put("gpsEnabled", gpsEnabled);
+        res.put("batteryOptimizationIgnored", batteryIgnored);
+        res.put("serviceRunning", serviceRunning);
+        res.put("openedSettings", openedSettings);
+        res.put("status", status);
+        return res;
+    }
+
+    @PluginMethod
+    public void getLocationPermissionStatus(PluginCall call) {
+        call.resolve(buildLocationPermissionStatus(getContext(), false));
+    }
+
+    @PluginMethod
+    public void requestBackgroundLocationPermission(PluginCall call) {
+        Context context = getContext();
+        if (!GeoFenceEngine.hasForegroundLocationPermission(context)) {
+            requestPermissionForAlias("location", call, "fgThenBgLocationCallback");
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !GeoFenceEngine.hasBackgroundLocationPermission(context)) {
+            bgLocationRequestStartedMs = System.currentTimeMillis();
+            requestPermissionForAlias("backgroundLocation", call, "bgLocationPermsCallback");
+            return;
+        }
+        GeoFenceEngine.syncMonitoringFromPrefs(context);
+        call.resolve(buildLocationPermissionStatus(context, false));
+    }
+
+    @PermissionCallback
+    private void fgThenBgLocationCallback(PluginCall call) {
+        Context context = getContext();
+        if (!GeoFenceEngine.hasForegroundLocationPermission(context)) {
+            call.resolve(buildLocationPermissionStatus(context, false));
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && !GeoFenceEngine.hasBackgroundLocationPermission(context)) {
+            bgLocationRequestStartedMs = System.currentTimeMillis();
+            requestPermissionForAlias("backgroundLocation", call, "bgLocationPermsCallback");
+            return;
+        }
+        GeoFenceEngine.syncMonitoringFromPrefs(context);
+        call.resolve(buildLocationPermissionStatus(context, false));
+    }
+
+    @PermissionCallback
+    private void bgLocationPermsCallback(PluginCall call) {
+        Context context = getContext();
+        boolean bgGranted = GeoFenceEngine.hasBackgroundLocationPermission(context);
+        boolean openedSettings = false;
+        if (bgGranted) {
+            GeoFenceEngine.syncMonitoringFromPrefs(context);
+        } else {
+            long elapsed = System.currentTimeMillis() - bgLocationRequestStartedMs;
+            // On Android 11+, if user previously chose "Only while using" or declined twice,
+            // Android suppresses the system permission redirect (<450ms). Open App Details directly.
+            if (elapsed < 450L) {
+                openedSettings = openAppDetailsSettings(context);
+            }
+        }
+        call.resolve(buildLocationPermissionStatus(context, openedSettings));
+    }
+
+    private boolean openAppDetailsSettings(Context context) {
+        Activity activity = getActivity();
+        if (activity == null || context == null) return false;
+        try {
+            Intent intent = new Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", context.getPackageName(), null)
+            );
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activity.startActivity(intent);
+            return true;
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+
+    @PluginMethod
+    public void openLocationPermissionSettings(PluginCall call) {
+        if (openAppDetailsSettings(getContext())) {
+            call.resolve();
+        } else {
+            call.reject("App-Berechtigungseinstellungen konnten nicht geöffnet werden.");
+        }
+    }
+
+    @PluginMethod
+    public void openBatterySettings(PluginCall call) {
+        Activity activity = getActivity();
+        Context context = getContext();
+        if (activity == null) {
+            call.reject("Aktivität nicht verfügbar.");
+            return;
+        }
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                activity.startActivity(intent);
+                call.resolve();
+                return;
+            }
+        } catch (Exception ignored) {}
+        if (openAppDetailsSettings(context)) {
+            call.resolve();
+        } else {
+            call.reject("Akku-Einstellungen konnten nicht geöffnet werden.");
+        }
+    }
+
+    @PluginMethod
+    public void syncGeoFenceMonitoring(PluginCall call) {
+        Context context = getContext();
+        boolean enabled = call.getBoolean("enabled", false);
+        int intervalSec = call.getInt("intervalSec", 60);
+        String exitConfirmMode = call.getString("exitConfirmMode", "ask");
+        boolean hasActiveTimer = call.getBoolean("hasActiveTimer", false);
+        String activeGeoRuleId = call.getString("activeGeoRuleId", "");
+        String soundPreset = call.getString("soundPreset", "chime");
+        String systemSoundUri = call.getString("systemSoundUri", "");
+        String rulesJson = call.getString("rulesJson", "[]");
+
+        GeoFenceEngine.saveConfig(
+            context,
+            enabled,
+            intervalSec,
+            exitConfirmMode,
+            hasActiveTimer,
+            activeGeoRuleId,
+            soundPreset,
+            systemSoundUri,
+            rulesJson
+        );
+        GeoFenceEngine.syncMonitoringFromPrefs(context);
+        call.resolve(buildLocationPermissionStatus(context, false));
+    }
+
+    @PluginMethod
+    public void consumePendingGeoEvents(PluginCall call) {
+        Context context = getContext();
+        org.json.JSONArray arr = GeoFenceEngine.consumePendingEvents(context);
+        JSArray out = new JSArray();
+        for (int i = 0; i < arr.length(); i++) {
+            org.json.JSONObject obj = arr.optJSONObject(i);
+            if (obj != null) {
+                try {
+                    out.put(JSObject.fromJSONObject(obj));
+                } catch (Exception ignored) {}
+            }
+        }
+        JSObject res = new JSObject();
+        res.put("events", out);
+        call.resolve(res);
     }
 
     @PluginMethod

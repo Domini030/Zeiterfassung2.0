@@ -2606,6 +2606,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
     }
   }
 
+  .bg-emerald-50\/60 {
+    background-color: #ecfdf599;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .bg-emerald-50\/60 {
+      background-color: color-mix(in oklab, var(--color-emerald-50) 60%, transparent);
+    }
+  }
+
   .bg-emerald-50\/70 {
     background-color: #ecfdf5b3;
   }
@@ -5062,6 +5072,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
     background-color: var(--color-amber-600);
   }
 
+  .dark\:bg-amber-900\/60:where(.dark, .dark *) {
+    background-color: #7b330699;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:bg-amber-900\/60:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-amber-900) 60%, transparent);
+    }
+  }
+
   .dark\:bg-amber-950\/30:where(.dark, .dark *) {
     background-color: #4619014d;
   }
@@ -5159,6 +5179,16 @@ svg.leaflet-image-layer.leaflet-interactive path {
   @supports (color: color-mix(in lab, red, red)) {
     .dark\:bg-emerald-900\/50:where(.dark, .dark *) {
       background-color: color-mix(in oklab, var(--color-emerald-900) 50%, transparent);
+    }
+  }
+
+  .dark\:bg-emerald-900\/60:where(.dark, .dark *) {
+    background-color: #004e3b99;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .dark\:bg-emerald-900\/60:where(.dark, .dark *) {
+      background-color: color-mix(in oklab, var(--color-emerald-900) 60%, transparent);
     }
   }
 

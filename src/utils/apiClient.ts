@@ -27,7 +27,12 @@ import {
   encodeSyncPairingCode,
   mergeDatabases,
 } from './syncMerge';
-import { TaktWerkNative, type NativeNotificationStatus } from './taktwerkNative';
+import {
+  TaktWerkNative,
+  type NativeGeoFenceEvent,
+  type NativeLocationPermissionStatus,
+  type NativeNotificationStatus,
+} from './taktwerkNative';
 import { trackActivity } from './activityProgress';
 
 const SERVER_URL_KEY = 'taktwerk-server-url';
@@ -1627,3 +1632,96 @@ export async function syncNativeWidgetState(db: AppDatabase): Promise<void> {
     // Ignore widget update failures
   }
 }
+
+export async function getNativeLocationPermissionStatus(): Promise<NativeLocationPermissionStatus | null> {
+  if (!isNativeCapacitor()) return null;
+  try {
+    return await TaktWerkNative.getLocationPermissionStatus();
+  } catch {
+    return null;
+  }
+}
+
+export async function requestNativeBackgroundLocationPermission(): Promise<NativeLocationPermissionStatus | null> {
+  if (!isNativeCapacitor()) return null;
+  try {
+    return await TaktWerkNative.requestBackgroundLocationPermission();
+  } catch {
+    return null;
+  }
+}
+
+export async function openNativeLocationSettings(): Promise<void> {
+  if (!isNativeCapacitor()) return;
+  try {
+    await TaktWerkNative.openLocationPermissionSettings();
+  } catch {
+    // Ignore settings errors
+  }
+}
+
+export async function openNativeBatterySettings(): Promise<void> {
+  if (!isNativeCapacitor()) return;
+  try {
+    await TaktWerkNative.openBatterySettings();
+  } catch {
+    // Ignore settings errors
+  }
+}
+
+export async function syncNativeGeoFenceMonitoring(
+  db: AppDatabase
+): Promise<NativeLocationPermissionStatus | null> {
+  if (!isNativeCapacitor()) return null;
+  try {
+    const enabledRules = (db.geoFenceRules ?? [])
+      .filter((r) => r.enabled)
+      .map((r) => {
+        const cust = db.customers.find((c) => c.id === r.customerId);
+        const prod = db.products.find((p) => p.id === r.productId);
+        return {
+          id: r.id,
+          name: r.name,
+          lat: r.lat,
+          lng: r.lng,
+          radiusMeters: r.radiusMeters,
+          customerId: r.customerId || '',
+          customerName: cust?.companyName || '',
+          productId: r.productId || '',
+          taskTitle: r.taskTitle || r.name,
+          notes: r.notes || '',
+          address: r.address || r.name,
+          autoStopOnExit: Boolean(r.autoStopOnExit),
+          hourlyRateNet: prod?.unitPriceNet ?? 0,
+          taxRate: prod?.taxRate ?? 19,
+        };
+      });
+
+    return await TaktWerkNative.syncGeoFenceMonitoring({
+      enabled: Boolean(db.company.autoLocationStartEnabled) && enabledRules.length > 0,
+      intervalSec: Math.max(20, db.company.geoFenceCheckIntervalSec ?? 60),
+      exitConfirmMode: db.company.geoExitConfirmMode === 'auto' ? 'auto' : 'ask',
+      hasActiveTimer: Boolean(db.activeTimer),
+      activeGeoRuleId:
+        db.activeTimer?.source === 'geo' && db.activeTimer.geoFenceRuleId
+          ? db.activeTimer.geoFenceRuleId
+          : '',
+      soundPreset: db.company.timerReminderSound ?? 'chime',
+      systemSoundUri: db.company.timerReminderSystemSoundUri?.trim() || '',
+      rulesJson: JSON.stringify(enabledRules),
+    });
+  } catch {
+    return null;
+  }
+}
+
+export async function consumeNativePendingGeoEvents(): Promise<NativeGeoFenceEvent[]> {
+  if (!isNativeCapacitor()) return [];
+  try {
+    const res = await TaktWerkNative.consumePendingGeoEvents();
+    return Array.isArray(res?.events) ? res.events : [];
+  } catch {
+    return [];
+  }
+}
+

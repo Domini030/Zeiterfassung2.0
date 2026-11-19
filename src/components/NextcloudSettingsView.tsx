@@ -145,7 +145,10 @@ import {
   listBackupVersions,
   loadBackupVersionSnapshot,
 } from '../utils/backupVersions';
-import { TaktWerkNative } from '../utils/taktwerkNative';
+import {
+  TaktWerkNative,
+  type NativeLocationPermissionStatus,
+} from '../utils/taktwerkNative';
 import { ConfirmActionDialog, type ConfirmDialogState } from './ConfirmActionDialog';
 import { GeoFenceMapPicker, type PickedMapLocation } from './GeoFenceMapPicker';
 import { GeoFenceRuleModal } from './GeoFenceRuleModal';
@@ -171,6 +174,10 @@ interface NextcloudSettingsViewProps {
   onSaveGeoFenceRules: (rules: GeoFenceRule[]) => void;
   onCheckGeoFenceNow?: () => void;
   checkingGeoFence?: boolean;
+  locationPermStatus?: NativeLocationPermissionStatus | null;
+  onRequestBackgroundLocation?: () => Promise<void>;
+  onOpenLocationSettings?: () => Promise<void>;
+  onOpenBatterySettings?: () => Promise<void>;
   onImportDatabase: (db: AppDatabase) => void;
   onLoadSampleData: () => void;
   onResetEmpty: () => void;
@@ -225,6 +232,10 @@ export function NextcloudSettingsView({
   onSaveGeoFenceRules,
   onCheckGeoFenceNow,
   checkingGeoFence = false,
+  locationPermStatus = null,
+  onRequestBackgroundLocation,
+  onOpenLocationSettings,
+  onOpenBatterySettings,
   onImportDatabase,
   onLoadSampleData,
   onResetEmpty,
@@ -4811,6 +4822,126 @@ export function NextcloudSettingsView({
                 </button>
               </div>
             </div>
+
+            {nativeApp && (
+              <div
+                className={`rounded-xl border p-4 space-y-3 ${
+                  locationPermStatus?.backgroundGranted && locationPermStatus?.gpsEnabled
+                    ? 'border-emerald-200 bg-emerald-50/60 dark:border-emerald-800/60 dark:bg-emerald-950/30'
+                    : 'border-amber-200 bg-amber-50/70 dark:border-amber-800/60 dark:bg-amber-950/35'
+                }`}
+              >
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck
+                      className={`h-4 w-4 shrink-0 ${
+                        locationPermStatus?.backgroundGranted && locationPermStatus?.gpsEnabled
+                          ? 'text-emerald-700 dark:text-emerald-400'
+                          : 'text-amber-700 dark:text-amber-400'
+                      }`}
+                    />
+                    <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                      Android Hintergrund-Standort &amp; Berechtigungsstatus
+                    </span>
+                  </div>
+                  <span
+                    className={`inline-flex items-center self-start rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+                      locationPermStatus?.backgroundGranted && locationPermStatus?.gpsEnabled
+                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200'
+                        : 'bg-amber-100 text-amber-900 dark:bg-amber-900/60 dark:text-amber-200'
+                    }`}
+                  >
+                    {locationPermStatus?.backgroundGranted
+                      ? locationPermStatus.serviceRunning
+                        ? 'Hintergrund-Überwachung aktiv'
+                        : 'Hintergrund-Standort erteilt'
+                      : '„Immer zulassen“ erforderlich'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-3">
+                  <div className="rounded-lg border border-slate-200/80 bg-white/80 px-3 py-2 dark:border-[#2e2349] dark:bg-[#171126]/80">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">Standort (App)</div>
+                    <div
+                      className={`font-semibold ${
+                        locationPermStatus?.foregroundGranted
+                          ? 'text-emerald-700 dark:text-emerald-400'
+                          : 'text-rose-700 dark:text-rose-400'
+                      }`}
+                    >
+                      {locationPermStatus?.foregroundGranted ? 'Erteilt' : 'Fehlt'}
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-slate-200/80 bg-white/80 px-3 py-2 dark:border-[#2e2349] dark:bg-[#171126]/80">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Hintergrund („Immer zulassen“)
+                    </div>
+                    <div
+                      className={`font-semibold ${
+                        locationPermStatus?.backgroundGranted
+                          ? 'text-emerald-700 dark:text-emerald-400'
+                          : 'text-amber-700 dark:text-amber-400'
+                      }`}
+                    >
+                      {locationPermStatus?.backgroundGranted ? 'Immer erlaubt' : 'Fehlt'}
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-slate-200/80 bg-white/80 px-3 py-2 dark:border-[#2e2349] dark:bg-[#171126]/80">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Akku-Optimierung
+                    </div>
+                    <div
+                      className={`font-semibold ${
+                        locationPermStatus?.batteryOptimizationIgnored
+                          ? 'text-emerald-700 dark:text-emerald-400'
+                          : 'text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      {locationPermStatus?.batteryOptimizationIgnored
+                        ? 'Uneingeschränkt'
+                        : 'Standard (evtl. gedrosselt)'}
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-300">
+                  Damit Aufgaben an eingetragenen Orten sofort starten – auch wenn TaktWerk minimiert oder geschlossen ist –, muss in Android der Standortzugriff auf{' '}
+                  <span className="font-semibold">„Immer zulassen“</span>{' '}
+                  (und idealerweise Akku auf <span className="font-semibold">„Uneingeschränkt“</span>) stehen.
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+                  {!locationPermStatus?.backgroundGranted && onRequestBackgroundLocation && (
+                    <button
+                      type="button"
+                      onClick={() => void onRequestBackgroundLocation()}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-violet-600 dark:hover:bg-violet-500 cursor-pointer"
+                    >
+                      <MapPin className="h-3.5 w-3.5" />
+                      Hintergrund-Standort („Immer zulassen“) erlauben
+                    </button>
+                  )}
+                  {onOpenLocationSettings && (
+                    <button
+                      type="button"
+                      onClick={() => void onOpenLocationSettings()}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer"
+                    >
+                      App-Berechtigungen öffnen
+                    </button>
+                  )}
+                  {!locationPermStatus?.batteryOptimizationIgnored && onOpenBatterySettings && (
+                    <button
+                      type="button"
+                      onClick={() => void onOpenBatterySettings()}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 dark:border-[#3b2d5e] dark:bg-[#211936] dark:text-slate-100 cursor-pointer"
+                    >
+                      Akku-Einstellung prüfen
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Existing Geo Rules */}
             <div className="space-y-2.5 border-t border-slate-200 pt-4 dark:border-[#2e2349]">
