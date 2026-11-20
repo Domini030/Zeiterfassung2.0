@@ -487,6 +487,7 @@ export interface CompanyProfile {
   appLockBiometric?: boolean;
   appLockPinHash?: string;
   appLockTimeoutMinutes?: number;
+  lockscreenTimerControlsEnabled?: boolean;
 }
 
 export interface AppDatabase {

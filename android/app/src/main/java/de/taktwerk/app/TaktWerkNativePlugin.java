@@ -81,6 +81,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 @CapacitorPlugin(
     name = "TaktWerkNative",
@@ -125,9 +127,12 @@ public class TaktWerkNativePlugin extends Plugin {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build();
 
+    private static volatile TaktWerkNativePlugin activeInstance = null;
+
     @Override
     public void load() {
         super.load();
+        activeInstance = this;
         GeoFenceEngine.setActivePlugin(this);
         Activity activity = getActivity();
         if (activity != null && activity.getIntent() != null) {
@@ -139,8 +144,28 @@ public class TaktWerkNativePlugin extends Plugin {
 
     @Override
     protected void handleOnDestroy() {
+        if (activeInstance == this) {
+            activeInstance = null;
+        }
         GeoFenceEngine.setActivePlugin(null);
         super.handleOnDestroy();
+    }
+
+    public static void dispatchTimerActionFromReceiver(String action, long timestampMs) {
+        TaktWerkNativePlugin inst = activeInstance;
+        if (inst != null && action != null && !action.trim().isEmpty()) {
+            inst.emitTimerNotificationAction(action.trim(), timestampMs);
+        }
+    }
+
+    public void emitTimerNotificationAction(String action, long timestampMs) {
+        Activity activity = getActivity();
+        if (activity != null && action != null && !action.trim().isEmpty()) {
+            JSObject obj = new JSObject();
+            obj.put("action", action.trim());
+            obj.put("timestampMs", timestampMs);
+            activity.runOnUiThread(() -> notifyListeners("timerNotificationAction", obj, true));
+        }
     }
 
     public void emitGeoFenceEvent(JSObject event) {
@@ -1219,6 +1244,35 @@ public class TaktWerkNativePlugin extends Plugin {
         call.resolve(res);
     }
 
+    @PluginMethod
+    public void consumePendingTimerActions(PluginCall call) {
+        JSArray out = new JSArray();
+        try {
+            JSONArray queued = TimerNotificationActionReceiver.consumePendingActions(getContext());
+            for (int i = 0; i < queued.length(); i++) {
+                JSONObject item = queued.optJSONObject(i);
+                if (item != null) {
+                    JSObject jsItem = new JSObject();
+                    jsItem.put("id", item.optString("id", ""));
+                    jsItem.put("action", item.optString("action", ""));
+                    jsItem.put("timestampMs", item.optLong("timestampMs", System.currentTimeMillis()));
+                    out.put(jsItem);
+                }
+            }
+            if (pendingTimerAction != null && !pendingTimerAction.trim().isEmpty()) {
+                JSObject legacy = new JSObject();
+                legacy.put("id", "legacy-" + System.currentTimeMillis());
+                legacy.put("action", pendingTimerAction.trim());
+                legacy.put("timestampMs", System.currentTimeMillis());
+                out.put(legacy);
+                pendingTimerAction = null;
+            }
+        } catch (Exception ignored) {}
+        JSObject res = new JSObject();
+        res.put("actions", out);
+        call.resolve(res);
+    }
+
     private void postTimerNotification(PluginCall call) {
         Context context = getContext();
         boolean shown = false;
@@ -1235,104 +1289,40 @@ public class TaktWerkNativePlugin extends Plugin {
             String notes = call.getString("notes", "");
             boolean isPaused = call.getBoolean("isPaused", false);
             String pausedDuration = call.getString("pausedDuration", "");
+            boolean lockscreenControls = call.getBoolean("lockscreenControls", true);
             long startTimeMs = System.currentTimeMillis();
             Object rawStartObj = call.getData().opt("startTimeMs");
             if (rawStartObj instanceof Number) {
                 startTimeMs = ((Number) rawStartObj).longValue();
             }
-
-            Intent launchIntent = new Intent(context, MainActivity.class);
-            launchIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(
-                context,
-                0,
-                launchIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-
-            // Action: Pause / Resume
-            Intent pauseResumeIntent = new Intent(context, MainActivity.class);
-            pauseResumeIntent.setAction("de.taktwerk.app.ACTION_TIMER_CONTROL");
-            pauseResumeIntent.putExtra("timerAction", isPaused ? "resume" : "pause");
-            pauseResumeIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pauseResumePendingIntent = PendingIntent.getActivity(
-                context,
-                101,
-                pauseResumeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-
-            // Action: Stop & Save
-            Intent stopIntent = new Intent(context, MainActivity.class);
-            stopIntent.setAction("de.taktwerk.app.ACTION_TIMER_CONTROL");
-            stopIntent.putExtra("timerAction", "stop");
-            stopIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent stopPendingIntent = PendingIntent.getActivity(
-                context,
-                102,
-                stopIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-            );
-
-            String contentTitle = isPaused ? "⏸ Timer pausiert: " + title : "⏱ " + title;
-            String contentText = isPaused
-                ? (customer.isEmpty() ? "Pausiert bei " + pausedDuration : customer + " · Pausiert bei " + pausedDuration)
-                : (customer.isEmpty() ? "TaktWerk Zeiterfassung" : customer);
-
-            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle()
-                .setBigContentTitle(contentTitle)
-                .bigText(contentText + (notes.isEmpty() ? "" : "\n" + notes))
-                .setSummaryText(isPaused ? "Pausiert (" + pausedDuration + ")" : "Zeiterfassung aktiv");
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, TIMER_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_stat_timer)
-                .setColor(0xFF7C3AED)
-                .setColorized(true)
-                .setContentTitle(contentTitle)
-                .setContentText(contentText)
-                .setSubText(isPaused ? "Pausiert" : "Zeiterfassung")
-                .setStyle(bigTextStyle)
-                .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .setSilent(true)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setCategory(NotificationCompat.CATEGORY_STOPWATCH)
-                .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE);
-
-            // Add interactive action buttons directly in the notification
-            if (isPaused) {
-                builder.addAction(
-                    R.drawable.ic_action_play,
-                    "Fortsetzen",
-                    pauseResumePendingIntent
-                );
-            } else {
-                builder.addAction(
-                    R.drawable.ic_action_pause,
-                    "Pausieren",
-                    pauseResumePendingIntent
-                );
+            long elapsedMs = Math.max(0L, System.currentTimeMillis() - startTimeMs);
+            Object rawElapsedObj = call.getData().opt("elapsedMs");
+            if (rawElapsedObj instanceof Number) {
+                elapsedMs = Math.max(0L, ((Number) rawElapsedObj).longValue());
             }
 
-            builder.addAction(
-                R.drawable.ic_action_stop,
-                "Stoppen & Speichern",
-                stopPendingIntent
+            TimerNotificationActionReceiver.saveTimerSnapshot(
+                context,
+                title,
+                customer,
+                notes,
+                startTimeMs,
+                elapsedMs,
+                isPaused,
+                pausedDuration,
+                lockscreenControls
             );
 
-            if (!isPaused) {
-                builder.setWhen(startTimeMs).setShowWhen(true).setUsesChronometer(true);
-            } else {
-                builder.setUsesChronometer(false).setShowWhen(false);
-            }
-
-            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (manager != null) {
-                manager.notify(TIMER_NOTIFICATION_ID, builder.build());
-                shown = true;
-            }
+            shown = TimerNotificationActionReceiver.postTimerNotification(
+                context,
+                title,
+                customer,
+                notes,
+                startTimeMs,
+                isPaused,
+                pausedDuration,
+                lockscreenControls
+            );
         } catch (Exception ignored) {}
         call.resolve(buildNotificationStatusObject(context, shown));
     }
@@ -1340,6 +1330,7 @@ public class TaktWerkNativePlugin extends Plugin {
     @PluginMethod
     public void clearActiveTimerNotification(PluginCall call) {
         try {
+            TimerNotificationActionReceiver.clearTimerSnapshot(getContext());
             NotificationManager manager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
             if (manager != null) {
                 manager.cancel(TIMER_NOTIFICATION_ID);

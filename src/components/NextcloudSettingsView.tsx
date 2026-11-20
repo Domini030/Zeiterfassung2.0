@@ -5695,6 +5695,66 @@ export function NextcloudSettingsView({
             </div>
           </section>
 
+          {/* Android Sperrbildschirm-Steuerung */}
+          <section className="rounded-xl border border-slate-200 bg-white p-6 space-y-4 dark:border-[#2e2349] dark:bg-[#171126]">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Lock className="h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" />
+                <h2 className="font-display text-base font-semibold text-slate-900 dark:text-slate-100">
+                  Sperrbildschirm-Steuerung (Android)
+                </h2>
+                <InfoHintPopup
+                  size="sm"
+                  title="Steuerung ohne Entsperren"
+                  text="Zeigt bei laufender Zeiterfassung die Buttons „Pausieren / Fortsetzen“ und „Stoppen & Speichern“ direkt auf dem Android-Sperrbildschirm an — nutzbar ohne PIN oder Fingerabdruck. Deine Kundendaten, Rechnungen und Einstellungen bleiben weiterhin sicher hinter der Gerätesperre geschützt."
+                />
+              </div>
+              {companyForm.lockscreenTimerControlsEnabled !== false ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Aktiv
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-[#211936] dark:text-slate-400">
+                  <EyeOff className="h-3.5 w-3.5" />
+                  Deaktiviert
+                </span>
+              )}
+            </div>
+
+            <label className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 cursor-pointer hover:bg-slate-50 dark:border-[#342653] dark:bg-[#211936]/60 dark:hover:bg-[#241b3d]">
+              <input
+                type="checkbox"
+                checked={companyForm.lockscreenTimerControlsEnabled !== false}
+                onChange={(e) => {
+                  const enabled = e.target.checked;
+                  const updated = {
+                    ...companyForm,
+                    lockscreenTimerControlsEnabled: enabled,
+                  };
+                  setCompanyForm(updated);
+                  onSaveCompany(updated);
+                  onNotify(
+                    enabled
+                      ? 'Sperrbildschirm-Buttons (Pause / Weiter / Stopp) aktiviert.'
+                      : 'Sperrbildschirm-Buttons deaktiviert — Timer-Details bleiben auf dem Sperrbildschirm verborgen.'
+                  );
+                }}
+                className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-violet-600"
+              />
+              <div className="space-y-1">
+                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  Pause-, Weiter- &amp; Stopp-Buttons auf dem Sperrbildschirm anzeigen
+                </div>
+                <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                  {companyForm.lockscreenTimerControlsEnabled !== false
+                    ? 'Laufende Timer lassen sich direkt vom gesperrten Bildschirm pausieren, fortsetzen oder speichern — ohne das Smartphone zu entsperren. Die App selbst bleibt gesperrt.'
+                    : 'Auf dem Sperrbildschirm erscheinen keine Steuerungs-Buttons und keine Auftrags- oder Kundendetails. Zum Steuern muss das Gerät entsperrt werden.'}
+                </p>
+              </div>
+            </label>
+          </section>
+
           {/* Android Homescreen Widget Guide */}
           <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]">
             <div className="flex items-center gap-2">

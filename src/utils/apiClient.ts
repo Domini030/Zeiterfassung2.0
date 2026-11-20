@@ -32,6 +32,7 @@ import {
   type NativeGeoFenceEvent,
   type NativeLocationPermissionStatus,
   type NativeNotificationStatus,
+  type NativePendingTimerAction,
 } from './taktwerkNative';
 import { trackActivity } from './activityProgress';
 
@@ -1172,7 +1173,8 @@ export async function openNativeNotificationSettings(): Promise<void> {
 
 export async function syncActiveTimerNotification(
   timer: ActiveTimer | null,
-  customerName: string
+  customerName: string,
+  options?: { lockscreenControls?: boolean }
 ): Promise<NativeNotificationStatus | null> {
   if (!isNativeCapacitor()) return null;
   if (!timer) {
@@ -1181,19 +1183,32 @@ export async function syncActiveTimerNotification(
   }
   const elapsedMs = getActiveTimerElapsedMs(timer);
   const adjustedStartMs = Date.now() - elapsedMs;
+  const lockscreenControls = options?.lockscreenControls !== false;
   try {
     return await TaktWerkNative.showActiveTimerNotification({
       title: timer.title,
       customer: customerName,
       notes: timer.notes,
       startTimeMs: adjustedStartMs,
+      elapsedMs,
       isPaused: Boolean(timer.pausedAt),
       pausedDuration: timer.pausedAt
         ? formatDuration(Math.floor(elapsedMs / 1000))
         : undefined,
+      lockscreenControls,
     });
   } catch {
     return null;
+  }
+}
+
+export async function consumeNativePendingTimerActions(): Promise<NativePendingTimerAction[]> {
+  if (!isNativeCapacitor()) return [];
+  try {
+    const res = await TaktWerkNative.consumePendingTimerActions();
+    return Array.isArray(res?.actions) ? res.actions : [];
+  } catch {
+    return [];
   }
 }
 

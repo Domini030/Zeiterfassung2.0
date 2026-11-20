@@ -31,6 +31,13 @@ export interface NativeNotificationStatus {
 
 export interface NativeTimerNotificationActionEvent {
   action: 'pause' | 'resume' | 'stop';
+  timestampMs?: number;
+}
+
+export interface NativePendingTimerAction {
+  id: string;
+  action: 'pause' | 'resume' | 'stop';
+  timestampMs: number;
 }
 
 export interface NativeWidgetActionEvent {
@@ -206,13 +213,17 @@ export interface TaktWerkNativePluginInterface {
 
   getPendingTimerAction(): Promise<{ action?: string | null }>;
 
+  consumePendingTimerActions(): Promise<{ actions: NativePendingTimerAction[] }>;
+
   showActiveTimerNotification(options: {
     title: string;
     customer: string;
     notes?: string;
     startTimeMs: number;
+    elapsedMs?: number;
     isPaused: boolean;
     pausedDuration?: string;
+    lockscreenControls?: boolean;
   }): Promise<NativeNotificationStatus>;
 
   clearActiveTimerNotification(): Promise<void>;

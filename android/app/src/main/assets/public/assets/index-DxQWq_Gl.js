@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-2n6fZSAm.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-BbvQHb_G.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-Bm6SSd0L.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-cRaAOum1.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -35669,7 +35669,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-2n6fZSAm.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-BbvQHb_G.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -62937,7 +62937,8 @@ function createDefaultCompany() {
 		appLockEnabled: false,
 		appLockBiometric: true,
 		appLockPinHash: "",
-		appLockTimeoutMinutes: 1
+		appLockTimeoutMinutes: 1,
+		lockscreenTimerControlsEnabled: true
 	};
 }
 function createEmptyDatabase() {
@@ -67463,7 +67464,7 @@ async function openNativeNotificationSettings() {
 		await TaktWerkNative.openNotificationSettings();
 	} catch {}
 }
-async function syncActiveTimerNotification(timer, customerName) {
+async function syncActiveTimerNotification(timer, customerName, options) {
 	if (!isNativeCapacitor()) return null;
 	if (!timer) {
 		TaktWerkNative.clearActiveTimerNotification().catch(() => {});
@@ -67471,17 +67472,29 @@ async function syncActiveTimerNotification(timer, customerName) {
 	}
 	const elapsedMs = getActiveTimerElapsedMs(timer);
 	const adjustedStartMs = Date.now() - elapsedMs;
+	const lockscreenControls = options?.lockscreenControls !== false;
 	try {
 		return await TaktWerkNative.showActiveTimerNotification({
 			title: timer.title,
 			customer: customerName,
 			notes: timer.notes,
 			startTimeMs: adjustedStartMs,
+			elapsedMs,
 			isPaused: Boolean(timer.pausedAt),
-			pausedDuration: timer.pausedAt ? formatDuration(Math.floor(elapsedMs / 1e3)) : void 0
+			pausedDuration: timer.pausedAt ? formatDuration(Math.floor(elapsedMs / 1e3)) : void 0,
+			lockscreenControls
 		});
 	} catch {
 		return null;
+	}
+}
+async function consumeNativePendingTimerActions() {
+	if (!isNativeCapacitor()) return [];
+	try {
+		const res = await TaktWerkNative.consumePendingTimerActions();
+		return Array.isArray(res?.actions) ? res.actions : [];
+	} catch {
+		return [];
 	}
 }
 async function apiUploadNextcloudFile(options) {
@@ -87942,6 +87955,59 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 							})
 						]
 					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-xl border border-slate-200 bg-white p-6 space-y-4 dark:border-[#2e2349] dark:bg-[#171126]",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-wrap items-center justify-between gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-2",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Lock, { className: "h-5 w-5 shrink-0 text-blue-700 dark:text-violet-400" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+										className: "font-display text-base font-semibold text-slate-900 dark:text-slate-100",
+										children: "Sperrbildschirm-Steuerung (Android)"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)(InfoHintPopup, {
+										size: "sm",
+										title: "Steuerung ohne Entsperren",
+										text: "Zeigt bei laufender Zeiterfassung die Buttons „Pausieren / Fortsetzen“ und „Stoppen & Speichern“ direkt auf dem Android-Sperrbildschirm an — nutzbar ohne PIN oder Fingerabdruck. Deine Kundendaten, Rechnungen und Einstellungen bleiben weiterhin sicher hinter der Gerätesperre geschützt."
+									})
+								]
+							}), companyForm.lockscreenTimerControlsEnabled !== false ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldCheck, { className: "h-3.5 w-3.5" }), "Aktiv"]
+							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-[#211936] dark:text-slate-400",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(EyeOff, { className: "h-3.5 w-3.5" }), "Deaktiviert"]
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+							className: "flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 cursor-pointer hover:bg-slate-50 dark:border-[#342653] dark:bg-[#211936]/60 dark:hover:bg-[#241b3d]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "checkbox",
+								checked: companyForm.lockscreenTimerControlsEnabled !== false,
+								onChange: (e) => {
+									const enabled = e.target.checked;
+									const updated = {
+										...companyForm,
+										lockscreenTimerControlsEnabled: enabled
+									};
+									setCompanyForm(updated);
+									onSaveCompany(updated);
+									onNotify(enabled ? "Sperrbildschirm-Buttons (Pause / Weiter / Stopp) aktiviert." : "Sperrbildschirm-Buttons deaktiviert — Timer-Details bleiben auf dem Sperrbildschirm verborgen.");
+								},
+								className: "mt-0.5 h-4 w-4 rounded border-slate-300 accent-violet-600"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "space-y-1",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "text-sm font-semibold text-slate-900 dark:text-slate-100",
+									children: "Pause-, Weiter- & Stopp-Buttons auf dem Sperrbildschirm anzeigen"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-xs leading-relaxed text-slate-600 dark:text-slate-400",
+									children: companyForm.lockscreenTimerControlsEnabled !== false ? "Laufende Timer lassen sich direkt vom gesperrten Bildschirm pausieren, fortsetzen oder speichern — ohne das Smartphone zu entsperren. Die App selbst bleibt gesperrt." : "Auf dem Sperrbildschirm erscheinen keine Steuerungs-Buttons und keine Auftrags- oder Kundendetails. Zum Steuern muss das Gerät entsperrt werden."
+								})]
+							})]
+						})]
+					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
 						className: "rounded-xl border border-slate-200 bg-white p-5 dark:border-[#2e2349] dark:bg-[#171126]",
 						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -93648,12 +93714,13 @@ function App() {
 	(0, import_react.useEffect)(() => {
 		if (loading) return;
 		const customerName = db.activeTimer ? db.activeTimer.entryType === "internal" || !db.activeTimer.customerId ? `Intern${db.activeTimer.internalCategory ? ` · ${db.activeTimer.internalCategory}` : ""}` : db.customers.find((c) => c.id === db.activeTimer.customerId)?.companyName ?? "" : "";
-		syncActiveTimerNotification(db.activeTimer, customerName).then((status) => {
+		syncActiveTimerNotification(db.activeTimer, customerName, { lockscreenControls: db.company.lockscreenTimerControlsEnabled !== false }).then((status) => {
 			if (status) setNotificationStatus(status);
 		});
 	}, [
 		db.activeTimer,
 		db.customers,
+		db.company.lockscreenTimerControlsEnabled,
 		loading
 	]);
 	(0, import_react.useEffect)(() => {
@@ -93873,13 +93940,16 @@ function App() {
 		});
 		notify(`${Math.round(deductMs / 6e4)} Min. Pause von „${active.title}“ abgezogen.`);
 	}, [notify, persistDb]);
-	const handleStopTimer = (0, import_react.useCallback)(() => {
+	const handleStopTimer = (0, import_react.useCallback)((atTimestampMs) => {
 		const currentDb = dbRef.current;
 		if (!currentDb.activeTimer) return;
 		const active = currentDb.activeTimer;
 		setGeoExitPrompt(null);
-		if (active.source === "geo" && active.geoFenceRuleId) geoCooldownRef.current.set(active.geoFenceRuleId, Date.now());
-		const now = /* @__PURE__ */ new Date();
+		const startMs = new Date(active.startTime).getTime();
+		const rawNowMs = typeof atTimestampMs === "number" && Number.isFinite(atTimestampMs) && atTimestampMs > 0 ? atTimestampMs : Date.now();
+		const clampedNowMs = Math.max(Number.isFinite(startMs) ? startMs : rawNowMs, Math.min(Date.now(), rawNowMs));
+		if (active.source === "geo" && active.geoFenceRuleId) geoCooldownRef.current.set(active.geoFenceRuleId, clampedNowMs);
+		const now = new Date(clampedNowMs);
 		const isInternal = active.entryType === "internal" || !active.customerId;
 		const entry = finalizeTimerToEntry(active, now, currentDb.company);
 		const durationSeconds = entry.durationSeconds;
@@ -94139,11 +94209,15 @@ function App() {
 		checkLocationPermStatus,
 		processNativeGeoEvents
 	]);
-	const handlePauseTimer = (0, import_react.useCallback)(() => {
-		if (!dbRef.current.activeTimer || dbRef.current.activeTimer.pausedAt) return;
+	const handlePauseTimer = (0, import_react.useCallback)((atTimestampMs) => {
+		const active = dbRef.current.activeTimer;
+		if (!active || active.pausedAt) return;
+		const startMs = new Date(active.startTime).getTime();
+		const rawNowMs = typeof atTimestampMs === "number" && Number.isFinite(atTimestampMs) && atTimestampMs > 0 ? atTimestampMs : Date.now();
+		const clampedNowMs = Math.max(Number.isFinite(startMs) ? startMs : rawNowMs, Math.min(Date.now(), rawNowMs));
 		const updatedTimer = {
-			...dbRef.current.activeTimer,
-			pausedAt: (/* @__PURE__ */ new Date()).toISOString()
+			...active,
+			pausedAt: new Date(clampedNowMs).toISOString()
 		};
 		cancelNativeTimerReminder();
 		persistDb({
@@ -94152,14 +94226,16 @@ function App() {
 		});
 		notify(`Timer pausiert: ${updatedTimer.title}`);
 	}, [notify, persistDb]);
-	const handleResumeTimer = (0, import_react.useCallback)(() => {
-		if (!dbRef.current.activeTimer || !dbRef.current.activeTimer.pausedAt) return;
-		const pausedMs = new Date(dbRef.current.activeTimer.pausedAt).getTime();
-		const addedPause = Math.max(0, Date.now() - pausedMs);
+	const handleResumeTimer = (0, import_react.useCallback)((atTimestampMs) => {
+		const active = dbRef.current.activeTimer;
+		if (!active || !active.pausedAt) return;
+		const pausedMs = new Date(active.pausedAt).getTime();
+		const rawNowMs = typeof atTimestampMs === "number" && Number.isFinite(atTimestampMs) && atTimestampMs > 0 ? atTimestampMs : Date.now();
+		const addedPause = Math.max(0, Math.min(Date.now(), Math.max(pausedMs, rawNowMs)) - pausedMs);
 		const updatedTimer = {
-			...dbRef.current.activeTimer,
+			...active,
 			pausedAt: null,
-			accumulatedPausedMs: (dbRef.current.activeTimer.accumulatedPausedMs ?? 0) + addedPause
+			accumulatedPausedMs: (active.accumulatedPausedMs ?? 0) + addedPause
 		};
 		persistDb({
 			...dbRef.current,
@@ -94168,28 +94244,49 @@ function App() {
 		notify(`Timer fortgesetzt: ${updatedTimer.title}`);
 	}, [notify, persistDb]);
 	(0, import_react.useEffect)(() => {
-		if (!isNativeCapacitor()) return;
+		if (loading || !isNativeCapacitor()) return;
 		let listenerHandle = null;
+		let appStateHandle = null;
 		let cancelled = false;
-		const handleAction = (action) => {
-			if (action === "pause") handlePauseTimer();
-			else if (action === "resume") handleResumeTimer();
-			else if (action === "stop") handleStopTimer();
+		const applyAction = (action, timestampMs) => {
+			if (action === "pause") handlePauseTimer(timestampMs);
+			else if (action === "resume") handleResumeTimer(timestampMs);
+			else if (action === "stop") handleStopTimer(timestampMs);
+		};
+		const drainPendingActions = async () => {
+			const queued = await consumeNativePendingTimerActions();
+			if (cancelled || queued.length === 0) return;
+			for (const item of queued) applyAction(item.action, item.timestampMs);
 		};
 		TaktWerkNative.addListener("timerNotificationAction", (event) => {
-			if (event?.action) handleAction(event.action);
+			consumeNativePendingTimerActions().then((queued) => {
+				if (cancelled) return;
+				if (queued.length > 0) for (const item of queued) applyAction(item.action, item.timestampMs);
+				else if (event?.action) applyAction(event.action, event.timestampMs);
+			});
 		}).then((handle) => {
 			if (cancelled) handle.remove();
 			else listenerHandle = handle;
 		}).catch(() => {});
-		TaktWerkNative.getPendingTimerAction().then((res) => {
-			if (res?.action) handleAction(res.action);
-		});
+		App$1.addListener("appStateChange", ({ isActive }) => {
+			if (isActive) drainPendingActions();
+		}).then((handle) => {
+			if (cancelled) handle.remove();
+			else appStateHandle = handle;
+		}).catch(() => {});
+		const onVisibility = () => {
+			if (document.visibilityState === "visible") drainPendingActions();
+		};
+		document.addEventListener("visibilitychange", onVisibility);
+		drainPendingActions();
 		return () => {
 			cancelled = true;
+			document.removeEventListener("visibilitychange", onVisibility);
 			if (listenerHandle) listenerHandle.remove();
+			if (appStateHandle) appStateHandle.remove();
 		};
 	}, [
+		loading,
 		handlePauseTimer,
 		handleResumeTimer,
 		handleStopTimer
@@ -94228,7 +94325,7 @@ function App() {
 			if (status.enabled) {
 				notify("Benachrichtigungen aktiviert – Timer wird nun in der Statusleiste angezeigt.");
 				const activeT = dbRef.current.activeTimer;
-				syncActiveTimerNotification(activeT, activeT ? activeT.entryType === "internal" || !activeT.customerId ? `Intern${activeT.internalCategory ? ` · ${activeT.internalCategory}` : ""}` : dbRef.current.customers.find((c) => c.id === activeT.customerId)?.companyName ?? "" : "");
+				syncActiveTimerNotification(activeT, activeT ? activeT.entryType === "internal" || !activeT.customerId ? `Intern${activeT.internalCategory ? ` · ${activeT.internalCategory}` : ""}` : dbRef.current.customers.find((c) => c.id === activeT.customerId)?.companyName ?? "" : "", { lockscreenControls: dbRef.current.company.lockscreenTimerControlsEnabled !== false });
 			}
 		}
 	}, [notify]);
@@ -95336,7 +95433,7 @@ function App() {
 									}),
 									db.activeTimer ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 										type: "button",
-										onClick: handleStopTimer,
+										onClick: () => handleStopTimer(),
 										className: "inline-flex items-center gap-2 rounded-lg ui-accent-btn px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer",
 										children: [
 											/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "h-3.5 w-3.5 fill-current" }),
@@ -95603,13 +95700,13 @@ function App() {
 										onUpdateActiveTimerPhotos: handleUpdateActiveTimerPhotos,
 										onDeductBreakMinutes: handleDeductBreakMinutes,
 										nextcloudConfigured: nextcloud.configured,
-										onPauseTimer: handlePauseTimer,
-										onResumeTimer: handleResumeTimer,
+										onPauseTimer: () => handlePauseTimer(),
+										onResumeTimer: () => handleResumeTimer(),
 										onParkActiveTimer: handleParkActiveTimer,
 										onResumePausedTimer: handleResumePausedTimer,
 										onStopPausedTimer: handleStopPausedTimer,
 										onDiscardPausedTimer: handleDiscardPausedTimer,
-										onStopTimer: handleStopTimer,
+										onStopTimer: () => handleStopTimer(),
 										onDiscardTimer: handleDiscardTimer,
 										onTriggerNfcTag: handleTriggerNfcTag,
 										onAddManualEntry: handleAddManualEntry,

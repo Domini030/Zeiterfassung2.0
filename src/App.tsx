@@ -80,6 +80,7 @@ import {
   apiUploadNextcloudFile,
   cancelNativeTimerReminder,
   consumeNativePendingGeoEvents,
+  consumeNativePendingTimerActions,
   getNativeLocationPermissionStatus,
   getNativeNotificationStatus,
   isNativeCapacitor,
@@ -1632,7 +1633,7 @@ export default function App() {
     };
   }, [loading, nextcloud.configured, nextcloud.autoSync, nextcloud.syncIntervalSec, runAutoSync]);
 
-  // Persistent Android status-bar timer notification
+  // Persistent Android status-bar & lockscreen timer notification
   useEffect(() => {
     if (loading) return;
     const customerName = db.activeTimer
@@ -1640,12 +1641,14 @@ export default function App() {
         ? `Intern${db.activeTimer.internalCategory ? ` · ${db.activeTimer.internalCategory}` : ''}`
         : db.customers.find((c) => c.id === db.activeTimer!.customerId)?.companyName ?? ''
       : '';
-    void syncActiveTimerNotification(db.activeTimer, customerName).then((status) => {
+    void syncActiveTimerNotification(db.activeTimer, customerName, {
+      lockscreenControls: db.company.lockscreenTimerControlsEnabled !== false,
+    }).then((status) => {
       if (status) {
         setNotificationStatus(status);
       }
     });
-  }, [db.activeTimer, db.customers, loading]);
+  }, [db.activeTimer, db.customers, db.company.lockscreenTimerControlsEnabled, loading]);
 
   // Sync native Android Home Widget & 1-Hour Reminder Alarm
   useEffect(() => {
@@ -1928,15 +1931,24 @@ export default function App() {
     [notify, persistDb]
   );
 
-  const handleStopTimer = useCallback(() => {
+  const handleStopTimer = useCallback((atTimestampMs?: number) => {
     const currentDb = dbRef.current;
     if (!currentDb.activeTimer) return;
     const active = currentDb.activeTimer;
     setGeoExitPrompt(null);
+    const startMs = new Date(active.startTime).getTime();
+    const rawNowMs =
+      typeof atTimestampMs === 'number' && Number.isFinite(atTimestampMs) && atTimestampMs > 0
+        ? atTimestampMs
+        : Date.now();
+    const clampedNowMs = Math.max(
+      Number.isFinite(startMs) ? startMs : rawNowMs,
+      Math.min(Date.now(), rawNowMs)
+    );
     if (active.source === 'geo' && active.geoFenceRuleId) {
-      geoCooldownRef.current.set(active.geoFenceRuleId, Date.now());
+      geoCooldownRef.current.set(active.geoFenceRuleId, clampedNowMs);
     }
-    const now = new Date();
+    const now = new Date(clampedNowMs);
     const isInternal = active.entryType === 'internal' || !active.customerId;
     const entry = finalizeTimerToEntry(active, now, currentDb.company);
     const durationSeconds = entry.durationSeconds;
@@ -2301,50 +2313,89 @@ export default function App() {
     };
   }, [loading, checkLocationPermStatus, processNativeGeoEvents]);
 
-  const handlePauseTimer = useCallback(() => {
-    if (!dbRef.current.activeTimer || dbRef.current.activeTimer.pausedAt) return;
-    const updatedTimer: ActiveTimer = {
-      ...dbRef.current.activeTimer,
-      pausedAt: new Date().toISOString(),
-    };
-    void cancelNativeTimerReminder();
-    void persistDb({ ...dbRef.current, activeTimer: updatedTimer });
-    notify(`Timer pausiert: ${updatedTimer.title}`);
-  }, [notify, persistDb]);
+  const handlePauseTimer = useCallback(
+    (atTimestampMs?: number) => {
+      const active = dbRef.current.activeTimer;
+      if (!active || active.pausedAt) return;
+      const startMs = new Date(active.startTime).getTime();
+      const rawNowMs =
+        typeof atTimestampMs === 'number' && Number.isFinite(atTimestampMs) && atTimestampMs > 0
+          ? atTimestampMs
+          : Date.now();
+      const clampedNowMs = Math.max(
+        Number.isFinite(startMs) ? startMs : rawNowMs,
+        Math.min(Date.now(), rawNowMs)
+      );
+      const updatedTimer: ActiveTimer = {
+        ...active,
+        pausedAt: new Date(clampedNowMs).toISOString(),
+      };
+      void cancelNativeTimerReminder();
+      void persistDb({ ...dbRef.current, activeTimer: updatedTimer });
+      notify(`Timer pausiert: ${updatedTimer.title}`);
+    },
+    [notify, persistDb]
+  );
 
-  const handleResumeTimer = useCallback(() => {
-    if (!dbRef.current.activeTimer || !dbRef.current.activeTimer.pausedAt) return;
-    const pausedMs = new Date(dbRef.current.activeTimer.pausedAt).getTime();
-    const addedPause = Math.max(0, Date.now() - pausedMs);
-    const updatedTimer: ActiveTimer = {
-      ...dbRef.current.activeTimer,
-      pausedAt: null,
-      accumulatedPausedMs: (dbRef.current.activeTimer.accumulatedPausedMs ?? 0) + addedPause,
-    };
-    void persistDb({ ...dbRef.current, activeTimer: updatedTimer });
-    notify(`Timer fortgesetzt: ${updatedTimer.title}`);
-  }, [notify, persistDb]);
+  const handleResumeTimer = useCallback(
+    (atTimestampMs?: number) => {
+      const active = dbRef.current.activeTimer;
+      if (!active || !active.pausedAt) return;
+      const pausedMs = new Date(active.pausedAt).getTime();
+      const rawNowMs =
+        typeof atTimestampMs === 'number' && Number.isFinite(atTimestampMs) && atTimestampMs > 0
+          ? atTimestampMs
+          : Date.now();
+      const clampedNowMs = Math.min(Date.now(), Math.max(pausedMs, rawNowMs));
+      const addedPause = Math.max(0, clampedNowMs - pausedMs);
+      const updatedTimer: ActiveTimer = {
+        ...active,
+        pausedAt: null,
+        accumulatedPausedMs: (active.accumulatedPausedMs ?? 0) + addedPause,
+      };
+      void persistDb({ ...dbRef.current, activeTimer: updatedTimer });
+      notify(`Timer fortgesetzt: ${updatedTimer.title}`);
+    },
+    [notify, persistDb]
+  );
 
   // Interactive Android notification actions (Pause / Resume / Stop) directly from status bar & lockscreen
   useEffect(() => {
-    if (!isNativeCapacitor()) return;
+    if (loading || !isNativeCapacitor()) return;
     let listenerHandle: { remove: () => Promise<void> } | null = null;
+    let appStateHandle: { remove: () => Promise<void> } | null = null;
     let cancelled = false;
 
-    const handleAction = (action: string) => {
+    const applyAction = (action: string, timestampMs?: number) => {
       if (action === 'pause') {
-        handlePauseTimer();
+        handlePauseTimer(timestampMs);
       } else if (action === 'resume') {
-        handleResumeTimer();
+        handleResumeTimer(timestampMs);
       } else if (action === 'stop') {
-        handleStopTimer();
+        handleStopTimer(timestampMs);
+      }
+    };
+
+    const drainPendingActions = async () => {
+      const queued = await consumeNativePendingTimerActions();
+      if (cancelled || queued.length === 0) return;
+      for (const item of queued) {
+        applyAction(item.action, item.timestampMs);
       }
     };
 
     void TaktWerkNative.addListener('timerNotificationAction', (event) => {
-      if (event?.action) {
-        handleAction(event.action);
-      }
+      // Drain atomic SharedPreferences queue first so BroadcastReceiver actions are never duplicated
+      void consumeNativePendingTimerActions().then((queued) => {
+        if (cancelled) return;
+        if (queued.length > 0) {
+          for (const item of queued) {
+            applyAction(item.action, item.timestampMs);
+          }
+        } else if (event?.action) {
+          applyAction(event.action, event.timestampMs);
+        }
+      });
     })
       .then((handle) => {
         if (cancelled) {
@@ -2355,19 +2406,40 @@ export default function App() {
       })
       .catch(() => {});
 
-    void TaktWerkNative.getPendingTimerAction().then((res) => {
-      if (res?.action) {
-        handleAction(res.action);
+    void CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+      if (isActive) {
+        void drainPendingActions();
       }
-    });
+    })
+      .then((handle) => {
+        if (cancelled) {
+          void handle.remove();
+        } else {
+          appStateHandle = handle;
+        }
+      })
+      .catch(() => {});
+
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        void drainPendingActions();
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
+    void drainPendingActions();
 
     return () => {
       cancelled = true;
+      document.removeEventListener('visibilitychange', onVisibility);
       if (listenerHandle) {
         void listenerHandle.remove();
       }
+      if (appStateHandle) {
+        void appStateHandle.remove();
+      }
     };
-  }, [handlePauseTimer, handleResumeTimer, handleStopTimer]);
+  }, [loading, handlePauseTimer, handleResumeTimer, handleStopTimer]);
 
   // Windows Desktop System Tray live timer sync & quick actions (Pause / Resume / Stop / Search)
   useEffect(() => {
@@ -2411,7 +2483,9 @@ export default function App() {
             ? `Intern${activeT.internalCategory ? ` · ${activeT.internalCategory}` : ''}`
             : dbRef.current.customers.find((c) => c.id === activeT.customerId)?.companyName ?? ''
           : '';
-        void syncActiveTimerNotification(activeT, customerName);
+        void syncActiveTimerNotification(activeT, customerName, {
+          lockscreenControls: dbRef.current.company.lockscreenTimerControlsEnabled !== false,
+        });
       }
     }
   }, [notify]);
@@ -3849,7 +3923,7 @@ export default function App() {
                 <>
                   <button
                     type="button"
-                    onClick={handleStopTimer}
+                    onClick={() => handleStopTimer()}
                     className="inline-flex items-center gap-2 rounded-lg ui-accent-btn px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shrink-0 cursor-pointer"
                   >
                     <Square className="h-3.5 w-3.5 fill-current" />
@@ -4182,13 +4256,13 @@ export default function App() {
                   onUpdateActiveTimerPhotos={handleUpdateActiveTimerPhotos}
                   onDeductBreakMinutes={handleDeductBreakMinutes}
                   nextcloudConfigured={nextcloud.configured}
-                  onPauseTimer={handlePauseTimer}
-                  onResumeTimer={handleResumeTimer}
+                  onPauseTimer={() => handlePauseTimer()}
+                  onResumeTimer={() => handleResumeTimer()}
                   onParkActiveTimer={handleParkActiveTimer}
                   onResumePausedTimer={handleResumePausedTimer}
                   onStopPausedTimer={handleStopPausedTimer}
                   onDiscardPausedTimer={handleDiscardPausedTimer}
-                  onStopTimer={handleStopTimer}
+                  onStopTimer={() => handleStopTimer()}
                   onDiscardTimer={handleDiscardTimer}
                   onTriggerNfcTag={handleTriggerNfcTag}
                   onAddManualEntry={handleAddManualEntry}

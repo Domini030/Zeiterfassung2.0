@@ -135,6 +135,7 @@ export function createDefaultCompany(): CompanyProfile {
     appLockBiometric: true,
     appLockPinHash: '',
     appLockTimeoutMinutes: 1,
+    lockscreenTimerControlsEnabled: true,
   };
 }
 
