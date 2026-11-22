@@ -56,7 +56,9 @@ import {
   formatDuration,
   formatHoursShort,
   formatNumber,
+  getActiveTimerDaySeconds,
   getActiveTimerElapsedMs,
+  getEntryDaySlices,
   isInvoiceOverdue,
   toInputDate,
   toInputTime,
@@ -311,14 +313,25 @@ export function TimeTrackerView({
   );
 
   const todayTotalSeconds = useMemo(() => {
+    void elapsedSeconds;
     const todayStr = toInputDate();
-    const booked = timeEntries
-      .filter((e) => e.startTime.slice(0, 10) === todayStr)
-      .reduce((acc, e) => acc + e.durationSeconds, 0);
-    const parked = pausedTimers
-      .filter((t) => t.startTime.slice(0, 10) === todayStr)
-      .reduce((acc, t) => acc + Math.floor(getActiveTimerElapsedMs(t) / 1000), 0);
-    return booked + parked + (activeTimer ? elapsedSeconds : 0);
+    const nowMs = Date.now();
+    let booked = 0;
+    for (const e of timeEntries) {
+      for (const slice of getEntryDaySlices(e)) {
+        if (slice.dateKey === todayStr) {
+          booked += slice.durationSeconds;
+        }
+      }
+    }
+    const parked = pausedTimers.reduce(
+      (acc, t) => acc + getActiveTimerDaySeconds(t, todayStr, nowMs),
+      0
+    );
+    const activeToday = activeTimer
+      ? getActiveTimerDaySeconds(activeTimer, todayStr, nowMs)
+      : 0;
+    return booked + parked + activeToday;
   }, [timeEntries, pausedTimers, activeTimer, elapsedSeconds]);
 
   const overdueInvoicesCount = useMemo(
@@ -779,7 +792,10 @@ export function TimeTrackerView({
 
   const showOvernightAlert = useMemo(() => {
     if (!activeTimer || !breakAssistantEnabled) return false;
-    const startDateStr = activeTimer.startTime.slice(0, 10);
+    const parsedStart = new Date(activeTimer.startTime);
+    const startDateStr = Number.isNaN(parsedStart.getTime())
+      ? activeTimer.startTime.slice(0, 10)
+      : toInputDate(parsedStart);
     const todayStr = toInputDate();
     if (startDateStr < todayStr) return true;
     const nowHour = new Date().getHours();

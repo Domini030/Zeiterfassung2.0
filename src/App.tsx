@@ -114,6 +114,7 @@ import {
   formatDuration,
   formatInvoiceNumber,
   getActiveTimerElapsedMs,
+  splitTimeEntryByLocalDays,
   toInputDate,
 } from './utils/format';
 import {
@@ -250,6 +251,14 @@ function finalizeTimerToEntry(
     travelBilledInvoiceId: null,
     createdAt: endIso,
   };
+}
+
+function finalizeTimerToEntries(
+  timer: ActiveTimer,
+  endDate: Date,
+  company: CompanyProfile
+): TimeEntry[] {
+  return splitTimeEntryByLocalDays(finalizeTimerToEntry(timer, endDate, company));
 }
 
 function advanceRecurringDate(isoDate: string, interval: RecurringInterval): string {
@@ -607,6 +616,7 @@ export default function App() {
       isError?: boolean;
       haptic: 'start' | 'stop' | 'error';
       startedNewTimer?: boolean;
+      finishedEntries?: TimeEntry[];
     } => {
       const task = sourceDb.nfcTasks.find(
         (t) => t.tagUid.toLowerCase() === tagUid.trim().toLowerCase()
@@ -692,8 +702,10 @@ export default function App() {
       const isInternalTask = task.entryType === 'internal' || !task.customerId;
 
       if (nextActiveTimer && nextActiveTimer.nfcTaskId === task.id && task.toggleOnRescan) {
-        const finished = finalizeTimerToEntry(nextActiveTimer, now, sourceDb.company);
-        nextTimeEntries = [finished, ...nextTimeEntries];
+        const finishedEntries = finalizeTimerToEntries(nextActiveTimer, now, sourceDb.company);
+        nextTimeEntries = [...[...finishedEntries].reverse(), ...nextTimeEntries];
+        const splitHint =
+          finishedEntries.length > 1 ? ` (auf ${finishedEntries.length} Tage aufgeteilt)` : '';
 
         let resumedParked: ActiveTimer | null = null;
         if (task.autoResumePausedOnStop && nextPausedTimers.length > 0) {
@@ -716,15 +728,17 @@ export default function App() {
             pausedTimers: nextPausedTimers,
           },
           message: resumedParked
-            ? `„${task.title}“ gespeichert · „${resumedParked.title}“ läuft weiter.`
+            ? `„${task.title}“ gespeichert${splitHint} · „${resumedParked.title}“ läuft weiter.`
             : isInternalTask
-              ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert.`
-              : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
+              ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert${splitHint}.`
+              : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert${splitHint}.`,
           haptic: 'stop',
+          finishedEntries,
         };
       }
 
       let previousHandledNote = '';
+      let stoppedPrevEntries: TimeEntry[] = [];
       if (nextActiveTimer) {
         const prevAction = resolveNfcPreviousAction(task);
         if (prevAction === 'pause') {
@@ -736,9 +750,13 @@ export default function App() {
           previousHandledNote = ` („${parked.title}“ pausiert & geparkt)`;
           nextActiveTimer = null;
         } else if (prevAction === 'stop') {
-          const finishedPrev = finalizeTimerToEntry(nextActiveTimer, now, sourceDb.company);
-          nextTimeEntries = [finishedPrev, ...nextTimeEntries];
-          previousHandledNote = ` („${finishedPrev.title}“ gespeichert)`;
+          stoppedPrevEntries = finalizeTimerToEntries(nextActiveTimer, now, sourceDb.company);
+          nextTimeEntries = [...[...stoppedPrevEntries].reverse(), ...nextTimeEntries];
+          const prevTitle = stoppedPrevEntries[0]?.title ?? nextActiveTimer.title;
+          previousHandledNote =
+            stoppedPrevEntries.length > 1
+              ? ` („${prevTitle}“ auf ${stoppedPrevEntries.length} Tage aufgeteilt gespeichert)`
+              : ` („${prevTitle}“ gespeichert)`;
           nextActiveTimer = null;
         } else {
           nextActiveTimer = null;
@@ -783,6 +801,7 @@ export default function App() {
             : `NFC-Aufgabe "${task.title}" gestartet.`) + previousHandledNote,
         haptic: 'start',
         startedNewTimer: true,
+        finishedEntries: stoppedPrevEntries.length > 0 ? stoppedPrevEntries : undefined,
       };
     },
     []
@@ -1012,63 +1031,19 @@ export default function App() {
           const active = working.activeTimer;
           if (active && active.source === 'geo' && active.geoFenceRuleId === ev.ruleId) {
             const endMs = ev.timestampMs || Date.now();
-            const endIso = ev.timestampIso || new Date(endMs).toISOString();
-            const durationSeconds = Math.max(
-              1,
-              Math.floor(getActiveTimerElapsedMs(active, endMs) / 1000)
-            );
-            const isInternal = active.entryType === 'internal' || !active.customerId;
-            let travelDistanceKm: number | undefined;
-            let travelCostNet: number | undefined;
-            if (
-              !isInternal &&
-              working.company.autoCalculateTravelOnStop &&
-              working.company.homeBaseLocation &&
-              active.location
-            ) {
-              const calc = computeTravelFromBase(
-                working.company.homeBaseLocation,
-                active.location,
-                working.company.travelRatePerKm ?? 0.3,
-                working.company.travelRoundTripDefault !== false
-              );
-              travelDistanceKm = calc.distanceKm;
-              travelCostNet = calc.costNet;
-            }
-            const entry: TimeEntry = {
-              id: createId('time'),
-              customerId: isInternal ? '' : active.customerId,
-              productId: isInternal ? '' : active.productId,
-              nfcTaskId: active.nfcTaskId,
-              title: active.title,
-              notes: active.notes,
-              startTime: active.startTime,
-              endTime: endIso,
-              durationSeconds,
-              hourlyRateNet: isInternal ? 0 : active.hourlyRateNet,
-              taxRate: (isInternal ? 0 : active.taxRate) as TaxRate,
-              billable: !isInternal,
-              billedInvoiceId: null,
-              source: active.source,
-              entryType: isInternal ? 'internal' : 'project',
-              internalCategory: isInternal ? active.internalCategory : undefined,
-              location: active.location ?? null,
-              photos: active.photos && active.photos.length > 0 ? active.photos : undefined,
-              travelDistanceKm,
-              travelCostNet,
-              travelBilledInvoiceId: null,
-              createdAt: endIso,
-            };
+            const entries = finalizeTimerToEntries(active, new Date(endMs), working.company);
             geoCooldownRef.current.set(ev.ruleId, endMs);
             working = {
               ...working,
               activeTimer: null,
-              timeEntries: [entry, ...working.timeEntries],
+              timeEntries: [...[...entries].reverse(), ...working.timeEntries],
             };
-            finishedEntries.push(entry);
+            finishedEntries.push(...entries);
             mutated = true;
             exitPrompt = null;
-            lastToast = `Ortsautomatik (${ev.ruleName} verlassen): „${entry.title}“ gespeichert.`;
+            const splitHint =
+              entries.length > 1 ? ` (auf ${entries.length} Tage aufgeteilt)` : '';
+            lastToast = `Ortsautomatik (${ev.ruleName} verlassen): „${active.title}“ gespeichert${splitHint}.`;
           }
         } else if (ev.type === 'exit_ask') {
           const active = working.activeTimer;
@@ -1108,7 +1083,7 @@ export default function App() {
         setNextcloud(data.nextcloud);
         let sectionOverridden = false;
         let coldStartedTimer: ActiveTimer | null = null;
-        let coldFinishedEntry: TimeEntry | null = null;
+        let coldFinishedEntries: TimeEntry[] = [];
 
         if (!deepLinkHandledRef.current) {
           deepLinkHandledRef.current = true;
@@ -1151,7 +1126,6 @@ export default function App() {
             lastNfcTriggerRef.current = { code: incomingNfc, at: Date.now() };
             const prevLoadedDb = loadedDb;
             const prevTimer = loadedDb.activeTimer;
-            const prevEntryCount = loadedDb.timeEntries.length;
             const result = triggerNfcOnDb(loadedDb, incomingNfc);
             loadedDb = result.isError
               ? result.nextDb
@@ -1166,8 +1140,8 @@ export default function App() {
                 loadedDb = savedRes.db;
                 dbRef.current = loadedDb;
               }
-              if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) {
-                coldFinishedEntry = loadedDb.timeEntries[0];
+              if (result.finishedEntries && result.finishedEntries.length > 0) {
+                coldFinishedEntries = result.finishedEntries;
               }
               if (
                 result.startedNewTimer &&
@@ -1188,7 +1162,6 @@ export default function App() {
             if (widgetAction?.action === 'trigger' && widgetAction.tagUid) {
               const prevLoadedDb = loadedDb;
               const prevTimer = loadedDb.activeTimer;
-              const prevEntryCount = loadedDb.timeEntries.length;
               const result = triggerNfcOnDb(loadedDb, widgetAction.tagUid);
               loadedDb = result.isError
                 ? result.nextDb
@@ -1203,8 +1176,8 @@ export default function App() {
                   loadedDb = savedRes.db;
                   dbRef.current = loadedDb;
                 }
-                if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) {
-                  coldFinishedEntry = loadedDb.timeEntries[0];
+                if (result.finishedEntries && result.finishedEntries.length > 0) {
+                  coldFinishedEntries = result.finishedEntries;
                 }
                 if (
                   result.startedNewTimer &&
@@ -1282,8 +1255,10 @@ export default function App() {
             startedAtIso: coldStartedTimer.startTime,
           });
         }
-        if (coldFinishedEntry) {
-          pushFinishedEntryToNextcloudCalendar(coldFinishedEntry, loadedDb);
+        if (coldFinishedEntries.length > 0) {
+          for (const finished of coldFinishedEntries) {
+            pushFinishedEntryToNextcloudCalendar(finished, loadedDb);
+          }
         }
 
         if (data.nextcloud.configured) {
@@ -1367,7 +1342,6 @@ export default function App() {
       lastNfcTriggerRef.current = { code: clean, at: now };
 
       const prevTimer = dbRef.current.activeTimer;
-      const prevEntryCount = dbRef.current.timeEntries.length;
       const result = triggerNfcOnDb(dbRef.current, clean);
       triggerNfcHaptic(result.haptic);
       if (result.isError) {
@@ -1382,8 +1356,10 @@ export default function App() {
       void persistDb(result.nextDb);
       notify(result.message);
 
-      if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) {
-        pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
+      if (result.finishedEntries && result.finishedEntries.length > 0) {
+        for (const finished of result.finishedEntries) {
+          pushFinishedEntryToNextcloudCalendar(finished, result.nextDb);
+        }
       }
       if (
         result.startedNewTimer &&
@@ -1779,35 +1755,12 @@ export default function App() {
     let stoppedPreviousTitle = '';
     if (currentDb.activeTimer) {
       const prev = currentDb.activeTimer;
-      const prevInternal = prev.entryType === 'internal' || !prev.customerId;
-      const prevDuration = Math.max(
-        1,
-        Math.floor(getActiveTimerElapsedMs(prev, now.getTime()) / 1000)
-      );
-      const finishedPrev: TimeEntry = {
-        id: createId('time'),
-        customerId: prevInternal ? '' : prev.customerId,
-        productId: prevInternal ? '' : prev.productId,
-        nfcTaskId: prev.nfcTaskId,
-        title: prev.title,
-        notes: prev.notes,
-        startTime: prev.startTime,
-        endTime: nowIso,
-        durationSeconds: prevDuration,
-        hourlyRateNet: prevInternal ? 0 : prev.hourlyRateNet,
-        taxRate: (prevInternal ? 0 : prev.taxRate) as TaxRate,
-        billable: !prevInternal,
-        billedInvoiceId: null,
-        source: prev.source,
-        entryType: prevInternal ? 'internal' : 'project',
-        internalCategory: prevInternal ? prev.internalCategory : undefined,
-        location: prev.location ?? null,
-        photos: prev.photos && prev.photos.length > 0 ? prev.photos : undefined,
-        createdAt: nowIso,
-      };
-      nextTimeEntries = [finishedPrev, ...nextTimeEntries];
+      const finishedPrevEntries = finalizeTimerToEntries(prev, now, currentDb.company);
+      nextTimeEntries = [...[...finishedPrevEntries].reverse(), ...nextTimeEntries];
       stoppedPreviousTitle = prev.title;
-      pushFinishedEntryToNextcloudCalendar(finishedPrev);
+      for (const finishedPrev of finishedPrevEntries) {
+        pushFinishedEntryToNextcloudCalendar(finishedPrev);
+      }
     }
 
     const timer: ActiveTimer = {
@@ -1950,10 +1903,11 @@ export default function App() {
     }
     const now = new Date(clampedNowMs);
     const isInternal = active.entryType === 'internal' || !active.customerId;
-    const entry = finalizeTimerToEntry(active, now, currentDb.company);
-    const durationSeconds = entry.durationSeconds;
-    const travelDistanceKm = entry.travelDistanceKm;
-    const travelCostNet = entry.travelCostNet;
+    const entries = finalizeTimerToEntries(active, now, currentDb.company);
+    const primaryEntry = entries[0];
+    const durationSeconds = entries.reduce((acc, e) => acc + e.durationSeconds, 0);
+    const travelDistanceKm = primaryEntry.travelDistanceKm;
+    const travelCostNet = primaryEntry.travelCostNet;
 
     let nextPausedTimers = [...(currentDb.pausedTimers ?? [])];
     let resumedParked: ActiveTimer | null = null;
@@ -1978,15 +1932,17 @@ export default function App() {
       ...currentDb,
       activeTimer: resumedParked,
       pausedTimers: nextPausedTimers,
-      timeEntries: [entry, ...currentDb.timeEntries],
+      timeEntries: [...[...entries].reverse(), ...currentDb.timeEntries],
     };
     void persistDb(nextDb);
-    pushFinishedEntryToNextcloudCalendar(entry, nextDb);
+    for (const finishedEntry of entries) {
+      pushFinishedEntryToNextcloudCalendar(finishedEntry, nextDb);
+    }
 
     let budgetSuffix = '';
     let budgetExceeded = false;
     if (!isInternal) {
-      const cust = nextDb.customers.find((c) => c.id === entry.customerId);
+      const cust = nextDb.customers.find((c) => c.id === primaryEntry.customerId);
       const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, resumedParked);
       if (bStatus.hasBudget && bStatus.severity === 'exceeded') {
         budgetSuffix = ` · Kontingent für ${cust?.companyName} überschritten (${bStatus.primaryPct} %)!`;
@@ -1996,6 +1952,8 @@ export default function App() {
       }
     }
 
+    const splitSuffix =
+      entries.length > 1 ? ` · anteilig auf ${entries.length} Tage aufgeteilt` : '';
     const resumeSuffix = resumedParked ? ` · „${resumedParked.title}“ läuft weiter` : '';
     notify(
       (isInternal
@@ -2003,6 +1961,7 @@ export default function App() {
         : travelCostNet && travelCostNet > 0
           ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.`
           : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) +
+        splitSuffix +
         resumeSuffix +
         budgetSuffix,
       budgetExceeded
@@ -2636,16 +2595,21 @@ export default function App() {
 
       const parsedPausedEnd = target.pausedAt ? new Date(target.pausedAt) : new Date();
       const endDate = Number.isNaN(parsedPausedEnd.getTime()) ? new Date() : parsedPausedEnd;
-      const entry = finalizeTimerToEntry(target, endDate, currentDb.company);
+      const entries = finalizeTimerToEntries(target, endDate, currentDb.company);
+      const totalSec = entries.reduce((acc, e) => acc + e.durationSeconds, 0);
       const nextPaused = list.filter((t) => t.id !== pausedId);
       const nextDb: AppDatabase = {
         ...currentDb,
         pausedTimers: nextPaused,
-        timeEntries: [entry, ...currentDb.timeEntries],
+        timeEntries: [...[...entries].reverse(), ...currentDb.timeEntries],
       };
       void persistDb(nextDb);
-      pushFinishedEntryToNextcloudCalendar(entry, nextDb);
-      notify(`Geparkter Auftrag „${entry.title}“ (${formatDuration(entry.durationSeconds)}) gespeichert.`);
+      for (const entry of entries) {
+        pushFinishedEntryToNextcloudCalendar(entry, nextDb);
+      }
+      const splitHint =
+        entries.length > 1 ? ` (auf ${entries.length} Tage aufgeteilt)` : '';
+      notify(`Geparkter Auftrag „${target.title}“ (${formatDuration(totalSec)}) gespeichert${splitHint}.`);
     },
     [notify, persistDb, pushFinishedEntryToNextcloudCalendar]
   );
@@ -2678,26 +2642,42 @@ export default function App() {
 
   const handleAddManualEntry = (entry: TimeEntry) => {
     const currentDb = dbRef.current;
+    const entries = splitTimeEntryByLocalDays(entry);
     const nextDb: AppDatabase = {
       ...currentDb,
-      timeEntries: [entry, ...currentDb.timeEntries],
+      timeEntries: [...[...entries].reverse(), ...currentDb.timeEntries],
     };
     void persistDb(nextDb);
-    pushFinishedEntryToNextcloudCalendar(entry, nextDb);
-    notify('Zeiteintrag gespeichert.');
+    for (const seg of entries) {
+      pushFinishedEntryToNextcloudCalendar(seg, nextDb);
+    }
+    notify(
+      entries.length > 1
+        ? `Zeiteintrag über Mitternacht anteilig auf ${entries.length} Tage aufgeteilt gespeichert.`
+        : 'Zeiteintrag gespeichert.'
+    );
   };
 
   const handleUpdateEntry = (updatedEntry: TimeEntry) => {
     const currentDb = dbRef.current;
+    const entries = updatedEntry.billedInvoiceId
+      ? [updatedEntry]
+      : splitTimeEntryByLocalDays(updatedEntry);
     const nextDb: AppDatabase = {
       ...currentDb,
-      timeEntries: currentDb.timeEntries.map((e) =>
-        e.id === updatedEntry.id ? updatedEntry : e
+      timeEntries: currentDb.timeEntries.flatMap((e) =>
+        e.id === updatedEntry.id ? [...entries].reverse() : [e]
       ),
     };
     void persistDb(nextDb);
-    pushFinishedEntryToNextcloudCalendar(updatedEntry, nextDb);
-    notify('Zeiteintrag aktualisiert.');
+    for (const seg of entries) {
+      pushFinishedEntryToNextcloudCalendar(seg, nextDb);
+    }
+    notify(
+      entries.length > 1
+        ? `Zeiteintrag über Mitternacht anteilig auf ${entries.length} Tage aufgeteilt aktualisiert.`
+        : 'Zeiteintrag aktualisiert.'
+    );
   };
 
   const handleDeleteEntry = (id: string) => {
@@ -2756,7 +2736,6 @@ export default function App() {
   const handleTriggerNfcTag = (tagUid: string) => {
     const currentDb = dbRef.current;
     const prevTimer = currentDb.activeTimer;
-    const prevEntryCount = currentDb.timeEntries.length;
     const result = triggerNfcOnDb(currentDb, tagUid);
     triggerNfcHaptic(result.haptic);
     if (result.isError) {
@@ -2765,8 +2744,10 @@ export default function App() {
     }
     void persistDb(result.nextDb);
     notify(result.message);
-    if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) {
-      pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
+    if (result.finishedEntries && result.finishedEntries.length > 0) {
+      for (const finished of result.finishedEntries) {
+        pushFinishedEntryToNextcloudCalendar(finished, result.nextDb);
+      }
     }
     if (
       result.startedNewTimer &&

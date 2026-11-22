@@ -1,4 +1,4 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-BbvQHb_G.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/html2canvas-Cx5CbT7f.js","assets/rolldown-runtime-BtDSRbSq.js","assets/index.es-BDPvtgYP.js"])))=>i.map(i=>d[i]);
 import { i as __toESM, n as __exportAll, r as __require, t as __commonJSMin } from "./rolldown-runtime-BtDSRbSq.js";
 // \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -12116,7 +12116,7 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 // node_modules/@capacitor/app/dist/esm/index.js
-var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-cRaAOum1.js").then((m) => new m.AppWeb()), []) });
+var App$1 = registerPlugin("App", { web: () => __vitePreload(() => import("./web-2GmyNwk-.js").then((m) => new m.AppWeb()), []) });
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 /**
 * @license lucide-react v0.546.0 - ISC
@@ -14920,6 +14920,133 @@ function getActiveTimerElapsedMs(timer, nowMs = Date.now()) {
 	const accPaused = timer.accumulatedPausedMs ?? 0;
 	const effectiveEndMs = timer.pausedAt ? new Date(timer.pausedAt).getTime() : nowMs;
 	return Math.max(0, effectiveEndMs - startMs - accPaused);
+}
+function formatEndTimeForDay(startIso, endIso) {
+	const start = new Date(startIso);
+	const end = new Date(endIso);
+	if (Number.isNaN(end.getTime())) return "00:00";
+	if (!Number.isNaN(start.getTime()) && end.getTime() > start.getTime() && end.getHours() === 0 && end.getMinutes() === 0 && end.getSeconds() === 0 && end.getMilliseconds() === 0 && toInputDate(end) > toInputDate(start)) return "24:00";
+	return toInputTime(endIso);
+}
+/**
+* Splits a time interval [startIso, endIso] across local midnight (00:00) boundaries
+* and allocates totalDurationSeconds strictly proportionally (sum-preserving via largest remainder).
+* Handles DST transitions (23h / 25h days) safely using local calendar date construction.
+*/
+function splitIntervalByLocalDays(startIso, endIso, totalDurationSeconds) {
+	const safeTotalSec = Math.max(0, Math.round(totalDurationSeconds));
+	const startDate = new Date(startIso);
+	const endDate = new Date(endIso);
+	const startMs = startDate.getTime();
+	const endMs = endDate.getTime();
+	if (Number.isNaN(startMs) || Number.isNaN(endMs) || endMs <= startMs) return [{
+		dateKey: Number.isNaN(startMs) ? toInputDate() : toInputDate(startDate),
+		startIso,
+		endIso: Number.isNaN(endMs) ? startIso : endIso,
+		durationSeconds: safeTotalSec,
+		fraction: 1,
+		isSplitSegment: false
+	}];
+	const rawSegments = [];
+	let cursorMs = startMs;
+	let guard = 0;
+	while (cursorMs < endMs && guard < 400) {
+		guard += 1;
+		const cursorDate = new Date(cursorMs);
+		const dateKey = toInputDate(cursorDate);
+		const nextMidnightMs = new Date(cursorDate.getFullYear(), cursorDate.getMonth(), cursorDate.getDate() + 1, 0, 0, 0, 0).getTime();
+		const segEndMs = Math.min(endMs, nextMidnightMs);
+		const wallMs = Math.max(0, segEndMs - cursorMs);
+		if (wallMs > 0) rawSegments.push({
+			dateKey,
+			startMs: cursorMs,
+			endMs: segEndMs,
+			wallMs
+		});
+		if (segEndMs <= cursorMs) break;
+		cursorMs = segEndMs;
+	}
+	if (rawSegments.length <= 1) {
+		const seg = rawSegments[0];
+		return [{
+			dateKey: seg ? seg.dateKey : toInputDate(startDate),
+			startIso: new Date(startMs).toISOString(),
+			endIso: new Date(endMs).toISOString(),
+			durationSeconds: safeTotalSec,
+			fraction: 1,
+			isSplitSegment: false
+		}];
+	}
+	const totalWallMs = rawSegments.reduce((acc, s) => acc + s.wallMs, 0);
+	const exactSecs = rawSegments.map((s) => totalWallMs > 0 ? safeTotalSec * s.wallMs / totalWallMs : 0);
+	const allocated = exactSecs.map((val) => Math.floor(val));
+	let remainder = safeTotalSec - allocated.reduce((acc, v) => acc + v, 0);
+	if (remainder > 0) {
+		const order = exactSecs.map((val, idx) => ({
+			idx,
+			frac: val - allocated[idx]
+		})).sort((a, b) => b.frac - a.frac);
+		for (let i = 0; i < remainder && i < order.length; i++) allocated[order[i].idx] += 1;
+	}
+	const slices = [];
+	for (let i = 0; i < rawSegments.length; i++) {
+		const seg = rawSegments[i];
+		const sec = allocated[i];
+		if (safeTotalSec > 0 && sec <= 0) continue;
+		slices.push({
+			dateKey: seg.dateKey,
+			startIso: new Date(seg.startMs).toISOString(),
+			endIso: new Date(seg.endMs).toISOString(),
+			durationSeconds: sec,
+			fraction: safeTotalSec > 0 ? sec / safeTotalSec : 1 / rawSegments.length,
+			isSplitSegment: true
+		});
+	}
+	if (slices.length === 0) return [{
+		dateKey: toInputDate(startDate),
+		startIso: new Date(startMs).toISOString(),
+		endIso: new Date(endMs).toISOString(),
+		durationSeconds: safeTotalSec,
+		fraction: 1,
+		isSplitSegment: false
+	}];
+	if (slices.length === 1) {
+		slices[0].isSplitSegment = false;
+		slices[0].fraction = 1;
+	}
+	return slices;
+}
+function getEntryDaySlices(entry) {
+	return splitIntervalByLocalDays(entry.startTime, entry.endTime, entry.durationSeconds);
+}
+function getActiveTimerDaySeconds(timer, targetDateKey, nowMs = Date.now()) {
+	const elapsedSec = Math.floor(getActiveTimerElapsedMs(timer, nowMs) / 1e3);
+	if (elapsedSec <= 0) return 0;
+	const effectiveEndMs = timer.pausedAt ? new Date(timer.pausedAt).getTime() : nowMs;
+	const safeEndMs = Number.isNaN(effectiveEndMs) ? nowMs : effectiveEndMs;
+	return splitIntervalByLocalDays(timer.startTime, new Date(safeEndMs).toISOString(), elapsedSec).filter((s) => s.dateKey === targetDateKey).reduce((acc, s) => acc + s.durationSeconds, 0);
+}
+/**
+* Splits a TimeEntry that crosses local midnight (00:00) into proportional per-day TimeEntry records.
+* Keeps the original id, travel costs, and photos exclusively on the first day's segment to avoid duplicates.
+*/
+function splitTimeEntryByLocalDays(entry) {
+	const slices = getEntryDaySlices(entry);
+	if (slices.length <= 1) return [entry];
+	return slices.map((slice, idx) => {
+		const isFirst = idx === 0;
+		return {
+			...entry,
+			id: isFirst ? entry.id : createId("time"),
+			startTime: slice.startIso,
+			endTime: slice.endIso,
+			durationSeconds: slice.durationSeconds,
+			travelDistanceKm: isFirst ? entry.travelDistanceKm : void 0,
+			travelCostNet: isFirst ? entry.travelCostNet : void 0,
+			travelBilledInvoiceId: isFirst ? entry.travelBilledInvoiceId ?? null : null,
+			photos: isFirst ? entry.photos : void 0
+		};
+	});
 }
 function getOverdueDays(invoice, todayIso = toInputDate()) {
 	if (invoice.documentType === "quote") return 0;
@@ -35669,7 +35796,7 @@ function le() {
 		ignoreAnimation: !0,
 		ignoreDimensions: !0
 	}, d = this;
-	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-BbvQHb_G.js"), __vite__mapDeps([2,1]))).catch(function(t) {
+	return (i.canvg ? Promise.resolve(i.canvg) : __vitePreload(() => import("./index.es-BDPvtgYP.js"), __vite__mapDeps([2,1]))).catch(function(t) {
 		return Promise.reject(/* @__PURE__ */ new Error("Could not load canvg: " + t));
 	}).then(function(t) {
 		return t.default ? t.default : t;
@@ -41904,7 +42031,7 @@ function buildTimesheetPdf(title, customer, entries, company, subtitle) {
 		doc.setFontSize(8.5);
 		doc.setTextColor(15, 23, 42);
 		doc.text(formatDateDE(entry.startTime), 22, y);
-		doc.text(`${toInputTime(entry.startTime)}–${toInputTime(entry.endTime)}`, 46, y);
+		doc.text(`${toInputTime(entry.startTime)}–${formatEndTimeForDay(entry.startTime, entry.endTime)}`, 46, y);
 		doc.setFont(font, "bold");
 		const titleLines = doc.splitTextToSize(entry.title, 88);
 		doc.text(titleLines, 74, y);
@@ -42216,21 +42343,29 @@ function buildFilteredReportPdf(db, options = {}) {
 	const [accentR, accentG, accentB] = resolveInvoiceAccentRgb(company);
 	const customerMap = new Map(db.customers.map((c) => [c.id, c]));
 	const productMap = new Map(db.products.map((p) => [p.id, p]));
-	const filtered = db.timeEntries.filter((e) => {
-		const dateStr = e.startTime.slice(0, 10);
-		if (options.startDate && dateStr < options.startDate) return false;
-		if (options.endDate && dateStr > options.endDate) return false;
+	const filtered = [];
+	for (const e of db.timeEntries) {
 		const isInternal = e.entryType === "internal" || !e.customerId;
-		if (options.entryType === "internal" && !isInternal) return false;
-		if (options.entryType === "project" && isInternal) return false;
-		if (options.customerId === "internal_only" && !isInternal) return false;
-		if (options.customerId && options.customerId !== "all" && options.customerId !== "internal_only" && e.customerId !== options.customerId) return false;
-		if (options.productId && options.productId !== "all" && e.productId !== options.productId) return false;
-		if (options.taskTitle && options.taskTitle !== "all" && e.title !== options.taskTitle) return false;
-		if (options.billableFilter === "billable_only" && !e.billable) return false;
-		if (options.billableFilter === "unbillable_only" && e.billable) return false;
-		return true;
-	});
+		if (options.entryType === "internal" && !isInternal) continue;
+		if (options.entryType === "project" && isInternal) continue;
+		if (options.customerId === "internal_only" && !isInternal) continue;
+		if (options.customerId && options.customerId !== "all" && options.customerId !== "internal_only" && e.customerId !== options.customerId) continue;
+		if (options.productId && options.productId !== "all" && e.productId !== options.productId) continue;
+		if (options.taskTitle && options.taskTitle !== "all" && e.title !== options.taskTitle) continue;
+		if (options.billableFilter === "billable_only" && !e.billable) continue;
+		if (options.billableFilter === "unbillable_only" && e.billable) continue;
+		for (const slice of getEntryDaySlices(e)) {
+			if (options.startDate && slice.dateKey < options.startDate) continue;
+			if (options.endDate && slice.dateKey > options.endDate) continue;
+			filtered.push(slice.isSplitSegment ? {
+				...e,
+				id: `${e.id}::${slice.dateKey}`,
+				startTime: slice.startIso,
+				endTime: slice.endIso,
+				durationSeconds: slice.durationSeconds
+			} : e);
+		}
+	}
 	filtered.sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
 	const totalSec = filtered.reduce((acc, e) => acc + e.durationSeconds, 0);
 	const billableSec = filtered.reduce((acc, e) => acc + (e.billable ? e.durationSeconds : 0), 0);
@@ -64761,23 +64896,28 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 		});
 		return map;
 	}, [products]);
-	const filteredEntries = (0, import_react.useMemo)(() => {
-		const now = Date.now();
-		const cutoffMs = range === "7d" ? now - 6048e5 : range === "30d" ? now - 2592e6 : 0;
-		return timeEntries.filter((entry) => {
+	const filteredSlices = (0, import_react.useMemo)(() => {
+		const now = /* @__PURE__ */ new Date();
+		const rangeStartKey = range === "7d" ? toInputDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6)) : range === "30d" ? toInputDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29)) : null;
+		const result = [];
+		for (const entry of timeEntries) {
 			const isInternal = entry.entryType === "internal" || !entry.customerId;
 			if (selectedCustomerId === "internal_only") {
-				if (!isInternal) return false;
+				if (!isInternal) continue;
 			} else if (selectedCustomerId !== "all") {
-				if (isInternal || entry.customerId !== selectedCustomerId) return false;
+				if (isInternal || entry.customerId !== selectedCustomerId) continue;
 			}
-			if (selectedProductId !== "all" && entry.productId !== selectedProductId) return false;
-			if (cutoffMs > 0) {
-				const entryMs = new Date(entry.startTime).getTime();
-				if (!Number.isNaN(entryMs) && entryMs < cutoffMs) return false;
+			if (selectedProductId !== "all" && entry.productId !== selectedProductId) continue;
+			for (const slice of getEntryDaySlices(entry)) {
+				if (rangeStartKey && slice.dateKey < rangeStartKey) continue;
+				result.push({
+					entry,
+					dateKey: slice.dateKey,
+					durationSeconds: slice.durationSeconds
+				});
 			}
-			return true;
-		});
+		}
+		return result;
 	}, [
 		timeEntries,
 		range,
@@ -64790,15 +64930,18 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 		let internalSeconds = 0;
 		let totalRevenueNet = 0;
 		const activeCustIds = /* @__PURE__ */ new Set();
-		for (const e of filteredEntries) {
+		const entryIds = /* @__PURE__ */ new Set();
+		for (const item of filteredSlices) {
+			const e = item.entry;
+			entryIds.add(e.id);
 			const isInternal = e.entryType === "internal" || !e.customerId;
-			totalSeconds += e.durationSeconds;
-			const hours = e.durationSeconds / 3600;
+			totalSeconds += item.durationSeconds;
+			const hours = item.durationSeconds / 3600;
 			if (!isInternal && e.billable) {
-				billableSeconds += e.durationSeconds;
+				billableSeconds += item.durationSeconds;
 				totalRevenueNet += hours * e.hourlyRateNet;
 			}
-			if (isInternal) internalSeconds += e.durationSeconds;
+			if (isInternal) internalSeconds += item.durationSeconds;
 			else if (e.customerId) activeCustIds.add(e.customerId);
 		}
 		const billableRatioPct = totalSeconds > 0 ? Math.round(billableSeconds / totalSeconds * 100) : 0;
@@ -64809,25 +64952,30 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 			billableRatioPct,
 			totalRevenueNet,
 			activeCustomers: activeCustIds.size,
-			entryCount: filteredEntries.length
+			entryCount: entryIds.size
 		};
-	}, [filteredEntries]);
+	}, [filteredSlices]);
 	const internalCategoryStats = (0, import_react.useMemo)(() => {
 		const map = /* @__PURE__ */ new Map();
-		for (const e of filteredEntries) {
+		for (const item of filteredSlices) {
+			const e = item.entry;
 			if (!(e.entryType === "internal" || !e.customerId)) continue;
 			const cat = e.internalCategory || "Sonstige interne Arbeit";
 			const cur = map.get(cat) ?? {
 				label: cat,
 				seconds: 0,
-				count: 0
+				entryIds: /* @__PURE__ */ new Set()
 			};
-			cur.seconds += e.durationSeconds;
-			cur.count += 1;
+			cur.seconds += item.durationSeconds;
+			cur.entryIds.add(e.id);
 			map.set(cat, cur);
 		}
-		return Array.from(map.values()).sort((a, b) => b.seconds - a.seconds);
-	}, [filteredEntries]);
+		return Array.from(map.values()).map((v) => ({
+			label: v.label,
+			seconds: v.seconds,
+			count: v.entryIds.size
+		})).sort((a, b) => b.seconds - a.seconds);
+	}, [filteredSlices]);
 	const expenseSummary = (0, import_react.useMemo)(() => {
 		const now = Date.now();
 		const cutoffMs = range === "7d" ? now - 6048e5 : range === "30d" ? now - 2592e6 : 0;
@@ -64869,7 +65017,8 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 	};
 	const customerStats = (0, import_react.useMemo)(() => {
 		const acc = /* @__PURE__ */ new Map();
-		for (const e of filteredEntries) {
+		for (const item of filteredSlices) {
+			const e = item.entry;
 			const isInternal = e.entryType === "internal" || !e.customerId;
 			const key = isInternal ? INTERNAL_KEY : e.customerId;
 			const cust = !isInternal ? customerMap.get(e.customerId) : void 0;
@@ -64879,22 +65028,30 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 				color: customerColorMap.get(key) ?? "#7c3aed",
 				seconds: 0,
 				revenueNet: 0,
-				entries: 0
+				entryIds: /* @__PURE__ */ new Set()
 			};
-			existing.seconds += e.durationSeconds;
-			if (!isInternal && e.billable) existing.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
-			existing.entries += 1;
+			existing.seconds += item.durationSeconds;
+			if (!isInternal && e.billable) existing.revenueNet += item.durationSeconds / 3600 * e.hourlyRateNet;
+			existing.entryIds.add(e.id);
 			acc.set(key, existing);
 		}
-		return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
+		return Array.from(acc.values()).map((v) => ({
+			customerId: v.customerId,
+			name: v.name,
+			color: v.color,
+			seconds: v.seconds,
+			revenueNet: v.revenueNet,
+			entries: v.entryIds.size
+		})).sort((a, b) => b.seconds - a.seconds);
 	}, [
-		filteredEntries,
+		filteredSlices,
 		customerMap,
 		customerColorMap
 	]);
 	const productStats = (0, import_react.useMemo)(() => {
 		const acc = /* @__PURE__ */ new Map();
-		for (const e of filteredEntries) {
+		for (const item of filteredSlices) {
+			const e = item.entry;
 			const isInternal = e.entryType === "internal" || !e.customerId;
 			const key = isInternal ? `int::${e.internalCategory || "Interne Tätigkeit"}` : e.productId;
 			const prod = !isInternal ? productMap.get(e.productId) : void 0;
@@ -64904,16 +65061,23 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 				color: isInternal ? INTERNAL_COLOR : productColorMap.get(e.productId) ?? "#2563eb",
 				seconds: 0,
 				revenueNet: 0,
-				entries: 0
+				entryIds: /* @__PURE__ */ new Set()
 			};
-			existing.seconds += e.durationSeconds;
-			if (!isInternal && e.billable) existing.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
-			existing.entries += 1;
+			existing.seconds += item.durationSeconds;
+			if (!isInternal && e.billable) existing.revenueNet += item.durationSeconds / 3600 * e.hourlyRateNet;
+			existing.entryIds.add(e.id);
 			acc.set(key, existing);
 		}
-		return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
+		return Array.from(acc.values()).map((v) => ({
+			productId: v.productId,
+			name: v.name,
+			color: v.color,
+			seconds: v.seconds,
+			revenueNet: v.revenueNet,
+			entries: v.entryIds.size
+		})).sort((a, b) => b.seconds - a.seconds);
 	}, [
-		filteredEntries,
+		filteredSlices,
 		productMap,
 		productColorMap
 	]);
@@ -64931,53 +65095,63 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 				});
 			}
 		}
-		for (const e of filteredEntries) {
+		for (const item of filteredSlices) {
+			const e = item.entry;
 			const isInternal = e.entryType === "internal" || !e.customerId;
 			const custKey = isInternal ? INTERNAL_KEY : e.customerId;
-			const key = getLocalDateKey(e.startTime);
+			const key = item.dateKey;
 			const bucket = dayMap.get(key) ?? {
 				dateKey: key,
 				totalSeconds: 0,
 				revenueNet: 0,
 				byCustomer: /* @__PURE__ */ new Map()
 			};
-			bucket.totalSeconds += e.durationSeconds;
-			if (!isInternal && e.billable) bucket.revenueNet += e.durationSeconds / 3600 * e.hourlyRateNet;
-			bucket.byCustomer.set(custKey, (bucket.byCustomer.get(custKey) ?? 0) + e.durationSeconds);
+			bucket.totalSeconds += item.durationSeconds;
+			if (!isInternal && e.billable) bucket.revenueNet += item.durationSeconds / 3600 * e.hourlyRateNet;
+			bucket.byCustomer.set(custKey, (bucket.byCustomer.get(custKey) ?? 0) + item.durationSeconds);
 			dayMap.set(key, bucket);
 		}
 		return Array.from(dayMap.values()).sort((a, b) => a.dateKey.localeCompare(b.dateKey)).slice(-16);
-	}, [filteredEntries, range]);
+	}, [filteredSlices, range]);
 	const maxDayHours = (0, import_react.useMemo)(() => {
 		const peak = dailySeries.reduce((max, d) => Math.max(max, d.totalSeconds / 3600), 0);
 		return Math.max(1, Math.ceil(peak));
 	}, [dailySeries]);
 	const matrixRows = (0, import_react.useMemo)(() => {
 		const grouped = /* @__PURE__ */ new Map();
-		for (const e of filteredEntries) {
+		for (const item of filteredSlices) {
+			const e = item.entry;
 			const isInternal = e.entryType === "internal" || !e.customerId;
 			const custKey = isInternal ? INTERNAL_KEY : e.customerId;
 			const key = `${custKey}::${isInternal ? e.internalCategory || "Intern" : e.productId}`;
 			const cust = !isInternal ? customerMap.get(e.customerId) : void 0;
 			const prod = !isInternal ? productMap.get(e.productId) : void 0;
-			const item = grouped.get(key) ?? {
+			const itemRow = grouped.get(key) ?? {
 				key,
 				customerName: isInternal ? "Intern (ohne Ertrag)" : cust?.companyName ?? "Unbekannter Kunde",
 				customerColor: customerColorMap.get(custKey) ?? "#7c3aed",
 				productName: isInternal ? e.internalCategory || "Interne Tätigkeit" : prod?.name ?? "Leistung",
 				hours: 0,
 				revenueNet: 0,
-				count: 0
+				entryIds: /* @__PURE__ */ new Set()
 			};
-			const hrs = e.durationSeconds / 3600;
-			item.hours += hrs;
-			if (!isInternal && e.billable) item.revenueNet += hrs * e.hourlyRateNet;
-			item.count += 1;
-			grouped.set(key, item);
+			const hrs = item.durationSeconds / 3600;
+			itemRow.hours += hrs;
+			if (!isInternal && e.billable) itemRow.revenueNet += hrs * e.hourlyRateNet;
+			itemRow.entryIds.add(e.id);
+			grouped.set(key, itemRow);
 		}
-		return Array.from(grouped.values()).sort((a, b) => b.hours - a.hours);
+		return Array.from(grouped.values()).map((v) => ({
+			key: v.key,
+			customerName: v.customerName,
+			customerColor: v.customerColor,
+			productName: v.productName,
+			hours: v.hours,
+			revenueNet: v.revenueNet,
+			count: v.entryIds.size
+		})).sort((a, b) => b.hours - a.hours);
 	}, [
-		filteredEntries,
+		filteredSlices,
 		customerMap,
 		productMap,
 		customerColorMap
@@ -65257,7 +65431,7 @@ function AnalyticsView({ customers, products, timeEntries, expenses = [], recurr
 					})
 				]
 			}),
-			filteredEntries.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+			filteredSlices.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 				className: "rounded-xl border border-slate-200 bg-white p-12 text-center dark:border-[#2e2349] dark:bg-[#171126]",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "text-sm font-medium text-slate-700 dark:text-slate-300",
@@ -67777,8 +67951,13 @@ async function cancelNativeTimerReminder() {
 async function syncNativeWidgetState(db) {
 	if (!isNativeCapacitor()) return;
 	try {
-		const todayStr = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-		const todayHours = ((db.timeEntries.filter((e) => e.startTime.slice(0, 10) === todayStr).reduce((acc, e) => acc + e.durationSeconds, 0) + (db.pausedTimers ?? []).filter((t) => t.startTime.slice(0, 10) === todayStr).reduce((acc, t) => acc + Math.floor(getActiveTimerElapsedMs(t) / 1e3), 0)) / 3600).toFixed(1).replace(".", ",");
+		const todayStr = toInputDate();
+		const nowMs = Date.now();
+		let bookedTodaySecs = 0;
+		for (const e of db.timeEntries) for (const slice of getEntryDaySlices(e)) if (slice.dateKey === todayStr) bookedTodaySecs += slice.durationSeconds;
+		const pausedTodaySecs = (db.pausedTimers ?? []).reduce((acc, t) => acc + getActiveTimerDaySeconds(t, todayStr, nowMs), 0);
+		const activeTodaySecs = db.activeTimer ? getActiveTimerDaySeconds(db.activeTimer, todayStr, nowMs) : 0;
+		const todayHours = ((bookedTodaySecs + pausedTodaySecs + activeTodaySecs) / 3600).toFixed(1).replace(".", ",");
 		const custName = db.activeTimer ? db.activeTimer.entryType === "internal" || !db.activeTimer.customerId ? `Intern · ${db.activeTimer.internalCategory || "Sonstiges"}` : db.customers.find((c) => c.id === db.activeTimer?.customerId)?.companyName ?? "" : "";
 		const quickTasks = db.nfcTasks.slice(0, 2).map((t) => ({
 			tagUid: t.tagUid,
@@ -67929,17 +68108,27 @@ function CalendarView({ company, customers, products, timeEntries, invoices, cal
 	const entriesByDay = (0, import_react.useMemo)(() => {
 		const map = /* @__PURE__ */ new Map();
 		for (const e of timeEntries) {
-			const dayKey = e.startTime.slice(0, 10);
-			const list = map.get(dayKey) ?? [];
-			list.push(e);
-			map.set(dayKey, list);
+			const slices = getEntryDaySlices(e);
+			for (const slice of slices) {
+				const projected = slice.isSplitSegment ? {
+					...e,
+					id: `${e.id}::${slice.dateKey}`,
+					startTime: slice.startIso,
+					endTime: slice.endIso,
+					durationSeconds: slice.durationSeconds
+				} : e;
+				const list = map.get(slice.dateKey) ?? [];
+				list.push(projected);
+				map.set(slice.dateKey, list);
+			}
 		}
 		return map;
 	}, [timeEntries]);
 	const eventsByDay = (0, import_react.useMemo)(() => {
 		const map = /* @__PURE__ */ new Map();
 		for (const ev of calendarEvents) {
-			const dayKey = ev.startTime.slice(0, 10);
+			const parsed = new Date(ev.startTime);
+			const dayKey = Number.isNaN(parsed.getTime()) ? ev.startTime.slice(0, 10) : toInputDate(parsed);
 			const list = map.get(dayKey) ?? [];
 			list.push(ev);
 			map.set(dayKey, list);
@@ -68452,9 +68641,10 @@ function CalendarView({ company, customers, products, timeEntries, invoices, cal
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 											className: "text-slate-500 dark:text-slate-400",
 											children: [
-												entry.startTime.slice(11, 16),
-												" – ",
-												entry.endTime.slice(11, 16),
+												toInputTime(entry.startTime),
+												" –",
+												" ",
+												formatEndTimeForDay(entry.startTime, entry.endTime),
 												entry.location?.address ? ` · ${entry.location.address}` : ""
 											]
 										})]
@@ -80474,7 +80664,7 @@ function InvoicesView({ company, customers, products, timeEntries, expenses = []
 			setBuilderError("Bitte mindestens einen Zeiteintrag oder ein Produkt auswählen.");
 			return;
 		}
-		const dates = unbilledForCustomer.filter((entry) => selectedEntryIds.includes(entry.id)).map((entry) => entry.startTime.slice(0, 10)).sort();
+		const dates = unbilledForCustomer.filter((entry) => selectedEntryIds.includes(entry.id)).flatMap((entry) => getEntryDaySlices(entry).map((s) => s.dateKey)).sort();
 		const servicePeriodStart = dates[0] ?? issueDate;
 		const servicePeriodEnd = dates[dates.length - 1] ?? issueDate;
 		const dueDate = dueDateInput || addDaysISO(issueDate, cust.paymentTermDays || company.defaultPaymentTermDays || 14);
@@ -83085,9 +83275,6 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 		let count = 0;
 		let totalSec = 0;
 		for (const e of db.timeEntries) {
-			const dateStr = e.startTime.slice(0, 10);
-			if (reportStartDate && dateStr < reportStartDate) continue;
-			if (reportEndDate && dateStr > reportEndDate) continue;
 			const isInternal = e.entryType === "internal" || !e.customerId;
 			if (reportEntryType === "internal" && !isInternal) continue;
 			if (reportEntryType === "project" && isInternal) continue;
@@ -83097,8 +83284,14 @@ function NextcloudSettingsView({ db, nextcloud, company, geoFenceRules, pushConf
 			if (reportTaskTitle !== "all" && e.title !== reportTaskTitle) continue;
 			if (reportBillable === "billable_only" && !e.billable) continue;
 			if (reportBillable === "unbillable_only" && e.billable) continue;
-			count += 1;
-			totalSec += e.durationSeconds;
+			let matchedSlices = 0;
+			for (const slice of getEntryDaySlices(e)) {
+				if (reportStartDate && slice.dateKey < reportStartDate) continue;
+				if (reportEndDate && slice.dateKey > reportEndDate) continue;
+				matchedSlices += 1;
+				totalSec += slice.durationSeconds;
+			}
+			if (matchedSlices > 0) count += matchedSlices;
 		}
 		return {
 			count,
@@ -90841,7 +91034,12 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 	const selectedCustomerIds = (0, import_react.useMemo)(() => Array.from(new Set(selectedEntries.map((e) => e.customerId))), [selectedEntries]);
 	const todayTotalSeconds = (0, import_react.useMemo)(() => {
 		const todayStr = toInputDate();
-		return timeEntries.filter((e) => e.startTime.slice(0, 10) === todayStr).reduce((acc, e) => acc + e.durationSeconds, 0) + pausedTimers.filter((t) => t.startTime.slice(0, 10) === todayStr).reduce((acc, t) => acc + Math.floor(getActiveTimerElapsedMs(t) / 1e3), 0) + (activeTimer ? elapsedSeconds : 0);
+		const nowMs = Date.now();
+		let booked = 0;
+		for (const e of timeEntries) for (const slice of getEntryDaySlices(e)) if (slice.dateKey === todayStr) booked += slice.durationSeconds;
+		const parked = pausedTimers.reduce((acc, t) => acc + getActiveTimerDaySeconds(t, todayStr, nowMs), 0);
+		const activeToday = activeTimer ? getActiveTimerDaySeconds(activeTimer, todayStr, nowMs) : 0;
+		return booked + parked + activeToday;
 	}, [
 		timeEntries,
 		pausedTimers,
@@ -91190,7 +91388,8 @@ function TimeTrackerView({ company, customers, products, nfcTasks, timeEntries, 
 	const showBreakAlert = Boolean(activeTimer) && breakAssistantEnabled && elapsedSeconds >= breakTriggerHours * 3600;
 	const showOvernightAlert = (0, import_react.useMemo)(() => {
 		if (!activeTimer || !breakAssistantEnabled) return false;
-		if (activeTimer.startTime.slice(0, 10) < toInputDate()) return true;
+		const parsedStart = new Date(activeTimer.startTime);
+		if ((Number.isNaN(parsedStart.getTime()) ? activeTimer.startTime.slice(0, 10) : toInputDate(parsedStart)) < toInputDate()) return true;
 		return (/* @__PURE__ */ new Date()).getHours() >= overnightReminderHour && elapsedSeconds >= 3600;
 	}, [
 		activeTimer,
@@ -92718,6 +92917,9 @@ function finalizeTimerToEntry(timer, endDate, company) {
 		createdAt: endIso
 	};
 }
+function finalizeTimerToEntries(timer, endDate, company) {
+	return splitTimeEntryByLocalDays(finalizeTimerToEntry(timer, endDate, company));
+}
 function advanceRecurringDate(isoDate, interval) {
 	const [y, m, d] = isoDate.split("-").map((n) => Number(n));
 	if (!y || !m || !d) return toInputDate();
@@ -93035,7 +93237,9 @@ function App() {
 		}
 		const isInternalTask = task.entryType === "internal" || !task.customerId;
 		if (nextActiveTimer && nextActiveTimer.nfcTaskId === task.id && task.toggleOnRescan) {
-			nextTimeEntries = [finalizeTimerToEntry(nextActiveTimer, now, sourceDb.company), ...nextTimeEntries];
+			const finishedEntries = finalizeTimerToEntries(nextActiveTimer, now, sourceDb.company);
+			nextTimeEntries = [...[...finishedEntries].reverse(), ...nextTimeEntries];
+			const splitHint = finishedEntries.length > 1 ? ` (auf ${finishedEntries.length} Tage aufgeteilt)` : "";
 			let resumedParked = null;
 			if (task.autoResumePausedOnStop && nextPausedTimers.length > 0) {
 				const matchIdx = nextPausedTimers.findIndex((t) => t.pausedByNfcTaskId === task.id);
@@ -93051,11 +93255,13 @@ function App() {
 					activeTimer: resumedParked,
 					pausedTimers: nextPausedTimers
 				},
-				message: resumedParked ? `„${task.title}“ gespeichert · „${resumedParked.title}“ läuft weiter.` : isInternalTask ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert.` : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert.`,
-				haptic: "stop"
+				message: resumedParked ? `„${task.title}“ gespeichert${splitHint} · „${resumedParked.title}“ läuft weiter.` : isInternalTask ? `Interne NFC-Aufgabe "${task.title}" gestoppt und gespeichert${splitHint}.` : `NFC-Aufgabe "${task.title}" gestoppt und als Arbeitszeit gespeichert${splitHint}.`,
+				haptic: "stop",
+				finishedEntries
 			};
 		}
 		let previousHandledNote = "";
+		let stoppedPrevEntries = [];
 		if (nextActiveTimer) {
 			const prevAction = resolveNfcPreviousAction(task);
 			if (prevAction === "pause") {
@@ -93064,9 +93270,10 @@ function App() {
 				previousHandledNote = ` („${parked.title}“ pausiert & geparkt)`;
 				nextActiveTimer = null;
 			} else if (prevAction === "stop") {
-				const finishedPrev = finalizeTimerToEntry(nextActiveTimer, now, sourceDb.company);
-				nextTimeEntries = [finishedPrev, ...nextTimeEntries];
-				previousHandledNote = ` („${finishedPrev.title}“ gespeichert)`;
+				stoppedPrevEntries = finalizeTimerToEntries(nextActiveTimer, now, sourceDb.company);
+				nextTimeEntries = [...[...stoppedPrevEntries].reverse(), ...nextTimeEntries];
+				const prevTitle = stoppedPrevEntries[0]?.title ?? nextActiveTimer.title;
+				previousHandledNote = stoppedPrevEntries.length > 1 ? ` („${prevTitle}“ auf ${stoppedPrevEntries.length} Tage aufgeteilt gespeichert)` : ` („${prevTitle}“ gespeichert)`;
 				nextActiveTimer = null;
 			} else nextActiveTimer = null;
 		}
@@ -93099,7 +93306,8 @@ function App() {
 			},
 			message: (isInternalTask ? `Interne NFC-Aufgabe "${task.title}" (${internalCategory}) gestartet.` : `NFC-Aufgabe "${task.title}" gestartet.`) + previousHandledNote,
 			haptic: "start",
-			startedNewTimer: true
+			startedNewTimer: true,
+			finishedEntries: stoppedPrevEntries.length > 0 ? stoppedPrevEntries : void 0
 		};
 	}, []);
 	const attachAutoLocationToTimer = (0, import_react.useCallback)((timerId, options) => {
@@ -93237,50 +93445,18 @@ function App() {
 				const active = working.activeTimer;
 				if (active && active.source === "geo" && active.geoFenceRuleId === ev.ruleId) {
 					const endMs = ev.timestampMs || Date.now();
-					const endIso = ev.timestampIso || new Date(endMs).toISOString();
-					const durationSeconds = Math.max(1, Math.floor(getActiveTimerElapsedMs(active, endMs) / 1e3));
-					const isInternal = active.entryType === "internal" || !active.customerId;
-					let travelDistanceKm;
-					let travelCostNet;
-					if (!isInternal && working.company.autoCalculateTravelOnStop && working.company.homeBaseLocation && active.location) {
-						const calc = computeTravelFromBase(working.company.homeBaseLocation, active.location, working.company.travelRatePerKm ?? .3, working.company.travelRoundTripDefault !== false);
-						travelDistanceKm = calc.distanceKm;
-						travelCostNet = calc.costNet;
-					}
-					const entry = {
-						id: createId("time"),
-						customerId: isInternal ? "" : active.customerId,
-						productId: isInternal ? "" : active.productId,
-						nfcTaskId: active.nfcTaskId,
-						title: active.title,
-						notes: active.notes,
-						startTime: active.startTime,
-						endTime: endIso,
-						durationSeconds,
-						hourlyRateNet: isInternal ? 0 : active.hourlyRateNet,
-						taxRate: isInternal ? 0 : active.taxRate,
-						billable: !isInternal,
-						billedInvoiceId: null,
-						source: active.source,
-						entryType: isInternal ? "internal" : "project",
-						internalCategory: isInternal ? active.internalCategory : void 0,
-						location: active.location ?? null,
-						photos: active.photos && active.photos.length > 0 ? active.photos : void 0,
-						travelDistanceKm,
-						travelCostNet,
-						travelBilledInvoiceId: null,
-						createdAt: endIso
-					};
+					const entries = finalizeTimerToEntries(active, new Date(endMs), working.company);
 					geoCooldownRef.current.set(ev.ruleId, endMs);
 					working = {
 						...working,
 						activeTimer: null,
-						timeEntries: [entry, ...working.timeEntries]
+						timeEntries: [...[...entries].reverse(), ...working.timeEntries]
 					};
-					finishedEntries.push(entry);
+					finishedEntries.push(...entries);
 					mutated = true;
 					exitPrompt = null;
-					lastToast = `Ortsautomatik (${ev.ruleName} verlassen): „${entry.title}“ gespeichert.`;
+					const splitHint = entries.length > 1 ? ` (auf ${entries.length} Tage aufgeteilt)` : "";
+					lastToast = `Ortsautomatik (${ev.ruleName} verlassen): „${active.title}“ gespeichert${splitHint}.`;
 				}
 			} else if (ev.type === "exit_ask") {
 				const active = working.activeTimer;
@@ -93318,7 +93494,7 @@ function App() {
 				setNextcloud(data.nextcloud);
 				let sectionOverridden = false;
 				let coldStartedTimer = null;
-				let coldFinishedEntry = null;
+				let coldFinishedEntries = [];
 				if (!deepLinkHandledRef.current) {
 					deepLinkHandledRef.current = true;
 					let incomingNfc = "";
@@ -93358,7 +93534,6 @@ function App() {
 						};
 						const prevLoadedDb = loadedDb;
 						const prevTimer = loadedDb.activeTimer;
-						const prevEntryCount = loadedDb.timeEntries.length;
 						const result = triggerNfcOnDb(loadedDb, incomingNfc);
 						loadedDb = result.isError ? result.nextDb : stampDatabaseChanges(prevLoadedDb, result.nextDb, deviceIdRef.current);
 						dbRef.current = loadedDb;
@@ -93371,7 +93546,7 @@ function App() {
 								loadedDb = savedRes.db;
 								dbRef.current = loadedDb;
 							}
-							if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) coldFinishedEntry = loadedDb.timeEntries[0];
+							if (result.finishedEntries && result.finishedEntries.length > 0) coldFinishedEntries = result.finishedEntries;
 							if (result.startedNewTimer && loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
 						} else {
 							setPendingScannedUid({
@@ -93389,7 +93564,6 @@ function App() {
 						if (widgetAction?.action === "trigger" && widgetAction.tagUid) {
 							const prevLoadedDb = loadedDb;
 							const prevTimer = loadedDb.activeTimer;
-							const prevEntryCount = loadedDb.timeEntries.length;
 							const result = triggerNfcOnDb(loadedDb, widgetAction.tagUid);
 							loadedDb = result.isError ? result.nextDb : stampDatabaseChanges(prevLoadedDb, result.nextDb, deviceIdRef.current);
 							dbRef.current = loadedDb;
@@ -93402,7 +93576,7 @@ function App() {
 									loadedDb = savedRes.db;
 									dbRef.current = loadedDb;
 								}
-								if (loadedDb.timeEntries.length > prevEntryCount && loadedDb.timeEntries[0]) coldFinishedEntry = loadedDb.timeEntries[0];
+								if (result.finishedEntries && result.finishedEntries.length > 0) coldFinishedEntries = result.finishedEntries;
 								if (result.startedNewTimer && loadedDb.activeTimer && loadedDb.activeTimer.id !== prevTimer?.id) coldStartedTimer = loadedDb.activeTimer;
 							}
 						}
@@ -93446,7 +93620,7 @@ function App() {
 					retries: 2,
 					startedAtIso: coldStartedTimer.startTime
 				});
-				if (coldFinishedEntry) pushFinishedEntryToNextcloudCalendar(coldFinishedEntry, loadedDb);
+				if (coldFinishedEntries.length > 0) for (const finished of coldFinishedEntries) pushFinishedEntryToNextcloudCalendar(finished, loadedDb);
 				if (data.nextcloud.configured) {
 					if (data.nextcloud.autoSync) runAutoSync({
 						force: true,
@@ -93518,7 +93692,6 @@ function App() {
 			at: now
 		};
 		const prevTimer = dbRef.current.activeTimer;
-		const prevEntryCount = dbRef.current.timeEntries.length;
 		const result = triggerNfcOnDb(dbRef.current, clean);
 		triggerNfcHaptic(result.haptic);
 		if (result.isError) {
@@ -93532,7 +93705,7 @@ function App() {
 		}
 		persistDb(result.nextDb);
 		notify(result.message);
-		if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
+		if (result.finishedEntries && result.finishedEntries.length > 0) for (const finished of result.finishedEntries) pushFinishedEntryToNextcloudCalendar(finished, result.nextDb);
 		if (result.startedNewTimer && result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
 			forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
 			retries: 2,
@@ -93819,32 +93992,10 @@ function App() {
 		let stoppedPreviousTitle = "";
 		if (currentDb.activeTimer) {
 			const prev = currentDb.activeTimer;
-			const prevInternal = prev.entryType === "internal" || !prev.customerId;
-			const prevDuration = Math.max(1, Math.floor(getActiveTimerElapsedMs(prev, now.getTime()) / 1e3));
-			const finishedPrev = {
-				id: createId("time"),
-				customerId: prevInternal ? "" : prev.customerId,
-				productId: prevInternal ? "" : prev.productId,
-				nfcTaskId: prev.nfcTaskId,
-				title: prev.title,
-				notes: prev.notes,
-				startTime: prev.startTime,
-				endTime: nowIso,
-				durationSeconds: prevDuration,
-				hourlyRateNet: prevInternal ? 0 : prev.hourlyRateNet,
-				taxRate: prevInternal ? 0 : prev.taxRate,
-				billable: !prevInternal,
-				billedInvoiceId: null,
-				source: prev.source,
-				entryType: prevInternal ? "internal" : "project",
-				internalCategory: prevInternal ? prev.internalCategory : void 0,
-				location: prev.location ?? null,
-				photos: prev.photos && prev.photos.length > 0 ? prev.photos : void 0,
-				createdAt: nowIso
-			};
-			nextTimeEntries = [finishedPrev, ...nextTimeEntries];
+			const finishedPrevEntries = finalizeTimerToEntries(prev, now, currentDb.company);
+			nextTimeEntries = [...[...finishedPrevEntries].reverse(), ...nextTimeEntries];
 			stoppedPreviousTitle = prev.title;
-			pushFinishedEntryToNextcloudCalendar(finishedPrev);
+			for (const finishedPrev of finishedPrevEntries) pushFinishedEntryToNextcloudCalendar(finishedPrev);
 		}
 		const timer = {
 			id: createId("timer"),
@@ -93951,10 +94102,11 @@ function App() {
 		if (active.source === "geo" && active.geoFenceRuleId) geoCooldownRef.current.set(active.geoFenceRuleId, clampedNowMs);
 		const now = new Date(clampedNowMs);
 		const isInternal = active.entryType === "internal" || !active.customerId;
-		const entry = finalizeTimerToEntry(active, now, currentDb.company);
-		const durationSeconds = entry.durationSeconds;
-		const travelDistanceKm = entry.travelDistanceKm;
-		const travelCostNet = entry.travelCostNet;
+		const entries = finalizeTimerToEntries(active, now, currentDb.company);
+		const primaryEntry = entries[0];
+		const durationSeconds = entries.reduce((acc, e) => acc + e.durationSeconds, 0);
+		const travelDistanceKm = primaryEntry.travelDistanceKm;
+		const travelCostNet = primaryEntry.travelCostNet;
 		let nextPausedTimers = [...currentDb.pausedTimers ?? []];
 		let resumedParked = null;
 		if (active.nfcTaskId && nextPausedTimers.length > 0) {
@@ -93970,22 +94122,23 @@ function App() {
 			...currentDb,
 			activeTimer: resumedParked,
 			pausedTimers: nextPausedTimers,
-			timeEntries: [entry, ...currentDb.timeEntries]
+			timeEntries: [...[...entries].reverse(), ...currentDb.timeEntries]
 		};
 		persistDb(nextDb);
-		pushFinishedEntryToNextcloudCalendar(entry, nextDb);
+		for (const finishedEntry of entries) pushFinishedEntryToNextcloudCalendar(finishedEntry, nextDb);
 		let budgetSuffix = "";
 		let budgetExceeded = false;
 		if (!isInternal) {
-			const cust = nextDb.customers.find((c) => c.id === entry.customerId);
+			const cust = nextDb.customers.find((c) => c.id === primaryEntry.customerId);
 			const bStatus = computeCustomerBudgetStatus(cust, nextDb.timeEntries, resumedParked);
 			if (bStatus.hasBudget && bStatus.severity === "exceeded") {
 				budgetSuffix = ` · Kontingent für ${cust?.companyName} überschritten (${bStatus.primaryPct} %)!`;
 				budgetExceeded = true;
 			} else if (bStatus.hasBudget && bStatus.severity === "warning") budgetSuffix = ` · Kontingent bei ${bStatus.primaryPct} %`;
 		}
+		const splitSuffix = entries.length > 1 ? ` · anteilig auf ${entries.length} Tage aufgeteilt` : "";
 		const resumeSuffix = resumedParked ? ` · „${resumedParked.title}“ läuft weiter` : "";
-		notify((isInternal ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).` : travelCostNet && travelCostNet > 0 ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.` : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) + resumeSuffix + budgetSuffix, budgetExceeded);
+		notify((isInternal ? `Interne Tätigkeit gespeichert (${formatDuration(durationSeconds)}).` : travelCostNet && travelCostNet > 0 ? `Arbeitszeit (${formatDuration(durationSeconds)}) & Fahrtkosten (${travelDistanceKm} km) gespeichert.` : `Arbeitszeit gespeichert (${formatDuration(durationSeconds)}).`) + splitSuffix + resumeSuffix + budgetSuffix, budgetExceeded);
 	}, [
 		notify,
 		persistDb,
@@ -94429,16 +94582,18 @@ function App() {
 		const target = list.find((t) => t.id === pausedId);
 		if (!target) return;
 		const parsedPausedEnd = target.pausedAt ? new Date(target.pausedAt) : /* @__PURE__ */ new Date();
-		const entry = finalizeTimerToEntry(target, Number.isNaN(parsedPausedEnd.getTime()) ? /* @__PURE__ */ new Date() : parsedPausedEnd, currentDb.company);
+		const entries = finalizeTimerToEntries(target, Number.isNaN(parsedPausedEnd.getTime()) ? /* @__PURE__ */ new Date() : parsedPausedEnd, currentDb.company);
+		const totalSec = entries.reduce((acc, e) => acc + e.durationSeconds, 0);
 		const nextPaused = list.filter((t) => t.id !== pausedId);
 		const nextDb = {
 			...currentDb,
 			pausedTimers: nextPaused,
-			timeEntries: [entry, ...currentDb.timeEntries]
+			timeEntries: [...[...entries].reverse(), ...currentDb.timeEntries]
 		};
 		persistDb(nextDb);
-		pushFinishedEntryToNextcloudCalendar(entry, nextDb);
-		notify(`Geparkter Auftrag „${entry.title}“ (${formatDuration(entry.durationSeconds)}) gespeichert.`);
+		for (const entry of entries) pushFinishedEntryToNextcloudCalendar(entry, nextDb);
+		const splitHint = entries.length > 1 ? ` (auf ${entries.length} Tage aufgeteilt)` : "";
+		notify(`Geparkter Auftrag „${target.title}“ (${formatDuration(totalSec)}) gespeichert${splitHint}.`);
 	}, [
 		notify,
 		persistDb,
@@ -94463,23 +94618,25 @@ function App() {
 	}, [requestConfirmDelete, scheduleUndoableDelete]);
 	const handleAddManualEntry = (entry) => {
 		const currentDb = dbRef.current;
+		const entries = splitTimeEntryByLocalDays(entry);
 		const nextDb = {
 			...currentDb,
-			timeEntries: [entry, ...currentDb.timeEntries]
+			timeEntries: [...[...entries].reverse(), ...currentDb.timeEntries]
 		};
 		persistDb(nextDb);
-		pushFinishedEntryToNextcloudCalendar(entry, nextDb);
-		notify("Zeiteintrag gespeichert.");
+		for (const seg of entries) pushFinishedEntryToNextcloudCalendar(seg, nextDb);
+		notify(entries.length > 1 ? `Zeiteintrag über Mitternacht anteilig auf ${entries.length} Tage aufgeteilt gespeichert.` : "Zeiteintrag gespeichert.");
 	};
 	const handleUpdateEntry = (updatedEntry) => {
 		const currentDb = dbRef.current;
+		const entries = updatedEntry.billedInvoiceId ? [updatedEntry] : splitTimeEntryByLocalDays(updatedEntry);
 		const nextDb = {
 			...currentDb,
-			timeEntries: currentDb.timeEntries.map((e) => e.id === updatedEntry.id ? updatedEntry : e)
+			timeEntries: currentDb.timeEntries.flatMap((e) => e.id === updatedEntry.id ? [...entries].reverse() : [e])
 		};
 		persistDb(nextDb);
-		pushFinishedEntryToNextcloudCalendar(updatedEntry, nextDb);
-		notify("Zeiteintrag aktualisiert.");
+		for (const seg of entries) pushFinishedEntryToNextcloudCalendar(seg, nextDb);
+		notify(entries.length > 1 ? `Zeiteintrag über Mitternacht anteilig auf ${entries.length} Tage aufgeteilt aktualisiert.` : "Zeiteintrag aktualisiert.");
 	};
 	const handleDeleteEntry = (id) => {
 		const target = dbRef.current.timeEntries.find((e) => e.id === id);
@@ -94532,7 +94689,6 @@ function App() {
 	const handleTriggerNfcTag = (tagUid) => {
 		const currentDb = dbRef.current;
 		const prevTimer = currentDb.activeTimer;
-		const prevEntryCount = currentDb.timeEntries.length;
 		const result = triggerNfcOnDb(currentDb, tagUid);
 		triggerNfcHaptic(result.haptic);
 		if (result.isError) {
@@ -94541,7 +94697,7 @@ function App() {
 		}
 		persistDb(result.nextDb);
 		notify(result.message);
-		if (result.nextDb.timeEntries.length > prevEntryCount && result.nextDb.timeEntries[0]) pushFinishedEntryToNextcloudCalendar(result.nextDb.timeEntries[0], result.nextDb);
+		if (result.finishedEntries && result.finishedEntries.length > 0) for (const finished of result.finishedEntries) pushFinishedEntryToNextcloudCalendar(finished, result.nextDb);
 		if (result.startedNewTimer && result.nextDb.activeTimer && result.nextDb.activeTimer.id !== prevTimer?.id) attachAutoLocationToTimer(result.nextDb.activeTimer.id, {
 			forceEnabled: Boolean(result.nextDb.company.autoCaptureLocation),
 			retries: 2,

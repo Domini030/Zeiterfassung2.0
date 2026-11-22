@@ -20,7 +20,13 @@ import {
   downloadOrShareTextFile,
   generateBackupArtifacts,
 } from './exportBackup';
-import { formatDuration, getActiveTimerElapsedMs } from './format';
+import {
+  formatDuration,
+  getActiveTimerDaySeconds,
+  getActiveTimerElapsedMs,
+  getEntryDaySlices,
+  toInputDate,
+} from './format';
 import { createEmptyDatabase, normalizeDatabase } from './sampleData';
 import {
   decodeSyncPairingCode,
@@ -1618,14 +1624,24 @@ export async function cancelNativeTimerReminder(): Promise<void> {
 export async function syncNativeWidgetState(db: AppDatabase): Promise<void> {
   if (!isNativeCapacitor()) return;
   try {
-    const todayStr = new Date().toISOString().slice(0, 10);
-    const bookedTodaySecs = db.timeEntries
-      .filter((e) => e.startTime.slice(0, 10) === todayStr)
-      .reduce((acc, e) => acc + e.durationSeconds, 0);
-    const pausedTodaySecs = (db.pausedTimers ?? [])
-      .filter((t) => t.startTime.slice(0, 10) === todayStr)
-      .reduce((acc, t) => acc + Math.floor(getActiveTimerElapsedMs(t) / 1000), 0);
-    const todaySecs = bookedTodaySecs + pausedTodaySecs;
+    const todayStr = toInputDate();
+    const nowMs = Date.now();
+    let bookedTodaySecs = 0;
+    for (const e of db.timeEntries) {
+      for (const slice of getEntryDaySlices(e)) {
+        if (slice.dateKey === todayStr) {
+          bookedTodaySecs += slice.durationSeconds;
+        }
+      }
+    }
+    const pausedTodaySecs = (db.pausedTimers ?? []).reduce(
+      (acc, t) => acc + getActiveTimerDaySeconds(t, todayStr, nowMs),
+      0
+    );
+    const activeTodaySecs = db.activeTimer
+      ? getActiveTimerDaySeconds(db.activeTimer, todayStr, nowMs)
+      : 0;
+    const todaySecs = bookedTodaySecs + pausedTodaySecs + activeTodaySecs;
     const todayHours = (todaySecs / 3600).toFixed(1).replace('.', ',');
     const custName = db.activeTimer
       ? db.activeTimer.entryType === 'internal' || !db.activeTimer.customerId

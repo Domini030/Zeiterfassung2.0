@@ -30,8 +30,11 @@ import {
   createId,
   formatCurrency,
   formatDateDE,
+  formatEndTimeForDay,
   formatHoursShort,
+  getEntryDaySlices,
   toInputDate,
+  toInputTime,
 } from '../utils/format';
 import { InfoHintPopup } from './InfoHintPopup';
 import { ThemedSelect } from './ThemedSelect';
@@ -122,10 +125,21 @@ export function CalendarView({
   const entriesByDay = useMemo(() => {
     const map = new Map<string, TimeEntry[]>();
     for (const e of timeEntries) {
-      const dayKey = e.startTime.slice(0, 10);
-      const list = map.get(dayKey) ?? [];
-      list.push(e);
-      map.set(dayKey, list);
+      const slices = getEntryDaySlices(e);
+      for (const slice of slices) {
+        const projected: TimeEntry = slice.isSplitSegment
+          ? {
+              ...e,
+              id: `${e.id}::${slice.dateKey}`,
+              startTime: slice.startIso,
+              endTime: slice.endIso,
+              durationSeconds: slice.durationSeconds,
+            }
+          : e;
+        const list = map.get(slice.dateKey) ?? [];
+        list.push(projected);
+        map.set(slice.dateKey, list);
+      }
     }
     return map;
   }, [timeEntries]);
@@ -133,7 +147,10 @@ export function CalendarView({
   const eventsByDay = useMemo(() => {
     const map = new Map<string, CalendarAppointment[]>();
     for (const ev of calendarEvents) {
-      const dayKey = ev.startTime.slice(0, 10);
+      const parsed = new Date(ev.startTime);
+      const dayKey = Number.isNaN(parsed.getTime())
+        ? ev.startTime.slice(0, 10)
+        : toInputDate(parsed);
       const list = map.get(dayKey) ?? [];
       list.push(ev);
       map.set(dayKey, list);
@@ -707,7 +724,8 @@ export function CalendarView({
                         {entry.title}
                       </div>
                       <div className="text-slate-500 dark:text-slate-400">
-                        {entry.startTime.slice(11, 16)} – {entry.endTime.slice(11, 16)}
+                        {toInputTime(entry.startTime)} –{' '}
+                        {formatEndTimeForDay(entry.startTime, entry.endTime)}
                         {entry.location?.address ? ` · ${entry.location.address}` : ''}
                       </div>
                     </div>

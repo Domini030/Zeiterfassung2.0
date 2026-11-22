@@ -8,8 +8,10 @@ import {
   formatDateDE,
   formatDateTimeDE,
   formatDuration,
+  formatEndTimeForDay,
   formatNumber,
   formatQuantity,
+  getEntryDaySlices,
   getOverdueDays,
   resolveInvoiceAccentRgb,
   toInputDate,
@@ -848,7 +850,11 @@ export function buildTimesheetPdf(
     doc.setFontSize(8.5);
     doc.setTextColor(15, 23, 42);
     doc.text(formatDateDE(entry.startTime), marginLeft + 2, y);
-    doc.text(`${toInputTime(entry.startTime)}–${toInputTime(entry.endTime)}`, marginLeft + 26, y);
+    doc.text(
+      `${toInputTime(entry.startTime)}–${formatEndTimeForDay(entry.startTime, entry.endTime)}`,
+      marginLeft + 26,
+      y
+    );
 
     doc.setFont(font, 'bold');
     const titleLines = doc.splitTextToSize(entry.title, 88);
@@ -1291,39 +1297,50 @@ export function buildFilteredReportPdf(
   const customerMap = new Map(db.customers.map((c) => [c.id, c]));
   const productMap = new Map(db.products.map((p) => [p.id, p]));
 
-  // 1. Filter entries
-  const filtered = db.timeEntries.filter((e) => {
-    const dateStr = e.startTime.slice(0, 10);
-    if (options.startDate && dateStr < options.startDate) return false;
-    if (options.endDate && dateStr > options.endDate) return false;
-
+  // 1. Filter entries (expanding overnight entries proportionally across local days)
+  const filtered: TimeEntry[] = [];
+  for (const e of db.timeEntries) {
     const isInternal = e.entryType === 'internal' || !e.customerId;
-    if (options.entryType === 'internal' && !isInternal) return false;
-    if (options.entryType === 'project' && isInternal) return false;
+    if (options.entryType === 'internal' && !isInternal) continue;
+    if (options.entryType === 'project' && isInternal) continue;
 
-    if (options.customerId === 'internal_only' && !isInternal) return false;
+    if (options.customerId === 'internal_only' && !isInternal) continue;
     if (
       options.customerId &&
       options.customerId !== 'all' &&
       options.customerId !== 'internal_only' &&
       e.customerId !== options.customerId
     ) {
-      return false;
+      continue;
     }
 
     if (options.productId && options.productId !== 'all' && e.productId !== options.productId) {
-      return false;
+      continue;
     }
 
     if (options.taskTitle && options.taskTitle !== 'all' && e.title !== options.taskTitle) {
-      return false;
+      continue;
     }
 
-    if (options.billableFilter === 'billable_only' && !e.billable) return false;
-    if (options.billableFilter === 'unbillable_only' && e.billable) return false;
+    if (options.billableFilter === 'billable_only' && !e.billable) continue;
+    if (options.billableFilter === 'unbillable_only' && e.billable) continue;
 
-    return true;
-  });
+    for (const slice of getEntryDaySlices(e)) {
+      if (options.startDate && slice.dateKey < options.startDate) continue;
+      if (options.endDate && slice.dateKey > options.endDate) continue;
+      filtered.push(
+        slice.isSplitSegment
+          ? {
+              ...e,
+              id: `${e.id}::${slice.dateKey}`,
+              startTime: slice.startIso,
+              endTime: slice.endIso,
+              durationSeconds: slice.durationSeconds,
+            }
+          : e
+      );
+    }
+  }
 
   filtered.sort(
     (a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime()

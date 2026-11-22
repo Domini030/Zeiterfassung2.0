@@ -59,6 +59,7 @@ import {
   formatInvoiceNumber,
   formatQuantity,
   formatQuoteNumber,
+  getEntryDaySlices,
   getOverdueDays,
   isInvoiceOverdue,
   roundDurationSeconds,
@@ -810,7 +811,7 @@ export function InvoicesView({
       selectedEntryIds.includes(entry.id)
     );
     const dates = selectedEntries
-      .map((entry) => entry.startTime.slice(0, 10))
+      .flatMap((entry) => getEntryDaySlices(entry).map((s) => s.dateKey))
       .sort();
     const servicePeriodStart = dates[0] ?? issueDate;
     const servicePeriodEnd = dates[dates.length - 1] ?? issueDate;

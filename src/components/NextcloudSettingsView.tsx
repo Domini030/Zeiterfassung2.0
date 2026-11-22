@@ -114,6 +114,7 @@ import {
   formatNumber,
   formatProductSku,
   formatQuoteNumber,
+  getEntryDaySlices,
   toInputDate,
 } from '../utils/format';
 import { captureCurrentLocation, geocodeAddress } from '../utils/geolocation';
@@ -640,9 +641,6 @@ export function NextcloudSettingsView({
     let count = 0;
     let totalSec = 0;
     for (const e of db.timeEntries) {
-      const dateStr = e.startTime.slice(0, 10);
-      if (reportStartDate && dateStr < reportStartDate) continue;
-      if (reportEndDate && dateStr > reportEndDate) continue;
       const isInternal = e.entryType === 'internal' || !e.customerId;
       if (reportEntryType === 'internal' && !isInternal) continue;
       if (reportEntryType === 'project' && isInternal) continue;
@@ -658,8 +656,17 @@ export function NextcloudSettingsView({
       if (reportTaskTitle !== 'all' && e.title !== reportTaskTitle) continue;
       if (reportBillable === 'billable_only' && !e.billable) continue;
       if (reportBillable === 'unbillable_only' && e.billable) continue;
-      count += 1;
-      totalSec += e.durationSeconds;
+
+      let matchedSlices = 0;
+      for (const slice of getEntryDaySlices(e)) {
+        if (reportStartDate && slice.dateKey < reportStartDate) continue;
+        if (reportEndDate && slice.dateKey > reportEndDate) continue;
+        matchedSlices += 1;
+        totalSec += slice.durationSeconds;
+      }
+      if (matchedSlices > 0) {
+        count += matchedSlices;
+      }
     }
     return { count, hours: totalSec / 3600 };
   }, [

@@ -7,6 +7,7 @@ import type {
   InvoiceFontFamily,
   InvoiceLayoutStyle,
   InvoiceLineItem,
+  TimeEntry,
   TimeRoundingMinutes,
 } from '../types';
 
@@ -130,6 +131,209 @@ export function getActiveTimerElapsedMs(
     ? new Date(timer.pausedAt).getTime()
     : nowMs;
   return Math.max(0, effectiveEndMs - startMs - accPaused);
+}
+
+export interface DayTimeSlice {
+  dateKey: string;
+  startIso: string;
+  endIso: string;
+  durationSeconds: number;
+  fraction: number;
+  isSplitSegment: boolean;
+}
+
+export function formatEndTimeForDay(startIso: string, endIso: string): string {
+  const start = new Date(startIso);
+  const end = new Date(endIso);
+  if (Number.isNaN(end.getTime())) return '00:00';
+  if (
+    !Number.isNaN(start.getTime()) &&
+    end.getTime() > start.getTime() &&
+    end.getHours() === 0 &&
+    end.getMinutes() === 0 &&
+    end.getSeconds() === 0 &&
+    end.getMilliseconds() === 0 &&
+    toInputDate(end) > toInputDate(start)
+  ) {
+    return '24:00';
+  }
+  return toInputTime(endIso);
+}
+
+/**
+ * Splits a time interval [startIso, endIso] across local midnight (00:00) boundaries
+ * and allocates totalDurationSeconds strictly proportionally (sum-preserving via largest remainder).
+ * Handles DST transitions (23h / 25h days) safely using local calendar date construction.
+ */
+export function splitIntervalByLocalDays(
+  startIso: string,
+  endIso: string,
+  totalDurationSeconds: number
+): DayTimeSlice[] {
+  const safeTotalSec = Math.max(0, Math.round(totalDurationSeconds));
+  const startDate = new Date(startIso);
+  const endDate = new Date(endIso);
+  const startMs = startDate.getTime();
+  const endMs = endDate.getTime();
+
+  if (Number.isNaN(startMs) || Number.isNaN(endMs) || endMs <= startMs) {
+    const fallbackKey = Number.isNaN(startMs) ? toInputDate() : toInputDate(startDate);
+    return [
+      {
+        dateKey: fallbackKey,
+        startIso,
+        endIso: Number.isNaN(endMs) ? startIso : endIso,
+        durationSeconds: safeTotalSec,
+        fraction: 1,
+        isSplitSegment: false,
+      },
+    ];
+  }
+
+  const rawSegments: {
+    dateKey: string;
+    startMs: number;
+    endMs: number;
+    wallMs: number;
+  }[] = [];
+
+  let cursorMs = startMs;
+  let guard = 0;
+  while (cursorMs < endMs && guard < 400) {
+    guard += 1;
+    const cursorDate = new Date(cursorMs);
+    const dateKey = toInputDate(cursorDate);
+    const nextMidnightMs = new Date(
+      cursorDate.getFullYear(),
+      cursorDate.getMonth(),
+      cursorDate.getDate() + 1,
+      0,
+      0,
+      0,
+      0
+    ).getTime();
+    const segEndMs = Math.min(endMs, nextMidnightMs);
+    const wallMs = Math.max(0, segEndMs - cursorMs);
+    if (wallMs > 0) {
+      rawSegments.push({ dateKey, startMs: cursorMs, endMs: segEndMs, wallMs });
+    }
+    if (segEndMs <= cursorMs) break;
+    cursorMs = segEndMs;
+  }
+
+  if (rawSegments.length <= 1) {
+    const seg = rawSegments[0];
+    return [
+      {
+        dateKey: seg ? seg.dateKey : toInputDate(startDate),
+        startIso: new Date(startMs).toISOString(),
+        endIso: new Date(endMs).toISOString(),
+        durationSeconds: safeTotalSec,
+        fraction: 1,
+        isSplitSegment: false,
+      },
+    ];
+  }
+
+  const totalWallMs = rawSegments.reduce((acc, s) => acc + s.wallMs, 0);
+  const exactSecs = rawSegments.map((s) =>
+    totalWallMs > 0 ? (safeTotalSec * s.wallMs) / totalWallMs : 0
+  );
+  const allocated = exactSecs.map((val) => Math.floor(val));
+  let remainder = safeTotalSec - allocated.reduce((acc, v) => acc + v, 0);
+
+  if (remainder > 0) {
+    const order = exactSecs
+      .map((val, idx) => ({ idx, frac: val - allocated[idx] }))
+      .sort((a, b) => b.frac - a.frac);
+    for (let i = 0; i < remainder && i < order.length; i++) {
+      allocated[order[i].idx] += 1;
+    }
+  }
+
+  const slices: DayTimeSlice[] = [];
+  for (let i = 0; i < rawSegments.length; i++) {
+    const seg = rawSegments[i];
+    const sec = allocated[i];
+    if (safeTotalSec > 0 && sec <= 0) continue;
+    slices.push({
+      dateKey: seg.dateKey,
+      startIso: new Date(seg.startMs).toISOString(),
+      endIso: new Date(seg.endMs).toISOString(),
+      durationSeconds: sec,
+      fraction: safeTotalSec > 0 ? sec / safeTotalSec : 1 / rawSegments.length,
+      isSplitSegment: true,
+    });
+  }
+
+  if (slices.length === 0) {
+    return [
+      {
+        dateKey: toInputDate(startDate),
+        startIso: new Date(startMs).toISOString(),
+        endIso: new Date(endMs).toISOString(),
+        durationSeconds: safeTotalSec,
+        fraction: 1,
+        isSplitSegment: false,
+      },
+    ];
+  }
+
+  if (slices.length === 1) {
+    slices[0].isSplitSegment = false;
+    slices[0].fraction = 1;
+  }
+
+  return slices;
+}
+
+export function getEntryDaySlices(entry: TimeEntry): DayTimeSlice[] {
+  return splitIntervalByLocalDays(entry.startTime, entry.endTime, entry.durationSeconds);
+}
+
+export function getActiveTimerDaySeconds(
+  timer: ActiveTimer,
+  targetDateKey: string,
+  nowMs: number = Date.now()
+): number {
+  const elapsedSec = Math.floor(getActiveTimerElapsedMs(timer, nowMs) / 1000);
+  if (elapsedSec <= 0) return 0;
+  const effectiveEndMs = timer.pausedAt ? new Date(timer.pausedAt).getTime() : nowMs;
+  const safeEndMs = Number.isNaN(effectiveEndMs) ? nowMs : effectiveEndMs;
+  const slices = splitIntervalByLocalDays(
+    timer.startTime,
+    new Date(safeEndMs).toISOString(),
+    elapsedSec
+  );
+  return slices
+    .filter((s) => s.dateKey === targetDateKey)
+    .reduce((acc, s) => acc + s.durationSeconds, 0);
+}
+
+/**
+ * Splits a TimeEntry that crosses local midnight (00:00) into proportional per-day TimeEntry records.
+ * Keeps the original id, travel costs, and photos exclusively on the first day's segment to avoid duplicates.
+ */
+export function splitTimeEntryByLocalDays(entry: TimeEntry): TimeEntry[] {
+  const slices = getEntryDaySlices(entry);
+  if (slices.length <= 1) {
+    return [entry];
+  }
+
+  return slices.map((slice, idx) => {
+    const isFirst = idx === 0;
+    return {
+      ...entry,
+      id: isFirst ? entry.id : createId('time'),
+      startTime: slice.startIso,
+      endTime: slice.endIso,
+      durationSeconds: slice.durationSeconds,
+      travelDistanceKm: isFirst ? entry.travelDistanceKm : undefined,
+      travelCostNet: isFirst ? entry.travelCostNet : undefined,
+      travelBilledInvoiceId: isFirst ? entry.travelBilledInvoiceId ?? null : null,
+      photos: isFirst ? entry.photos : undefined,
+    };
+  });
 }
 
 export function getOverdueDays(invoice: Invoice, todayIso: string = toInputDate()): number {

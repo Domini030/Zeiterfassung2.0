@@ -8,7 +8,7 @@ import type {
   RecurringExpense,
   TimeEntry,
 } from '../types';
-import { formatCurrency, formatNumber, toInputDate } from '../utils/format';
+import { formatCurrency, formatNumber, getEntryDaySlices, toInputDate } from '../utils/format';
 import { downloadFilteredReportPdf } from '../utils/pdfInvoice';
 import { InfoHintPopup } from './InfoHintPopup';
 import { TaxAdvisorPanel } from './TaxAdvisorPanel';
@@ -97,33 +97,41 @@ export function AnalyticsView({
     return map;
   }, [products]);
 
-  const filteredEntries = useMemo(() => {
-    const now = Date.now();
-    const cutoffMs =
+  const filteredSlices = useMemo(() => {
+    const now = new Date();
+    const rangeStartKey =
       range === '7d'
-        ? now - 7 * 86400 * 1000
+        ? toInputDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6))
         : range === '30d'
-          ? now - 30 * 86400 * 1000
-          : 0;
+          ? toInputDate(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29))
+          : null;
 
-    return timeEntries.filter((entry) => {
+    const result: {
+      entry: TimeEntry;
+      dateKey: string;
+      durationSeconds: number;
+    }[] = [];
+
+    for (const entry of timeEntries) {
       const isInternal = entry.entryType === 'internal' || !entry.customerId;
       if (selectedCustomerId === 'internal_only') {
-        if (!isInternal) return false;
+        if (!isInternal) continue;
       } else if (selectedCustomerId !== 'all') {
-        if (isInternal || entry.customerId !== selectedCustomerId) return false;
+        if (isInternal || entry.customerId !== selectedCustomerId) continue;
       }
       if (selectedProductId !== 'all' && entry.productId !== selectedProductId) {
-        return false;
+        continue;
       }
-      if (cutoffMs > 0) {
-        const entryMs = new Date(entry.startTime).getTime();
-        if (!Number.isNaN(entryMs) && entryMs < cutoffMs) {
-          return false;
-        }
+      for (const slice of getEntryDaySlices(entry)) {
+        if (rangeStartKey && slice.dateKey < rangeStartKey) continue;
+        result.push({
+          entry,
+          dateKey: slice.dateKey,
+          durationSeconds: slice.durationSeconds,
+        });
       }
-      return true;
-    });
+    }
+    return result;
   }, [timeEntries, range, selectedCustomerId, selectedProductId]);
 
   const kpis = useMemo(() => {
@@ -132,17 +140,20 @@ export function AnalyticsView({
     let internalSeconds = 0;
     let totalRevenueNet = 0;
     const activeCustIds = new Set<string>();
+    const entryIds = new Set<string>();
 
-    for (const e of filteredEntries) {
+    for (const item of filteredSlices) {
+      const e = item.entry;
+      entryIds.add(e.id);
       const isInternal = e.entryType === 'internal' || !e.customerId;
-      totalSeconds += e.durationSeconds;
-      const hours = e.durationSeconds / 3600;
+      totalSeconds += item.durationSeconds;
+      const hours = item.durationSeconds / 3600;
       if (!isInternal && e.billable) {
-        billableSeconds += e.durationSeconds;
+        billableSeconds += item.durationSeconds;
         totalRevenueNet += hours * e.hourlyRateNet;
       }
       if (isInternal) {
-        internalSeconds += e.durationSeconds;
+        internalSeconds += item.durationSeconds;
       } else if (e.customerId) {
         activeCustIds.add(e.customerId);
       }
@@ -158,23 +169,26 @@ export function AnalyticsView({
       billableRatioPct,
       totalRevenueNet,
       activeCustomers: activeCustIds.size,
-      entryCount: filteredEntries.length,
+      entryCount: entryIds.size,
     };
-  }, [filteredEntries]);
+  }, [filteredSlices]);
 
   const internalCategoryStats = useMemo(() => {
-    const map = new Map<string, { label: string; seconds: number; count: number }>();
-    for (const e of filteredEntries) {
+    const map = new Map<string, { label: string; seconds: number; entryIds: Set<string> }>();
+    for (const item of filteredSlices) {
+      const e = item.entry;
       const isInternal = e.entryType === 'internal' || !e.customerId;
       if (!isInternal) continue;
       const cat = e.internalCategory || 'Sonstige interne Arbeit';
-      const cur = map.get(cat) ?? { label: cat, seconds: 0, count: 0 };
-      cur.seconds += e.durationSeconds;
-      cur.count += 1;
+      const cur = map.get(cat) ?? { label: cat, seconds: 0, entryIds: new Set<string>() };
+      cur.seconds += item.durationSeconds;
+      cur.entryIds.add(e.id);
       map.set(cat, cur);
     }
-    return Array.from(map.values()).sort((a, b) => b.seconds - a.seconds);
-  }, [filteredEntries]);
+    return Array.from(map.values())
+      .map((v) => ({ label: v.label, seconds: v.seconds, count: v.entryIds.size }))
+      .sort((a, b) => b.seconds - a.seconds);
+  }, [filteredSlices]);
 
   const expenseSummary = useMemo(() => {
     const now = Date.now();
@@ -244,11 +258,12 @@ export function AnalyticsView({
         color: string;
         seconds: number;
         revenueNet: number;
-        entries: number;
+        entryIds: Set<string>;
       }
     >();
 
-    for (const e of filteredEntries) {
+    for (const item of filteredSlices) {
+      const e = item.entry;
       const isInternal = e.entryType === 'internal' || !e.customerId;
       const key = isInternal ? INTERNAL_KEY : e.customerId;
       const cust = !isInternal ? customerMap.get(e.customerId) : undefined;
@@ -260,18 +275,27 @@ export function AnalyticsView({
         color: customerColorMap.get(key) ?? '#7c3aed',
         seconds: 0,
         revenueNet: 0,
-        entries: 0,
+        entryIds: new Set<string>(),
       };
-      existing.seconds += e.durationSeconds;
+      existing.seconds += item.durationSeconds;
       if (!isInternal && e.billable) {
-        existing.revenueNet += (e.durationSeconds / 3600) * e.hourlyRateNet;
+        existing.revenueNet += (item.durationSeconds / 3600) * e.hourlyRateNet;
       }
-      existing.entries += 1;
+      existing.entryIds.add(e.id);
       acc.set(key, existing);
     }
 
-    return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
-  }, [filteredEntries, customerMap, customerColorMap]);
+    return Array.from(acc.values())
+      .map((v) => ({
+        customerId: v.customerId,
+        name: v.name,
+        color: v.color,
+        seconds: v.seconds,
+        revenueNet: v.revenueNet,
+        entries: v.entryIds.size,
+      }))
+      .sort((a, b) => b.seconds - a.seconds);
+  }, [filteredSlices, customerMap, customerColorMap]);
 
   // Aggregate by product / internal category
   const productStats = useMemo(() => {
@@ -283,11 +307,12 @@ export function AnalyticsView({
         color: string;
         seconds: number;
         revenueNet: number;
-        entries: number;
+        entryIds: Set<string>;
       }
     >();
 
-    for (const e of filteredEntries) {
+    for (const item of filteredSlices) {
+      const e = item.entry;
       const isInternal = e.entryType === 'internal' || !e.customerId;
       const key = isInternal
         ? `int::${e.internalCategory || 'Interne Tätigkeit'}`
@@ -301,18 +326,27 @@ export function AnalyticsView({
         color: isInternal ? INTERNAL_COLOR : productColorMap.get(e.productId) ?? '#2563eb',
         seconds: 0,
         revenueNet: 0,
-        entries: 0,
+        entryIds: new Set<string>(),
       };
-      existing.seconds += e.durationSeconds;
+      existing.seconds += item.durationSeconds;
       if (!isInternal && e.billable) {
-        existing.revenueNet += (e.durationSeconds / 3600) * e.hourlyRateNet;
+        existing.revenueNet += (item.durationSeconds / 3600) * e.hourlyRateNet;
       }
-      existing.entries += 1;
+      existing.entryIds.add(e.id);
       acc.set(key, existing);
     }
 
-    return Array.from(acc.values()).sort((a, b) => b.seconds - a.seconds);
-  }, [filteredEntries, productMap, productColorMap]);
+    return Array.from(acc.values())
+      .map((v) => ({
+        productId: v.productId,
+        name: v.name,
+        color: v.color,
+        seconds: v.seconds,
+        revenueNet: v.revenueNet,
+        entries: v.entryIds.size,
+      }))
+      .sort((a, b) => b.seconds - a.seconds);
+  }, [filteredSlices, productMap, productColorMap]);
 
   // Aggregate daily stacked bars (Customer & Internal segments per day)
   const dailySeries = useMemo(() => {
@@ -340,23 +374,24 @@ export function AnalyticsView({
       }
     }
 
-    for (const e of filteredEntries) {
+    for (const item of filteredSlices) {
+      const e = item.entry;
       const isInternal = e.entryType === 'internal' || !e.customerId;
       const custKey = isInternal ? INTERNAL_KEY : e.customerId;
-      const key = getLocalDateKey(e.startTime);
+      const key = item.dateKey;
       const bucket = dayMap.get(key) ?? {
         dateKey: key,
         totalSeconds: 0,
         revenueNet: 0,
         byCustomer: new Map(),
       };
-      bucket.totalSeconds += e.durationSeconds;
+      bucket.totalSeconds += item.durationSeconds;
       if (!isInternal && e.billable) {
-        bucket.revenueNet += (e.durationSeconds / 3600) * e.hourlyRateNet;
+        bucket.revenueNet += (item.durationSeconds / 3600) * e.hourlyRateNet;
       }
       bucket.byCustomer.set(
         custKey,
-        (bucket.byCustomer.get(custKey) ?? 0) + e.durationSeconds
+        (bucket.byCustomer.get(custKey) ?? 0) + item.durationSeconds
       );
       dayMap.set(key, bucket);
     }
@@ -365,7 +400,7 @@ export function AnalyticsView({
       a.dateKey.localeCompare(b.dateKey)
     );
     return sorted.slice(-16);
-  }, [filteredEntries, range]);
+  }, [filteredSlices, range]);
 
   const maxDayHours = useMemo(() => {
     const peak = dailySeries.reduce(
@@ -386,18 +421,19 @@ export function AnalyticsView({
         productName: string;
         hours: number;
         revenueNet: number;
-        count: number;
+        entryIds: Set<string>;
       }
     >();
 
-    for (const e of filteredEntries) {
+    for (const item of filteredSlices) {
+      const e = item.entry;
       const isInternal = e.entryType === 'internal' || !e.customerId;
       const custKey = isInternal ? INTERNAL_KEY : e.customerId;
       const prodKey = isInternal ? e.internalCategory || 'Intern' : e.productId;
       const key = `${custKey}::${prodKey}`;
       const cust = !isInternal ? customerMap.get(e.customerId) : undefined;
       const prod = !isInternal ? productMap.get(e.productId) : undefined;
-      const item = grouped.get(key) ?? {
+      const itemRow = grouped.get(key) ?? {
         key,
         customerName: isInternal
           ? 'Intern (ohne Ertrag)'
@@ -408,19 +444,29 @@ export function AnalyticsView({
           : prod?.name ?? 'Leistung',
         hours: 0,
         revenueNet: 0,
-        count: 0,
+        entryIds: new Set<string>(),
       };
-      const hrs = e.durationSeconds / 3600;
-      item.hours += hrs;
+      const hrs = item.durationSeconds / 3600;
+      itemRow.hours += hrs;
       if (!isInternal && e.billable) {
-        item.revenueNet += hrs * e.hourlyRateNet;
+        itemRow.revenueNet += hrs * e.hourlyRateNet;
       }
-      item.count += 1;
-      grouped.set(key, item);
+      itemRow.entryIds.add(e.id);
+      grouped.set(key, itemRow);
     }
 
-    return Array.from(grouped.values()).sort((a, b) => b.hours - a.hours);
-  }, [filteredEntries, customerMap, productMap, customerColorMap]);
+    return Array.from(grouped.values())
+      .map((v) => ({
+        key: v.key,
+        customerName: v.customerName,
+        customerColor: v.customerColor,
+        productName: v.productName,
+        hours: v.hours,
+        revenueNet: v.revenueNet,
+        count: v.entryIds.size,
+      }))
+      .sort((a, b) => b.hours - a.hours);
+  }, [filteredSlices, customerMap, productMap, customerColorMap]);
 
   // SVG Donut geometry
   const donutSegments = useMemo(() => {
@@ -683,7 +729,7 @@ export function AnalyticsView({
         </section>
       )}
 
-      {filteredEntries.length === 0 ? (
+      {filteredSlices.length === 0 ? (
         <section className="rounded-xl border border-slate-200 bg-white p-12 text-center dark:border-[#2e2349] dark:bg-[#171126]">
           <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
             Keine Zeiteinträge im gewählten Filter vorhanden.
