@@ -13,6 +13,7 @@ files:
   - "!**/android/**"
   - "!**/.github/**"
   - "!**/data/**"
+  - "!**/aistudio/**"
 win:
   icon: electron/icon.ico
   target:

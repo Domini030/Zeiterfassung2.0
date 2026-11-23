@@ -1,14 +1,34 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
 import {defineConfig} from 'vite';
 import {VitePWA} from 'vite-plugin-pwa';
+
+function stripAistudioAssetsPlugin() {
+  let outDir = 'dist';
+  const cleanup = () => {
+    const target = path.resolve(__dirname, outDir, 'assets', 'aistudio');
+    if (fs.existsSync(target)) {
+      fs.rmSync(target, {recursive: true, force: true});
+    }
+  };
+  return {
+    name: 'strip-aistudio-assets',
+    configResolved(config: {build: {outDir: string}}) {
+      outDir = config.build.outDir;
+    },
+    writeBundle: cleanup,
+    closeBundle: cleanup,
+  };
+}
 
 export default defineConfig(() => {
   return {
     plugins: [
       react(),
       tailwindcss(),
+      stripAistudioAssetsPlugin(),
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: [
@@ -54,6 +74,7 @@ export default defineConfig(() => {
         workbox: {
           maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+          globIgnores: ['**/aistudio/**'],
           navigateFallbackDenylist: [/^\/api\//],
           runtimeCaching: [
             {

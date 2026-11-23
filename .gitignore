@@ -13,4 +13,5 @@ android/build/
 android/capacitor-cordova-android-plugins/
 dist-electron/
 release-desktop/
-
+public/assets/aistudio/
+**/assets/aistudio/
